@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Script to build the complete, restructured, 9-chapter B.Tech Project Report
-for 'SECURE AND TRANSPARENT ELECTRONIC VOTING SYSTEM USING BLOCKCHAIN TECHNOLOGY'
+for 'BLOCK CHAIN BASED ELECTRONIC VOTING SYSTEM'
 at College of Engineering Karunagappally.
 """
 
@@ -86,7 +86,7 @@ report_content = r"""\documentclass[12pt,a4paper]{report}
     linkcolor=black,
     citecolor=black,
     urlcolor=black,
-    pdftitle={Secure and Transparent Electronic Voting System Using Blockchain Technology},
+    pdftitle={Block Chain Based Electronic Voting System},
     pdfauthor={Adeeba Abdul Vahid, Avani P, Thara A}
 }
 
@@ -105,8 +105,8 @@ report_content = r"""\documentclass[12pt,a4paper]{report}
 %==============================================================================
 % METADATA DEFINITIONS (Project Group & CEK)
 %==============================================================================
-\gdef \title{SECURE AND TRANSPARENT ELECTRONIC VOTING SYSTEM USING BLOCKCHAIN TECHNOLOGY}
-\gdef \shorttitle{Secure and Transparent Blockchain Voting System}
+\gdef \title{BLOCK CHAIN BASED ELECTRONIC VOTING SYSTEM}
+\gdef \shorttitle{Block Chain Based Electronic Voting System}
 
 \gdef \authorA{ADEEBA ABDUL VAHID}
 \gdef \rollnoA{KNP23CS011}
@@ -1087,7 +1087,7 @@ The project progressed through eleven structured milestones: problem scoping and
 This chapter concludes the report by summarizing key empirical and architectural achievements, addressing real-world limitations, and outlining prospective research trajectories.
 
 \section{Summary of Achievements}
-This project presented the design, implementation, and analysis of a \textbf{Secure and Transparent Electronic Voting System Using Blockchain Technology}, realized as an Ethereum-based decentralized application (Voting DApp) with smart-contract-level double-voting mitigation. The primary contributions and achievements of this work include:
+This project presented the design, implementation, and analysis of a \textbf{Block Chain Based Electronic Voting System}, realized as an Ethereum-based decentralized application (Voting DApp) with smart-contract-level double-voting mitigation. The primary contributions and achievements of this work include:
 \begin{itemize}
     \item \textbf{Guaranteed Double-Voting Mitigation:} Designed and implemented an atomic smart contract acceptance predicate ($\text{Accept}(v)$) in Solidity that makes duplicate voting computationally impossible. Once a ballot is cast, the voter's participation flag is atomically mutated within the same transaction, preventing race conditions or direct RPC replay attacks.
     \item \textbf{Role-Based Administrative Security:} Implemented strict cryptographic authorization boundaries separating the election administrator (solely empowered to add candidates and whitelist voter addresses) from voters (authorized solely to submit a single ballot).
