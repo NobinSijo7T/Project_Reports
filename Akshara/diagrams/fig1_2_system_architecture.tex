@@ -1,0 +1,173 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usepackage{amsmath,amssymb}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shadows,shapes.geometric}
+
+% Color definitions
+\definecolor{civNavy}{RGB}{15, 34, 64}
+\definecolor{civBlue}{RGB}{28, 80, 160}
+\definecolor{civTeal}{RGB}{14, 130, 120}
+\definecolor{civLightBlue}{RGB}{238, 245, 255}
+\definecolor{civBorder}{RGB}{185, 210, 240}
+\definecolor{civGold}{RGB}{217, 119, 6}
+\definecolor{civGreen}{RGB}{22, 130, 80}
+\definecolor{civDark}{RGB}{20, 28, 42}
+\definecolor{civBg}{RGB}{248, 250, 252}
+\definecolor{cInput}{RGB}{240, 246, 255}
+\definecolor{cStem}{RGB}{224, 242, 254}
+\definecolor{cStage1}{RGB}{209, 250, 229}
+\definecolor{cStage2}{RGB}{254, 243, 199}
+\definecolor{cStage3}{RGB}{254, 226, 226}
+\definecolor{cStage4}{RGB}{236, 254, 255}
+
+\begin{document}
+% Zero-Overlap System Architecture Map for CiviQ Civic Grievance Platform
+\begin{tikzpicture}[
+  x=1cm, y=1cm,
+  every node/.style={align=center},
+  group/.style={draw=civBlue!70, dashed, line width=0.85pt,
+    fill=civLightBlue!30, rounded corners=8pt},
+  grouptitle/.style={fill=civNavy, text=white, font=\fontsize{7.5}{9.0}\selectfont\bfseries,
+    rounded corners=3pt, inner xsep=6pt, inner ysep=3.0pt},
+  colbox/.style={rectangle, rounded corners=4pt, line width=0.75pt,
+    minimum height=1.15cm, inner ysep=3.5pt, inner xsep=5pt,
+    font=\fontsize{6.8}{8.0}\selectfont\bfseries},
+  arrow/.style={
+    -{Stealth[scale=0.85]}, line width=0.85pt, draw=civNavy!90
+  },
+  badge/.style={
+    fill=white, draw=civBlue!90, rounded corners=2.5pt, line width=0.60pt,
+    inner xsep=4.0pt, inner ysep=2.2pt, font=\fontsize{6.2}{7.2}\selectfont\bfseries
+  }
+]
+
+  %============================================================================
+  % COLUMN 1: PRESENTATION & CLIENT INTERFACE TIER
+  %============================================================================
+  \node[group, minimum width=3.60cm, minimum height=10.60cm] (g1) at (2.00, 5.80) {};
+  \node[grouptitle, anchor=west] at (0.25, 11.10) {1. Client Presentation Tier};
+
+  \node[colbox, text width=3.30cm, fill=cInput, draw=civBlue!70] (g1user) at (2.00, 9.80) {%
+    {\color{civNavy}\faUsers\ \textbf{Citizen \& Public Portal}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Web \& Mobile Browser Interface\\[1pt]Issue Report $\cdot$ Evidence Upload}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStem, draw=civBlue!70] (g1map) at (2.00, 7.30) {%
+    {\color{civBlue}\faMap\ \textbf{Interactive Leaflet Map}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont OpenStreetMap Geolocation\\[1pt]GPS Pin Dropper $\cdot$ Geo-Tags}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStage4, draw=civBlue!80] (g1admin) at (2.00, 4.80) {%
+    {\color{civNavy}\faUserShield\ \textbf{Municipal Admin Portal}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont SLA Dashboard $\cdot$ Department Triage\\[1pt]Status Dispatch $\cdot$ CSV Export}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=white, draw=civNavy!60] (g1comm) at (2.00, 2.30) {%
+    {\color{civDark}\faThumbsUp\ \textbf{Community Engagement}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont 1-Upvote Civic Escalation\\[1pt]Discussion Thread $\cdot$ Alerts}%
+  };
+
+  %============================================================================
+  % COLUMN 2: API GATEWAY & SECURITY CONTROLLER TIER
+  %============================================================================
+  \node[group, minimum width=3.60cm, minimum height=10.60cm] (g2) at (6.20, 5.80) {};
+  \node[grouptitle, anchor=west] at (4.45, 11.10) {2. API Gateway \& Security};
+
+  \node[colbox, text width=3.30cm, fill=white, draw=civNavy!70] (g2app) at (6.20, 9.80) {%
+    {\color{civNavy}\faServer\ \textbf{Flask Application Factory}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont RESTful Blueprints $\cdot$ CORS\\[1pt]Static Server $\cdot$ Health Probe}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStage1, draw=civGreen!70] (g2auth) at (6.20, 7.30) {%
+    {\color{civGreen}\faKey\ \textbf{Auth \& Token Security}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont URLSafeTimedSerializer JWT\\[1pt]PBKDF2 / scrypt Password Hashing}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStage2, draw=civGold!80] (g2guard) at (6.20, 4.80) {%
+    {\color{civGold}\faLock\ \textbf{Access Control Guards}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont \texttt{@login\_required} Decorator\\[1pt]\texttt{@admin\_required} RBAC}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cInput, draw=civBlue!60] (g2san) at (6.20, 2.30) {%
+    {\color{civNavy}\faFile\ \textbf{Payload Sanitization}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Multipart MIME Filter $\le$ 10MB\\[1pt]Secure UUID File Storage}%
+  };
+
+  %============================================================================
+  % COLUMN 3: BUSINESS LOGIC \& GEOSPATIAL ENGINE
+  %============================================================================
+  \node[group, minimum width=3.60cm, minimum height=10.60cm] (g3) at (10.40, 5.80) {};
+  \node[grouptitle, anchor=west] at (8.65, 11.10) {3. Business Logic \& GIS};
+
+  \node[colbox, text width=3.30cm, fill=cStage1, draw=civTeal!80] (g3gis) at (10.40, 9.80) {%
+    {\color{civTeal}\faGlobeAmericas\ \textbf{Shapely PIP GIS Engine}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Point-in-Polygon Detection\\[1pt]55 Kollam Corporation Wards}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStem, draw=civBlue!80] (g3route) at (10.40, 7.30) {%
+    {\color{civBlue}\faRoute\ \textbf{Authority Dispatcher}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Category \& Ward Mapping\\[1pt]PWD, Sanitation, KWA, KSEB}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStage2, draw=civGold!80] (g3escl) at (10.40, 4.80) {%
+    {\color{civGold}\faExclamationTriangle\ \textbf{SLA Escalation Engine}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont $\ge 3$ Upvotes $\rightarrow$ High Priority\\[1pt]48-Hour SLA Monitoring}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=white, draw=civNavy!70] (g3notif) at (10.40, 2.30) {%
+    {\color{civNavy}\faBell\ \textbf{Notification System}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Status Lifecycle Triggers\\[1pt]Real-time Citizen Alerts}%
+  };
+
+  %============================================================================
+  % COLUMN 4: AI VISION TRIAGE \& PERSISTENCE TIER
+  %============================================================================
+  \node[group, minimum width=3.60cm, minimum height=10.60cm] (g4) at (14.60, 5.80) {};
+  \node[grouptitle, anchor=west] at (12.85, 11.10) {4. AI Triage \& Persistence};
+
+  \node[colbox, text width=3.30cm, fill=cStage3, draw=red!70] (g4ai) at (14.60, 9.80) {%
+    {\color{red!80!black}\faRobot\ \textbf{AI Computer Vision}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont YOLOv8 / CNN Hazard Triage\\[1pt]Bounding Box Regression}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=white, draw=civNavy!80] (g4sql) at (14.60, 7.30) {%
+    {\color{civNavy}\faDatabase\ \textbf{MySQL 8.0 Database}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont 7 Normalized Relational Tables\\[1pt]ACID Transactions \& Indexes}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStage1, draw=civGreen!80] (g4audit) at (14.60, 4.80) {%
+    {\color{civGreen}\faHistory\ \textbf{Tamper-Evident Audit}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont \texttt{complaint\_history} Logs\\[1pt]Simulated Blockchain Hash}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cInput, draw=civBlue!60] (g4store) at (14.60, 2.30) {%
+    {\color{civDark}\faFolderOpen\ \textbf{Evidence Storage}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont File System Uploads\\[1pt]GeoJSON Boundary Polygons}%
+  };
+
+  %============================================================================
+  % CONNECTING FLOW ARROWS (STRICTLY ROW-TO-ROW ORTHOGONAL FLOW)
+  %============================================================================
+  % Row 1: Grievance Ingestion & AI Triage
+  \draw[arrow] (g1user.east) -- node[above, badge] {\fontsize{5.8}{6.8}\selectfont REST / JSON} (g2app.west);
+  \draw[arrow] (g2app.east) -- node[above, badge] {\fontsize{5.8}{6.8}\selectfont Ingest Payload} (g3gis.west);
+  \draw[arrow] (g3gis.east) -- node[above, badge] {\fontsize{5.8}{6.8}\selectfont Image Stream} (g4ai.west);
+  
+  % Row 2: Geospatial Mapping & Persistence
+  \draw[arrow] (g1map.east) -- (g2auth.west);
+  \draw[arrow] (g2auth.east) -- (g3route.west);
+  \draw[arrow] (g3route.east) -- node[above, badge] {\fontsize{5.8}{6.8}\selectfont SQL Query} (g4sql.west);
+
+  % Row 3: Admin Operations & Governance Audit
+  \draw[arrow] (g1admin.east) -- (g2guard.west);
+  \draw[arrow] (g2guard.east) -- (g3escl.west);
+  \draw[arrow] (g3escl.east) -- (g4audit.west);
+
+  % Row 4: Community Engagement & Media Storage
+  \draw[arrow] (g1comm.east) -- (g2san.west);
+  \draw[arrow] (g2san.east) -- (g3notif.west);
+  \draw[arrow] (g3notif.east) -- (g4store.west);
+
+\end{tikzpicture}
+\end{document}

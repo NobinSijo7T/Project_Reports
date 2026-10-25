@@ -1,0 +1,189 @@
+\documentclass[tikz,border=12pt]{standalone}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usetikzlibrary{shapes.multipart,shadows,arrows.meta,positioning,calc}
+
+\definecolor{civNavy}{RGB}{18, 38, 70}
+\definecolor{civBlue}{RGB}{24, 76, 155}
+\definecolor{civLightBlue}{RGB}{240, 246, 255}
+\definecolor{civLine}{RGB}{28, 80, 160}
+
+\begin{document}
+% Relational Entity Schema Connectors for CiviQ Database
+\begin{tikzpicture}[
+    x=1cm, y=1cm,
+    font=\sffamily,
+    entity/.style={
+        rectangle split,
+        rectangle split parts=2,
+        rectangle split part fill={civNavy, white},
+        draw=civNavy,
+        line width=0.85pt,
+        rounded corners=3.5pt,
+        drop shadow={shadow xshift=1.2pt, shadow yshift=-1.2pt, opacity=0.12},
+        inner sep=4.5pt,
+        align=left
+    },
+    hubEntity/.style={
+        rectangle split,
+        rectangle split parts=2,
+        rectangle split part fill={civBlue, white},
+        draw=civBlue,
+        line width=0.95pt,
+        rounded corners=3.5pt,
+        drop shadow={shadow xshift=1.5pt, shadow yshift=-1.5pt, opacity=0.15},
+        inner sep=4.8pt,
+        align=left
+    },
+    fkarr/.style={
+        -{Stealth[scale=0.85]}, line width=0.9pt, draw=civLine
+    },
+    cardlabel/.style={
+        font=\fontsize{6.2}{7.4}\selectfont\bfseries,
+        fill=white,
+        draw=civLine!50,
+        text=civNavy,
+        line width=0.5pt,
+        inner sep=1.8pt,
+        rounded corners=2pt
+    }
+]
+
+    %==========================================================================
+    % TIER 1: PARENT ENTITIES (users & authorities)
+    %==========================================================================
+    
+    % TABLE 1: USERS (Top Left)
+    \node [entity, text width=3.7cm, anchor=north] (users) at (2.2, 11.5) {
+        \centering\textcolor{white}{\textbf{\fontsize{7.5}{9.0}\selectfont\faUsers\ users}}
+        \nodepart{two}
+        \fontsize{6.2}{7.6}\selectfont
+        \underline{\textbf{id}} : INT (PK, Auto)\\[2pt]
+        \textbf{name} : VARCHAR(150)\\[2pt]
+        \textbf{email} : VARCHAR(150) (UQ)\\[2pt]
+        \textbf{password\_hash} : VARCHAR(255)\\[2pt]
+        \textbf{role} : ENUM('Citizen', 'Admin')\\[2pt]
+        \textbf{ward} : VARCHAR(100)\\[2pt]
+        \textbf{created\_at} : TIMESTAMP
+    };
+
+    % TABLE 2: AUTHORITIES (Top Right)
+    \node [entity, text width=3.7cm, anchor=north] (auth) at (11.8, 11.5) {
+        \centering\textcolor{white}{\textbf{\fontsize{7.5}{9.0}\selectfont\faBuilding\ authorities}}
+        \nodepart{two}
+        \fontsize{6.2}{7.6}\selectfont
+        \underline{\textbf{id}} : INT (PK, Auto)\\[2pt]
+        \textbf{name} : VARCHAR(150)\\[2pt]
+        \textbf{department} : VARCHAR(100)\\[2pt]
+        \textbf{jurisdiction} : ENUM(...)\\[2pt]
+        \textbf{ward} : VARCHAR(100)\\[2pt]
+        \textbf{district} : VARCHAR(100)\\[2pt]
+        \textbf{is\_active} : BOOLEAN
+    };
+
+    %==========================================================================
+    % TIER 2: CENTRAL CORE HUB (complaints)
+    %==========================================================================
+    
+    \node [hubEntity, text width=5.2cm, anchor=north] (comp) at (7.0, 7.4) {
+        \centering\textcolor{white}{\textbf{\fontsize{8.0}{9.5}\selectfont\faFile\ complaints}}
+        \nodepart{two}
+        \fontsize{6.2}{7.6}\selectfont
+        \underline{\textbf{id}} : INT (PK, Auto)\\[1.8pt]
+        \textbf{complaint\_id\_code} : VARCHAR(30) (UQ)\\[1.8pt]
+        \textbf{user\_id} : INT (FK $\to$ users.id)\\[1.8pt]
+        \textbf{title} : VARCHAR(200)\\[1.8pt]
+        \textbf{description} : TEXT\\[1.8pt]
+        \textbf{category} : VARCHAR(100)\\[1.8pt]
+        \textbf{location\_address} : VARCHAR(255)\\[1.8pt]
+        \textbf{latitude, longitude} : DECIMAL(10, 7)\\[1.8pt]
+        \textbf{ward} : VARCHAR(100)\\[1.8pt]
+        \textbf{authority\_id} : INT (FK $\to$ authorities.id)\\[1.8pt]
+        \textbf{status} : ENUM('Pending', 'In Progress', ...)\\[1.8pt]
+        \textbf{priority} : ENUM('Low', 'Medium', 'High')\\[1.8pt]
+        \textbf{upvote\_count} : INT DEFAULT 0\\[1.8pt]
+        \textbf{ai\_confidence} : VARCHAR(20)
+    };
+
+    %==========================================================================
+    % TIER 3: CHILD AUXILIARY TABLES (4 across the bottom)
+    %==========================================================================
+    
+    % TABLE 4: UPVOTES (Leftmost)
+    \node [entity, text width=2.85cm, anchor=north] (upvotes) at (1.8, 0.2) {
+        \centering\textcolor{white}{\textbf{\fontsize{7.2}{8.5}\selectfont\faThumbsUp\ upvotes}}
+        \nodepart{two}
+        \fontsize{6.2}{7.6}\selectfont
+        \underline{\textbf{id}} : INT (PK)\\[2pt]
+        \textbf{user\_id} : INT (FK)\\[2pt]
+        \textbf{complaint\_id} : INT (FK)\\[2pt]
+        \textbf{created\_at} : TIMESTAMP\\[2pt]
+        \textit{UQ (user\_id, complaint\_id)}
+    };
+
+    % TABLE 5: COMMENTS (Center-Left)
+    \node [entity, text width=2.85cm, anchor=north] (comments) at (5.25, 0.2) {
+        \centering\textcolor{white}{\textbf{\fontsize{7.2}{8.5}\selectfont\faComments\ comments}}
+        \nodepart{two}
+        \fontsize{6.2}{7.6}\selectfont
+        \underline{\textbf{id}} : INT (PK)\\[2pt]
+        \textbf{complaint\_id} : INT (FK)\\[2pt]
+        \textbf{user\_id} : INT (FK)\\[2pt]
+        \textbf{comment\_text} : TEXT\\[2pt]
+        \textbf{created\_at} : TIMESTAMP
+    };
+
+    % TABLE 6: NOTIFICATIONS (Center-Right)
+    \node [entity, text width=2.85cm, anchor=north] (notif) at (8.75, 0.2) {
+        \centering\textcolor{white}{\textbf{\fontsize{7.2}{8.5}\selectfont\faBell\ notifications}}
+        \nodepart{two}
+        \fontsize{6.2}{7.6}\selectfont
+        \underline{\textbf{id}} : INT (PK)\\[2pt]
+        \textbf{user\_id} : INT (FK)\\[2pt]
+        \textbf{complaint\_id} : INT (FK)\\[2pt]
+        \textbf{title} : VARCHAR(150)\\[2pt]
+        \textbf{is\_read} : BOOLEAN
+    };
+
+    % TABLE 7: COMPLAINT HISTORY (Rightmost)
+    \node [entity, text width=2.85cm, anchor=north] (hist) at (12.2, 0.2) {
+        \centering\textcolor{white}{\textbf{\fontsize{7.2}{8.5}\selectfont\faHistory\ complaint\_history}}
+        \nodepart{two}
+        \fontsize{6.2}{7.6}\selectfont
+        \underline{\textbf{id}} : INT (PK)\\[2pt]
+        \textbf{complaint\_id} : INT (FK)\\[2pt]
+        \textbf{changed\_by\_user} : INT\\[2pt]
+        \textbf{old\_status, new\_status}\\[2pt]
+        \textbf{created\_at} : TIMESTAMP
+    };
+
+    %==========================================================================
+    % CONNECTIONS & RELATIONSHIPS
+    %==========================================================================
+    
+    % Tier 1 to Tier 2: Clean Orthogonal Routes into exact FK attributes
+    % user_id in complaints is at y ~ 6.5
+    \draw [fkarr] (users.south) -- (2.2, 6.5) -- node[midway, above, cardlabel] {1 : N} ([yshift=-25pt]comp.north west);
+
+    % authority_id in complaints is at y ~ 3.8
+    \draw [fkarr] (auth.south) -- (11.8, 3.8) -- node[midway, above, cardlabel] {1 : N} ([yshift=-100pt]comp.north east);
+
+    % Tier 2 to Tier 3: Orthogonal Distribution Bus in Clear Air at y=0.9
+    \draw [line width=0.9pt, draw=civLine] (comp.south) -- (7.0, 0.9);
+    \draw [line width=0.9pt, draw=civLine] (1.8, 0.9) -- (12.2, 0.9);
+
+    % Drop Arrows from Bus into Child Tables
+    \draw [fkarr] (1.8, 0.9) -- (upvotes.north);
+    \draw [fkarr] (5.25, 0.9) -- (comments.north);
+    \draw [fkarr] (8.75, 0.9) -- (notif.north);
+    \draw [fkarr] (12.2, 0.9) -- (hist.north);
+
+    % Cardinality Badges on Bus
+    \node [cardlabel] at (7.0, 1.25) {1};
+    \node [cardlabel] at (1.8, 0.55) {N};
+    \node [cardlabel] at (5.25, 0.55) {N};
+    \node [cardlabel] at (8.75, 0.55) {N};
+    \node [cardlabel] at (12.2, 0.55) {N};
+
+\end{tikzpicture}
+\end{document}

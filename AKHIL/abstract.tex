@@ -1,0 +1,19 @@
+%============================= abstract.tex================================
+\chapter*{Abstract}%
+\addcontentsline{toc}{chapter}{Abstract}%
+\vspace{-25pt}
+
+\begin{spacing}{1.2}
+\noindent Acute respiratory infections, notably viral pneumonia and COVID-19, represent critical global healthcare challenges requiring rapid, reliable, and cost-effective preliminary screening. While chest radiography (CXR) serves as the primary first-line diagnostic imaging modality, conventional manual interpretation is bottlenecked by acute radiologist shortages, diagnostic fatigue, and subjective observer variability. Furthermore, contemporary artificial intelligence CAD systems predominantly operate as opaque black boxes lacking clinical interpretability and point-of-care deployment pipelines.
+
+\vspace{8pt}
+
+\noindent To address these diagnostic and clinical deployment challenges, this project presents an automated, interpretable deep learning system for \textbf{Early Lung Disease Detection} from chest X-ray radiographs. The methodology leverages a transfer-learning architecture centered on \textbf{DenseNet-121}, whose dense feedforward connectivity mitigates vanishing gradients and maximizes feature reuse. To bridge computational predictions with clinical trust, \textbf{Gradient-Weighted Class Activation Mapping (Grad-CAM)} is integrated at the terminal convolutional block (\texttt{denseblock4}), generating localized saliency heatmaps that visually highlight pathological hallmarks such as bilateral ground-glass opacities and consolidations.
+
+\vspace{8pt}
+
+\noindent The production architecture couples an asynchronous \textbf{FastAPI} REST microservice achieving sub-50ms inference with dual cross-platform clients: a responsive \textbf{Next.js 15} web dashboard and an \textbf{Expo} mobile application for bedside radiograph scanning. Evaluated on a stratified test benchmark of 4,546 clinical chest radiographs, the model demonstrates high diagnostic efficacy, achieving an overall accuracy of \textbf{92.63\%}, a macro F1-score of \textbf{91.59\%}, and an ROC-AUC of \textbf{98.50\%} (Normal: 94.65\%, COVID-19: 86.80\%, Viral Pneumonia: 93.32\%). The system establishes a transparent, low-latency clinical decision-support pipeline for preliminary thoracic screening.
+\end{spacing}
+
+\thispagestyle{plain}
+%=======================================================================

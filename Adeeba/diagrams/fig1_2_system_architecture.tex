@@ -1,0 +1,180 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usepackage{amsmath,amssymb}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shadows,shapes.geometric}
+
+% Color definitions
+\definecolor{lavenderDark}{RGB}{15, 44, 89}
+\definecolor{lavenderDeep}{RGB}{10, 28, 58}
+\definecolor{lavenderMedium}{RGB}{29, 78, 158}
+\definecolor{lavenderLight}{RGB}{240, 246, 255}
+\definecolor{lavenderBorder}{RGB}{180, 205, 237}
+\definecolor{lavenderAccent}{RGB}{2, 132, 199}
+\definecolor{prismNavy}{RGB}{15, 44, 89}
+\definecolor{prismBlue}{RGB}{29, 78, 158}
+\definecolor{prismTeal}{RGB}{13, 148, 136}
+\definecolor{prismMint}{RGB}{236, 253, 245}
+\definecolor{prismGold}{RGB}{217, 119, 6}
+\definecolor{prismDark}{RGB}{15, 23, 42}
+\definecolor{prismLight}{RGB}{248, 250, 252}
+\definecolor{prismIndigo}{RGB}{30, 58, 138}
+\definecolor{prismSlate}{RGB}{100, 116, 139}
+\definecolor{statusFail}{RGB}{220, 38, 38}
+\definecolor{cInput}{RGB}{241, 245, 249}
+\definecolor{cStem}{RGB}{224, 242, 254}
+\definecolor{cStage1}{RGB}{209, 250, 229}
+\definecolor{cStage2}{RGB}{254, 243, 199}
+\definecolor{cStage3}{RGB}{254, 226, 226}
+\definecolor{cStage4}{RGB}{207, 250, 254}
+\definecolor{cHead}{RGB}{219, 234, 254}
+\definecolor{cOutput}{RGB}{255, 228, 230}
+\definecolor{cDeliverable}{RGB}{204, 251, 241}
+
+\begin{document}
+% Zero-Overlap System Architecture for Blockchain Voting DApp
+\begin{tikzpicture}[
+  x=1cm, y=1cm,
+  every node/.style={align=center},
+  group/.style={draw=lavenderMedium!70, dashed, line width=0.85pt,
+    fill=lavenderLight!30, rounded corners=8pt},
+  grouptitle/.style={fill=lavenderDark, text=white, font=\fontsize{7.5}{9.0}\selectfont\bfseries,
+    rounded corners=3pt, inner xsep=6pt, inner ysep=3.0pt},
+  colbox/.style={rectangle, rounded corners=4pt, line width=0.75pt,
+    minimum height=1.35cm, inner ysep=4pt, inner xsep=5pt,
+    font=\fontsize{6.8}{8.0}\selectfont\bfseries},
+  arrow/.style={
+    -{Stealth[scale=0.85]}, line width=0.85pt, draw=lavenderDark!90
+  },
+  darrow/.style={
+    {Stealth[scale=0.85]}-{Stealth[scale=0.85]}, line width=0.85pt, draw=lavenderDark!90
+  }
+]
+
+  %============================================================================
+  % COLUMN 1: PRESENTATION & CLIENT TIER
+  %============================================================================
+  \node[group, minimum width=3.80cm, minimum height=11.20cm] (g1) at (2.00, 5.60) {};
+  \node[grouptitle, anchor=west] at (0.15, 11.20) {1. Client Presentation Tier};
+
+  \node[colbox, text width=3.40cm, fill=cInput, draw=prismSlate!70] (g1_users) at (2.00, 9.80) {%
+    {\color{prismDark}\faUsers\ \textbf{Electoral Users}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Election Admin $\cdot$ Registered Voters\\[1pt]Desktop / Mobile Web Browsers}%
+  };
+
+  \node[colbox, text width=3.40cm, fill=cStem, draw=prismIndigo!70] (g1_portals) at (2.00, 7.30) {%
+    {\color{prismIndigo}\faDesktop\ \textbf{React.js Web DApp}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Admin Portal (\texttt{admin.html})\\[1pt]Voting Portal (\texttt{voting.html})}%
+  };
+
+  \node[colbox, text width=3.40cm, fill=cStage2!70, draw=prismGold!80] (g1_metamask) at (2.00, 4.80) {%
+    {\color{prismGold!90!black}\faKey\ \textbf{MetaMask Wallet}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Asymmetric secp256k1 Keypairs\\[1pt]Cryptographic Signature Generation}%
+  };
+
+  \node[colbox, text width=3.40cm, fill=cStage1, draw=prismTeal!70] (g1_results) at (2.00, 2.30) {%
+    {\color{prismTeal!90!black}\faChartBar\ \textbf{Real-Time Audit Display}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Dynamic Tally Visualization\\[1pt]Event Logs \& Candidate Ranks}%
+  };
+
+  \draw[arrow] (g1_users) -- (g1_portals);
+  \draw[arrow] (g1_portals) -- (g1_metamask);
+  \draw[arrow] (g1_portals) -- (g1_results);
+
+  %============================================================================
+  % COLUMN 2: MIDDLEWARE & WEB3 PROVIDER TIER
+  %============================================================================
+  \node[group, minimum width=3.80cm, minimum height=11.20cm] (g2) at (6.40, 5.60) {};
+  \node[grouptitle, anchor=west] at (4.55, 11.20) {2. Web3 Middleware Tier};
+
+  \node[colbox, text width=3.40cm, fill=cHead, draw=prismBlue!80] (g2_web3) at (6.40, 9.80) {%
+    {\color{prismNavy}\faCode\ \textbf{Web3.js Provider Bridge}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont JavaScript Ethereum Provider API\\[1pt]\texttt{window.ethereum} Handshake}%
+  };
+
+  \node[colbox, text width=3.40cm, fill=cStage4, draw=lavenderAccent!80] (g2_rpc) at (6.40, 7.30) {%
+    {\color{lavenderDark}\faNetworkWired\ \textbf{JSON-RPC Interface}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Remote Procedure Call Node Gateway\\[1pt]\texttt{eth\_sendRawTransaction}}%
+  };
+
+  \node[colbox, text width=3.40cm, fill=cStem!80, draw=prismIndigo!70] (g2_abi) at (6.40, 4.80) {%
+    {\color{prismIndigo}\faFileCode\ \textbf{Contract ABI \& Bytecode}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Application Binary Interface\\[1pt]Method Encoding \& Return Decoding}%
+  };
+
+  \node[colbox, text width=3.40cm, fill=cDeliverable, draw=prismTeal!80] (g2_events) at (6.40, 2.30) {%
+    {\color{prismTeal!90!black}\faBell\ \textbf{EVM Event Listener}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont WebSocket / Polling Event Filter\\[1pt]\texttt{VoteCast} $\cdot$ \texttt{VoterRegistered}}%
+  };
+
+  \draw[darrow] (g1_portals) -- (g2_web3);
+  \draw[arrow] (g1_metamask) -- (g2_rpc);
+  \draw[arrow] (g2_web3) -- (g2_rpc);
+  \draw[arrow] (g2_rpc) -- (g2_abi);
+  \draw[arrow] (g2_events) -- (g1_results);
+
+  %============================================================================
+  % COLUMN 3: SMART CONTRACT & LOGIC TIER
+  %============================================================================
+  \node[group, minimum width=3.80cm, minimum height=11.20cm] (g3) at (10.80, 5.60) {};
+  \node[grouptitle, anchor=west] at (8.95, 11.20) {3. Smart Contract Logic Tier};
+
+  \node[colbox, text width=3.40cm, fill=cStage1!70, draw=prismTeal!80] (g3_access) at (10.80, 9.80) {%
+    {\color{prismTeal!90!black}\faUserShield\ \textbf{Role-Based Access Control}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont \texttt{onlyAdmin} Modifier Enforcement\\[1pt]Owner-Only Whitelist Authority}%
+  };
+
+  \node[colbox, text width=3.40cm, fill=cStage4, draw=lavenderAccent!80] (g3_admin_fn) at (10.80, 7.30) {%
+    {\color{lavenderDark}\faUserPlus\ \textbf{Electoral Administration}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont \texttt{addCandidate(name)}\\[1pt]\texttt{registerVoter(address)}}%
+  };
+
+  \node[colbox, text width=3.40cm, fill=cStage3!80, draw=statusFail!80] (g3_double_vote) at (10.80, 4.80) {%
+    {\color{statusFail!90!black}\faBan\ \textbf{Double-Voting Mitigation}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont \texttt{require(registered \&\& !voted)}\\[1pt]Atomic Ballot Acceptance $\text{Accept}(v)$}%
+  };
+
+  \node[colbox, text width=3.40cm, fill=cHead, draw=prismBlue!80] (g3_tally) at (10.80, 2.30) {%
+    {\color{prismNavy}\faCalculator\ \textbf{State Tally Engine}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Candidate Vote Counter $N(c)$\\[1pt]\texttt{voted[v] = true} State Mutation}%
+  };
+
+  \draw[arrow] (g2_rpc) -- (g3_access);
+  \draw[arrow] (g2_abi) -- (g3_admin_fn);
+  \draw[arrow] (g2_abi) -- (g3_double_vote);
+  \draw[arrow] (g3_double_vote) -- (g3_tally);
+  \draw[arrow] (g3_tally) -- (g2_events);
+
+  %============================================================================
+  % COLUMN 4: BLOCKCHAIN & CONSENSUS TIER
+  %============================================================================
+  \node[group, minimum width=3.80cm, minimum height=11.20cm] (g4) at (15.20, 5.60) {};
+  \node[grouptitle, anchor=west] at (13.35, 11.20) {4. Blockchain Ledger Tier};
+
+  \node[colbox, text width=3.40cm, fill=cStage2!70, draw=prismGold!80] (g4_evm) at (15.20, 9.80) {%
+    {\color{prismGold!90!black}\faCogs\ \textbf{EVM Execution Engine}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Deterministic Bytecode Execution\\[1pt]Gas Calculation \& State Trie Update}%
+  };
+
+  \node[colbox, text width=3.40cm, fill=cStem, draw=prismIndigo!70] (g4_poa) at (15.20, 7.30) {%
+    {\color{prismIndigo}\faCheckDouble\ \textbf{Proof-of-Authority (PoA)}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Consortium Validator Nodes\\[1pt]High TPS $\cdot$ Zero-Gas Predictability}%
+  };
+
+  \node[colbox, text width=3.40cm, fill=cInput, draw=prismSlate!70] (g4_blocks) at (15.20, 4.80) {%
+    {\color{prismDark}\faCube\ \textbf{Cryptographic Blocks}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Block Header: $H(B_{i-1}), T_i, n_i$\\[1pt]Transactions: $Tx_i$ Sealed by SHA-256}%
+  };
+
+  \node[colbox, text width=3.40cm, fill=cDeliverable, draw=prismTeal!80] (g4_ledger) at (15.20, 2.30) {%
+    {\color{prismTeal!90!black}\faDatabase\ \textbf{Immutable Ledger}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Append-Only Distributed State\\[1pt]Publicly Verifiable \& Tamper-Proof}%
+  };
+
+  \draw[arrow] (g3_tally) -- (g4_evm);
+  \draw[arrow] (g4_evm) -- (g4_poa);
+  \draw[arrow] (g4_poa) -- (g4_blocks);
+  \draw[arrow] (g4_blocks) -- (g4_ledger);
+
+\end{tikzpicture}
+\end{document}

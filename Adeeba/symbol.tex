@@ -1,0 +1,67 @@
+%==================================symbol.tex================================
+% List of Symbols and Abbreviations
+\chapter*{List of Symbols and Abbreviations}
+\addcontentsline{toc}{chapter}{List of Symbols and Abbreviations}%
+\vspace{-25pt}
+
+\begin{spacing}{1.02}
+\noindent \textbf{Abbreviations}
+\vspace{4pt}
+
+\noindent\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}p{2.8cm} p{11.2cm}@{}}
+\textbf{DApp} & Decentralized Application \\
+\textbf{EVM} & Ethereum Virtual Machine \\
+\textbf{PoA} & Proof of Authority \\
+\textbf{PoS} & Proof of Stake \\
+\textbf{PoW} & Proof of Work \\
+\textbf{DPoS} & Delegated Proof of Stake \\
+\textbf{PBFT} & Practical Byzantine Fault Tolerance \\
+\textbf{ABI} & Application Binary Interface \\
+\textbf{RPC} & Remote Procedure Call \\
+\textbf{JSON-RPC} & JavaScript Object Notation Remote Procedure Call \\
+\textbf{IPFS} & InterPlanetary File System \\
+\textbf{SSI} & Self-Sovereign Identity \\
+\textbf{SHA-256} & Secure Hash Algorithm 256-bit \\
+\textbf{Keccak-256} & Cryptographic Hash Standard utilized in Ethereum EVM \\
+\textbf{P2P} & Peer-to-Peer Network \\
+\textbf{TPS} & Transactions Per Second \\
+\textbf{ECDSA} & Elliptic Curve Digital Signature Algorithm \\
+\textbf{RFID} & Radio Frequency Identification \\
+\textbf{CNN} & Convolutional Neural Network \\
+\textbf{SRS} & System Requirements Specification \\
+\textbf{DFD} & Data Flow Diagram \\
+\textbf{UI/UX} & User Interface / User Experience \\
+\end{tabular*}
+
+\vspace{6pt}
+\noindent \textbf{Mathematical Notations}
+\nopagebreak[4]
+\vspace{4pt}
+\nopagebreak[4]
+
+\noindent\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}p{2.8cm} p{11.2cm}@{}}
+$B_i$ & Sequential block entity positioned at height index $i$ in the chain \\
+$H(B_i)$ & Cryptographic block digest hash computed for block $B_i$ \\
+$T_i$ & Unix epoch timestamp corresponding to block creation time \\
+$Tx_i$ & Ordered set of validated transaction payloads encapsulated in block $B_i$ \\
+$n_i$ & Cryptographic nonce value resolving mining difficulty or consensus sealing \\
+$\parallel$ & Byte-level string concatenation operator \\
+$\mathcal{V}$ & Universal set of eligible voter Ethereum addresses ($\mathcal{V} \subset \mathbb{Z}_{2^{160}}$) \\
+$\mathcal{C}$ & Indexed set of certified election candidates ($\mathcal{C} = \{1, 2, \dots, K\}$) \\
+$v$ & Individual voter Ethereum wallet address ($v \in \mathcal{V}$) \\
+$c$ & Specific candidate identifier selected on the ballot ($c \in \mathcal{C}$) \\
+$\text{registered}(v)$ & Smart contract state mapping certifying voter registration status \\
+$\text{voted}(v)$ & Smart contract state mapping indicating prior ballot submission \\
+$\text{Accept}(v)$ & Atomic binary verification predicate governing ballot acceptance \\
+$N(c)$ & Cumulative tallied vote total recorded for candidate $c$ \\
+$\text{vote}(v)$ & Candidate identifier selected and submitted by voter $v$ \\
+$K_{\text{priv}}, K_{\text{pub}}$ & Asymmetric elliptic curve (secp256k1) private signing key and public key \\
+$\text{Sig}_{K_{\text{priv}}}(m)$ & Cryptographic digital signature over transaction payload $m$ \\
+$G_{\text{limit}}$ & Upper bound on computational gas allocated for contract execution \\
+$G_{\text{used}}$ & Exact volume of gas consumed by EVM opcode execution \\
+$G_{\text{price}}$ & Gas price valuation specified per unit of computation (Gwei) \\
+\end{tabular*}
+\end{spacing}
+
+\thispagestyle{plain}
+%=======================================================================

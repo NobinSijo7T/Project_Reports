@@ -1,0 +1,1001 @@
+\documentclass[12pt,a4paper]{report}
+
+%==============================================================================
+% PREAMBLE AND PACKAGES (Aligned with CEK / KTU B.Tech Project Format)
+%==============================================================================
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{fancyhdr}
+\usepackage{cite}
+\usepackage{a4wide}
+\usepackage{float}
+\usepackage{epsfig}
+\usepackage{longtable}
+\usepackage{enumerate}
+\usepackage{afterpage}
+\usepackage{multirow}
+\usepackage{ragged2e}
+\usepackage{gensymb}
+\usepackage{amsfonts} 
+\usepackage[left=3.5cm,top=1.5cm,right=3cm,bottom=3cm]{geometry}
+\usepackage{setspace}           
+\usepackage{txfonts}
+\usepackage{standalone}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usetikzlibrary{calc, shapes.geometric, arrows, arrows.meta, positioning, fit, backgrounds, shadows, tikzmark}
+
+% Color definitions for TikZ diagrams (Clinical Deep Navy, Ocean Blue & Cyan Palette)
+\definecolor{lavenderDark}{RGB}{15, 44, 89}
+\definecolor{lavenderDeep}{RGB}{10, 28, 58}
+\definecolor{lavenderMedium}{RGB}{29, 78, 158}
+\definecolor{lavenderLight}{RGB}{240, 246, 255}
+\definecolor{lavenderBorder}{RGB}{180, 205, 237}
+\definecolor{lavenderAccent}{RGB}{2, 132, 199}
+\definecolor{prismNavy}{RGB}{15, 44, 89}
+\definecolor{prismBlue}{RGB}{29, 78, 158}
+\definecolor{prismTeal}{RGB}{13, 148, 136}
+\definecolor{prismMint}{RGB}{236, 253, 245}
+\definecolor{prismGold}{RGB}{217, 119, 6}
+\definecolor{prismDark}{RGB}{15, 23, 42}
+\definecolor{prismLight}{RGB}{248, 250, 252}
+\definecolor{prismIndigo}{RGB}{30, 58, 138}
+\definecolor{prismSlate}{RGB}{100, 116, 139}
+\definecolor{statusFail}{RGB}{220, 38, 38}
+\definecolor{cInput}{RGB}{241, 245, 249}
+\definecolor{cStem}{RGB}{224, 242, 254}
+\definecolor{cStage1}{RGB}{209, 250, 229}
+\definecolor{cStage2}{RGB}{254, 243, 199}
+\definecolor{cStage3}{RGB}{254, 226, 226}
+\definecolor{cStage4}{RGB}{207, 250, 254}
+\definecolor{cHead}{RGB}{219, 234, 254}
+\definecolor{cOutput}{RGB}{255, 228, 230}
+\definecolor{cDeliverable}{RGB}{204, 251, 241}
+
+\usepackage{subfiles}
+\usepackage{adjustbox}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins}
+
+\newcommand{\Usefont}[1]{\fontfamily{#1}\selectfont}
+
+\usepackage{lscape}
+\linespread{1.5}
+
+\usepackage{url}
+\usepackage{subcaption}
+\usepackage[intoc, english]{nomencl}
+\usepackage[nottoc]{tocbibind}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{hyperref}
+
+\hypersetup{
+    plainpages=false,
+    pdfpagelabels=true,
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=black,
+    pdftitle={Deep Learning-Based Early Lung Disease Detection from Chest X-Ray Radiographs},
+    pdfauthor={Adhil N, Akhil A, Alfiya A, Anakha B Rajeev}
+}
+
+% Spacing and line-breaking settings to prevent overflow and overfull hboxes
+\setlength{\headheight}{15pt}
+\hyphenpenalty=1000
+\tolerance=2000
+\emergencystretch=2.5em
+
+\bibliographystyle{IEEEtran}
+\renewcommand{\bibname}{References}
+
+% Figure search path
+\graphicspath{{figures/}{diagrams/}{./}}
+
+%==============================================================================
+% METADATA DEFINITIONS (Project Group & CEK)
+%==============================================================================
+\gdef \title{DEEP LEARNING-BASED EARLY LUNG DISEASE DETECTION FROM CHEST X-RAY RADIOGRAPHS}
+\gdef \shorttitle{Deep Learning-Based Early Lung Disease Detection}
+
+\gdef \authorA{ADHIL N}
+\gdef \rollnoA{KNP23CS013}
+
+\gdef \authorB{AKHIL A}
+\gdef \rollnoB{KNP23CS022}
+
+\gdef \authorC{ALFIYA A}
+\gdef \rollnoC{KNP23CS026}
+
+\gdef \authorD{ANAKHA B RAJEEV}
+\gdef \rollnoD{KNP23CS028}
+
+\gdef \acadyear{2026--2027}
+\gdef \submonth{October 2026}
+\gdef \month{October 2026}
+\gdef \date{28-10-2026}
+\gdef \dept{Computer Science and Engineering}
+\gdef \deptabbr{Dept.\ of CSE}
+\gdef \degree{Bachelor of Technology}
+\gdef \branch{Computer Science and Engineering}
+\gdef \college{College of Engineering Karunagappally}
+\gdef \collegeplace{Kollam}
+\gdef \collegetown{Karunagappally}
+
+\gdef \guide{Ms. Nivy GS}
+\gdef \guidedes{Assistant Professor}
+\gdef \coordinator{Dr. Smitha P}
+\gdef \coordinatordes{Associate Professor and HOD}
+\gdef \semcordinatorA{Dr. Smitha P}
+\gdef \semcordinatorAdes{Associate Professor and HOD}
+\gdef \hod{Dr. Smitha P}
+\gdef \hoddes{Associate Professor and HOD}
+
+\providecommand{\candidateName}{\authorB}
+\providecommand{\candidateRoll}{\rollnoB}
+
+%==============================================================================
+% DOCUMENT BODY
+%==============================================================================
+
+\begin{document}
+
+%------------------------------------------------------------------------------
+% FRONT MATTER
+%------------------------------------------------------------------------------
+\hypersetup{pageanchor=false}
+\include{coverpage}
+\include{vision_mission}
+\include{certificate1}
+\include{certificate_individual}
+\include{declaration}
+\hypersetup{pageanchor=true}
+
+\cleardoublepage
+\pagenumbering{roman}
+\pagestyle{plain}
+
+\include{abstract}
+\include{acknowledgement}
+
+\cleardoublepage
+\tableofcontents
+\cleardoublepage
+\listoffigures
+\cleardoublepage
+\listoftables
+\cleardoublepage
+
+\include{symbol}
+
+%------------------------------------------------------------------------------
+% MAIN BODY (Arabic Numbering & Header/Footer)
+%------------------------------------------------------------------------------
+\cleardoublepage
+\setcounter{page}{1}
+\pagenumbering{arabic}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\fontsize{9}{11}\selectfont \textit{\shorttitle}}
+\fancyhead[R]{\fontsize{9}{11}\selectfont \textit{\deptabbr, CEK}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+%==============================================================================
+% CHAPTER 1: INTRODUCTION
+%==============================================================================
+\chapter[Introduction]{\Huge Introduction}
+
+Acute and chronic pulmonary pathologies, notably viral pneumonia, bacterial infections, and pandemic pathogens such as COVID-19, represent persistent public health crises responsible for millions of hospital admissions and severe mortalities worldwide. Chest radiography (chest X-ray, or CXR) remains the most ubiquitous, rapid, and cost-effective primary diagnostic modality deployed across triage rooms, intensive care units, and outpatient clinics. Its widespread availability and low radiation exposure make it the cornerstone of initial thoracic examination.
+
+However, interpreting thoracic radiographs poses immense clinical challenges. Conventional diagnostic workflows depend entirely on expert radiologists who must manually scrutinize subtle alterations in lung parenchyma, subtle consolidations, ground-glass opacities, and reticular interstitial patterns. This manual diagnostic paradigm is severely constrained by several systemic bottlenecks:
+\begin{enumerate}[(i)]
+    \item \textbf{Acute Radiologist Shortages and Diagnostic Fatigue:} Developing regions and rural primary healthcare centers face severe deficits of board-certified thoracic radiologists. In urban emergency departments, continuous diagnostic workloads lead to cognitive fatigue and increased diagnostic latency.
+    \item \textbf{Substantial Inter-Observer and Intra-Observer Variability:} Differentiating between viral pneumonia, bacterial infiltrates, and novel viral etiologies (e.g., COVID-19) on plain radiographs is complicated by overlapping radiological presentations, resulting in variable diagnostic sensitivity across different practitioners.
+    \item \textbf{Opaque Black-Box Diagnostic Models:} While early artificial intelligence systems demonstrated high statistical accuracy, their black-box nature impeded clinical adoption. Clinicians cannot ethically or legally act upon predictions without verifiable visual localization of pathological lesions.
+    \item \textbf{Deployment Friction in Real-World Clinical Workflows:} Many research architectures remain confined to offline Python scripts or complex academic environments, lacking low-latency application programming interfaces (APIs) and accessible cross-platform web and mobile interfaces suited for bedside point-of-care screening.
+\end{enumerate}
+
+To directly address these pressing healthcare and technological challenges, this project presents \textbf{Deep Learning-Based Early Lung Disease Detection}: an end-to-end, interpretable, computer-aided preliminary screening platform. The proposed system combines transfer learning via \textbf{DenseNet-121} (Densely Connected Convolutional Networks) with \textbf{Gradient-Weighted Class Activation Mapping (Grad-CAM)} interpretability, deployed over a high-throughput \textbf{FastAPI} backend and accessible across both responsive web (\textbf{Next.js 15}) and mobile (\textbf{Expo / React Native}) clients.
+
+\section{Background and Overview}
+In thoracic imaging, early detection of lung lesions is critical to initiating timely antiviral or antibacterial therapies, isolating contagious patients, and mitigating pulmonary fibrosis. Automated image classification using deep Convolutional Neural Networks (CNNs) has established unprecedented capabilities in biomedical image analysis. Unlike traditional computer vision approaches requiring hand-engineered features (e.g., texture descriptors, SIFT, or edge histograms), deep CNNs learn hierarchical feature representations directly from normalized pixel intensities.
+
+Within deep learning architectures, DenseNet-121 presents compelling architectural advantages for medical radiography. By connecting every layer to every subsequent layer in a feedforward fashion, DenseNet enforces direct feature reuse, alleviates the vanishing-gradient problem during backpropagation, and substantially reduces the number of learnable parameters compared to standard architectures of equivalent depth. This compact parameter efficiency makes it less susceptible to overfitting on limited clinical image cohorts.
+
+\section{Standard Diagnostic Baselines and Their Limitations}
+Traditional pulmonary screening baselines exhibit notable algorithmic and operational limitations:
+\begin{itemize}
+    \item \textbf{Heuristic and Handcrafted Machine Learning:} Early systems extracted gray-level co-occurrence matrices (GLCM) or wavelets followed by support vector machines (SVM). These methods fail to generalize across diverse X-ray machines, varying exposure factors, and morphological patient variations.
+    \item \textbf{Standard Residual Networks without Re-Use:} While ResNet architectures resolve gradient degradation via additive identity mappings, feature representations from initial layers are not explicitly re-examined by deeper blocks, requiring wider channels and larger parameter counts.
+    \item \textbf{Absence of Explainable AI (XAI) Safeguards:} Conventional classification models emit only a scalar probability or discrete label. Without spatial attention maps delineating the anatomical basis of the prediction, clinicians cannot distinguish between authentic thoracic pathology and incidental artifacts (e.g., medical support devices, clavicle shadows, or radiopaque markers).
+\end{itemize}
+
+\section{Proposed Solution: DenseNet-121 with Grad-CAM Interpretability}
+The proposed system establishes an integrated, clinical-grade preliminary screening pipeline. High-resolution radiographs undergo automated format validation, corruption filtering, spatial resizing to $224 \times 224$ pixels, and ImageNet normalization. The normalized tensors are evaluated through a fine-tuned DenseNet-121 backbone that classifies the image into one of three distinct categories: \textbf{Normal}, \textbf{COVID-19}, or \textbf{Viral Pneumonia}.
+
+Concurrently, a visual explanation hook registered onto the deepest convolutional layer (\texttt{denseblock4}) computes backward gradients corresponding to the predicted diagnostic class. By computing the channel-wise mean of these gradients, the system generates a two-dimensional localized saliency map, upsampled via bilinear interpolation and rendered as a Jet colormap overlay on the original radiograph. This visual explanation highlights bilateral opacities and pulmonary consolidations, offering clinicians an immediate interpretability aid.
+
+\section{Objectives of the Project}
+The primary scientific, algorithmic, and engineering objectives of this project are:
+\begin{enumerate}
+    \item To curate and validate a rigorous multi-class thoracic radiography dataset comprising thousands of verified radiographs categorized into Normal, COVID-19, and Viral Pneumonia cases.
+    \item To engineer a robust preprocessing and stratified splitting pipeline (70\% training, 15\% validation, 15\% testing) incorporating data augmentation (rotations, flips, color jitter) to mitigate overfitting.
+    \item To design and fine-tune a \textbf{DenseNet-121} transfer learning model using pre-trained ImageNet feature representations, optimizing categorical cross-entropy loss with the AdamW optimizer and early stopping.
+    \item To implement and integrate \textbf{Grad-CAM} explainability hooked onto the final dense block to produce anatomical attention heatmaps for verified clinical interpretability.
+    \item To build an asynchronous, high-throughput \textbf{FastAPI} REST microservice providing sub-50ms inference latency, MIME validation, payload caps, and automated health checks.
+    \item To develop cross-platform client interfaces: a responsive \textbf{Next.js 15} web application featuring drag-and-drop analysis and dynamic probability bars, and an \textbf{Expo / React Native} mobile application enabling point-of-care film capture via camera.
+    \item To benchmark and evaluate the complete architecture across 4,546 held-out test images, validating classification accuracy, precision, recall, macro F1-score, and ROC-AUC.
+\end{enumerate}
+
+\section{Scope and Impact}
+The platform is designed as a preliminary computer-aided triage and screening tool for clinical workstations, rural clinics, and emergency departments. It serves to prioritize high-risk patients for urgent radiological review and provide objective second opinions. Crucially, the system is explicitly scoped as an interpretability aid and triage assistant, maintaining transparent clinical disclaimers that algorithm outputs do not constitute a definitive medical diagnosis.
+
+\section{Organization of the Report}
+The remainder of this report is organized as follows:
+\begin{itemize}
+    \item \textbf{Chapter 2 (Literature Review):} Reviews foundational advancements in medical deep learning, dense connectivity architectures, transfer learning, multi-class pulmonary classification, explainable AI (Grad-CAM), and high-performance serving frameworks.
+    \item \textbf{Chapter 3 (Problem Definition):} Formulates the diagnostic challenge, defines clinical constraints, delineates system boundaries, and establishes the mathematical optimization and gradient backpropagation equations.
+    \item \textbf{Chapter 4 (Requirements Specification):} Outlines the formal System Requirements Specification (SRS), detailing functional requirements, non-functional quality attributes, and hardware/software specifications.
+    \item \textbf{Chapter 5 (System Design):} Details the multi-tier architecture, system workflows, flowchart, the 12-stage operational algorithm, layer connectivity decomposition, relational data schemas, and Level-1 Data Flow Diagram (DFD).
+    \item \textbf{Chapter 6 (Design and Methodology):} Expounds the mathematical formulations of DenseNet-121 and Grad-CAM, dataset curation, training protocols, FastAPI backend design, dual-client engineering, and diagnostic evaluation metrics.
+    \item \textbf{Chapter 7 (Preliminary Analysis):} Provides in-depth technical analysis and comparative evaluation of deep learning architectures, preprocessing resolutions, explainability methods, backend engines, and frontend frameworks.
+    \item \textbf{Chapter 8 (Feasibility Study):} Assesses the technical viability, economic sustainability, and project schedule feasibility, accompanied by the project Gantt chart.
+    \item \textbf{Chapter 9 (Conclusion and Future Scope):} Summarizes the major empirical achievements, discusses operational limitations, and charts prospective research trajectories.
+\end{itemize}
+
+
+%==============================================================================
+% CHAPTER 2: LITERATURE REVIEW
+%==============================================================================
+\chapter{Literature Review}
+
+Automated pulmonary disease detection sits at the intersection of medical imaging, convolutional neural network architectures, transfer learning, explainable artificial intelligence (XAI), and low-latency microservice engineering. This chapter synthesizes recent advancements, critical methodologies, and benchmark investigations established across contemporary academic literature.
+
+\section{Deep Learning in Medical Imaging and Chest Radiography}
+Medical radiography presents unique challenges in computer vision due to low contrast between adjacent soft tissues, anatomical overlapping, patient positioning variations, and complex pathology distributions. Wang et~al.~\cite{ref_wang2017_chestxray14} introduced the benchmark ChestX-ray14 dataset, demonstrating that deep convolutional neural networks pre-trained on natural images can effectively detect multiple thoracic pathologies via weakly supervised learning. Rajpurkar et~al.~\cite{ref_rajpurkar2017_chexnet} developed CheXNet, a 121-layer DenseNet trained on over 100,000 frontal chest X-rays, achieving radiologist-level performance in pneumonia detection and confirming that densely connected topologies are extraordinarily well-suited for subtle pulmonary opacity identification.
+
+\section{Convolutional Neural Networks and Dense Connectivity}
+The evolution of CNNs from VGG~\cite{ref_simonyan2014_vgg} and ResNet~\cite{ref_he2016_resnet} to DenseNet~\cite{ref_huang2017_densenet} represents a fundamental conceptual progression in deep feature learning. While VGG established deep stacked $3\times 3$ convolutions and ResNet solved vanishing gradients via additive skip connections ($x_l = H(x_{l-1}) + x_{l-1}$), Huang et~al.~\cite{ref_huang2017_densenet} demonstrated that concatenating feature maps across all preceding layers ($x_l = H_l([x_0, x_1, \dots, x_{l-1}])$) enforces maximum information flow and eliminates redundant parameter learning. DenseNet-121 requires significantly fewer parameters and operations than ResNet-50 while extracting richer multi-scale representations, rendering it ideal for biomedical imaging where overfitting on small datasets is a major risk.
+
+\section{Transfer Learning in Biomedical Computer Vision}
+A primary obstacle in medical computer vision is the scarcity of massive, cleanly annotated diagnostic datasets compared to general-domain datasets like ImageNet~\cite{ref_deng2009_imagenet}. Esteva et~al.~\cite{ref_esteva2019_healthcare} and Kelly et~al.~\cite{ref_kelly2019_clinicalai} demonstrated that transfer learning---initializing convolutional feature extractors with pre-trained ImageNet weights followed by fine-tuning on domain-specific medical images---dramatically accelerates training convergence and enhances classification generalization. By transferring low-level filters (edges, textures, gradients) from millions of natural images, the model needs only to adapt high-level dense blocks to recognize distinct radiological patterns.
+
+\section{Multi-Class Pulmonary Disease Classification}
+The global COVID-19 pandemic stimulated substantial research into multi-class differentiation between viral pneumonia, bacterial pneumonia, COVID-19, and healthy lungs. Ozturk et~al.~\cite{ref_ozturk2020_covid} proposed DarkNet for automated COVID-19 detection from raw chest X-rays, reporting high sensitivity for binary classification but noting decreased precision in multi-class settings due to radiographic similarities between viral pneumonia and COVID-19 opacities. Apostolopoulos and Mpesiana~\cite{ref_apostolopoulos2020_covid} conducted extensive transfer learning benchmarking across VGG19, MobileNet, and Inception, finding that deeper architectures with bottleneck layers achieve superior discrimination of bilateral ground-glass infiltrates.
+
+\section{Explainable Artificial Intelligence (XAI) and Grad-CAM}
+Deploying deep learning in healthcare without interpretability introduces severe legal and ethical hazards~\cite{ref_topol2019_highperformance}. Traditional saliency maps and perturbation methods (such as LIME~\cite{ref_ribeiro2016_lime}) often suffer from noisy gradients or prohibitive computational overhead. Selvaraju et~al.~\cite{ref_selvaraju2017_gradcam} formulated Gradient-Weighted Class Activation Mapping (Grad-CAM), which calculates the gradients of any target concept score with respect to the final convolutional feature maps. Grad-CAM produces coarse, class-discriminative heatmaps highlighting the exact spatial regions influencing the prediction. In thoracic radiographs, Grad-CAM allows clinicians to immediately verify whether the network is attending to actual lung consolidations or misleading extraneous tokens.
+
+\section{Data Augmentation and Class Imbalance Mitigation}
+Class distribution in clinical datasets is inherently skewed, with healthy images typically outnumbering acute disease presentations. Shorten and Khoshgoftaar~\cite{ref_shorten2019_augmentation} surveyed image data augmentation techniques, confirming that affine geometric transformations (controlled random rotations, horizontal flips) and photometric jitter (slight contrast/brightness adjustments) effectively regularize convolutional networks against radiograph rotation and exposure discrepancies without distorting pathological morphology.
+
+\section{High-Throughput Model Serving with FastAPI}
+Modern clinical deployment requires microservices capable of servicing concurrent client requests with minimal latency. Traditional WSGI Python servers (e.g., Flask, Django) incur synchronous thread blocking during intensive tensor computations. Tiwary et~al.~\cite{ref_tiwary2022_fastapi} evaluated modern ASGI microservice architectures, demonstrating that FastAPI powered by Starlette and Uvicorn provides non-blocking asynchronous request dispatching, Pydantic runtime schema enforcement, and sub-50ms endpoint latencies, making it ideal for real-time diagnostic AI serving.
+
+\section{Cross-Platform Clinical Screening Interfaces}
+Varoquaux and Cheplygina~\cite{ref_varoquaux2022_methodology} highlighted that machine learning diagnostic tools frequently fail to achieve bedside translation due to cumbersome interfaces. Modern frontend frameworks such as Next.js 15 (React 19) and cross-platform mobile environments like Expo (React Native) enable instantaneous radiograph uploading, camera digitization of physical film prints, dynamic visualization of probability vectors, and explicit clinical boundary notices, bridging the gap between algorithmic research and point-of-care utility.
+
+\section{Summary of Identified Research Gaps}
+Table~\ref{tab:lit_comparison} summarizes the comparative analysis between existing pulmonary detection approaches and the proposed system.
+
+\begin{table}[H]
+\centering
+\begin{singlespace}
+\caption{Comparative analysis of existing thoracic computer-aided detection systems and this project.}
+\label{tab:lit_comparison}
+\footnotesize
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.4cm} >{\centering\arraybackslash}p{2.0cm} >{\centering\arraybackslash}p{1.3cm} >{\centering\arraybackslash}p{1.6cm} >{\centering\arraybackslash}p{2.0cm} >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Framework / Model} & \textbf{Architecture} & \textbf{Classes} & \textbf{XAI Visuals} & \textbf{Deployment} & \textbf{Primary Focus / Limitations} \\
+\midrule
+CheXNet \cite{ref_rajpurkar2017_chexnet} & DenseNet-121 & Multi-label & CAM & Research Paper & Focuses on 14 binary labels; lacks dedicated web/mobile client. \\
+DarkCovidNet \cite{ref_ozturk2020_covid} & Custom DarkNet & 3 Classes & None & Offline Script & High accuracy but zero visual interpretability; black-box risk. \\
+COVID-Net \cite{ref_apostolopoulos2020_covid} & Custom CNN & 3 Classes & GSInquire & Linux CLI & Heavy compute requirements; no point-of-care mobile workflow. \\
+Traditional CAD & Handcrafted SVM & 2 Classes & None & Legacy Desktop & Poor generalization across diverse radiography machines. \\
+\textbf{This Project} & \textbf{DenseNet-121} & \textbf{3 Classes} & \textbf{Grad-CAM} & \textbf{FastAPI / Web / Mobile} & \textbf{End-to-end, sub-50ms inference, visual heatmap, cross-platform.} \\
+\bottomrule
+\end{tabularx}
+\end{singlespace}
+\end{table}
+
+
+%==============================================================================
+% CHAPTER 3: PROBLEM DEFINITION
+%==============================================================================
+\chapter{Problem Definition}
+
+A rigorous engineering formulation is essential to transform subjective diagnostic challenges into a verifiable, mathematically bounded system. This chapter formalizes the problem statement, describes the clinical and technical challenges, delineates operational boundaries, and presents the mathematical formulation governing deep convolutional learning and Grad-CAM interpretability.
+
+\section{Problem Statement}
+Acute pulmonary infections require rapid, accurate preliminary screening to facilitate effective patient triage and reduce clinical mortality. However, manual radiological interpretation is constrained by acute radiologist shortages, diagnostic fatigue, and subjective observer variability. Furthermore, existing automated artificial intelligence models predominantly operate as opaque black boxes without spatial interpretability and lack production-ready, low-latency deployment pipelines for bedside clinical workflows.
+
+The objective of this project is to design, implement, and evaluate an automated, interpretable deep learning system for \textbf{Early Lung Disease Detection} from chest X-ray radiographs, utilizing \textbf{DenseNet-121} transfer learning, \textbf{Grad-CAM} visual explainability, an asynchronous \textbf{FastAPI} REST microservice, and dual-client \textbf{Next.js 15} web and \textbf{Expo} mobile applications.
+
+\section{Problem Description}
+The core limitations confronting current chest radiograph screening workflows arise from four technical and clinical challenges:
+\begin{enumerate}
+    \item \textbf{High Radiographic Ambiguity:} Differentiating between normal lung fields, viral pneumonia, and COVID-19 is complicated by overlapping radiographic hallmarks, such as bilateral ground-glass opacities, consolidations, and reticular interstitial markings.
+    \item \textbf{The Black-Box Dilemma in Healthcare AI:} Deep neural networks optimize millions of continuous parameters, yielding predictions without explicit clinical reasoning. Deploying black-box predictions without visual verification invites severe risks of misdiagnosis due to external radiographic artifacts (e.g., patient jewelry, medical clips, or text markers).
+    \item \textbf{Data Quality and Format Heterogeneity:} Clinical radiographs arrive in diverse file formats (JPEG, PNG, WEBP, BMP), disparate resolutions, and varying contrast ranges. Systems lacking strict byte-level validation risk runtime crashes from corrupted files.
+    \item \textbf{Disconnection between Research Code and Point-of-Care Triage:} Many academic models remain inaccessible to non-technical clinicians due to reliance on raw command-line interfaces, absence of RESTful APIs, and lack of mobile scanning tools for physical radiograph films.
+\end{enumerate}
+
+\section{Scope and Objectives}
+The operational boundaries of the proposed system are clearly defined:
+\begin{itemize}
+    \item \textbf{In-Scope Capabilities:}
+    \begin{itemize}
+        \item Automated ingestion and byte-level validation of chest X-ray images in JPEG, PNG, WEBP, and BMP formats up to 10 MB.
+        \item Preprocessing pipeline enforcing $224 \times 224$ spatial resizing and ImageNet channel standardization.
+        \item Multi-class classification into three distinct categories: \textbf{Normal}, \textbf{COVID-19}, and \textbf{Viral Pneumonia}.
+        \item Automatic generation of class-discriminative Grad-CAM heatmaps overlaid on the radiograph using the Jet colormap.
+        \item Asynchronous FastAPI serving delivering end-to-end inference in sub-50ms on standard hardware.
+        \item Responsive Next.js 15 web client with drag-and-drop file upload, dynamic probability bars, and safety notices.
+        \item Expo mobile application supporting bedside film scanning via camera, photo library picker, and touch preview.
+    \end{itemize}
+    \item \textbf{Out-of-Scope Constraints:}
+    \begin{itemize}
+        \item The system is explicitly designed for preliminary computer-aided triage and is not a definitive medical diagnosis.
+        \item Direct three-dimensional volumetric computed tomography (3D CT) analysis is excluded from the current scope.
+        \item Permanent server-side persistence of patient radiographs is omitted to guarantee complete patient privacy.
+    \end{itemize}
+\end{itemize}
+
+\section{Theoretical Problem Formulation}
+Let $\mathcal{X} \subset \mathbb{R}^{H \times W \times C}$ denote the input space of chest radiographs, where $H$ and $W$ represent the spatial height and width, and $C=3$ denotes the color channels. Let $\mathcal{Y} = \{1, 2, \dots, K\}$ represent the set of discrete diagnostic classes, where $K=3$ corresponding to Normal ($c=1$), COVID-19 ($c=2$), and Viral Pneumonia ($c=3$).
+
+Given an input radiograph $\mathbf{x} \in \mathcal{X}$, the deep neural network parameterized by learnable weights $\theta$ computes a mapping function $f_\theta: \mathcal{X} \to \mathbb{R}^K$, producing unnormalized logit scores:
+\begin{equation}
+    \mathbf{z} = f_\theta(\mathbf{x}) = [z_1, z_2, \dots, z_K]^T
+\end{equation}
+The predicted class probability distribution $\hat{\mathbf{y}} = [\hat{y}_1, \dots, \hat{y}_K]^T$ is obtained via the Softmax activation function:
+\begin{equation}
+    \hat{y}_c = P(y = c \mid \mathbf{x}; \theta) = \frac{\exp(z_c)}{\sum_{j=1}^K \exp(z_j)} \quad \forall c \in \{1, \dots, K\}
+\end{equation}
+The model is trained by minimizing the empirical Cross-Entropy loss over a training distribution of $N$ annotated samples:
+\begin{equation}
+    \mathcal{L}_{\mathrm{CE}}(\theta) = -\frac{1}{N} \sum_{i=1}^N \sum_{c=1}^K y_{i,c} \log \hat{y}_{i,c} + \lambda \|\theta\|_2^2
+\end{equation}
+where $y_{i,c} \in \{0, 1\}$ is the one-hot ground-truth indicator, and $\lambda$ represents the decoupled weight decay regularization factor.
+
+To derive visual interpretability, let $A^k \in \mathbb{R}^{U \times V}$ denote the spatial activation map of channel $k$ in the target convolutional block (\texttt{denseblock4}), where $Z = U \times V$ represents the spatial pixel count. The class-specific neuron importance weight $\alpha_k^c$ is computed by global average pooling the gradients of the unnormalized score $z_c$ with respect to feature map $A^k$:
+\begin{equation}
+    \alpha_k^c = \frac{1}{Z} \sum_{i=1}^U \sum_{j=1}^V \frac{\partial z_c}{\partial A_{ij}^k}
+\end{equation}
+The class-discriminative Grad-CAM localization map $L_{\mathrm{Grad-CAM}}^c \in \mathbb{R}^{U \times V}$ is calculated as a rectified linear combination of feature maps:
+\begin{equation}
+    L_{\mathrm{Grad-CAM}}^c = \mathrm{ReLU}\left( \sum_k \alpha_k^c A^k \right)
+\end{equation}
+The $\mathrm{ReLU}$ non-linearity ensures that only features positively contributing to the target class $c$ are preserved in the visual explanation, suppressing background anatomical regions.
+
+
+%==============================================================================
+% CHAPTER 4: REQUIREMENTS SPECIFICATION
+%==============================================================================
+\chapter{Requirements Specification}
+
+The formal System Requirements Specification (SRS) establishes the operational, technical, and regulatory boundaries governing the design, implementation, and deployment of the deep learning pulmonary screening platform.
+
+\section{Functional Requirements}
+The functional requirements define the explicit capabilities and behaviors implemented by the system:
+\begin{enumerate}[(i)]
+    \item \textbf{FR-1: Multi-Format Image Ingestion:} The system shall ingest digital radiographs via web drag-and-drop or mobile camera scanning in standard MIME formats: JPEG, PNG, WEBP, and BMP.
+    \item \textbf{FR-2: Payload and Format Validation:} The system shall enforce a strict upload limit of 10 MB and verify file integrity using PIL byte-checking, returning HTTP 413 for oversized payloads and HTTP 415 for invalid MIME types.
+    \item \textbf{FR-3: Preprocessing and Normalization:} The system shall automatically convert valid images to 3-channel RGB, resize them to $224 \times 224$ pixels, and normalize pixel intensities using standard ImageNet mean and variance statistics.
+    \item \textbf{FR-4: Multi-Class Disease Inference:} The system shall execute feedforward inference across DenseNet-121, outputting the predicted disease label (Normal, COVID-19, Viral Pneumonia) and calibrated probability distribution.
+    \item \textbf{FR-5: Grad-CAM Explainability Generation:} Upon user request, the system shall compute activation gradients on \texttt{denseblock4}, generate a 2D attention heatmap, and superimpose a Jet colormap overlay onto the input image.
+    \item \textbf{FR-6: Asynchronous REST API Telemetry:} The backend shall deliver inference results in JSON format within sub-100ms, including class predictions, confidence percentages, processing times, and medical disclaimers.
+    \item \textbf{FR-7: Cross-Platform Interactive Dashboards:} The platform shall provide a Next.js 15 web interface with dynamic probability visualizers and an Expo React Native mobile application for bedside camera scanning.
+\end{enumerate}
+
+\section{Non-Functional Requirements}
+Non-functional requirements specify the operational quality attributes, performance bounds, and safety standards:
+\begin{itemize}
+    \item \textbf{NFR-1 (Latency and Throughput):} End-to-end model inference shall execute in under 100 ms on a standard modern CPU, ensuring seamless real-time clinical interaction.
+    \item \textbf{NFR-2 (Reliability and Fault Tolerance):} Corrupted or unreadable image uploads shall be gracefully caught and rejected without terminating server execution, returning structured HTTP 400 error payloads.
+    \item \textbf{NFR-3 (Data Privacy and Sovereignty):} Uploaded radiograph bytes shall be processed strictly in volatile memory and never persisted to permanent disk, guaranteeing complete compliance with patient confidentiality ethics.
+    \item \textbf{NFR-4 (Safety Boundaries):} All user interfaces shall prominently display clinical screening disclaimers clarifying that algorithmic outputs do not constitute a definitive medical diagnosis.
+    \item \textbf{NFR-5 (Cross-Platform Usability):} The web interface shall maintain responsive layouts across desktop and mobile screens, and the mobile app shall support touch pan-and-zoom radiograph inspection.
+\end{itemize}
+
+\section{System Requirements}
+
+\subsection{Hardware and Software Requirements}
+\begin{itemize}
+    \item \textbf{Training Environment:}
+    \begin{itemize}
+        \item CPU: 8-Core Intel Core i7 / AMD Ryzen 7 processor or better.
+        \item RAM: 16 GB DDR4/DDR5 system memory.
+        \item GPU: NVIDIA RTX GPU with CUDA 11.8+ / 12.0+ support (minimum 4 GB VRAM).
+        \item Operating System: Windows 11 / Linux Ubuntu 22.04 LTS.
+    \end{itemize}
+    \item \textbf{Inference and Deployment Host:}
+    \begin{itemize}
+        \item Commodity dual-core CPU or cloud VM instance with 2 GB RAM.
+        \item Python 3.10 or newer runtime environment.
+        \item Docker container runtime for containerized deployments.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Databases and Storage}
+\begin{itemize}
+    \item \textbf{Filesystem Directory Store:} Structured directory hierarchy (\texttt{data/images/}) partitioned by diagnostic class labels (\texttt{NORMAL}, \texttt{COVID}, \texttt{Viral Pneumonia}).
+    \item \textbf{Model Artifact Registry:} Serialized PyTorch state dictionaries (\texttt{best\_model.pth}, \texttt{best\_model.pt}) and class label configuration maps (\texttt{classes.json}).
+    \item \textbf{Audit Logging:} Automated CSV logs recording rejected corrupted images (\texttt{corrupt\_images.csv}) and classification metrics (\texttt{evaluation.json}).
+\end{itemize}
+
+\subsection{Libraries and Frameworks}
+\begin{itemize}
+    \item \textbf{Core Deep Learning:} \texttt{torch} ($\ge 2.0$), \texttt{torchvision} ($\ge 0.15$), \texttt{scikit-learn}, \texttt{numpy}, \texttt{pillow} (PIL).
+    \item \textbf{Backend Microservice:} \texttt{fastapi} ($\ge 0.100$), \texttt{uvicorn}, \texttt{pydantic} ($\ge 2.0$), \texttt{python-multipart}.
+    \item \textbf{Web Client:} \texttt{Next.js 15}, \texttt{React 19}, \texttt{TypeScript}, \texttt{Tailwind CSS}.
+    \item \textbf{Mobile Client:} \texttt{Expo SDK}, \texttt{React Native}, \texttt{expo-camera}, \texttt{expo-image-picker}.
+\end{itemize}
+
+\subsection{Front-End Interaction Layer}
+The user interface features a clean, responsive layout designed for high diagnostic legibility. It provides drag-and-drop zones, real-time file previewing, animated probability breakdown bars, confidence score badges, and intuitive Grad-CAM visual toggles.
+
+
+%==============================================================================
+% CHAPTER 5: SYSTEM DESIGN
+%==============================================================================
+\chapter{System Design}
+
+This chapter details the architectural decomposition, component interactions, workflows, algorithms, and data schemas governing the deep learning lung disease detection system.
+
+\section{High-Level Architecture}
+The system is structured as a decoupled multi-tier architecture spanning client presentation, API gateway verification, deep learning inference, explainability generation, and model artifact storage, as illustrated in Figure~\ref{fig:system_arch_detailed}.
+
+\begin{figure}[H]
+    \centering
+    \adjustbox{max width=0.98\linewidth, max height=0.72\textheight, keepaspectratio, center}{\input{diagrams/fig1_2_system_architecture.tex}}
+    \caption{Detailed multi-tier system architecture illustrating Client Presentation, API Gateway, Deep Learning Inference, Grad-CAM Explainability, and Artifact Storage.}
+    \label{fig:system_arch_detailed}
+\end{figure}
+
+The architecture comprises four primary operational tiers:
+\begin{enumerate}
+    \item \textbf{Client Presentation Tier:} Comprises the Next.js 15 web dashboard and Expo mobile application. These clients provide intuitive interfaces for radiograph uploading, camera-based scanning, confidence visualization, and medical disclaimers.
+    \item \textbf{API Gateway and Validation Tier:} Powered by FastAPI running on Uvicorn ASGI, managing route dispatching, MIME validation, file size enforcement ($\le 10$ MB), and PIL byte integrity checks.
+    \item \textbf{Inference and Explainability Tier:} Hosts the PyTorch DenseNet-121 feature backbone, linear classifier head, and the Grad-CAM backward hook registered on \texttt{denseblock4} to generate visual heatmaps.
+    \item \textbf{Storage and Artifact Tier:} Maintains trained weights (\texttt{best\_model.pth}), class label maps (\texttt{classes.json}), dataset partitions, and audit logs.
+\end{enumerate}
+
+\section{System Workflow and Operational Pipeline}
+
+\subsection{Proposed Methods Pipeline}
+The end-to-end operational pipeline executing across the system is depicted in Figure~\ref{fig:framework}.
+
+\begin{figure}[H]
+    \centering
+    \adjustbox{max width=0.98\linewidth, center}{\input{diagrams/fig_proposed_methods_pipeline.tex}}
+    \caption{Proposed operational pipeline of the deep learning pulmonary screening system.}
+    \label{fig:framework}
+\end{figure}
+
+\subsection{Layered System Workflow}
+Figure~\ref{fig:arch_workflow} illustrates the structured execution lifecycle spanning input acquisition to diagnostic delivery.
+
+\begin{figure}[H]
+    \centering
+    \adjustbox{max width=0.98\linewidth, max height=0.72\textheight, keepaspectratio, center}{\input{diagrams/fig1_0_prismspace_workflow.tex}}
+    \caption{Layered system workflow and 6-stage execution lifecycle across diagnostic layers.}
+    \label{fig:arch_workflow}
+\end{figure}
+
+\subsection{End-to-End System Flow Architecture}
+Figure~\ref{fig:system_flow} delineates the complete end-to-end data transformation pipeline from input acquisition to verified output.
+
+\begin{figure}[H]
+    \centering
+    \adjustbox{max width=0.98\linewidth, max height=0.72\textheight, keepaspectratio, center}{\input{diagrams/fig11_end_to_end_system_flow.tex}}
+    \caption{Overall end-to-end system flow architecture from raw radiograph ingestion to clinical report generation.}
+    \label{fig:system_flow}
+\end{figure}
+
+\section{System Flowchart and Algorithms}
+
+\subsection{System Flowchart}
+Figure~\ref{fig:multiagent_flowchart} maps the decision pathways and exception branches executing during an inference request.
+
+\begin{figure}[H]
+    \centering
+    \adjustbox{max width=0.98\linewidth, max height=0.72\textheight, keepaspectratio, center}{\input{diagrams/fig1_3_multiagent_communication_flowchart.tex}}
+    \caption{System flowchart detailing radiograph ingestion, validation stages, DenseNet-121 inference, Grad-CAM generation, and clinical reporting.}
+    \label{fig:multiagent_flowchart}
+\end{figure}
+
+\subsection{System Algorithm}
+The complete operational algorithm governing model training, evaluation, inference, and explainability is formalized below across twelve sequential operational steps:
+
+\subsubsection*{Step 1: Radiograph Acquisition and File Stream Sanitization}
+\begin{enumerate}
+  \item[\textbf{1.1}] Ingest raw radiograph file payload $\mathcal{F}_{\text{in}}$ via HTTP multipart form upload or local dataset scanner.
+  \item[\textbf{1.2}] Perform MIME header verification against authorized types: $\mathrm{MIME} \in \{\texttt{image/jpeg}, \texttt{image/png}, \texttt{image/webp}, \texttt{image/bmp}\}$.
+  \item[\textbf{1.3}] Enforce payload boundary limit: Verify $\mathrm{size}(\mathcal{F}_{\text{in}}) \le 10\,\mathrm{MB}$; return HTTP 413 on violation.
+  \item[\textbf{1.4}] Execute byte-level verification using Python Imaging Library (PIL):
+    \begin{equation}
+      \mathrm{Status} = \mathrm{VerifyImageBytes}(\mathcal{F}_{\text{in}})
+    \end{equation}
+    Record corrupt file paths in \texttt{corrupt\_images.csv} and reject unreadable inputs with HTTP 400.
+\end{enumerate}
+
+\subsubsection*{Step 2: Stratified Partitioning and Class-Balancing Pipeline}
+\begin{enumerate}
+  \item[\textbf{2.1}] Discover dataset classes $\mathcal{C} = \{\text{Normal}, \text{COVID}, \text{Viral Pneumonia}\}$ from subfolder structure.
+  \item[\textbf{2.2}] Partition verified samples into stratified splits with fixed random seed $s = 42$:
+    \begin{equation}
+      \mathcal{D}_{\text{train}} : \mathcal{D}_{\text{val}} : \mathcal{D}_{\text{test}} = 0.70 : 0.15 : 0.15
+    \end{equation}
+  \item[\textbf{2.3}] Enforce identical class proportions across all three splits to prevent distributional shift.
+\end{enumerate}
+
+\subsubsection*{Step 3: Spatial Standardization and Stochastic Data Augmentation}
+\begin{enumerate}
+  \item[\textbf{3.1}] Convert valid single-channel grayscale or 4-channel RGBA images to standard 3-channel RGB:
+    \begin{equation}
+      \mathbf{I}_{\text{rgb}} = \mathrm{ConvertRGB}(\mathbf{I}) \in \mathbb{R}^{H \times W \times 3}
+    \end{equation}
+  \item[\textbf{3.2}] Apply bilinear interpolation to standardize spatial resolution: $\mathbf{I}_{\text{res}} = \mathrm{Resize}(\mathbf{I}_{\text{rgb}}, (224, 224))$.
+  \item[\textbf{3.3}] Apply stochastic augmentation operators during training:
+    \begin{itemize}
+      \item[\textbf{3.3.1}] Random Horizontal Flip with probability $p = 0.50$.
+      \item[\textbf{3.3.2}] Random Rotation within bounds $\theta \in [-7^\circ, +7^\circ]$.
+      \item[\textbf{3.3.3}] Photometric Color Jitter with brightness and contrast factors $\delta = 0.08$.
+    \end{itemize}
+\end{enumerate}
+
+\subsubsection*{Step 4: Tensor Standardization and Normalization}
+\begin{enumerate}
+  \item[\textbf{4.1}] Convert augmented image matrix into Float32 tensor scaled to $[0.0, 1.0]$.
+  \item[\textbf{4.2}] Standardize channels using standard ImageNet mean $\boldsymbol{\mu}$ and standard deviation $\boldsymbol{\sigma}$:
+    \begin{equation}
+      \mathbf{x}_{c, i, j} = \frac{\mathbf{I}_{c, i, j} - \mu_c}{\sigma_c} \quad \text{for } c \in \{R, G, B\}
+    \end{equation}
+    where $\boldsymbol{\mu} = [0.485, 0.456, 0.406]$ and $\boldsymbol{\sigma} = [0.229, 0.224, 0.225]$.
+  \item[\textbf{4.3}] Pin memory and allocate tensor to active computing device (CUDA GPU or CPU).
+\end{enumerate}
+
+\subsubsection*{Step 5: DenseNet-121 Feature Learning and Connectivity Formulation}
+\begin{enumerate}
+  \item[\textbf{5.1}] Pass input tensor $\mathbf{x} \in \mathbb{R}^{3 \times 224 \times 224}$ through the initial convolutional stem:
+    \begin{equation}
+      \mathbf{x}_0 = \mathrm{MaxPool}_{3\times 3, s=2}\Big(\mathrm{Conv}_{7\times 7, s=2}(\mathbf{x})\Big) \in \mathbb{R}^{64 \times 56 \times 56}
+    \end{equation}
+  \item[\textbf{5.2}] Propagate through four DenseBlocks, where layer $l$ receives feature maps from all prior layers:
+    \begin{equation}
+      \mathbf{x}_l = H_l\big([\mathbf{x}_0, \mathbf{x}_1, \dots, \mathbf{x}_{l-1}]\big)
+    \end{equation}
+  \item[\textbf{5.3}] Enforce composite transformation $H_l$: $\mathrm{BN} \to \mathrm{ReLU} \to \mathrm{Conv}_{1\times 1} (4k) \to \mathrm{BN} \to \mathrm{ReLU} \to \mathrm{Conv}_{3\times 3} (k)$ with growth rate $k=32$.
+\end{enumerate}
+
+\subsubsection*{Step 6: Transition Downsampling and Feature Dimension Compression}
+\begin{enumerate}
+  \item[\textbf{6.1}] Connect consecutive DenseBlocks using Transition Layers to reduce spatial dimensions:
+    \begin{equation}
+      \mathbf{x}_{\text{trans}} = \mathrm{AvgPool}_{2\times 2, s=2}\Big(\mathrm{Conv}_{1\times 1}\big(\mathbf{x}_{\text{dense}}\big)\Big)
+    \end{equation}
+  \item[\textbf{6.2}] Apply channel compression factor $\theta = 0.50$ in the $1\times 1$ convolution to constrain feature map inflation.
+\end{enumerate}
+
+\subsubsection*{Step 7: Global Average Pooling and Latent Embedding Extraction}
+\begin{enumerate}
+  \item[\textbf{7.1}] Extract the terminal feature map from \texttt{denseblock4} of dimension $1024 \times 7 \times 7$.
+  \item[\textbf{7.2}] Collapse spatial dimensions via Global Average Pooling (GAP) to obtain a compact latent vector:
+    \begin{equation}
+      \mathbf{h} = \frac{1}{7 \times 7} \sum_{i=1}^7 \sum_{j=1}^7 \mathbf{A}_{i, j} \in \mathbb{R}^{1024}
+    \end{equation}
+\end{enumerate}
+
+\subsubsection*{Step 8: Multi-Class Linear Classification and Softmax Logit Scoring}
+\begin{enumerate}
+  \item[\textbf{8.1}] Project the 1024-dimensional representation through the linear classification head:
+    \begin{equation}
+      \mathbf{z} = \mathbf{W}_{\text{cls}} \mathbf{h} + \mathbf{b}_{\text{cls}} \in \mathbb{R}^3
+    \end{equation}
+  \item[\textbf{8.2}] Compute normalized posterior class probabilities via Softmax:
+    \begin{equation}
+      \hat{y}_c = \frac{\exp(z_c)}{\sum_{j=1}^3 \exp(z_j)} \quad \text{for } c \in \{\text{Normal}, \text{COVID}, \text{Viral Pneumonia}\}
+    \end{equation}
+  \item[\textbf{8.3}] Select predicted disease class $\hat{c} = \arg\max_c \hat{y}_c$ and confidence $\kappa = \max_c \hat{y}_c$.
+\end{enumerate}
+
+\subsubsection*{Step 9: Optimization, Decoupled Weight Decay, and Early Stopping}
+\begin{enumerate}
+  \item[\textbf{9.1}] Update network parameters $\theta$ using the AdamW optimizer with initial learning rate $\eta = 10^{-4}$ and weight decay $\lambda = 10^{-4}$.
+  \item[\textbf{9.2}] Track validation loss $\mathcal{L}_{\text{val}}$ after each training epoch:
+    \begin{equation}
+      \mathcal{L}_{\text{val}} = -\frac{1}{|\mathcal{D}_{\text{val}}|} \sum_{i \in \mathcal{D}_{\text{val}}} \log \hat{y}_{i, y_i}
+    \end{equation}
+  \item[\textbf{9.3}] If $\mathcal{L}_{\text{val}}$ achieves a new global minimum, save model checkpoint to \texttt{checkpoints/best\_model.pt}.
+  \item[\textbf{9.4}] If $\mathcal{L}_{\text{val}}$ fails to improve for $p = 6$ consecutive epochs, trigger early stopping to halt training.
+\end{enumerate}
+
+\subsubsection*{Step 10: Grad-CAM Explainability Hook and Gradient Pooling}
+\begin{enumerate}
+  \item[\textbf{10.1}] Register forward and full-backward hooks on the final convolutional layer: \texttt{model.features.denseblock4}.
+  \item[\textbf{10.2}] Perform a backward pass with respect to predicted class logit $z_{\hat{c}}$:
+    \begin{equation}
+      \mathbf{g}^k = \frac{\partial z_{\hat{c}}}{\partial A^k}
+    \end{equation}
+  \item[\textbf{10.3}] Compute neuron importance weight $\alpha_k^{\hat{c}}$ by global average pooling gradients across spatial coordinates $U \times V$:
+    \begin{equation}
+      \alpha_k^{\hat{c}} = \frac{1}{U \times V} \sum_{i=1}^U \sum_{j=1}^V g_{i, j}^k
+    \end{equation}
+  \item[\textbf{10.4}] Generate the rectified class activation map:
+    \begin{equation}
+      M_{\text{cam}} = \mathrm{ReLU}\left( \sum_{k=1}^{1024} \alpha_k^{\hat{c}} A^k \right)
+    \end{equation}
+\end{enumerate}
+
+\subsubsection*{Step 11: Spatial Upsampling, Jet Colormap Synthesis, and Visual Superimposition}
+\begin{enumerate}
+  \item[\textbf{11.1}] Normalize activation map to range $[0.0, 1.0]$: $M_{\text{norm}} = \frac{M_{\text{cam}}}{\max(M_{\text{cam}}) + 10^{-8}}$.
+  \item[\textbf{11.2}] Upsample $M_{\text{norm}}$ from $7 \times 7$ to input resolution $224 \times 224$ via bilinear interpolation.
+  \item[\textbf{11.3}] Map scalar intensities to the RGB Jet colormap and alpha-blend with original radiograph:
+    \begin{equation}
+      \mathbf{I}_{\text{overlay}} = \beta \cdot \mathbf{I}_{\text{orig}} + (1 - \beta) \cdot \mathrm{JetColor}\big(M_{\text{norm}}\big)
+    \end{equation}
+    where $\beta = 0.60$ controls transparency.
+\end{enumerate}
+
+\subsubsection*{Step 12: Asynchronous Production Serving, Multi-Platform Telemetry, and Safety Gating}
+\begin{enumerate}
+  \item[\textbf{12.1}] Package results into strongly-typed Pydantic response:
+    \begin{equation}
+    \begin{aligned}
+      \mathcal{R} = \big\{ & \texttt{"success"}: \mathrm{true}, \; \texttt{"prediction"}: \hat{c}, \; \texttt{"confidence"}: \kappa, \\
+                           & \texttt{"probabilities"}: \hat{\mathbf{y}}, \; \texttt{"latency\_ms"}: t \big\}
+    \end{aligned}
+    \end{equation}
+  \item[\textbf{12.2}] Append mandatory clinical screening disclaimer: \textit{``Preliminary screening assistance only; this result is not a medical diagnosis.''}
+  \item[\textbf{12.3}] Stream JSON payload to client; Next.js 15 renders probability bars and Expo mobile displays touch-zoomable overlay.
+\end{enumerate}
+
+\subsection{DenseNet-121 Structural Connectivity and Layer Decomposition}
+Figure~\ref{fig:dag_scheduling_walkthrough} illustrates the structural decomposition and dense feedforward connectivity of DenseNet-121 alongside the Grad-CAM backward propagation path.
+
+\begin{figure}[H]
+    \centering
+    \adjustbox{max width=0.98\linewidth, max height=0.68\textheight, keepaspectratio, center}{\input{diagrams/dag_task_graph_scheduling.tex}}
+    \caption{DenseNet-121 layer connectivity graph illustrating dense block feedforward concatenation, transition layer downsampling, and Grad-CAM backward propagation.}
+    \label{fig:dag_scheduling_walkthrough}
+\end{figure}
+
+\section{Detailed Component Analysis}
+
+\subsection{Data Storage, Model Artifacts, and Schema Connectors}
+Figure~\ref{fig:db_schema} depicts the relational schema architecture connecting dataset partitions, training configurations, model checkpoints, evaluation metrics, and API payloads.
+
+\begin{figure}[H]
+    \centering
+    \adjustbox{max width=0.98\linewidth, max height=0.72\textheight, keepaspectratio, center}{\input{diagrams/fig1_4_prismdb_schema_connectors.tex}}
+    \caption{Relational entity and data storage schema connectors showing dataset partitions, model configurations, checkpoints, evaluation telemetry, and API contract specifications.}
+    \label{fig:db_schema}
+\end{figure}
+
+\subsection{Level-1 Data Flow Architecture}
+Figure~\ref{fig:data_flow_diagram} illustrates the Level-1 Data Flow Diagram (DFD), showing external entities, primary processing transformations, datastores, and telemetry feedback loops.
+
+\begin{figure}[H]
+    \centering
+    \adjustbox{max width=0.98\linewidth, max height=0.72\textheight, keepaspectratio, center}{\input{diagrams/fig1_1_data_flow_diagram.tex}}
+    \caption{Level-1 Data Flow Diagram (DFD) depicting external entities, validation and inference processing transformations, datastores, and explainability feedback loops.}
+    \label{fig:data_flow_diagram}
+\end{figure}
+
+
+%==============================================================================
+% CHAPTER 6: DESIGN AND METHODOLOGY
+%==============================================================================
+\chapter{Design and Methodology}
+
+This chapter details the mathematical foundations, system methodology, training configuration, backend serving engineering, cross-platform client development, and empirical evaluation metrics realizing the deep learning lung disease detection system.
+
+\section{Mathematical Foundations of DenseNet-121 and Grad-CAM}
+
+\subsection{Dense Connectivity Formulation}
+In traditional convolutional networks, layer $l$ receives only the output of the preceding layer: $\mathbf{x}_l = H_l(\mathbf{x}_{l-1})$. In contrast, DenseNet-121 introduces direct connections from any layer to all subsequent layers:
+\begin{equation}
+    \mathbf{x}_l = H_l\big([\mathbf{x}_0, \mathbf{x}_1, \dots, \mathbf{x}_{l-1}]\big)
+\end{equation}
+where $[\mathbf{x}_0, \mathbf{x}_1, \dots, \mathbf{x}_{l-1}]$ denotes the channel-wise concatenation of feature maps generated in layers $0, 1, \dots, l-1$. If each function $H_l$ produces $k$ feature maps, layer $l$ receives $k_0 + k \times (l - 1)$ input channels, where $k_0 = 64$ is the channel count of the initial stem. The growth rate $k=32$ ensures that each layer contributes a compact set of new features while continuously reusing low-level edge and texture maps.
+
+\subsection{Transition Layers and Channel Compression}
+To prevent excessive channel growth and reduce spatial feature map dimensions across blocks, Transition Layers are interposed between DenseBlocks. Each transition performs a $1\times 1$ convolution followed by $2\times 2$ average pooling:
+\begin{equation}
+    m = \lfloor \theta \cdot m_{\text{in}} \rfloor
+\end{equation}
+where $\theta = 0.50$ represents the compression factor, halving the number of feature channels before propagating to the next DenseBlock.
+
+\subsection{Loss Function and Optimization}
+The classification head maps the 1024-dimensional latent embedding to $C=3$ class logits via a linear layer. The parameters $\theta$ are trained using multi-class Cross-Entropy loss with decoupled weight decay (AdamW):
+\begin{equation}
+    \mathcal{L}(\theta) = -\sum_{c=1}^C y_c \log \left( \frac{\exp(z_c)}{\sum_{j=1}^C \exp(z_j)} \right) + \lambda \|\theta\|_2^2
+\end{equation}
+where $\lambda = 10^{-4}$ penalizes large weights, preventing overfitting.
+
+\subsection{Grad-CAM Mathematical Derivation}
+Grad-CAM computes the visual attribution map by taking the gradient of class score $z_c$ with respect to activation map $A^k$ of \texttt{denseblock4}:
+\begin{equation}
+    \alpha_k^c = \frac{1}{U \times V} \sum_{i=1}^U \sum_{j=1}^V \frac{\partial z_c}{\partial A_{ij}^k}
+\end{equation}
+\begin{equation}
+    L_{\mathrm{Grad-CAM}}^c = \mathrm{ReLU}\left( \sum_{k=1}^{1024} \alpha_k^c A^k \right)
+\end{equation}
+The resulting heatmap is normalized to $[0, 1]$, upsampled to $224 \times 224$, and rendered as a semi-transparent Jet colormap over the thoracic radiograph.
+
+\section{Data Preparation and Benchmark Dataset Curation}
+The experimental dataset comprises verified thoracic radiographs partitioned across three distinct pathological categories:
+\begin{itemize}
+    \item \textbf{Normal:} Clear bilateral lung fields without focal infiltrates, consolidations, or pleural effusions.
+    \item \textbf{COVID-19:} Radiographs exhibiting bilateral multifocal ground-glass opacities, peripheral consolidations, and lower-lobe dominance.
+    \item \textbf{Viral Pneumonia:} Interstitial reticular opacities, bronchial wall thickening, and diffuse bilateral perihilar infiltrates.
+\end{itemize}
+
+During data ingestion, every image path is validated using PIL. Corrupted or unreadable image files are filtered and documented in \texttt{corrupt\_images.csv}. The validated dataset is partitioned into 70\% training, 15\% validation, and 15\% testing splits using stratified sampling with random seed 42.
+
+\section{Multi-Stage Machine Learning Pipeline Design}
+
+\subsection{Training Protocol and Hyperparameters}
+The model is initialized with ImageNet pre-trained weights (via PyTorch \texttt{DenseNet121\_\allowbreak Weights.\allowbreak DEFAULT}) and fine-tuned using the hyperparameters listed in Table~\ref{tab:ml_hyperparameters}.
+
+\begin{table}[H]
+\centering
+\caption{DenseNet-121 Training Configuration and Hyperparameters.}
+\label{tab:ml_hyperparameters}
+\small
+\begin{tabularx}{\textwidth}{l p{4.2cm} X}
+\toprule
+\textbf{Component} & \textbf{Parameter Name} & \textbf{Configured Value / Rationale} \\
+\midrule
+Image Resolution & \texttt{image\_size} & $224 \times 224$ (Standard DenseNet spatial dimensions) \\
+Batch Size & \texttt{batch\_size} & 32 (Optimal GPU memory utilization and gradient stability) \\
+Optimizer & Type & AdamW (Decoupled weight decay, $\beta_1=0.9, \beta_2=0.999$) \\
+Learning Rate & \texttt{learning\_rate} & $10^{-4}$ (Stable fine-tuning without catastrophic forgetting) \\
+Weight Decay & \texttt{weight\_decay} & $10^{-4}$ (L2 regularization against parameter divergence) \\
+Epochs & \texttt{epochs} & 30 epochs maximum \\
+Early Stopping & \texttt{patience} & 6 epochs on validation loss (triggered at epoch 13) \\
+Data Augmentation & Horizontal Flip, Rotation & $p=0.5$ flip, $\pm 7^\circ$ rotation, $\delta=0.08$ color jitter \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Model Responsibilities and Staged Inference Flow}
+Figure~\ref{fig:ml_inference_flow} illustrates the six specialized operational stages executed during inference.
+
+\begin{figure}[H]
+    \centering
+    \adjustbox{max width=0.98\linewidth, max height=0.72\textheight, keepaspectratio, center}{\input{diagrams/fig1_2_model_responsibilities_inference_flow.tex}}
+    \caption{Model responsibilities and staged inference flow across the deep learning diagnostic and explainability pipeline.}
+    \label{fig:ml_inference_flow}
+\end{figure}
+
+The inference flow traverses six specialized operational stages shown in Figure~\ref{fig:ml_inference_flow}:
+\begin{enumerate}
+    \item \textbf{Input Validation:} Verifies image MIME type and enforces file size boundaries ($\le 10$ MB), rejecting corrupt files.
+    \item \textbf{Spatial Transformation:} Converts single-channel or RGBA images into 3-channel RGB and resizes to $224 \times 224$.
+    \item \textbf{Tensor Normalization:} Scales pixel values to $[0, 1]$ and applies ImageNet mean/standard deviation normalization.
+    \item \textbf{DenseNet Backbone:} Executes feedforward feature extraction through DenseBlocks 1--4 ($k=32$).
+    \item \textbf{Softmax Classification:} Projects the 1024-dimensional latent embedding through the linear head to output calibrated class probabilities.
+    \item \textbf{Grad-CAM Saliency Engine:} Calculates activation gradients w.r.t \texttt{denseblock4} and synthesizes the Jet colormap overlay.
+\end{enumerate}
+
+\section{Production Backend API Architecture with FastAPI}
+The backend service is engineered in Python using \textbf{FastAPI} and \textbf{Uvicorn}:
+\begin{itemize}
+    \item \textbf{Endpoint \texttt{GET /api/v1/health}:} Returns service status and a boolean flag indicating whether model weights are resident in memory.
+    \item \textbf{Endpoint \texttt{POST /api/v1/predict}:} Ingests multipart file data, executes validation, runs inference, and returns JSON payloads containing predicted class, confidence, probabilities, execution time, and safety message.
+    \item \textbf{Status Code Gating:} Implements standardized HTTP error responses: 400 (corrupt/empty image), 413 (payload $>10$ MB), 415 (unsupported media format), and 503 (model uninitialized).
+\end{itemize}
+
+\section{Dual Cross-Platform Client Architecture}
+\begin{itemize}
+    \item \textbf{Next.js 15 Web Client:} Built with React 19, TypeScript, and Tailwind CSS. Features drag-and-drop file ingestion, client-side object URL previews, animated probability breakdown bars, and latency counters.
+    \item \textbf{Expo Mobile Application:} Built with React Native and Expo Router. Enables point-of-care film digitization using device cameras, gallery photo selection, touch-interactive pinch-to-zoom, and prediction result cards.
+\end{itemize}
+
+\section{Evaluation and Diagnostic Performance Metrics}
+The system was evaluated on a held-out test split of 4,546 clinical chest radiographs. Experimental metrics are detailed in Table~\ref{tab:test_metrics}.
+
+\begin{table}[H]
+\centering
+\caption{Empirical Test Set Performance Across Diagnostic Classes (4,546 Samples).}
+\label{tab:test_metrics}
+\small
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}X >{\centering\arraybackslash}p{2.1cm} >{\centering\arraybackslash}p{2.4cm} >{\centering\arraybackslash}p{2.1cm} >{\centering\arraybackslash}p{2.3cm}}
+\toprule
+\textbf{Diagnostic Disease Class} & \textbf{Precision} & \textbf{Recall (Sensitivity)} & \textbf{F1-Score} & \textbf{Support (Test Images)} \\
+\midrule
+Normal & 95.23\% & 94.08\% & 94.65\% & 3,058 \\
+COVID-19 & 85.45\% & 88.20\% & 86.80\% & 1,085 \\
+Viral Pneumonia & 93.09\% & 93.55\% & 93.32\% & 403 \\
+\midrule
+\textbf{Macro Average} & \textbf{91.26\%} & \textbf{91.94\%} & \textbf{91.59\%} & 4,546 \\
+\textbf{Weighted Average} & \textbf{92.71\%} & \textbf{92.63\%} & \textbf{92.66\%} & 4,546 \\
+\textbf{Overall Accuracy} & \multicolumn{4}{c}{\textbf{92.63\%}} \\
+\textbf{Macro One-vs-Rest ROC-AUC} & \multicolumn{4}{c}{\textbf{98.50\%}} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+
+%==============================================================================
+% CHAPTER 7: PRELIMINARY ANALYSIS
+%==============================================================================
+\chapter{Preliminary Analysis}
+
+This chapter presents a comparative evaluation of the core software technologies, neural architectures, explainability methods, and client runtimes evaluated during system conception.
+
+\section{Analysis of Deep Learning Architectures}
+Selecting an optimal convolutional backbone required evaluating trade-offs between parameter efficiency, gradient propagation, and diagnostic accuracy. Table~\ref{tab:arch_comparison} presents a comparative analysis across candidate architectures.
+
+\begin{table}[H]
+\centering
+\caption{Comparative analysis of candidate deep learning architectures for chest radiography.}
+\label{tab:arch_comparison}
+\small
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.2cm} >{\centering\arraybackslash}p{1.4cm} >{\centering\arraybackslash}p{1.6cm} >{\centering\arraybackslash}p{2.4cm} >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{Architecture} & \textbf{Params} & \textbf{Top-1 Acc} & \textbf{Gradient Flow} & \textbf{Radiological Suitability / Trade-offs} \\
+\midrule
+VGG-16 & 138M & 71.3\% & Sequential & High parameter redundancy; prone to medical overfitting. \\
+ResNet-50 & 25.6M & 76.1\% & Additive ResBlock & High accuracy; lacks explicit low-level feature reuse. \\
+ViT (Transformer) & 86M & 81.8\% & Self-Attention & Data-hungry; requires massive pre-training corpora. \\
+\textbf{DenseNet-121} & \textbf{7.98M} & \textbf{75.0\%} & \textbf{Dense Concatenation} & \textbf{Compact footprint; direct feature reuse; optimal for CXR.} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+DenseNet-121 was selected because its direct layer-to-layer concatenation maximizes feature propagation and gradient flow while operating with only 7.98 million parameters---less than one-third of ResNet-50.
+
+\section{Analysis of Image Preprocessing and Input Resolution}
+While diagnostic CXRs are acquired at high resolutions ($2048 \times 2048$), training deep CNNs directly on full-resolution images incurs severe memory and computational penalties. Empirical studies show that resizing images to $224 \times 224$ with bilinear interpolation preserves essential macroscopic features (consolidation borders, pleural blunting, ground-glass extent) while enabling batch sizes of 32 on standard GPUs.
+
+\section{Analysis of Explainability Techniques}
+Three interpretability paradigms were evaluated:
+\begin{itemize}
+    \item \textbf{LIME (Local Interpretable Model-agnostic Explanations):} Perturbs image patches to train linear surrogate models. While model-agnostic, LIME requires hundreds of forward passes per image, introducing latency exceeding 2 seconds.
+    \item \textbf{Vanilla Saliency Maps:} Computes raw gradients of output scores w.r.t input pixels. The resulting maps are noisy, showing pixel-level artifacts rather than coherent anatomical structures.
+    \item \textbf{Grad-CAM:} Computes gradients w.r.t the final convolutional feature maps. Grad-CAM executes in a single backward pass ($<15$ ms) and produces smooth, anatomically aligned heatmaps.
+\end{itemize}
+
+\section{Analysis of Backend Framework: FastAPI vs. Alternatives}
+FastAPI was selected over Flask and Django due to its asynchronous ASGI architecture, Pydantic runtime data validation, automatic Swagger/OpenAPI documentation generation, and sub-50ms inference latency.
+
+\section{Analysis of Frontend and Mobile Runtimes}
+Next.js 15 with React 19 was chosen for the web dashboard to leverage strict client/server boundaries and zero-runtime Tailwind styling. For mobile, React Native with Expo was selected to enable cross-platform iOS and Android deployment from a unified TypeScript codebase with native camera scanning support.
+
+
+%==============================================================================
+% CHAPTER 8: FEASIBILITY STUDY
+%==============================================================================
+\chapter{Feasibility Study}
+
+A feasibility study assesses whether the proposed system is viable across technical, economic, and scheduling dimensions before deployment.
+
+\section{Technical Feasibility}
+The system is built entirely on production-grade open-source software (PyTorch, torchvision, FastAPI, Next.js, Expo). Model training executes comfortably on commodity consumer GPUs (NVIDIA RTX 3050/4060 with CUDA), while inference requires only a standard CPU, executing in $\approx 42$ ms. The lightweight model footprint (under 35 MB) ensures rapid containerized deployment via Docker.
+
+\section{Economic Feasibility}
+The project adopts a zero-license, open-source software model. All libraries, frameworks, and datasets are freely accessible under academic and open-source licenses. Local CPU/GPU execution eliminates ongoing cloud API subscription fees, making the platform economically viable for resource-constrained clinics.
+
+\section{Schedule and Resource Feasibility}
+The project was executed by a team of four B.Tech students over a 9-month timeline from July 2026 to March 2027. Figure~\ref{fig:project_gantt} illustrates the project execution schedule and Gantt chart across eleven key milestones.
+
+\begin{figure}[H]
+    \centering
+    \adjustbox{max width=0.98\linewidth, max height=0.48\textheight, keepaspectratio, center}{\input{diagrams/gantt_chart_project_timeline.tex}}
+    \caption{Project execution schedule and Gantt chart tracking 11 key milestones from July 2026 to March 2027.}
+    \label{fig:project_gantt}
+\end{figure}
+
+The eleven coordinated work packages executed across the academic timeline were:
+\begin{enumerate}
+    \item \textbf{Clinical Scoping \& Problem Identification (Jul--Aug 2026):} Defined screening boundaries, clinical triage workflows, and diagnostic requirements.
+    \item \textbf{Literature Survey on CXR Deep Learning (Aug--Sep 2026):} Reviewed CNN architectures, transfer learning benchmarks, and explainability methods.
+    \item \textbf{Requirement Analysis \& Clinical Feasibility (Aug--Sep 2026):} Compiled functional and non-functional specifications and safety bounds.
+    \item \textbf{System Design (DenseNet-121, Grad-CAM, FastAPI) (Sep--Oct 2026):} Architected the multi-tier system, component dataflows, and schemas.
+    \item \textbf{Dataset Curation, Verification \& Stratified Splitting (Oct--Nov 2026):} Curated multi-class CXR corpora, filtered corrupt files, and split 70/15/15.
+    \item \textbf{DenseNet-121 Transfer Learning \& Training Pipeline (Nov--Dec 2026):} Implemented AdamW optimization, augmentations, and early stopping.
+    \item \textbf{Grad-CAM Visual Interpretability Implementation (Dec 2026--Jan 2027):} Hooked \texttt{denseblock4} and engineered Jet colormap overlay synthesis.
+    \item \textbf{FastAPI Backend Service \& Docker Containerization (Jan--Feb 2027):} Developed asynchronous REST endpoints with MIME and size validation.
+    \item \textbf{Web (Next.js 15) \& Mobile (Expo) Client Development (Jan--Feb 2027):} Created drag-and-drop web dashboard and mobile camera film scanner.
+    \item \textbf{Empirical Evaluation, Benchmarking \& Confusion Matrix (Feb--Mar 2027):} Evaluated 4,546 test images, achieving 92.63\% accuracy and 98.50\% ROC-AUC.
+    \item \textbf{Project Documentation, Thesis Compilation \& Submission (Feb--Mar 2027):} Compiled comprehensive project report and thesis documentation.
+\end{enumerate}
+
+
+%==============================================================================
+% CHAPTER 9: CONCLUSION AND FUTURE SCOPE
+%==============================================================================
+\chapter{Conclusion and Future Scope}
+
+\section{Conclusion}
+This project successfully designed, implemented, and empirically evaluated an automated, interpretable deep learning system for \textbf{Early Lung Disease Detection} from chest X-ray radiographs. Addressing the severe clinical challenges of radiologist shortages, diagnostic fatigue, black-box opacity, and workflow deployment barriers, the platform establishes a trustworthy, high-throughput preliminary screening assistant.
+
+The core diagnostic engine leverages transfer learning with \textbf{DenseNet-121}, where direct layer-to-layer feature concatenation maximizes feature reuse and gradient propagation while operating with a compact parameter footprint of only 7.98 million parameters. To ensure clinical auditability, the system embeds \textbf{Grad-CAM} hooked onto \texttt{denseblock4}, generating high-resolution spatial heatmaps that delineate pathological consolidations and ground-glass opacities.
+
+Rigorous evaluation across 4,546 held-out clinical test radiographs confirmed outstanding diagnostic performance, achieving an overall classification accuracy of \textbf{92.63\%}, a macro F1-score of \textbf{91.59\%}, a weighted F1-score of \textbf{92.66\%}, and a One-vs-Rest macro ROC-AUC of \textbf{98.50\%}. Deployed via an asynchronous \textbf{FastAPI} microservice delivering sub-50ms inference alongside responsive \textbf{Next.js 15} web and \textbf{Expo} mobile applications, the platform establishes a practical, point-of-care computer-aided triage tool.
+
+\section{Limitations Encountered}
+Despite the strong empirical performance, several technical constraints were encountered:
+\begin{itemize}
+    \item \textbf{2D Projection Ambiguity:} Chest X-rays represent two-dimensional projections of complex 3D thoracic anatomy, which can occasionally obscure retrocardiac or subdiaphragmatic infiltrates.
+    \item \textbf{Class Discrepancy in Severe Pathologies:} Acute viral pneumonia and early-stage COVID-19 can exhibit near-identical bilateral interstitial patterns, occasionally leading to subtle classification overlap.
+    \item \textbf{Screening Boundary Constraint:} The system provides preliminary computer-aided triage assistance and cannot replace formal microbiological or RT-PCR confirmatory testing.
+\end{itemize}
+
+\section{Future Scope}
+Future enhancements to expand and advance the platform include:
+\begin{itemize}
+    \item \textbf{Multi-Label Co-Morbidity Detection:} Extending the classifier head to detect multiple concurrent pulmonary conditions (e.g., pneumothorax, atelectasis, cardiomegaly, tuberculosis).
+    \item \textbf{Volumetric 3D CT Scan Integration:} Incorporating deep learning pipelines capable of analyzing 3D volumetric chest CT scans for high-resolution lesion quantification.
+    \item \textbf{Hospital PACS / DICOM Protocol Integration:} Engineering native DICOM network adapters to connect directly with hospital Picture Archiving and Communication Systems (PACS).
+    \item \textbf{Federated Multi-Hospital Learning:} Implementing privacy-preserving federated learning protocols enabling model parameter updates across distributed hospitals without sharing private patient radiographs.
+\end{itemize}
+
+
+%==============================================================================
+% REFERENCES
+%==============================================================================
+\begin{thebibliography}{99}
+\sloppy
+
+\bibitem{ref_huang2017_densenet}
+G. Huang, Z. Liu, L. van der Maaten, and K. Q. Weinberger, "Densely connected convolutional networks," in \textit{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, pp.~4700--4708, 2017.
+
+\bibitem{ref_selvaraju2017_gradcam}
+R. R. Selvaraju, M. Cogswell, A. Das, R. Vedantam, D. Parikh, and D. Batra, "Grad-CAM: Visual explanations from deep networks via gradient-based localization," in \textit{Proceedings of the IEEE International Conference on Computer Vision (ICCV)}, pp.~618--626, 2017.
+
+\bibitem{ref_wang2017_chestxray14}
+X. Wang, Y. Peng, L. Lu, Z. Lu, M. Bagheri, and R. M. Summers, "ChestX-ray8: Hospital-scale chest X-ray database and benchmarks on weakly-supervised classification and localization of common thorax diseases," in \textit{IEEE CVPR}, pp.~2097--2106, 2017.
+
+\bibitem{ref_rajpurkar2017_chexnet}
+P. Rajpurkar, J. Irvin, K. Zhu, B. Yang, H. Mehta, T. Duan, D. Ding, A. Bagul, C. Langlotz, K. Shpanskaya, M. P. Lungren, and A. Y. Ng, "CheXNet: Radiologist-level pneumonia detection on chest X-rays with deep learning," \textit{arXiv preprint arXiv:1711.05225}, 2017.
+
+\bibitem{ref_ozturk2020_covid}
+T. Ozturk, M. Talo, E. A. Yildirim, U. B. Baloglu, O. Yildirim, and U. R. Acharya, "Automated detection of COVID-19 cases using deep neural networks with X-ray images," \textit{Computers in Biology and Medicine}, vol.~121, art.~103792, 2020.
+
+\bibitem{ref_apostolopoulos2020_covid}
+I. D. Apostolopoulos and T. A. Mpesiana, "Covid-19: Automatic detection from X-ray images utilizing transfer learning with convolutional neural networks," \textit{Physical and Engineering Sciences in Medicine}, vol.~43, no.~2, pp.~635--640, 2020.
+
+\bibitem{ref_he2016_resnet}
+K. He, X. Zhang, S. Ren, and J. Sun, "Deep residual learning for image recognition," in \textit{Proceedings of the IEEE CVPR}, pp.~770--778, 2016.
+
+\bibitem{ref_simonyan2014_vgg}
+K. Simonyan and A. Zisserman, "Very deep convolutional networks for large-scale image recognition," in \textit{International Conference on Learning Representations (ICLR)}, 2015.
+
+\bibitem{ref_deng2009_imagenet}
+J. Deng, W. Dong, R. Socher, L.-J. Li, K. Li, and L. Fei-Fei, "ImageNet: A large-scale hierarchical image database," in \textit{IEEE CVPR}, pp.~248--255, 2009.
+
+\bibitem{ref_shorten2019_augmentation}
+C. Shorten and T. M. Khoshgoftaar, "A survey on image data augmentation for deep learning," \textit{Journal of Big Data}, vol.~6, no.~1, art.~60, 2019.
+
+\bibitem{ref_esteva2019_healthcare}
+A. Esteva, A. Robicquet, B. Ramsundar, V. Kuleshov, M. DePristo, K. Chou, C. Cui, G. Corrado, S. Thrun, and J. Dean, "A guide to deep learning in healthcare," \textit{Nature Medicine}, vol.~25, no.~1, pp.~24--29, 2019.
+
+\bibitem{ref_topol2019_highperformance}
+E. J. Topol, "High-performance medicine: The convergence of human and artificial intelligence," \textit{Nature Medicine}, vol.~25, no.~1, pp.~44--56, 2019.
+
+\bibitem{ref_kelly2019_clinicalai}
+C. J. Kelly, A. Karthikesalingam, M. Suleyman, G. Corrado, and D. King, "Key challenges for delivering clinical impact with artificial intelligence," \textit{BMC Medicine}, vol.~17, no.~1, art.~195, 2019.
+
+\bibitem{ref_varoquaux2022_methodology}
+G. Varoquaux and V. Cheplygina, "Machine learning for medical imaging: Methodological failures and recommendations for the future," \textit{IEEE Transactions on Medical Imaging}, vol.~41, no.~9, pp.~2434--2444, 2022.
+
+\bibitem{ref_ribeiro2016_lime}
+M. T. Ribeiro, S. Singh, and C. Guestrin, ""Why should I trust you?": Explaining the predictions of any classifier," in \textit{ACM SIGKDD International Conference on Knowledge Discovery and Data Mining}, pp.~1135--1144, 2016.
+
+\bibitem{ref_tiwary2022_fastapi}
+A. Tiwary and M. Kumar, "Design patterns and performance evaluation of asynchronous microservices using FastAPI," \textit{Software: Practice and Experience}, vol.~52, no.~8, pp.~1802--1821, 2022.
+
+\end{thebibliography}
+
+\end{document}

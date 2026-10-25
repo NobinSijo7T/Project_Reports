@@ -1,0 +1,73 @@
+%==================================symbol.tex================================
+% List of Symbols and Abbreviations
+\chapter*{List of Symbols and Abbreviations}
+\addcontentsline{toc}{chapter}{List of Symbols and Abbreviations}%
+\vspace{-25pt}
+
+\begin{spacing}{1.02}
+\noindent \textbf{Abbreviations}
+\vspace{4pt}
+
+\noindent\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}p{2.8cm} p{11.2cm}@{}}
+\textbf{CNN} & Convolutional Neural Network \\
+\textbf{DenseNet} & Densely Connected Convolutional Networks \\
+\textbf{Grad-CAM} & Gradient-Weighted Class Activation Mapping \\
+\textbf{CXR} & Chest X-Ray (Radiograph) \\
+\textbf{COVID-19} & Coronavirus Disease 2019 \\
+\textbf{XAI} & Explainable Artificial Intelligence \\
+\textbf{GAP} & Global Average Pooling \\
+\textbf{BN} & Batch Normalization \\
+\textbf{ReLU} & Rectified Linear Unit \\
+\textbf{ROC} & Receiver Operating Characteristic \\
+\textbf{AUC} & Area Under the Curve \\
+\textbf{AUPRC} & Area Under the Precision-Recall Curve \\
+\textbf{F1} & Harmonic Mean of Precision and Recall \\
+\textbf{API} & Application Programming Interface \\
+\textbf{REST} & Representational State Transfer \\
+\textbf{ASGI} & Asynchronous Server Gateway Interface \\
+\textbf{HTTP} & Hypertext Transfer Protocol \\
+\textbf{CORS} & Cross-Origin Resource Sharing \\
+\textbf{JSON} & JavaScript Object Notation \\
+\textbf{PIL} & Python Imaging Library \\
+\textbf{DICOM} & Digital Imaging and Communications in Medicine \\
+\textbf{PACS} & Picture Archiving and Communication System \\
+\textbf{AdamW} & Adaptive Moment Estimation with Decoupled Weight Decay \\
+\textbf{SGD} & Stochastic Gradient Descent \\
+\textbf{SRS} & System Requirements Specification \\
+\textbf{DFD} & Data Flow Diagram \\
+\textbf{UI/UX} & User Interface / User Experience \\
+\end{tabular*}
+
+\vspace{6pt}
+\noindent \textbf{Mathematical Notations}
+\nopagebreak[4]
+\vspace{4pt}
+\nopagebreak[4]
+
+\noindent\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}p{2.8cm} p{11.2cm}@{}}
+$\mathbf{x} \in \mathbb{R}^{H \times W \times C}$ & Input chest radiograph image tensor (height $H$, width $W$, channels $C$) \\
+$\mathbf{x}_l$ & Output feature map tensor of layer $l$ \\
+$H_l(\cdot)$ & Composite non-linear transformation function at layer $l$ (BN-ReLU-Conv) \\
+$[\mathbf{x}_0, \mathbf{x}_1, \dots, \mathbf{x}_{l-1}]$ & Channel-wise concatenation of feature maps from all preceding layers $0 \dots l-1$ \\
+$k$ & Growth rate of DenseNet (number of output feature maps per layer, $k=32$) \\
+$\theta$ & Complete vector of learnable network parameters (weights and biases) \\
+$C$ & Total number of target diagnostic disease classes ($C=3$) \\
+$y_c \in \{0, 1\}$ & Ground-truth one-hot indicator for disease class $c$ \\
+$\hat{y}_c$ & Softmax predicted probability score for disease class $c$ \\
+$z_c$ & Raw unnormalized output logit for disease class $c$ \\
+$\mathcal{L}_{\text{CE}}$ & Multi-class Cross-Entropy loss function \\
+$\lambda$ & L2 regularization penalty / weight decay coefficient ($\lambda = 10^{-4}$) \\
+$\eta$ & Learning rate parameter ($\eta = 10^{-4}$) \\
+$A^k$ & Spatial activation map of channel $k$ in target convolutional layer \\
+$A_{ij}^k$ & Activation value at spatial coordinate $(i, j)$ in channel $k$ \\
+$\alpha_k^c$ & Neuron importance weight of feature map $k$ for disease class $c$ \\
+$L_{\text{Grad-CAM}}^c$ & Heatmap intensity value of class-discriminative localization map \\
+$Z$ & Total number of pixels in activation feature map ($Z = U \times V$) \\
+$\text{Precision}_c$ & Proportion of correctly predicted positive exemplars for class $c$ \\
+$\text{Recall}_c$ & Sensitivity / True positive rate for disease class $c$ \\
+$\text{F1}_c$ & Harmonic balanced diagnostic metric for class $c$ \\
+\end{tabular*}
+\end{spacing}
+
+\thispagestyle{plain}
+%=======================================================================

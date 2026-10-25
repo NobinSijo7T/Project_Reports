@@ -1,0 +1,70 @@
+%==================================symbol.tex================================
+% List of Symbols and Abbreviations
+\chapter*{List of Symbols and Abbreviations}
+\addcontentsline{toc}{chapter}{List of Symbols and Abbreviations}%
+\vspace{-25pt}
+
+\begin{spacing}{1.02}
+\noindent \textbf{Abbreviations}
+\vspace{4pt}
+
+\noindent\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}p{2.8cm} p{11.2cm}@{}}
+\textbf{RAG} & Retrieval-Augmented Generation \\
+\textbf{LLM} & Large Language Model \\
+\textbf{NLP} & Natural Language Processing \\
+\textbf{ANN} & Approximate Nearest Neighbor \\
+\textbf{HNSW} & Hierarchical Navigable Small World \\
+\textbf{BERT} & Bidirectional Encoder Representations from Transformers \\
+\textbf{SBERT} & Sentence-BERT (Sentence Transformers) \\
+\textbf{BNS} & Bharatiya Nyaya Sanhita, 2023 \\
+\textbf{BNSS} & Bharatiya Nagarik Suraksha Sanhita, 2023 \\
+\textbf{BSA} & Bharatiya Sakshya Adhiniyam, 2023 \\
+\textbf{RTI} & Right to Information Act, 2005 \\
+\textbf{CPA} & Consumer Protection Act, 2019 \\
+\textbf{ICA} & Indian Contract Act, 1872 \\
+\textbf{API} & Application Programming Interface \\
+\textbf{REST} & Representational State Transfer \\
+\textbf{ASGI} & Asynchronous Server Gateway Interface \\
+\textbf{HTTP} & Hypertext Transfer Protocol \\
+\textbf{CORS} & Cross-Origin Resource Sharing \\
+\textbf{JSON} & JavaScript Object Notation \\
+\textbf{PDF} & Portable Document Format \\
+\textbf{SRS} & System Requirements Specification \\
+\textbf{DFD} & Data Flow Diagram \\
+\textbf{UI/UX} & User Interface / User Experience \\
+\textbf{HMR} & Hot Module Replacement \\
+\textbf{SPA} & Single-Page Application \\
+\end{tabular*}
+
+\vspace{6pt}
+\noindent \textbf{Mathematical Notations}
+\nopagebreak[4]
+\vspace{4pt}
+\nopagebreak[4]
+
+\noindent\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}p{2.8cm} p{11.2cm}@{}}
+$\mathcal{C}$ & Complete legal statutory document corpus ($\mathcal{C} = \{d_1, d_2, \dots, d_N\}$) \\
+$d_i$ & Individual legal statutory document in the corpus \\
+$c_{i, j}$ & The $j$-th overlapping text chunk generated from document $d_i$ \\
+$\mathcal{T}$ & Arbitrary-length input text token domain \\
+$\phi(\cdot)$ & Sentence transformer embedding mapping function ($\phi: \mathcal{T} \to \mathbb{R}^{384}$) \\
+$\mathbf{e}(t)$ & L2-normalized 384-dimensional dense semantic embedding vector \\
+$q$ & User input legal query string in natural language \\
+$q_{\text{en}}$ & English-translated query string for multilingual processing \\
+$q_{\text{ml}}$ & Original input query string in Malayalam \\
+$\text{sim}(q, c)$ & Cosine similarity retrieval score between query $q$ and chunk $c$ \\
+$k$ & Number of top semantically similar passages retrieved ($k \in [1, 10]$) \\
+$R(q, k)$ & Retrieval operator selecting top-$k$ relevant statutory text chunks \\
+$G(\cdot)$ & Large language model generation function conditioned on retrieved evidence \\
+$\delta(q)$ & Language detection indicator for Malayalam Unicode range (U+0D00--U+0D7F) \\
+$T(\cdot)$ & Bidirectional language translation mapping function \\
+$s$ & Chunk stride parameter in word tokens ($s = 750$ words) \\
+$o$ & Overlap window parameter in word tokens ($o = 150$ words) \\
+$c_{\text{size}}$ & Fixed maximum chunk size in word tokens ($c_{\text{size}} = 900$ words) \\
+$\text{Precision}@k$ & Proportion of retrieved passages in top-$k$ relevant to query ground-truth \\
+$\text{MRR}$ & Mean Reciprocal Rank of the first relevant retrieved statutory passage \\
+\end{tabular*}
+\end{spacing}
+
+\thispagestyle{plain}
+%=======================================================================

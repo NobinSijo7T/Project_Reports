@@ -1,0 +1,121 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usepackage{amsmath,amssymb}
+\usepackage{tabularx}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shadows,shapes.geometric,tikzmark}
+
+% Color definitions
+\definecolor{lavenderDark}{RGB}{15, 44, 89}
+\definecolor{lavenderDeep}{RGB}{10, 28, 58}
+\definecolor{lavenderMedium}{RGB}{29, 78, 158}
+\definecolor{lavenderLight}{RGB}{240, 246, 255}
+\definecolor{lavenderBorder}{RGB}{180, 205, 237}
+\definecolor{lavenderAccent}{RGB}{2, 132, 199}
+\definecolor{bannerGreen}{RGB}{76, 51, 122}
+\definecolor{prismNavy}{RGB}{15, 44, 89}
+\definecolor{prismBlue}{RGB}{29, 78, 158}
+\definecolor{prismTeal}{RGB}{13, 148, 136}
+\definecolor{prismMint}{RGB}{236, 253, 245}
+\definecolor{prismGold}{RGB}{217, 119, 6}
+\definecolor{prismDark}{RGB}{15, 23, 42}
+\definecolor{prismLight}{RGB}{248, 250, 252}
+\definecolor{prismIndigo}{RGB}{30, 58, 138}
+\definecolor{prismSlate}{RGB}{100, 116, 139}
+\definecolor{statusFail}{RGB}{220, 38, 38}
+\definecolor{cardBg}{RGB}{255,255,255}
+\definecolor{cInput}{RGB}{241, 245, 249}
+\definecolor{cStem}{RGB}{224, 242, 254}
+\definecolor{cStage1}{RGB}{209, 250, 229}
+\definecolor{cStage2}{RGB}{254, 243, 199}
+\definecolor{cStage3}{RGB}{254, 226, 226}
+\definecolor{cStage4}{RGB}{207, 250, 254}
+\definecolor{cHead}{RGB}{219, 234, 254}
+\definecolor{cOutput}{RGB}{255, 228, 230}
+\definecolor{cTask}{RGB}{231,233,236}
+\definecolor{cPlanner}{RGB}{219, 234, 254}
+\definecolor{cDispatch}{RGB}{169,220,235}
+\definecolor{cReact}{RGB}{209, 250, 229}
+\definecolor{cTool}{RGB}{254, 243, 199}
+\definecolor{cSafety}{RGB}{254, 226, 226}
+\definecolor{cMemory}{RGB}{214,185,230}
+\definecolor{cDeliverable}{RGB}{204, 251, 241}
+
+\begin{document}
+% DAG Task Graph Scheduling - Enlarged, Full-Width Layout for Report
+\begin{tikzpicture}[
+  dagstep/.style={rectangle, rounded corners=3.5pt, minimum height=1.12cm,
+    text width=3.35cm, align=center, draw=lavenderDark!75, fill=lavenderLight!75,
+    line width=0.85pt, font=\fontsize{8.5}{10.2}\selectfont\bfseries,
+    drop shadow={shadow xshift=0.8pt, shadow yshift=-0.8pt, opacity=0.10}},
+  dagarrow/.style={-{Stealth[scale=0.85]}, line width=1.15pt, draw=prismTeal!95!black}
+]
+  % Row 1: 4-Step Pipeline Across Top
+  \node[dagstep] (s1) at (-5.55, 0) {1. User Goal Prompt\\[2pt]\normalfont\fontsize{7.5}{8.8}\selectfont ``Analyze news+CSV, email summary''};
+  \node[dagstep] (s2) at (-1.85, 0) {2. Split into Vertices $V$\\[2pt]\normalfont\fontsize{7.5}{8.8}\selectfont Modular async tasks $A, B, C, D$};
+  \node[dagstep] (s3) at (1.85, 0) {3. Connect Edges $E$\\[2pt]\normalfont\fontsize{7.5}{8.8}\selectfont Map output return $\to$ input args};
+  \node[dagstep] (s4) at (5.55, 0) {4. Topological Run\\[2pt]\normalfont\fontsize{7.5}{8.8}\selectfont Run in-degree $=0 \implies$ join barrier};
+  \draw[dagarrow] (s1) -- (s2);
+  \draw[dagarrow] (s2) -- (s3);
+  \draw[dagarrow] (s3) -- (s4);
+
+  % Row 2: Visual Data-Flow Graph
+  \node[rectangle, rounded corners=4pt, draw=prismTeal!80, fill=white,
+        line width=0.85pt, text width=14.6cm, inner sep=9pt, align=center, anchor=north,
+        drop shadow={shadow xshift=1pt, shadow yshift=-1pt, opacity=0.12}] (visualbox) at (0, -0.90) {%
+    \fontsize{9.2}{11.2}\selectfont\textbf{\color{prismTeal!90!black}\faProjectDiagram\ Visual Data-Flow Graph \& Execution Order}\\[5pt]
+    \begin{tikzpicture}[
+      cnode/.style={rectangle, rounded corners=3.5pt, draw=prismTeal!90!black, fill=prismMint,
+        line width=0.8pt, minimum height=0.74cm, inner sep=3.5pt, align=center,
+        font=\fontsize{8.0}{9.4}\selectfont},
+      earr/.style={-{Stealth[scale=0.80]}, line width=1.05pt, draw=prismTeal!90!black}
+    ]
+      % Nodes
+      \node[cnode, text width=2.85cm] (na) at (-4.5, 0.62) {\textbf{Node A}: \texttt{SearchWeb}\\[1pt]\fontsize{7.0}{8.2}\selectfont\color{prismDark}in-degree $=0$ (Parallel)};
+      \node[cnode, text width=2.85cm] (nb) at (-4.5, -0.62) {\textbf{Node B}: \texttt{FetchCSV}\\[1pt]\fontsize{7.0}{8.2}\selectfont\color{prismDark}in-degree $=0$ (Parallel)};
+
+      \node[cnode, text width=3.05cm] (nc) at (0.0, 0.0) {\textbf{Node C}: \texttt{Synthesize}\\[1pt]\fontsize{7.0}{8.2}\selectfont\color{prismDark}Join Barrier: awaits $A$ \& $B$};
+
+      \node[cnode, text width=2.75cm] (nd) at (4.5, 0.0) {\textbf{Node D}: \texttt{SendEmail}\\[1pt]\fontsize{7.0}{8.2}\selectfont\color{prismDark}Final Deliverable};
+
+      % Edges with data flow labels
+      \draw[earr] (na.east) -- node[above, sloped, font=\fontsize{7.4}{8.5}\selectfont\bfseries, text=lavenderDark, fill=white, inner sep=1.4pt] {\texttt{news}} (nc.west);
+      \draw[earr] (nb.east) -- node[below, sloped, font=\fontsize{7.4}{8.5}\selectfont\bfseries, text=lavenderDark, fill=white, inner sep=1.4pt] {\texttt{data}} (nc.west);
+      \draw[earr] (nc.east) -- node[above, font=\fontsize{7.4}{8.5}\selectfont\bfseries, text=lavenderDark, fill=white, inner sep=1.4pt] {\texttt{rep}} (nd.west);
+    \end{tikzpicture}\\[7pt]
+    \fontsize{7.8}{9.6}\selectfont
+    \begin{minipage}{14.0cm}
+    \begin{tabularx}{\linewidth}{@{}X X@{}}
+    \textbf{Parallel Thread 1:} Worker 1 executes Node A $\to$ \texttt{news} &
+    \textbf{Join Barrier:} Node C consumes \texttt{news} + \texttt{data} $\to$ \texttt{rep} \\
+    \textbf{Parallel Thread 2:} Worker 2 executes Node B $\to$ \texttt{data} &
+    \textbf{Serial Finish:} Node D consumes \texttt{rep} $\to$ sends email
+    \end{tabularx}
+    \end{minipage}
+    \vspace{2pt}
+  };
+
+  % Row 3: Computer Science Concept Walkthrough (dynamically placed below visualbox)
+  \node[rectangle, rounded corners=4pt, draw=lavenderMedium!75, fill=lavenderLight!45,
+        line width=0.85pt, text width=14.6cm, inner sep=9pt, align=left, below=0.35cm of visualbox,
+        drop shadow={shadow xshift=1pt, shadow yshift=-1pt, opacity=0.10}] (csbox) {%
+    \fontsize{9.2}{11.2}\selectfont\textbf{\color{lavenderDark}\faCode\ Computer Science Explanation (By Concrete Example):}\\[4pt]
+    \fontsize{8.0}{10.0}\selectfont
+    $\bullet$\enspace\textbf{Vertices ($V$) = Sub-Task Functions (Async Call Units):}\\
+    \enspace\enspace Node $A$: \texttt{news = await SearchWeb("Tesla news")} \hfill \textit{[Researcher Persona]}\\
+    \enspace\enspace Node $B$: \texttt{data = await FetchCSV("metrics.csv")} \hfill \textit{[Data Agent Persona]}\\
+    \enspace\enspace Node $C$: \texttt{rep = await Synthesize(news, data)} \hfill \textit{[Writer Agent Persona]}\\
+    \enspace\enspace Node $D$: \texttt{await SendEmail(to="lead", body=rep)} \hfill \textit{[Email Tool Execution]}\\[3pt]
+    $\bullet$\enspace\textbf{Edges ($E$) = Data Pipes \& Synchronization Barriers:}\\
+    \enspace\enspace Edge $\langle A, C\rangle$ pipes return value \texttt{news}; edge $\langle B, C\rangle$ pipes return value \texttt{data}.\\
+    \enspace\enspace Barrier: Task $C$ asynchronously blocks until both promises from $A$ and $B$ resolve.\\[3pt]
+    $\bullet$\enspace\textbf{Connection Basis (Input $\leftarrow$ Output Matching):}\\
+    \enspace\enspace Function $C$ links to $A$ and $B$ because $C$'s parameters require their output variables.\\
+    \enspace\enspace $A$ and $B$ share no edge because neither depends on the other's intermediate state.\\[3pt]
+    $\bullet$\enspace\textbf{Execution Schedule (Topological Concurrency):}\\
+    \enspace\enspace Tasks with $\text{in-degree} = 0$ ($A$ and $B$) execute \textbf{concurrently in parallel worker threads}.\\
+    \enspace\enspace When $A$ and $B$ complete, $C$'s in-degree drops to $0 \implies C$ runs $\implies D$ runs.%
+  };
+
+\end{tikzpicture}
+\end{document}

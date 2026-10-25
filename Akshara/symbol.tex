@@ -1,0 +1,66 @@
+%==================================symbol.tex================================
+% List of Symbols and Abbreviations
+\chapter*{List of Symbols and Abbreviations}
+\addcontentsline{toc}{chapter}{List of Symbols and Abbreviations}%
+\vspace{-25pt}
+
+\begin{spacing}{1.02}
+\noindent \textbf{Abbreviations}
+\vspace{4pt}
+
+\noindent\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}p{2.8cm} p{11.2cm}@{}}
+\textbf{CNN} & Convolutional Neural Network \\
+\textbf{YOLO} & You Only Look Once (Object Detection Architecture) \\
+\textbf{GIS} & Geographic Information System \\
+\textbf{PIP} & Point in Polygon (Spatial Analysis) \\
+\textbf{GeoJSON} & Geographic JavaScript Object Notation \\
+\textbf{ULB} & Urban Local Body \\
+\textbf{LSGD} & Local Self Government Department \\
+\textbf{PWD} & Public Works Department \\
+\textbf{KMC} & Kollam Municipal Corporation \\
+\textbf{KWA} & Kerala Water Authority \\
+\textbf{KSEB} & Kerala State Electricity Board \\
+\textbf{API} & Application Programming Interface \\
+\textbf{REST} & Representational State Transfer \\
+\textbf{JWT} & JSON Web Token \\
+\textbf{PBKDF2} & Password-Based Key Derivation Function 2 \\
+\textbf{SQL} & Structured Query Language \\
+\textbf{ACID} & Atomicity, Consistency, Isolation, Durability \\
+\textbf{SLA} & Service Level Agreement \\
+\textbf{UI/UX} & User Interface / User Experience \\
+\textbf{SPA} & Single Page Application \\
+\textbf{OSM} & OpenStreetMap \\
+\textbf{MIME} & Multipurpose Internet Mail Extensions \\
+\textbf{UUID} & Universally Unique Identifier \\
+\textbf{SHA-256} & Secure Hash Algorithm 256-bit \\
+\textbf{SRS} & System Requirements Specification \\
+\textbf{DFD} & Data Flow Diagram \\
+\textbf{CORS} & Cross-Origin Resource Sharing \\
+\textbf{RBAC} & Role-Based Access Control \\
+\end{tabular*}
+
+\vspace{6pt}
+\noindent \textbf{Mathematical and Computational Notations}
+\nopagebreak[4]
+\vspace{4pt}
+\nopagebreak[4]
+
+\noindent\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}p{2.8cm} p{11.2cm}@{}}
+$\mathbf{p} = (\phi, \lambda)$ & Geographic coordinate tuple representing latitude $\phi$ and longitude $\lambda$ \\
+$\mathcal{W}_k$ & Planar polygon geometry defining the spatial boundary of administrative ward $k$ \\
+$\mathrm{Covers}(\mathcal{W}_k, \mathbf{p})$ & Boolean spatial containment function checking if coordinate $\mathbf{p} \in \mathcal{W}_k$ \\
+$\mathcal{B} = (x, y, w, h)$ & Spatial bounding box coordinates: origin offset $(x, y)$, width $w$, height $h$ \\
+$\kappa \in [0.0, 1.0]$ & Calibrated AI computer vision detection confidence metric \\
+$\mathcal{C}$ & Set of classified civic hazard categories: \{Pothole, Garbage, Water Leak, Streetlight, Fallen Tree\} \\
+$u_i \in \mathbb{N}_0$ & Cumulative verified community upvote tally associated with complaint $i$ \\
+$\tau_{\text{up}}$ & Configurable civic escalation threshold ($\tau_{\text{up}} = 3$ upvotes) \\
+$\tau_{\text{hours}}$ & Configurable civic escalation time window ($\tau_{\text{hours}} = 48$ hours) \\
+$P(c_i)$ & Discrete priority rating assigned to complaint: \{Low, Medium, High, Critical\} \\
+$H_{\text{tx}}$ & Hexadecimal simulated cryptographic hash verifying grievance state immutability \\
+$\mathcal{A}_d$ & Designated municipal authority department record mapped to complaint category \\
+$\mathcal{S}$ & Lifecycle grievance status: \{Pending, Under Review, In Progress, Resolved, Rejected\} \\
+\end{tabular*}
+\end{spacing}
+
+\thispagestyle{plain}
+%=======================================================================

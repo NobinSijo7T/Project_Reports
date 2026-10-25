@@ -1,0 +1,130 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usepackage{amsmath,amssymb}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shadows,shapes.geometric}
+
+% Color definitions
+\definecolor{lavenderDark}{RGB}{15, 44, 89}
+\definecolor{lavenderDeep}{RGB}{10, 28, 58}
+\definecolor{lavenderMedium}{RGB}{29, 78, 158}
+\definecolor{lavenderLight}{RGB}{240, 246, 255}
+\definecolor{lavenderBorder}{RGB}{180, 205, 237}
+\definecolor{prismNavy}{RGB}{15, 44, 89}
+\definecolor{prismBlue}{RGB}{29, 78, 158}
+\definecolor{prismTeal}{RGB}{13, 148, 136}
+\definecolor{prismGold}{RGB}{217, 119, 6}
+\definecolor{prismDark}{RGB}{15, 23, 42}
+\definecolor{cInput}{RGB}{241, 245, 249}
+\definecolor{cStem}{RGB}{224, 242, 254}
+\definecolor{cStage1}{RGB}{209, 250, 229}
+\definecolor{cStage2}{RGB}{254, 243, 199}
+\definecolor{cStage4}{RGB}{207, 250, 254}
+\definecolor{cHead}{RGB}{219, 234, 254}
+
+\begin{document}
+% Component Responsibilities & Staged Execution Flow for CiviQ Legal RAG System
+\begin{tikzpicture}[
+    x=1cm, y=1cm, font=\sffamily,
+    modelrow/.style={
+      rectangle, rounded corners=3.5pt, draw=lavenderDark!50,
+      line width=0.65pt, inner xsep=5.0pt, inner ysep=4.0pt,
+      minimum height=0.92cm, drop shadow={shadow xshift=0.5pt, shadow yshift=-0.5pt, opacity=0.06}
+    },
+    arrow/.style={-{Stealth[length=3.5pt, width=2.6pt]}, line width=0.85pt, draw=lavenderDark!85}
+]
+
+  % Stage 1: Language Detection (y = 0.0)
+  \node[modelrow, fill=cInput!70, text width=2.30cm, align=center] (m1l) at (-6.55, 0.0)
+    {{\fontsize{7.6}{8.8}\selectfont\color{lavenderDark}\faLanguage\ \textbf{1. Lang Detect}}\\[1.5pt]
+     {\fontsize{6.2}{7.2}\selectfont\texttt{contains\_ml()}}};
+  \node[modelrow, fill=lavenderLight!85, text width=8.20cm, align=left] (m1p) at (-0.50, 0.0)
+    {\fontsize{6.8}{8.0}\selectfont \textbf{Unicode Codepoint Scan} $\to$ Test characters against script block\\[2pt]
+     Range \texttt{U+0D00}--\texttt{U+0D7F} $\to$ Route as Malayalam (\texttt{ml}), else English (\texttt{en})};
+  \node[modelrow, fill=lavenderLight!85, text width=3.80cm, align=left] (m1r) at (6.00, 0.0)
+    {\fontsize{7.2}{8.4}\selectfont \textbf{Language Flag \& Route}\\[1.5pt]
+     {\fontsize{6.3}{7.3}\selectfont Routing indicator (\texttt{en} or \texttt{ml})}};
+
+  % Stage 2: Query Translation (y = -1.65)
+  \node[modelrow, fill=cStage1!65, text width=2.30cm, align=center] (m2l) at (-6.55, -1.65)
+    {{\fontsize{7.6}{8.8}\selectfont\color{lavenderDark}\faGlobe\ \textbf{2. Translator}}\\[1.5pt]
+     {\fontsize{6.2}{7.2}\selectfont\texttt{translate\_query()}}};
+  \node[modelrow, fill=lavenderLight!85, text width=8.20cm, align=left] (m2p) at (-0.50, -1.65)
+    {\fontsize{6.8}{8.0}\selectfont \textbf{Legal Query Translation} $\to$ Invoke Gemini translation prompt\\[2pt]
+     Preserve legal context without premature synthesis; translate to English};
+  \node[modelrow, fill=lavenderLight!85, text width=3.80cm, align=left] (m2r) at (6.00, -1.65)
+    {\fontsize{7.2}{8.4}\selectfont \textbf{English Query Text}\\[1.5pt]
+     {\fontsize{6.3}{7.3}\selectfont Standardized semantic search query}};
+
+  % Stage 3: Sentence-Transformer Embedding (y = -3.30)
+  \node[modelrow, fill=cStage4!65, text width=2.30cm, align=center] (m3l) at (-6.55, -3.30)
+    {{\fontsize{7.6}{8.8}\selectfont\color{lavenderDark}\faBrain\ \textbf{3. SBERT Embed}}\\[1.5pt]
+     {\fontsize{6.2}{7.2}\selectfont\texttt{embedder()}}};
+  \node[modelrow, fill=lavenderLight!85, text width=8.20cm, align=left] (m3p) at (-0.50, -3.30)
+    {\fontsize{6.8}{8.0}\selectfont \textbf{Dense Vector Projection} $\to$ \texttt{all-MiniLM-L6-v2} forward encoding\\[2pt]
+     Generate 384-dimensional dense vector $\mathbf{e}(q)$ with unit $L_2$ normalization};
+  \node[modelrow, fill=lavenderLight!85, text width=3.80cm, align=left] (m3r) at (6.00, -3.30)
+    {\fontsize{7.2}{8.4}\selectfont \textbf{Normalized Query Vector}\\[1.5pt]
+     {\fontsize{6.3}{7.3}\selectfont Vector $\mathbf{e} \in \mathbb{R}^{384}, \|\mathbf{e}\|_2 = 1.0$}};
+
+  % Stage 4: Pinecone Vector Retrieval (y = -4.95)
+  \node[modelrow, fill=cStem!65, text width=2.30cm, align=center] (m4l) at (-6.55, -4.95)
+    {{\fontsize{7.6}{8.8}\selectfont\color{lavenderDark}\faSearch\ \textbf{4. Retriever}}\\[1.5pt]
+     {\fontsize{6.2}{7.2}\selectfont\texttt{retrieve()}}};
+  \node[modelrow, fill=lavenderLight!85, text width=8.20cm, align=left] (m4p) at (-0.50, -4.95)
+    {\fontsize{6.8}{8.0}\selectfont \textbf{HNSW Approximate Nearest Neighbor Search} $\to$ Pinecone query\\[2pt]
+     Cosine metric $\mathbf{e}(q)^\top \mathbf{e}(c_i)$ across corpus $\to$ Fetch top-$k$ matches ($k=5$)};
+  \node[modelrow, fill=lavenderLight!85, text width=3.80cm, align=left] (m4r) at (6.00, -4.95)
+    {\fontsize{7.2}{8.4}\selectfont \textbf{Ranked Passage Matches}\\[1.5pt]
+     {\fontsize{6.3}{7.3}\selectfont Top-$k$ statutory chunks with citations}};
+
+  % Stage 5: Context Assembly & Prompt Construction (y = -6.60)
+  \node[modelrow, fill=cHead!65, text width=2.30cm, align=center] (m5l) at (-6.55, -6.60)
+    {{\fontsize{7.6}{8.8}\selectfont\color{lavenderDark}\faLayerGroup\ \textbf{5. Context Prep}}\\[1.5pt]
+     {\fontsize{6.2}{7.2}\selectfont\texttt{build\_prompt()}}};
+  \node[modelrow, fill=lavenderLight!85, text width=8.20cm, align=left] (m5p) at (-0.50, -6.60)
+    {\fontsize{6.8}{8.0}\selectfont \textbf{Evidence Concatenation} $\to$ Tag retrieved passages with Act \& Section\\[2pt]
+     Inject strict grounding prompt: answer solely based on supplied context};
+  \node[modelrow, fill=lavenderLight!85, text width=3.80cm, align=left] (m5r) at (6.00, -6.60)
+    {\fontsize{7.2}{8.4}\selectfont \textbf{Grounded Prompt Payload}\\[1.5pt]
+     {\fontsize{6.3}{7.3}\selectfont Instruction + Evidence + Question}};
+
+  % Stage 6: Gemini 2.5 Flash Generation (y = -8.25)
+  \node[modelrow, fill=cStage2!70, text width=2.30cm, align=center] (m6l) at (-6.55, -8.25)
+    {{\fontsize{7.6}{8.8}\selectfont\color{lavenderDark}\faRobot\ \textbf{6. Generator}}\\[1.5pt]
+     {\fontsize{6.2}{7.2}\selectfont\texttt{gemini\_client()}}};
+  \node[modelrow, fill=lavenderLight!85, text width=8.20cm, align=left] (m6p) at (-0.50, -8.25)
+    {\fontsize{6.8}{8.0}\selectfont \textbf{Grounded Synthesis \& Citations} $\to$ Gemini 2.5 Flash execution\\[2pt]
+     Generate plain-language answer citing sections; translate if required};
+  \node[modelrow, fill=lavenderLight!85, text width=3.80cm, align=left] (m6r) at (6.00, -8.25)
+    {\fontsize{7.2}{8.4}\selectfont \textbf{Final Legal QA Response}\\[1.5pt]
+     {\fontsize{6.3}{7.3}\selectfont Verified answer + citation cards}};
+
+  % Vertical Connections between Stages (In the generous 7.3mm gap)
+  \draw[arrow] (m1l.south) -- (m2l.north);
+  \draw[arrow] (m2l.south) -- (m3l.north);
+  \draw[arrow] (m3l.south) -- (m4l.north);
+  \draw[arrow] (m4l.south) -- (m5l.north);
+  \draw[arrow] (m5l.south) -- (m6l.north);
+
+  % Horizontal Connections across Columns
+  \draw[arrow] (m1l.east) -- (m1p.west);
+  \draw[arrow] (m1p.east) -- (m1r.west);
+
+  \draw[arrow] (m2l.east) -- (m2p.west);
+  \draw[arrow] (m2p.east) -- (m2r.west);
+
+  \draw[arrow] (m3l.east) -- (m3p.west);
+  \draw[arrow] (m3p.east) -- (m3r.west);
+
+  \draw[arrow] (m4l.east) -- (m4p.west);
+  \draw[arrow] (m4p.east) -- (m4r.west);
+
+  \draw[arrow] (m5l.east) -- (m5p.west);
+  \draw[arrow] (m5p.east) -- (m5r.west);
+
+  \draw[arrow] (m6l.east) -- (m6p.west);
+  \draw[arrow] (m6p.east) -- (m6r.west);
+
+\end{tikzpicture}
+\end{document}

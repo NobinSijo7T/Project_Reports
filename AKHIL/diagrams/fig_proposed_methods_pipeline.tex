@@ -1,0 +1,173 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usepackage{adjustbox}
+\usepackage{fontawesome5}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shadows,shapes.geometric}
+
+% Lavender & Diagnostic Color Palette
+\definecolor{lavenderDark}{RGB}{15, 44, 89}
+\definecolor{lavenderDeep}{RGB}{10, 28, 58}
+\definecolor{lavenderMedium}{RGB}{29, 78, 158}
+\definecolor{lavenderLight}{RGB}{240, 246, 255}
+\definecolor{lavenderBorder}{RGB}{180, 205, 237}
+\definecolor{lavenderAccent}{RGB}{2, 132, 199}
+\definecolor{prismNavy}{RGB}{15, 44, 89}
+\definecolor{prismBlue}{RGB}{29, 78, 158}
+\definecolor{prismTeal}{RGB}{13, 148, 136}
+\definecolor{prismMint}{RGB}{236, 253, 245}
+\definecolor{prismGold}{RGB}{217, 119, 6}
+\definecolor{prismDark}{RGB}{15, 23, 42}
+\definecolor{prismLight}{RGB}{248, 250, 252}
+\definecolor{cInput}{RGB}{241, 245, 249}
+\definecolor{cStem}{RGB}{224, 242, 254}
+\definecolor{cStage1}{RGB}{209, 250, 229}
+\definecolor{cStage2}{RGB}{254, 243, 199}
+\definecolor{cStage3}{RGB}{254, 226, 226}
+\definecolor{cStage4}{RGB}{207, 250, 254}
+\definecolor{cHead}{RGB}{219, 234, 254}
+\definecolor{cOutput}{RGB}{255, 228, 230}
+
+\begin{document}
+\begin{tikzpicture}[
+  >=Latex,
+  stagebox/.style={
+    draw=lavenderDark!85,
+    rounded corners=7pt,
+    minimum height=5.60cm,
+    text width=2.72cm,
+    align=center,
+    inner sep=5pt,
+    line width=1.1pt,
+    fill=white,
+    drop shadow={shadow xshift=1.5pt, shadow yshift=-1.8pt, opacity=0.16}
+  },
+  pipearrow/.style={
+    ->,
+    draw=lavenderDark,
+    line width=1.8pt,
+    arrows={-Latex[length=3.2mm, width=2.4mm]}
+  },
+  subblk/.style={
+    draw=prismNavy!90,
+    rounded corners=3.5pt,
+    fill=white,
+    minimum height=0.88cm,
+    text width=0.51cm,
+    align=center,
+    inner sep=1pt,
+    line width=0.85pt,
+    drop shadow={shadow xshift=0.6pt, shadow yshift=-0.6pt, opacity=0.10}
+  }
+]
+
+  % Stage 1: Ingestion
+  \node[stagebox, fill=cInput!65] (ingest) {
+    \vspace{3pt}
+    {\fontsize{16}{18}\selectfont\textcolor{lavenderDark}{\faFileMedical}}\\[4pt]
+    {\fontsize{10.5}{12.5}\selectfont\textbf{1. Ingestion}}\\[2pt]
+    {\fontsize{7.2}{8.5}\selectfont\textcolor{prismTeal}{\textbf{[Data Acquisition]}}}\\[5pt]
+    \rule{2.4cm}{0.6pt}\\[6pt]
+    \begin{minipage}{2.55cm}
+      \fontsize{8.2}{10.2}\selectfont
+      $\bullet$ Digital CXR upload\\
+      $\bullet$ Bedside film scan\\
+      $\bullet$ MIME header check\\
+      \phantom{$\bullet$}\,(JPEG, PNG, WebP)\\
+      $\bullet$ Payload guard $\le 10$\,MB\\
+      $\bullet$ PIL byte verification
+    \end{minipage}
+    \vspace{4pt}
+  };
+
+  % Stage 2: Preprocessing
+  \node[stagebox, fill=cStage1!60, right=0.22cm of ingest] (preprocess) {
+    \vspace{3pt}
+    {\fontsize{16}{18}\selectfont\textcolor{prismTeal}{\faSlidersH}}\\[4pt]
+    {\fontsize{10.5}{12.5}\selectfont\textbf{2. Preprocessing}}\\[2pt]
+    {\fontsize{7.2}{8.5}\selectfont\textcolor{prismTeal}{\textbf{[Tensor Prep]}}}\\[5pt]
+    \rule{2.4cm}{0.6pt}\\[6pt]
+    \begin{minipage}{2.55cm}
+      \fontsize{8.2}{10.2}\selectfont
+      $\bullet$ 3-channel RGB map\\
+      $\bullet$ Bilinear resize to\\
+      \phantom{$\bullet$}\,$224 \times 224$ pixels\\
+      $\bullet$ ImageNet norm ($\mu, \sigma$)\\
+      $\bullet$ Random flip ($p=0.5$)\\
+      $\bullet$ Rotation ($\pm 7^\circ$)
+    \end{minipage}
+    \vspace{4pt}
+  };
+
+  % Stage 3: DenseNet-121
+  \node[stagebox, text width=2.82cm, fill=cStem!60, draw=lavenderDark!95, line width=1.3pt, right=0.20cm of preprocess] (densenet) {
+    \vspace{3pt}
+    {\fontsize{16}{18}\selectfont\textcolor{lavenderDark}{\faBrain}}\\[4pt]
+    {\fontsize{10.5}{12.5}\selectfont\textbf{3. DenseNet-121}}\\[2pt]
+    {\fontsize{7.2}{8.5}\selectfont\textcolor{lavenderDark}{\textbf{[Feature Learning]}}}\\[4pt]
+    \rule{2.5cm}{0.6pt}\\[4pt]
+    \begin{tikzpicture}[baseline=-0.3ex, node distance=0.10cm]
+      \node[subblk, fill=cStem!55] (b1) {{\fontsize{8.5}{10}\selectfont\textbf{B1}}\\[1pt]{\fontsize{5.5}{6.5}\selectfont\color{prismDark!75}6L}};
+      \node[subblk, fill=cStage4!55, right=0.10cm of b1] (b2) {{\fontsize{8.5}{10}\selectfont\textbf{B2}}\\[1pt]{\fontsize{5.5}{6.5}\selectfont\color{prismDark!75}12L}};
+      \node[subblk, fill=cStage2!55, right=0.10cm of b2] (b3) {{\fontsize{8.5}{10}\selectfont\textbf{B3}}\\[1pt]{\fontsize{5.5}{6.5}\selectfont\color{prismDark!75}24L}};
+      \node[subblk, fill=cStage3!55, right=0.10cm of b3] (b4) {{\fontsize{8.5}{10}\selectfont\textbf{B4}}\\[1pt]{\fontsize{5.5}{6.5}\selectfont\color{prismDark!75}16L}};
+      \draw[->, draw=prismNavy, line width=0.85pt, arrows={-Latex[length=1.6mm, width=1.2mm]}, shorten >=0.5pt, shorten <=0.5pt] (b1) -- (b2);
+      \draw[->, draw=prismNavy, line width=0.85pt, arrows={-Latex[length=1.6mm, width=1.2mm]}, shorten >=0.5pt, shorten <=0.5pt] (b2) -- (b3);
+      \draw[->, draw=prismNavy, line width=0.85pt, arrows={-Latex[length=1.6mm, width=1.2mm]}, shorten >=0.5pt, shorten <=0.5pt] (b3) -- (b4);
+    \end{tikzpicture}\\[5pt]
+    \begin{minipage}{2.65cm}
+      \fontsize{8.2}{10.2}\selectfont
+      $\bullet$ Dense connectivity\\
+      $\bullet$ Direct feature reuse\\
+      $\bullet$ Solves gradient fade\\
+      $\bullet$ Latent $7\times 7 \times 1024$
+    \end{minipage}
+    \vspace{4pt}
+  };
+
+  % Stage 4: Classification
+  \node[stagebox, fill=cHead!60, right=0.22cm of densenet] (classify) {
+    \vspace{3pt}
+    {\fontsize{16}{18}\selectfont\textcolor{lavenderDark}{\faChartPie}}\\[4pt]
+    {\fontsize{10.5}{12.5}\selectfont\textbf{4. Classify}}\\[2pt]
+    {\fontsize{7.2}{8.5}\selectfont\textcolor{lavenderDark}{\textbf{[Scoring Head]}}}\\[5pt]
+    \rule{2.4cm}{0.6pt}\\[6pt]
+    \begin{minipage}{2.55cm}
+      \fontsize{8.2}{10.2}\selectfont
+      $\bullet$ Global Avg Pool ($1024$)\\
+      $\bullet$ Linear head ($1024 \to 3$)\\
+      $\bullet$ Softmax scoring $\hat{\mathbf{y}}$\\
+      $\bullet$ Disease classes:\\
+      \phantom{$\bullet$}\,$\circ$ \textbf{Normal}\\
+      \phantom{$\bullet$}\,$\circ$ \textbf{COVID-19}\\
+      \phantom{$\bullet$}\,$\circ$ \textbf{Viral Pneumonia}
+    \end{minipage}
+    \vspace{4pt}
+  };
+
+  % Stage 5: Explainability
+  \node[stagebox, fill=cStage2!65, draw=prismGold!95!black, line width=1.2pt, right=0.22cm of classify] (explain) {
+    \vspace{3pt}
+    {\fontsize{16}{18}\selectfont\textcolor{prismGold!95!black}{\faFire}}\\[4pt]
+    {\fontsize{10.5}{12.5}\selectfont\textbf{5. Explain}}\\[2pt]
+    {\fontsize{7.2}{8.5}\selectfont\textcolor{prismGold!95!black}{\textbf{[XAI Saliency]}}}\\[5pt]
+    \rule{2.4cm}{0.6pt}\\[6pt]
+    \begin{minipage}{2.55cm}
+      \fontsize{8.2}{10.2}\selectfont
+      $\bullet$ Hook: \texttt{denseblock4}\\
+      $\bullet$ Grad-CAM gradients\\
+      $\bullet$ Positive $\mathrm{ReLU}(\cdot)$ map\\
+      $\bullet$ Bilinear upsample\\
+      $\bullet$ Jet colormap blend\\
+      \phantom{$\bullet$}\,(opacity $\beta=0.60$)
+    \end{minipage}
+    \vspace{4pt}
+  };
+
+  % Connecting Arrows
+  \draw[pipearrow] (ingest.east) -- (preprocess.west);
+  \draw[pipearrow] (preprocess.east) -- (densenet.west);
+  \draw[pipearrow] (densenet.east) -- (classify.west);
+  \draw[pipearrow] (classify.east) -- (explain.west);
+
+\end{tikzpicture}
+\end{document}

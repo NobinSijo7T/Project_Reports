@@ -1,0 +1,168 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usepackage{amsmath,amssymb}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shadows,shapes.geometric}
+
+% Color definitions
+\definecolor{lavenderDark}{RGB}{15, 44, 89}
+\definecolor{lavenderDeep}{RGB}{10, 28, 58}
+\definecolor{lavenderMedium}{RGB}{29, 78, 158}
+\definecolor{lavenderLight}{RGB}{240, 246, 255}
+\definecolor{lavenderBorder}{RGB}{180, 205, 237}
+\definecolor{prismNavy}{RGB}{15, 44, 89}
+\definecolor{prismBlue}{RGB}{29, 78, 158}
+\definecolor{prismTeal}{RGB}{13, 148, 136}
+\definecolor{prismGold}{RGB}{217, 119, 6}
+\definecolor{prismDark}{RGB}{15, 23, 42}
+\definecolor{prismSlate}{RGB}{100, 116, 139}
+\definecolor{statusFail}{RGB}{220, 38, 38}
+\definecolor{cInput}{RGB}{241, 245, 249}
+\definecolor{cStem}{RGB}{224, 242, 254}
+\definecolor{cStage1}{RGB}{209, 250, 229}
+\definecolor{cStage2}{RGB}{254, 243, 199}
+\definecolor{cStage3}{RGB}{254, 226, 226}
+\definecolor{cStage4}{RGB}{207, 250, 254}
+\definecolor{cHead}{RGB}{219, 234, 254}
+
+\begin{document}
+% DenseNet-121 Layer Decomposition and Dense Connectivity Graph
+\begin{tikzpicture}[
+  x=1cm, y=1cm,
+  font=\sffamily,
+  dagstep/.style={rectangle, rounded corners=3.5pt, minimum height=1.10cm,
+    text width=3.35cm, align=center, draw=lavenderDark!75, fill=lavenderLight!75,
+    line width=0.85pt, font=\fontsize{8.2}{9.8}\selectfont\bfseries,
+    drop shadow={shadow xshift=0.8pt, shadow yshift=-0.8pt, opacity=0.10}},
+  dagarrow/.style={-{Stealth[scale=0.85]}, line width=1.15pt, draw=prismTeal!95!black},
+  blkbox/.style={rectangle, rounded corners=4pt, line width=0.85pt,
+    minimum height=1.40cm, text width=2.40cm, align=center,
+    font=\fontsize{7.2}{8.5}\selectfont, drop shadow={shadow xshift=0.6pt, shadow yshift=-0.6pt, opacity=0.12}},
+  transbox/.style={rectangle, rounded corners=3pt, line width=0.80pt,
+    draw=prismTeal!80, fill=cStage1!60, minimum height=1.15cm, text width=1.45cm, align=center,
+    font=\fontsize{6.5}{7.6}\selectfont},
+  skipconn/.style={-{Stealth[scale=0.75]}, line width=0.85pt, draw=prismNavy, dashed}
+]
+
+  % Row 1: 4-Stage Architectural Progression
+  \node[dagstep] (s1) at (-5.55, 0) {1. Input Stem\\[2pt]\normalfont\fontsize{7.2}{8.5}\selectfont $7\times 7$ Conv (s=2) + MaxPool\\[1pt]$224\times 224\times 3 \to 56\times 56\times 64$};
+  \node[dagstep] (s2) at (-1.85, 0) {2. DenseBlocks 1--4\\[2pt]\normalfont\fontsize{7.2}{8.5}\selectfont 6, 12, 24, 16 layers ($k=32$)\\[1pt]All-to-all concatenation};
+  \node[dagstep] (s3) at (1.85, 0) {3. Transitions 1--3\\[2pt]\normalfont\fontsize{7.2}{8.5}\selectfont $1\times 1$ Conv + $2\times 2$ AvgPool\\[1pt]Channel halving $\theta=0.5$};
+  \node[dagstep] (s4) at (5.55, 0) {4. Classifier \& Grad-CAM\\[2pt]\normalfont\fontsize{7.2}{8.5}\selectfont Global Avg Pool ($1024$-d)\\[1pt]Linear $\to 3$ classes $\cdot$ Hook};
+
+  \draw[dagarrow] (s1) -- (s2);
+  \draw[dagarrow] (s2) -- (s3);
+  \draw[dagarrow] (s3) -- (s4);
+
+  % Separator
+  \draw[draw=lavenderBorder, line width=0.6pt] (-7.5, -0.90) -- (7.5, -0.90);
+
+  % Row 2 & 3: Detailed Layer Decomposition Flow
+  \node[blkbox, fill=cInput, draw=prismSlate!80] (input_node) at (-6.50, -2.60) {
+    \textbf{Input CXR}\\[2pt]
+    $224\times 224\times 3$\\[1pt]
+    {\fontsize{6.0}{7.0}\selectfont Normalized Tensor}
+  };
+
+  \node[blkbox, fill=cStem, draw=lavenderDark] (stem_node) at (-4.20, -2.60) {
+    \textbf{Stem Conv}\\[2pt]
+    $7\times 7$ Conv, s=2\\
+    $3\times 3$ MaxPool\\
+    $56\times 56\times 64$
+  };
+
+  \node[blkbox, fill=cStage4, draw=prismBlue!90] (db1) at (-1.65, -2.60) {
+    \textbf{DenseBlock 1}\\[2pt]
+    6 Dense Layers\\
+    Growth $k=32$\\
+    $56\times 56\times 256$
+  };
+
+  \node[transbox] (tr1) at (0.35, -2.60) {
+    \textbf{Trans 1}\\[1pt]
+    $1\times 1$ Conv\\
+    AvgPool\\
+    $28\times 28\times 128$
+  };
+
+  \node[blkbox, fill=cStage2, draw=prismGold!90] (db2) at (2.40, -2.60) {
+    \textbf{DenseBlock 2}\\[2pt]
+    12 Dense Layers\\
+    Growth $k=32$\\
+    $28\times 28\times 512$
+  };
+
+  \node[transbox] (tr2) at (4.45, -2.60) {
+    \textbf{Trans 2}\\[1pt]
+    $1\times 1$ Conv\\
+    AvgPool\\
+    $14\times 14\times 256$
+  };
+
+  \node[blkbox, fill=cStage3, draw=statusFail!70] (db3) at (6.50, -2.60) {
+    \textbf{DenseBlock 3}\\[2pt]
+    24 Dense Layers\\
+    Growth $k=32$\\
+    $14\times 14\times 1024$
+  };
+
+  % Second Row of Layers
+  \node[transbox] (tr3) at (6.50, -4.80) {
+    \textbf{Trans 3}\\[1pt]
+    $1\times 1$ Conv\\
+    AvgPool\\
+    $7\times 7\times 512$
+  };
+
+  \node[blkbox, fill=cHead, draw=lavenderDark!90, text width=2.80cm] (db4) at (3.30, -4.80) {
+    \textbf{DenseBlock 4 (Target Layer)}\\[2pt]
+    16 Dense Layers ($k=32$)\\
+    $7\times 7\times 1024$ feature maps\\[1pt]
+    {\color{prismTeal}\textbf{[Grad-CAM Hook Point]}}
+  };
+
+  \node[blkbox, fill=cInput, draw=prismNavy] (gap) at (0.20, -4.80) {
+    \textbf{Global Avg Pool}\\[2pt]
+    $1\times 1\times 1024$\\[1pt]
+    {\fontsize{6.0}{7.0}\selectfont Latent Representation}
+  };
+
+  \node[blkbox, fill=cStage1, draw=prismTeal!90, text width=2.60cm] (head) at (-3.10, -4.80) {
+    \textbf{Linear Classifier Head}\\[2pt]
+    Fully Connected: $1024 \to 3$\\[1pt]
+    Logits $z_{\text{norm}}, z_{\text{covid}}, z_{\text{pneum}}$
+  };
+
+  \node[blkbox, fill=lavenderLight, draw=lavenderDark, text width=2.50cm] (softmax) at (-6.20, -4.80) {
+    \textbf{Softmax Output}\\[2pt]
+    $P(\text{Normal}) = 94.7\%$\\
+    $P(\text{COVID}) = 86.8\%$\\
+    $P(\text{Viral}) = 93.3\%$
+  };
+
+  % Forward Flow Connections
+  \draw[dagarrow] (input_node) -- (stem_node);
+  \draw[dagarrow] (stem_node) -- (db1);
+  \draw[dagarrow] (db1) -- (tr1);
+  \draw[dagarrow] (tr1) -- (db2);
+  \draw[dagarrow] (db2) -- (tr2);
+  \draw[dagarrow] (tr2) -- (db3);
+  \draw[dagarrow] (db3) -- (tr3);
+  \draw[dagarrow] (tr3) -- (db4);
+  \draw[dagarrow] (db4) -- (gap);
+  \draw[dagarrow] (gap) -- (head);
+  \draw[dagarrow] (head) -- (softmax);
+
+  % Dense Concatenation Skip Connections (curved lines representing intra-block feature reuse)
+  \draw[skipconn] (stem_node.north) to[bend left=35] node[above, font=\fontsize{5.5}{6.5}\selectfont\color{prismNavy}]{Feature Reuse $\mathbf{x}_0$} (tr1.north);
+  \draw[skipconn] (tr1.north) to[bend left=35] node[above, font=\fontsize{5.5}{6.5}\selectfont\color{prismNavy}]{Feature Reuse} (tr2.north);
+  \draw[skipconn] (tr2.north) to[bend left=35] node[above, font=\fontsize{5.5}{6.5}\selectfont\color{prismNavy}]{Feature Reuse} (db3.north);
+
+  % Backward Hook Arrow from Softmax / Head back to DenseBlock 4
+  \draw[-{Stealth[scale=0.85]}, line width=1.1pt, draw=prismGold!95!black, dashed] 
+    (head.south) to[bend right=20] 
+    node[below=2pt, font=\fontsize{6.8}{8.0}\selectfont\bfseries\color{prismGold!95!black}]{Backprop Gradients $\frac{\partial y^c}{\partial A^k}$ to \texttt{denseblock4} for Grad-CAM Saliency} 
+    (db4.south);
+
+\end{tikzpicture}
+\end{document}

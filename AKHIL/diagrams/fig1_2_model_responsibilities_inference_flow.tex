@@ -1,0 +1,115 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usepackage{amsmath,amssymb}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shadows,shapes.geometric}
+
+% Color definitions
+\definecolor{lavenderDark}{RGB}{15, 44, 89}
+\definecolor{lavenderDeep}{RGB}{10, 28, 58}
+\definecolor{lavenderMedium}{RGB}{29, 78, 158}
+\definecolor{lavenderLight}{RGB}{240, 246, 255}
+\definecolor{lavenderBorder}{RGB}{180, 205, 237}
+\definecolor{prismNavy}{RGB}{15, 44, 89}
+\definecolor{prismBlue}{RGB}{29, 78, 158}
+\definecolor{prismTeal}{RGB}{13, 148, 136}
+\definecolor{prismGold}{RGB}{217, 119, 6}
+\definecolor{prismDark}{RGB}{15, 23, 42}
+\definecolor{cInput}{RGB}{241, 245, 249}
+\definecolor{cStem}{RGB}{224, 242, 254}
+\definecolor{cStage1}{RGB}{209, 250, 229}
+\definecolor{cStage2}{RGB}{254, 243, 199}
+\definecolor{cStage4}{RGB}{207, 250, 254}
+\definecolor{cHead}{RGB}{219, 234, 254}
+
+\begin{document}
+% Model Responsibilities & Staged Inference Flow for Lung Disease Detection
+\begin{tikzpicture}[
+    x=1cm, y=1cm, font=\sffamily,
+    modelrow/.style={rectangle, rounded corners=3.5pt, draw=lavenderDark!45,
+      line width=0.65pt, inner sep=4.5pt},
+    arrow/.style={-{Stealth[scale=0.8]}, line width=0.9pt, draw=lavenderDark!85}
+]
+
+  % Stage 1: Input Validation (y = 0.0)
+  \node[modelrow, fill=cInput!70, text width=2.40cm, align=center, minimum height=1.15cm] (m1l) at (-5.85, 0.0)
+    {{\fontsize{8.5}{10.2}\selectfont\color{lavenderDark}\faCheckCircle\ \textbf{1. Validation}}\\[2pt]
+     {\fontsize{7.5}{9.0}\selectfont\texttt{image\_processor}}};
+  \node[modelrow, fill=lavenderLight!85, text width=7.40cm, align=left, minimum height=1.15cm] (m1p) at (-0.55, 0.0)
+    {\fontsize{7.6}{9.0}\selectfont \textbf{Payload Audit} $\rightarrow$ Check MIME in \{JPEG, PNG, WEBP, BMP\}\\[2pt]Validate payload size $\le 10$\,MB $\rightarrow$ PIL image integrity check};
+  \node[modelrow, fill=lavenderLight!85, text width=4.10cm, align=left, minimum height=1.15cm] (m1r) at (5.60, 0.0)
+    {\fontsize{7.6}{9.0}\selectfont \textbf{Sanitized Byte Stream}\\[2pt]{\fontsize{6.8}{8.0}\selectfont Rejects corrupt uploads}};
+
+  % Stage 2: Spatial Resizing & RGB (y = -1.55)
+  \node[modelrow, fill=cStage1!65, text width=2.40cm, align=center, minimum height=1.15cm] (m2l) at (-5.85, -1.55)
+    {{\fontsize{8.5}{10.2}\selectfont\color{lavenderDark}\faCrop\ \textbf{2. Transform}}\\[2pt]
+     {\fontsize{7.5}{9.0}\selectfont\texttt{image\_processor}}};
+  \node[modelrow, fill=lavenderLight!85, text width=7.40cm, align=left, minimum height=1.15cm] (m2p) at (-0.55, -1.55)
+    {\fontsize{7.6}{9.0}\selectfont \textbf{Color \& Spatial Standardizer} $\rightarrow$ Convert to 3-channel RGB\\[2pt]Bilinear spatial interpolation to target dimensions $(224 \times 224)$};
+  \node[modelrow, fill=lavenderLight!85, text width=4.10cm, align=left, minimum height=1.15cm] (m2r) at (5.60, -1.55)
+    {\fontsize{7.6}{9.0}\selectfont \textbf{Spatial Standard CXR}\\[2pt]{\fontsize{6.8}{8.0}\selectfont PIL Image $(224 \times 224 \times 3)$}};
+
+  % Stage 3: Tensor Normalization (y = -3.10)
+  \node[modelrow, fill=cStage4!65, text width=2.40cm, align=center, minimum height=1.15cm] (m3l) at (-5.85, -3.10)
+    {{\fontsize{8.5}{10.2}\selectfont\color{lavenderDark}\faCalculator\ \textbf{3. Normalizer}}\\[2pt]
+     {\fontsize{7.5}{9.0}\selectfont\texttt{dataset.py}}};
+  \node[modelrow, fill=lavenderLight!85, text width=7.40cm, align=left, minimum height=1.15cm] (m3p) at (-0.55, -3.10)
+    {\fontsize{7.6}{9.0}\selectfont \textbf{Tensor Conversion} $\rightarrow$ PyTorch Float32 Tensor scaling $[0, 1]$\\[2pt]ImageNet mean $\mu=[0.485,0.456,0.406]$, std $\sigma=[0.229,0.224,0.225]$};
+  \node[modelrow, fill=lavenderLight!85, text width=4.10cm, align=left, minimum height=1.15cm] (m3r) at (5.60, -3.10)
+    {\fontsize{7.6}{9.0}\selectfont \textbf{Normalized Tensor}\\[2pt]{\fontsize{6.8}{8.0}\selectfont Tensor $(1, 3, 224, 224)$}};
+
+  % Stage 4: DenseNet-121 Feature Learning (y = -4.65)
+  \node[modelrow, fill=cStem!65, text width=2.40cm, align=center, minimum height=1.15cm] (m4l) at (-5.85, -4.65)
+    {{\fontsize{8.5}{10.2}\selectfont\color{lavenderDark}\faLayerGroup\ \textbf{4. DenseNet}}\\[2pt]
+     {\fontsize{7.5}{9.0}\selectfont\texttt{src.model}}};
+  \node[modelrow, fill=lavenderLight!85, text width=7.40cm, align=left, minimum height=1.15cm] (m4p) at (-0.55, -4.65)
+    {\fontsize{7.6}{9.0}\selectfont \textbf{Dense Connectivity Forward Pass} $\rightarrow 7\times 7$ Conv (s=2) + MaxPool\\[2pt]DenseBlocks 1--4 ($k=32$) with intra-block all-to-all concatenation};
+  \node[modelrow, fill=lavenderLight!85, text width=4.10cm, align=left, minimum height=1.15cm] (m4r) at (5.60, -4.65)
+    {\fontsize{7.6}{9.0}\selectfont \textbf{Feature Activations}\\[2pt]{\fontsize{6.8}{8.0}\selectfont 1024 feature maps ($7 \times 7$)}};
+
+  % Stage 5: Softmax Classification (y = -6.20)
+  \node[modelrow, fill=cHead!65, text width=2.40cm, align=center, minimum height=1.15cm] (m5l) at (-5.85, -6.20)
+    {{\fontsize{8.5}{10.2}\selectfont\color{lavenderDark}\faBrain\ \textbf{5. Classifier}}\\[2pt]
+     {\fontsize{7.5}{9.0}\selectfont\texttt{predictor.py}}};
+  \node[modelrow, fill=lavenderLight!85, text width=7.40cm, align=left, minimum height=1.15cm] (m5p) at (-0.55, -6.20)
+    {\fontsize{7.6}{9.0}\selectfont \textbf{Head Projection} $\rightarrow$ Global Average Pooling ($1024$-dim vector)\\[2pt]Linear layer ($1024 \to 3$) $\rightarrow$ Softmax probability distribution};
+  \node[modelrow, fill=lavenderLight!85, text width=4.10cm, align=left, minimum height=1.15cm] (m5r) at (5.60, -6.20)
+    {\fontsize{7.6}{9.0}\selectfont \textbf{Disease Probabilities}\\[2pt]{\fontsize{6.8}{8.0}\selectfont Normal / COVID / Viral}};
+
+  % Stage 6: Grad-CAM Explainability (y = -7.75)
+  \node[modelrow, fill=cStage2!70, text width=2.40cm, align=center, minimum height=1.15cm] (m6l) at (-5.85, -7.75)
+    {{\fontsize{8.5}{10.2}\selectfont\color{lavenderDark}\faEye\ \textbf{6. Grad-CAM}}\\[2pt]
+     {\fontsize{7.5}{9.0}\selectfont\texttt{src.gradcam}}};
+  \node[modelrow, fill=lavenderLight!85, text width=7.40cm, align=left, minimum height=1.15cm] (m6p) at (-0.55, -7.75)
+    {\fontsize{7.6}{9.0}\selectfont \textbf{Gradient Backpropagation} $\rightarrow$ Backward hook on \texttt{denseblock4}\\[2pt]Weights $\alpha_k^c \rightarrow$ ReLU activation map $\rightarrow$ Jet colormap overlay};
+  \node[modelrow, fill=lavenderLight!85, text width=4.10cm, align=left, minimum height=1.15cm] (m6r) at (5.60, -7.75)
+    {\fontsize{7.6}{9.0}\selectfont \textbf{Saliency Heatmap}\\[2pt]{\fontsize{6.8}{8.0}\selectfont Lesion localization overlay}};
+
+  % Vertical Connections between Stages
+  \draw[arrow] (m1l.south) -- (m2l.north);
+  \draw[arrow] (m2l.south) -- (m3l.north);
+  \draw[arrow] (m3l.south) -- (m4l.north);
+  \draw[arrow] (m4l.south) -- (m5l.north);
+  \draw[arrow] (m5l.south) -- (m6l.north);
+
+  % Horizontal Connections across Columns
+  \draw[arrow] (m1l.east) -- (m1p.west);
+  \draw[arrow] (m1p.east) -- (m1r.west);
+
+  \draw[arrow] (m2l.east) -- (m2p.west);
+  \draw[arrow] (m2p.east) -- (m2r.west);
+
+  \draw[arrow] (m3l.east) -- (m3p.west);
+  \draw[arrow] (m3p.east) -- (m3r.west);
+
+  \draw[arrow] (m4l.east) -- (m4p.west);
+  \draw[arrow] (m4p.east) -- (m4r.west);
+
+  \draw[arrow] (m5l.east) -- (m5p.west);
+  \draw[arrow] (m5p.east) -- (m5r.west);
+
+  \draw[arrow] (m6l.east) -- (m6p.west);
+  \draw[arrow] (m6p.east) -- (m6r.west);
+
+\end{tikzpicture}
+\end{document}

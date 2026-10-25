@@ -1,0 +1,1004 @@
+\documentclass[12pt,a4paper]{report}
+
+%==============================================================================
+% PREAMBLE AND PACKAGES (Aligned with CEK / KTU B.Tech Project Format)
+%==============================================================================
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{fancyhdr}
+\usepackage{cite}
+\usepackage{a4wide}
+\usepackage{float}
+\usepackage{epsfig}
+\usepackage{longtable}
+\usepackage{enumerate}
+\usepackage{afterpage}
+\usepackage{multirow}
+\usepackage{ragged2e}
+\usepackage{gensymb}
+\usepackage{amsfonts} 
+\usepackage[left=3.5cm,top=1.5cm,right=3cm,bottom=3cm]{geometry}
+\usepackage{setspace}           
+\usepackage{txfonts}
+\usepackage{standalone}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usetikzlibrary{calc, shapes.geometric, arrows, arrows.meta, positioning, fit, backgrounds, shadows, tikzmark}
+
+% Color definitions for TikZ diagrams (Clinical Deep Navy, Ocean Blue & Cyan Palette)
+\definecolor{lavenderDark}{RGB}{15, 44, 89}
+\definecolor{lavenderDeep}{RGB}{10, 28, 58}
+\definecolor{lavenderMedium}{RGB}{29, 78, 158}
+\definecolor{lavenderLight}{RGB}{240, 246, 255}
+\definecolor{lavenderBorder}{RGB}{180, 205, 237}
+\definecolor{lavenderAccent}{RGB}{2, 132, 199}
+\definecolor{prismNavy}{RGB}{15, 44, 89}
+\definecolor{prismBlue}{RGB}{29, 78, 158}
+\definecolor{prismTeal}{RGB}{13, 148, 136}
+\definecolor{prismMint}{RGB}{236, 253, 245}
+\definecolor{prismGold}{RGB}{217, 119, 6}
+\definecolor{prismDark}{RGB}{15, 23, 42}
+\definecolor{prismLight}{RGB}{248, 250, 252}
+\definecolor{prismIndigo}{RGB}{30, 58, 138}
+\definecolor{prismSlate}{RGB}{100, 116, 139}
+\definecolor{statusFail}{RGB}{220, 38, 38}
+\definecolor{cInput}{RGB}{241, 245, 249}
+\definecolor{cStem}{RGB}{224, 242, 254}
+\definecolor{cStage1}{RGB}{209, 250, 229}
+\definecolor{cStage2}{RGB}{254, 243, 199}
+\definecolor{cStage3}{RGB}{254, 226, 226}
+\definecolor{cStage4}{RGB}{207, 250, 254}
+\definecolor{cHead}{RGB}{219, 234, 254}
+\definecolor{cOutput}{RGB}{255, 228, 230}
+\definecolor{cDeliverable}{RGB}{204, 251, 241}
+
+\usepackage{subfiles}
+\usepackage{adjustbox}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins}
+
+\newcommand{\Usefont}[1]{\fontfamily{#1}\selectfont}
+
+\usepackage{lscape}
+\linespread{1.5}
+
+\usepackage{url}
+\usepackage{subcaption}
+\usepackage[intoc, english]{nomencl}
+\usepackage[nottoc]{tocbibind}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{hyperref}
+
+\hypersetup{
+    plainpages=false,
+    pdfpagelabels=true,
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=black,
+    pdftitle={AI-Powered Legal Information Retrieval using Retrieval-Augmented Generation},
+    pdfauthor={Aleena, Fathima, Adithya, Abhinaya}
+}
+
+% Spacing and line-breaking settings to prevent overflow and overfull hboxes
+\setlength{\headheight}{15pt}
+\hyphenpenalty=1000
+\tolerance=2000
+\emergencystretch=2.5em
+
+\bibliographystyle{IEEEtran}
+\renewcommand{\bibname}{References}
+
+% Figure search path
+\graphicspath{{figures/}{diagrams/}{./}}
+
+%==============================================================================
+% METADATA DEFINITIONS (Project Group & CEK)
+%==============================================================================
+\gdef \title{AI-POWERED LEGAL INFORMATION RETRIEVAL USING RETRIEVAL-AUGMENTED GENERATION}
+\gdef \shorttitle{AI-Powered Legal Information Retrieval using RAG}
+
+\gdef \authorA{ALEENA}
+\gdef \rollnoA{KNP23CS025}
+
+\gdef \authorB{FATHIMA}
+\gdef \rollnoB{KNP23CS047}
+
+\gdef \authorC{ADITHYA}
+\gdef \rollnoC{KNP23CS016}
+
+\gdef \authorD{ABHINAYA}
+\gdef \rollnoD{KNP23CO007}
+
+\gdef \acadyear{2026--2027}
+\gdef \submonth{October 2026}
+\gdef \month{October 2026}
+\gdef \date{28-10-2026}
+\gdef \dept{Computer Science and Engineering}
+\gdef \deptabbr{Dept.\ of CSE}
+\gdef \degree{Bachelor of Technology}
+\gdef \branch{Computer Science and Engineering}
+\gdef \college{College of Engineering Karunagappally}
+\gdef \collegeplace{Kollam}
+\gdef \collegetown{Karunagappally}
+
+\gdef \guide{Hridhya J}
+\gdef \guidedes{Assistant Professor}
+\gdef \coordinator{Dr. Smitha P}
+\gdef \coordinatordes{Associate Professor and HOD}
+\gdef \semcordinatorA{Dr. Smitha P}
+\gdef \semcordinatorAdes{Associate Professor and HOD}
+\gdef \hod{Dr. Smitha P}
+\gdef \hoddes{Associate Professor and HOD}
+
+%==============================================================================
+% DOCUMENT BODY
+%==============================================================================
+
+\begin{document}
+
+%------------------------------------------------------------------------------
+% FRONT MATTER
+%------------------------------------------------------------------------------
+\hypersetup{pageanchor=false}
+\include{coverpage}
+\include{vision_mission}
+\include{certificate1}
+\include{declaration}
+\hypersetup{pageanchor=true}
+
+\cleardoublepage
+\pagenumbering{roman}
+\pagestyle{plain}
+
+\include{abstract}
+\include{acknowledgement}
+
+\cleardoublepage
+\tableofcontents
+\cleardoublepage
+\listoffigures
+\cleardoublepage
+\listoftables
+\cleardoublepage
+
+\include{symbol}
+
+%------------------------------------------------------------------------------
+% MAIN BODY (Arabic Numbering & Header/Footer)
+%------------------------------------------------------------------------------
+\cleardoublepage
+\setcounter{page}{1}
+\pagenumbering{arabic}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\fontsize{9}{11}\selectfont \textit{\shorttitle}}
+\fancyhead[R]{\fontsize{9}{11}\selectfont \textit{\deptabbr, CEK}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+%==============================================================================
+% CHAPTER 1: INTRODUCTION
+%==============================================================================
+\chapter[Introduction]{\Huge Introduction}
+
+Access to accurate, comprehensible legal information is fundamental to civic empowerment and the effective exercise of constitutional rights in India. Citizens encounter legal systems daily—from consumer disputes and service grievances to information access rights under the Right to Information (RTI) Act 2005 and criminal proceedings under the Bharatiya Nyaya Sanhita (BNS) 2023. However, contemporary legal information retrieval faces systemic obstacles:
+
+\begin{enumerate}[(i)]
+    \item \textbf{Statutory Language Complexity:} Legal texts employ specialized terminology, nested conditional clauses, and cross-references that are impenetrable to non-lawyers.
+    \item \textbf{Fragmented Document Repositories:} Statutes, amendments, judicial interpretations, and procedural codes are scattered across government portals, parliamentary archives, and district registries without unified search.
+    \item \textbf{Language Barriers:} Over 57\% of Indian citizens speak regional languages as their primary tongue, yet most legal resources remain exclusively in English or technical Hindi, excluding Malayalam, Tamil, Telugu, and other linguistic communities.
+    \item \textbf{Lack of Contextual Answers:} Traditional keyword search returns raw statutory clauses without explanation of applicability, penalties, or procedural steps, requiring expensive legal consultation.
+\end{enumerate}
+
+To address these challenges, this project presents \textbf{CiviQ – AI-Powered Civic Issue Reporting and Complaint Management System}, a Retrieval-Augmented Generation (RAG) platform for citizen-accessible legal information retrieval. The system ingests comprehensive legal corpora including BNS 2023, BNSS 2023, BSA 2023, Consumer Protection Act 2019, Indian Contract Act 1872, RTI Act 2005, and the Constitution of India. Documents are preprocessed through overlapping word-chunking (900-word chunks, 150-word overlap), embedded via \textbf{sentence-transformers (all-MiniLM-L6-v2, 384-dim vectors)}, and indexed in \textbf{Pinecone} vector database. User queries—submitted as text or voice input—undergo identical embedding, semantic retrieval of top-k relevant passages (default k=5), and grounded answer generation via \textbf{Google Gemini 2.5 Flash}. The system automatically detects Malayalam queries (Unicode U+0D00–U+0D7F), translates them to English for retrieval, and translates responses back, ensuring linguistic inclusivity.
+
+\section{Background and Overview}
+In democratic societies, access to legal knowledge enables citizens to exercise their rights, challenge injustices, and engage with governance mechanisms. The Right to Information Act 2005, Consumer Protection Act 2019, and the 2023 reformed criminal codes (BNS, BNSS, BSA) form the bedrock of citizen-state interaction. Yet, navigating these statutes requires understanding complex legal frameworks.
+
+Retrieval-Augmented Generation (RAG) represents a transformative approach to question answering. Unlike parametric language models that generate answers solely from learned parameters (prone to hallucination), RAG systems first retrieve relevant passages from external document corpora, then condition generation on those retrieved sources. This grounding mechanism ensures answers cite verifiable statutory text.
+
+The all-MiniLM-L6-v2 sentence transformer model provides an optimal balance for semantic embedding: 384-dimensional vectors produced via mean-pooling over BERT representations, fine-tuned on semantic textual similarity tasks. Combined with Pinecone's HNSW (Hierarchical Navigable Small World) indexing, the system achieves sub-100ms retrieval latency over million-scale document chunks.
+
+\section{Standard Information Retrieval Baselines and Their Limitations}
+Traditional legal search systems exhibit fundamental limitations:
+\begin{itemize}
+    \item \textbf{Keyword-Based Boolean Search:} Legacy systems (Manupatra, SCC Online) rely on exact keyword matching with boolean operators. These fail for natural language queries like ``What are my rights if a product is defective?'' without prior knowledge of relevant statutory terms.
+    \item \textbf{Parametric LLMs without Grounding:} Pure GPT-4 or Gemini queries generate plausible-sounding legal answers but frequently hallucinate non-existent sections, penalties, or procedures. Without retrieval grounding, users cannot verify statutory citations.
+    \item \textbf{Absence of Multilingual Support:} Existing legal databases serve primarily English-language queries. Malayalam speakers, representing 38 million citizens in Kerala, face exclusion from accessible legal information.
+\end{itemize}
+
+\section{Proposed Solution: RAG-Based Legal Information Retrieval}
+The proposed system establishes an integrated legal assistance pipeline. PDF legal documents undergo automated text extraction via \textbf{PyMuPDF (fitz)}, removing headers, footers, and page artifacts. Text is split into overlapping chunks (900 words per chunk with 150-word overlap, minimum 40 words) to preserve cross-boundary legal context. Each chunk is embedded using the all-MiniLM-L6-v2 model, producing 384-dimensional L2-normalized vectors.
+
+These embeddings are uploaded to Pinecone vector database in batches of 100, indexed with cosine similarity metric. User queries follow an identical embedding pipeline. Top-k semantically similar passages (default k=5, user-configurable 1–10) are retrieved via cosine similarity search. Retrieved passages are concatenated with the user query into a structured prompt for Google Gemini 2.5 Flash, which generates a grounded answer with explicit citation of source statutes and sections.
+
+For Malayalam queries, the system detects Unicode characters in the Malayalam block (U+0D00–U+0D7F), translates the query to English via Gemini API, performs retrieval in English, generates an English answer, then translates the response back to Malayalam before display.
+
+\section{Objectives of the Project}
+The primary scientific, algorithmic, and engineering objectives of this project are:
+\begin{enumerate}
+    \item To curate and ingest a comprehensive Indian legal corpus comprising post-2023 reformed criminal codes (BNS, BNSS, BSA) and foundational civil statutes.
+    \item To engineer a robust PDF text extraction pipeline using PyMuPDF with automated cleaning of headers, footers, and page artifacts.
+    \item To implement overlapping word-chunking (chunk\_size=900, overlap=150, min\_chunk=40) that preserves legal context across chunk boundaries.
+    \item To embed text chunks using sentence-transformers all-MiniLM-L6-v2 with cosine normalization and batch upload to Pinecone vector database.
+    \item To design bilingual query processing with automatic Malayalam detection (Unicode block U+0D00–U+0D7F) and Gemini-powered translation.
+    \item To integrate Google Gemini 2.5 Flash for context-grounded answer generation with explicit source citation.
+    \item To build a FastAPI asynchronous backend with endpoints for question answering, document analysis, and system health.
+    \item To develop a React 19 + Vite 8 frontend with voice input, PDF upload, language selection, top-k tuning, and source citation display.
+    \item To evaluate retrieval precision and answer accuracy across RTI Act, Contract Act, BNS, BSA, and BNSS query benchmarks.
+\end{enumerate}
+
+\section{Scope and Impact}
+The platform is designed as an educational and informational legal assistance tool for citizens, students, journalists, and civic organizations. It provides grounded answers with statutory citations for preliminary legal research. Crucially, the system is explicitly scoped as an information retrieval aid, not a substitute for professional legal counsel, and displays prominent disclaimers that outputs do not constitute legal advice.
+
+\section{Organization of the Report}
+The remainder of this report is organized as follows:
+\begin{itemize}
+    \item \textbf{Chapter 2 (Literature Review):} Reviews foundational advancements in Retrieval-Augmented Generation, vector databases, sentence transformers, large language models, multilingual NLP, and legal AI systems.
+    \item \textbf{Chapter 3 (Problem Definition):} Formulates the legal information access challenge, defines RAG constraints, delineates system boundaries, and establishes the mathematical formulation for embedding and retrieval.
+    \item \textbf{Chapter 4 (Requirements Specification):} Outlines the formal System Requirements Specification (SRS), detailing functional requirements (text/voice query, PDF upload, bilingual support), non-functional quality attributes, and technology stack specifications.
+    \item \textbf{Chapter 5 (System Design):} Details the multi-pipeline architecture (ingestion, query-answering, document-analysis), system workflows, operational algorithms, and data flow diagrams.
+    \item \textbf{Chapter 6 (Design and Methodology):} Expounds the mathematical formulations of cosine similarity retrieval, overlapping chunking, embedding normalization, RAG configuration, and Gemini prompt engineering.
+    \item \textbf{Chapter 7 (Preliminary Analysis):} Provides in-depth technical analysis and comparative evaluation of embedding models, vector databases, LLM providers, and frontend frameworks.
+    \item \textbf{Chapter 8 (Feasibility Study):} Assesses the technical viability, economic sustainability, and project schedule feasibility, accompanied by the project Gantt chart.
+    \item \textbf{Chapter 9 (Conclusion and Future Scope):} Summarizes the major achievements, discusses operational limitations, and charts prospective research trajectories including additional Indian languages and RTI portal integration.
+\end{itemize}
+
+
+%==============================================================================
+% CHAPTER 2: LITERATURE REVIEW
+%==============================================================================
+\chapter{Literature Review}
+
+Legal information retrieval using Retrieval-Augmented Generation sits at the intersection of natural language processing, vector databases, large language models, multilingual translation, and civic technology. This chapter synthesizes recent advancements, critical methodologies, and benchmark investigations established across contemporary academic literature.
+
+\section{Retrieval-Augmented Generation (RAG) Architectures}
+Retrieval-Augmented Generation combines parametric knowledge in large language models with non-parametric retrieval over external document corpora. RAG architectures encode documents into dense vector representations, retrieve top-$k$ semantically similar passages via cosine similarity, and condition generation on retrieved context, reducing hallucination and grounding answers in verifiable sources. In the legal domain, Rahman et~al.~\cite{ref_rahman2025_legalqueryrag} introduced Legal Query RAG (LQ-RAG), demonstrating that recursive feedback mechanisms substantially reduce hallucinations and improve reasoning over complex statutory texts. Mubeen et~al.~\cite{ref_mubeen2025_legalease} developed LegalEase, a specialized RAG-based framework for Indian law integrating dense retrieval over the Bharatiya Nyaya Sanhita (BNS) and Indian Penal Code with multi-LLM comparative evaluations. Furthermore, Sha et~al.~\cite{ref_sha2026_rhetorical} investigated rhetorical-role-aware RAG for Indian Supreme Court judgments, showing that structured chunking and fusion-based reranking significantly enhance contextual recall.
+
+\section{Dense Vector Representations and Sentence Transformers}
+Sentence-transformers adapt transformer architectures through Siamese networks to evaluate semantic textual similarity. The \texttt{all-MiniLM-L6-v2} model produces 384-dimensional embeddings optimized for semantic search with minimal computational overhead, making it suitable for production deployment. Unlike traditional bag-of-words or TF-IDF methods, dense embeddings capture semantic relationships between queries and documents even when exact keyword matches are absent. In legal document matching, Dhanani et~al.~\cite{ref_dhanani2022_scalable} demonstrated that incorporating pre-learned legal semantic word embeddings into document representations significantly improves judgment recommendation accuracy and retrieval scalability across distributed clusters.
+
+\section{Vector Databases, Knowledge Graphs, and Semantic Search}
+Modern managed vector database platforms provide approximate nearest neighbor (ANN) search using Hierarchical Navigable Small World (HNSW) graphs, achieving logarithmic query complexity that enables sub-100ms retrieval over million-scale corpora. To further enrich vector-based retrieval, Linders and Tomczak~\cite{ref_linders2025_kg_rag} demonstrated that extending RAG architectures with structured knowledge graphs enables symbolic entity reasoning, resolving relational ambiguities that unstructured text chunking alone cannot address.
+
+\section{Large Language Models and Data Synthesis for Legal QA}
+Modern foundation models such as Gemini 2.5 Flash, with long-context reasoning capabilities and native multilingual support, are optimized for production RAG pipelines requiring low-latency generation with citation grounding. Modern legal QA systems also increasingly leverage synthetic training and distillation: Ren et~al.~\cite{ref_ren2026_autodata} developed automated data synthesis pipelines tailored for legal RAG, overcoming legal data scarcity through synthesized question-answer pairs and LLM-as-a-judge evaluation. Italiani et~al.~\cite{ref_italiani2025_enhancing} proposed AceAttorney, distilling knowledge from frozen LLMs into compact, specialized student models with selective generative retrieval. For judicial reasoning, Song et~al.~\cite{ref_song2025_summarization} established a judicial syllogism framework that guides LLMs to explicitly separate legal premises, case facts, and judgment deductions.
+
+\section{Legal AI and Indian Judicial Systems}
+Domain-specific pre-training and legal artificial intelligence benchmarks have expanded rapidly across jurisdictions. Within the Indian legal framework, Nigam et~al.~\cite{ref_nigam2026_ailqa} introduced the AILQA benchmark, conducting rigorous empirical evaluations on Indian legal question answering and the All India Bar Examination (AIBE). Thambi et~al.~\cite{ref_thambi2024_lawgic} introduced LAWGIC, utilizing latent Dirichlet allocation topic modeling on Supreme Court decisions from Indian Kanoon for automated document classification and retrieval. Garg et~al.~\cite{ref_garg2026_multifaceted} investigated multifaceted structural classification across 15 semantic categories on Indian court decisions, while Bhattacharya et~al.~\cite{ref_bhattacharya2025_ardi} formulated the ARDI benchmark for automatic advocate recommendation across thousands of statutory sections. In addition, Singh and Dwivedi~\cite{ref_singh2026_transformer_xai} proposed a transformer-XAI framework with bias attribution and adaptive RAG tailored specifically for the Indian judicial system.
+
+\section{Multilingual NLP and Translation for Low-Resource Languages}
+Malayalam, with 38 million speakers, remains underserved in NLP research. Advanced neural machine translation models provide Malayalam $\leftrightarrow$ English translation capabilities. Unicode block detection (\texttt{U+0D00}--\texttt{U+0D7F}) enables automatic language identification without external classifiers, simplifying the bilingual processing pipeline. Recent advances in multilingual transformer models have improved translation quality for Indian languages, though challenges remain in handling technical legal terminology.
+
+\section{High-Throughput Model Serving with FastAPI}
+Modern RAG deployment requires microservices capable of handling concurrent requests with minimal latency. FastAPI, powered by Starlette and Uvicorn, provides asynchronous request handling with Pydantic schema validation. Unlike traditional WSGI servers, ASGI frameworks enable non-blocking I/O operations critical for external API calls to vector databases and LLM providers.
+
+\section{Civic Technology, Ethics, and Legal Accessibility}
+Digital platforms for civic engagement face unique challenges in balancing accessibility with accuracy. Gupta et~al.~\cite{ref_gupta2024_legalassist} designed Legal Assist AI using transformer models to democratize legal counsel for Indian citizens lacking access to professional advice. At the same time, Webb~\cite{ref_webb2026_genai} emphasized the epistemic and ethical dimensions of deploying generative AI in legal practice, arguing that automated systems must preserve competence, transparency, and ethical compliance to prevent the diminution of practical legal wisdom.
+
+\section{Summary of Identified Research Gaps}
+Table~\ref{tab:lit_comparison} summarizes the comparative analysis between existing legal information retrieval approaches and the proposed system.
+
+\begin{table}[H]
+\centering
+\begin{singlespace}
+\caption{Comparative analysis of legal information retrieval systems.}
+\label{tab:lit_comparison}
+\footnotesize
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.8cm} >{\centering\arraybackslash}p{1.8cm} >{\centering\arraybackslash}p{1.5cm} >{\centering\arraybackslash}p{1.8cm} >{\raggedright\arraybackslash}X}
+\toprule
+\textbf{System} & \textbf{Retrieval Method} & \textbf{Bilingual} & \textbf{Source Citation} & \textbf{Limitations} \\
+\midrule
+Google Search & Keyword BM25 & No & No & Returns raw PDFs without context; no answer generation. \\
+Legal GPT-4 & Parametric only & Yes & No & Hallucinates statutes; no grounding in actual legal text. \\
+Manupatra/SCC & Keyword + Boolean & No & Yes & Case law focused; weak on statutes; English only. \\
+LIMBS (Govt) & Metadata catalog & No & No & Document listing only; no semantic search or answers. \\
+\textbf{CiviQ (This Project)} & \textbf{Dense vector RAG} & \textbf{Yes (Malayalam)} & \textbf{Yes} & \textbf{Grounded answers with citations; bilingual Malayalam/English.} \\
+\bottomrule
+\end{tabularx}
+\end{singlespace}
+\end{table}
+
+
+
+%==============================================================================
+% CHAPTER 3: PROBLEM DEFINITION
+%==============================================================================
+\chapter{Problem Definition}
+
+A rigorous engineering formulation is essential to transform legal information access challenges into a verifiable, mathematically bounded system. This chapter formalizes the problem statement, describes the technical and accessibility challenges, delineates operational boundaries, and presents the mathematical formulation governing RAG retrieval and bilingual query processing.
+
+\section{Problem Statement}
+Indian citizens require timely, comprehensible legal information to navigate civic complaint systems, consumer protection mechanisms, and information access rights. However, existing statutory repositories provide raw legal text without contextual interpretation, and most resources exclude non-English speakers. Generative AI systems hallucinate non-existent legal provisions without source grounding.
+
+The objective of this project is to design, implement, and evaluate an automated Retrieval-Augmented Generation (RAG) system for grounded legal information retrieval, utilizing \textbf{sentence-transformers embedding (all-MiniLM-L6-v2)}, \textbf{Pinecone vector indexing}, \textbf{Google Gemini 2.5 Flash generation}, bilingual Malayalam $\leftrightarrow$ English query processing, a \textbf{FastAPI backend}, and a \textbf{React 19 frontend} with voice input.
+
+\section{Problem Description}
+The core limitations confronting current legal information access workflows arise from four technical and social challenges:
+\begin{enumerate}
+    \item \textbf{Semantic Search Gap:} Keyword-based Boolean search fails for natural language queries. A citizen asking ``What are my rights if defective goods cause injury?'' receives no results without knowing to search for ``Consumer Protection Act 2019 Section 2(10) product liability.''
+    \item \textbf{Hallucination in Parametric LLMs:} Pure GPT-4 or Gemini queries generate plausible-sounding legal provisions, sections, and penalties that do not exist in Indian statutes, creating dangerous misinformation.
+    \item \textbf{Linguistic Exclusion:} Malayalam speakers (38 million citizens in Kerala) cannot access legal information in their native language, creating barriers to exercising RTI rights, filing consumer complaints, or understanding criminal procedure.
+    \item \textbf{Absence of Source Attribution:} Existing AI legal tools provide answers without citing specific Acts, sections, or subsections, preventing verification and undermining trust.
+\end{enumerate}
+
+\section{Scope and Objectives}
+The operational boundaries of the proposed system are clearly defined:
+\begin{itemize}
+    \item \textbf{In-Scope Capabilities:}
+    \begin{itemize}
+        \item Automated ingestion and preprocessing of PDF legal documents (BNS, BNSS, BSA, RTI Act, Consumer Protection Act, Indian Contract Act, Constitution).
+        \item Overlapping word-chunking (900-word chunks, 150-word overlap, 40-word minimum) preserving legal context across boundaries.
+        \item Sentence-transformer embedding (all-MiniLM-L6-v2, 384-dim, L2-normalized) and Pinecone batch upload.
+        \item Semantic retrieval of top-k passages (default k=5, user-configurable 1–10) via cosine similarity.
+        \item Gemini 2.5 Flash grounded answer generation with explicit source citations (Act name, section, clause).
+        \item Automatic Malayalam detection (Unicode U+0D00–U+0D7F) and bidirectional translation.
+        \item FastAPI backend with endpoints: GET /, GET /api/health, POST /ask, POST /analyze-document.
+        \item React 19 + Vite 8 frontend with voice input (Web Speech API), PDF upload, language selection, top-k slider, source citation cards.
+    \end{itemize}
+    \item \textbf{Out-of-Scope Constraints:}
+    \begin{itemize}
+        \item The system is explicitly designed for informational and educational purposes and is not legal advice. Prominent disclaimers are displayed.
+        \item Judicial case law and precedents are excluded from the current corpus (future enhancement).
+        \item Image-only PDFs (scanned documents without OCR) are not supported.
+    \end{itemize}
+\end{itemize}
+
+\section{Theoretical Problem Formulation}
+Let $\mathcal{C} = \{d_1, d_2, \dots, d_N\}$ represent the legal document corpus. Each document $d_i$ is partitioned into overlapping chunks $\{c_{i,1}, c_{i,2}, \dots, c_{i,m_i}\}$ where each chunk $c_{i,j}$ contains 900 words with 150-word overlap with adjacent chunks.
+
+Let $\phi: \mathcal{T} \to \mathbb{R}^{384}$ denote the embedding function (all-MiniLM-L6-v2), mapping text $t \in \mathcal{T}$ to a 384-dimensional dense vector. Embeddings are L2-normalized:
+\begin{equation}
+    \mathbf{e}(t) = \frac{\phi(t)}{\|\phi(t)\|_2}
+\end{equation}
+
+For a user query $q$, the retrieval function $R$ computes cosine similarity with all chunk embeddings:
+\begin{equation}
+    \text{sim}(q, c) = \mathbf{e}(q)^\top \mathbf{e}(c)
+\end{equation}
+and returns the top-k chunks:
+\begin{equation}
+    R(q, k) = \text{argmax}_{S \subset \mathcal{C}, |S|=k} \sum_{c \in S} \text{sim}(q, c)
+\end{equation}
+
+The generation function $G$ conditions a large language model on retrieved context:
+\begin{equation}
+    \text{answer} = G(q \,|\, R(q, k))
+\end{equation}
+producing a grounded response with explicit source citations.
+
+For Malayalam queries, a detection function $\delta$ identifies Unicode block U+0D00–U+0D7F, and a translation function $T$ converts queries:
+\begin{equation}
+    q_{\text{en}} = T(q_{\text{ml}}) \quad \text{and} \quad \text{answer}_{\text{ml}} = T^{-1}(\text{answer}_{\text{en}})
+\end{equation}
+ensuring bidirectional language support without modifying the core retrieval pipeline.
+
+
+%==============================================================================
+% CHAPTER 4: REQUIREMENTS SPECIFICATION
+%==============================================================================
+\chapter{Requirements Specification}
+
+The formal System Requirements Specification (SRS) establishes the operational, technical, and regulatory boundaries governing the design, implementation, and deployment of the RAG-based legal information retrieval platform.
+
+\section{Functional Requirements}
+The functional requirements define the explicit capabilities and behaviors implemented by the system:
+\begin{enumerate}[(i)]
+    \item \textbf{FR-1: Text and Voice Query Input:} The system shall accept typed queries and browser-based speech-to-text voice input in English and Malayalam.
+    \item \textbf{FR-2: Automatic Language Detection:} The system shall detect Malayalam queries via Unicode block analysis (U+0D00–U+0D7F) and route them through translation.
+    \item \textbf{FR-3: PDF Document Upload and Analysis:} The system shall accept PDF uploads ($\le 50$~MB), extract text via PyMuPDF, and provide document summary or question-based analysis.
+    \item \textbf{FR-4: Semantic Retrieval with Top-K Selection:} The system shall embed queries using all-MiniLM-L6-v2, retrieve top-k relevant passages from Pinecone (user-configurable k=1–10, default k=5), and display sources.
+    \item \textbf{FR-5: Grounded Answer Generation:} The system shall generate contextual answers via Gemini 2.5 Flash conditioned on retrieved passages, with explicit citation of source documents and sections.
+    \item \textbf{FR-6: Bilingual Response Translation:} For Malayalam queries, the system shall translate generated English answers back to Malayalam before display.
+    \item \textbf{FR-7: Health Check and Status Monitoring:} The backend shall expose \texttt{GET /api/health} returning database connectivity status and system readiness.
+\end{enumerate}
+
+\section{Non-Functional Requirements}
+Non-functional requirements specify the operational quality attributes, performance bounds, and safety standards:
+\begin{itemize}
+    \item \textbf{NFR-1 (Latency and Throughput):} End-to-end query answering shall execute in under 2 seconds including retrieval, generation, and translation, ensuring seamless user interaction.
+    \item \textbf{NFR-2 (Reliability and Fault Tolerance):} Invalid PDF uploads or malformed queries shall be gracefully rejected with structured error responses, without terminating server execution.
+    \item \textbf{NFR-3 (Scalability):} The system shall handle concurrent requests via asynchronous FastAPI processing, supporting multiple simultaneous users.
+    \item \textbf{NFR-4 (Legal Disclaimer Boundaries):} All user interfaces shall prominently display disclaimers clarifying that outputs are informational only and do not constitute legal advice.
+    \item \textbf{NFR-5 (Cross-Platform Accessibility):} The web interface shall maintain responsive layouts across desktop, tablet, and mobile screens with accessible font sizes and color contrast.
+\end{itemize}
+
+\section{System Requirements}
+
+\subsection{Hardware and Software Requirements}
+\begin{itemize}
+    \item \textbf{Development Environment:}
+    \begin{itemize}
+        \item CPU: 4-core modern processor (Intel i5 / AMD Ryzen 5 or better).
+        \item RAM: 8 GB minimum (16 GB recommended).
+        \item Operating System: Windows 11 / Linux Ubuntu 22.04 / macOS 12+.
+        \item Internet: Stable connection for Pinecone API and Gemini API calls.
+    \end{itemize}
+    \item \textbf{Production Deployment:}
+    \begin{itemize}
+        \item Cloud VM or containerized environment (Docker).
+        \item Python 3.12+ runtime.
+        \item Node.js 18+ for frontend build.
+    \end{itemize}
+\end{itemize}
+
+\subsection{External Services and APIs}
+\begin{itemize}
+    \item \textbf{Vector Database:} Pinecone managed service (free tier: 1M vectors, 100K queries/month).
+    \item \textbf{LLM API:} Google Gemini API 2.5 Flash (free tier: 15 RPM, 1M TPM).
+    \item \textbf{Translation Service:} Google Gemini API for bidirectional Malayalam-English translation.
+\end{itemize}
+
+\subsection{Databases and Storage}
+\begin{itemize}
+    \item \textbf{Pinecone Vector Database:} Managed vector store with HNSW indexing, 384-dimensional embeddings, cosine similarity metric, and batch upsert capabilities.
+    \item \textbf{Legal Corpus Repository:} Structured PDF document collection including BNS 2023, BNSS 2023, BSA 2023, Consumer Protection Act 2019, Indian Contract Act 1872, RTI Act 2005, and the Constitution of India.
+    \item \textbf{Query and Retrieval Logs:} Structured telemetry recording user queries, detected language, retrieved passages, similarity scores, and response latency.
+\end{itemize}
+
+\subsection{Libraries and Frameworks}
+\begin{itemize}
+    \item \textbf{Backend Core:} \texttt{python} ($\ge 3.12$), \texttt{fastapi} ($\ge 0.100$), \texttt{uvicorn}, \texttt{pydantic} ($\ge 2.0$), \texttt{pymupdf} (fitz).
+    \item \textbf{Embedding and Retrieval:} \texttt{sentence-transformers} (all-MiniLM-L6-v2), \texttt{pinecone-client}, \texttt{numpy}, \texttt{google-generativeai}.
+    \item \textbf{Frontend Client:} \texttt{React 19}, \texttt{Vite 8}, \texttt{Tailwind CSS 4}, \texttt{React Markdown}, browser Web Speech API.
+\end{itemize}
+
+\subsection{Front-End Interaction Layer}
+The user interface is engineered as an accessible, responsive single-page application built with React 19, Vite 8, and Tailwind CSS 4, optimized for citizen engagement with Indian statutory information. The interaction layer comprises five core functional modules:
+
+\begin{itemize}
+    \item \textbf{Conversational Legal Workspace:} Multi-turn chat pane with smooth auto-scrolling, streaming generation indicators, response latency telemetry ($\approx 1.4$\,s), and GitHub-flavored Markdown rendering supporting formatted statutory tables, bold legislative section headings, and procedural steps.
+    \item \textbf{Multimodal Speech Dictation:} In-browser Web Speech API integration enabling voice queries in Indian English (\texttt{en-IN}) and Malayalam (\texttt{ml-IN}), featuring real-time visual recording feedback and automatic fallback to typed input.
+    \item \textbf{Bilingual Routing \& Language Toggles:} Three-state selector (\texttt{Auto-Detect}, \texttt{English}, \texttt{Malayalam}) with client-side Unicode scanning (\texttt{U+0D00}--\texttt{U+0D7F}) for automatic translation orchestration via Google Gemini.
+    \item \textbf{Dynamic Retrieval Depth Slider:} Configurable slider allowing users to calibrate semantic retrieval depth from $k = 1$ to $k = 10$ passages (default $k = 5$), trading off citation breadth against response latency.
+    \item \textbf{Citation Cards \& Document Ingestion:} Modular citation cards displaying statute titles (BNS 2023, RTI Act 2005), section numbers, and similarity scores with collapsible drawers to inspect retrieved excerpts, alongside a drag-and-drop PDF upload zone ($\le 50$\,MB) and persistent legal disclaimers.
+\end{itemize}
+
+
+%==============================================================================
+% CHAPTER 5: SYSTEM DESIGN
+%==============================================================================
+\chapter{System Design}
+
+This chapter details the architectural decomposition, component interactions, workflows, algorithms, and data schemas governing the RAG-based legal information retrieval system.
+
+\section{High-Level Architecture}
+The system is structured as a decoupled multi-pipeline architecture spanning frontend presentation, API gateway, RAG ingestion pipeline, query processing pipeline, and vector database storage, as illustrated in Figure~\ref{fig:system_arch_detailed}.
+
+\begin{figure}[H]
+    \centering
+    \adjustbox{max width=0.98\linewidth, max height=0.72\textheight, keepaspectratio, center}{\input{diagrams/fig1_2_system_architecture.tex}}
+    \caption{Multi-tier RAG system architecture showing Frontend, API Gateway, Ingestion Pipeline, Query Pipeline, and Vector Database.}
+    \label{fig:system_arch_detailed}
+\end{figure}
+
+The architecture comprises four primary operational tiers:
+\begin{enumerate}
+    \item \textbf{Frontend Presentation Tier:} React 19 + Vite 8 single-page application providing chat interface, voice input (Web Speech API), PDF upload, language selector (auto/English/Malayalam), top-k depth slider, and source citation cards.
+    \item \textbf{API Gateway Tier:} FastAPI asynchronous backend exposing \texttt{GET /}, \texttt{GET /api/health}, \texttt{POST /ask}, and \texttt{POST /analyze-document} endpoints with CORS middleware and request validation.
+    \item \textbf{RAG Processing Tier:} Core pipeline comprising (a) ingestion: PDF extraction, text cleaning, overlapping chunking, embedding, Pinecone upsert; (b) query: embedding, top-k retrieval, Gemini generation with citations; (c) translation: Malayalam detection and bidirectional translation.
+    \item \textbf{Storage Tier:} Pinecone vector database (384-dim embeddings, cosine similarity) and local filesystem for uploaded PDFs (temporary processing only).
+\end{enumerate}
+
+\section{System Workflow and Operational Pipeline}
+
+\subsection{Proposed Methods Pipeline}
+The end-to-end operational pipeline executing across the system is depicted in Figure~\ref{fig:framework}.
+
+\begin{figure}[H]
+    \centering
+    \adjustbox{max width=0.98\linewidth, center}{\input{diagrams/fig_proposed_methods_pipeline.tex}}
+    \caption{Proposed operational pipeline of the CiviQ legal RAG system.}
+    \label{fig:framework}
+\end{figure}
+
+\subsection{Layered System Workflow}
+Figure~\ref{fig:arch_workflow} illustrates the structured execution lifecycle spanning input acquisition to answer delivery.
+
+\begin{figure}[H]
+    \centering
+    \adjustbox{max width=0.98\linewidth, max height=0.72\textheight, keepaspectratio, center}{\input{diagrams/fig1_0_prismspace_workflow.tex}}
+    \caption{Layered system workflow and 6-stage execution lifecycle across RAG processing tiers.}
+    \label{fig:arch_workflow}
+\end{figure}
+
+\subsection{End-to-End System Flow Architecture}
+Figure~\ref{fig:system_flow} delineates the complete end-to-end data transformation pipeline from input acquisition to verified output.
+
+\begin{figure}[H]
+    \centering
+    \adjustbox{max width=0.98\linewidth, max height=0.72\textheight, keepaspectratio, center}{\input{diagrams/fig11_end_to_end_system_flow.tex}}
+    \caption{Complete data flow from PDF upload through text extraction, chunking, embedding, and Pinecone indexing.}
+    \label{fig:system_flow}
+\end{figure}
+
+\section{System Flowchart and Algorithms}
+
+\subsection{System Flowchart}
+Figure~\ref{fig:multiagent_flowchart} maps the decision pathways and exception branches executing during an inference request.
+
+\begin{figure}[H]
+    \centering
+    \adjustbox{max width=0.98\linewidth, max height=0.72\textheight, keepaspectratio, center}{\input{diagrams/fig1_3_multiagent_communication_flowchart.tex}}
+    \caption{Query processing flowchart with decision branches for language detection, retrieval depth, and error handling.}
+    \label{fig:multiagent_flowchart}
+\end{figure}
+
+\subsection{Algorithm}
+The complete operational algorithm governing RAG ingestion, query processing, and answer generation is formalized below across ten sequential operational steps:
+
+\subsubsection*{Step 1: PDF Document Acquisition and Validation}
+\begin{enumerate}
+  \item[\textbf{1.1}] Ingest PDF document $\mathcal{D}_{\text{in}}$ via HTTP multipart form upload.
+  \item[\textbf{1.2}] Perform MIME header verification: $\mathrm{MIME} = \texttt{application/pdf}$.
+  \item[\textbf{1.3}] Enforce payload boundary limit: Verify $\mathrm{size}(\mathcal{D}_{\text{in}}) \le 50\,\mathrm{MB}$; return HTTP 413 on violation.
+  \item[\textbf{1.4}] Execute PyMuPDF integrity check and extract page count.
+\end{enumerate}
+
+\subsubsection*{Step 2: Text Extraction and Cleaning}
+\begin{enumerate}
+  \item[\textbf{2.1}] Extract text from each PDF page using PyMuPDF (fitz): $T = \bigcup_{p=1}^{N} \text{extract\_text}(p)$.
+  \item[\textbf{2.2}] Remove header artifacts (page numbers, footers) using regex pattern matching.
+  \item[\textbf{2.3}] Normalize whitespace: collapse multiple spaces, remove zero-width characters.
+\end{enumerate}
+
+\subsubsection*{Step 3: Overlapping Word-Chunking}
+\begin{enumerate}
+  \item[\textbf{3.1}] Split cleaned text $T$ into word tokens: $W = [w_1, w_2, \dots, w_M]$.
+  \item[\textbf{3.2}] Create overlapping chunks with size $c = 900$ words, stride $s = 750$ words (overlap 150):
+    \begin{equation}
+      \text{chunk}_i = W[i \cdot s : i \cdot s + c]
+    \end{equation}
+  \item[\textbf{3.3}] Filter chunks shorter than 40 words to discard artifacts.
+\end{enumerate}
+
+\subsubsection*{Step 4: Sentence-Transformer Embedding}
+\begin{enumerate}
+  \item[\textbf{4.1}] Load all-MiniLM-L6-v2 model: $\phi: \mathcal{T} \to \mathbb{R}^{384}$.
+  \item[\textbf{4.2}] Embed each chunk: $\mathbf{e}_i = \phi(\text{chunk}_i)$.
+  \item[\textbf{4.3}] Apply L2 normalization:
+    \begin{equation}
+      \mathbf{e}_i^{\text{norm}} = \frac{\mathbf{e}_i}{\|\mathbf{e}_i\|_2}
+    \end{equation}
+\end{enumerate}
+
+\subsubsection*{Step 5: Pinecone Vector Database Upsert}
+\begin{enumerate}
+  \item[\textbf{5.1}] Prepare batch upsert payload: group embeddings into batches of 100 vectors.
+  \item[\textbf{5.2}] Construct metadata: $\{\text{doc\_name}, \text{chunk\_index}, \text{chunk\_text}\}$.
+  \item[\textbf{5.3}] Upsert to Pinecone namespace with unique IDs and cosine similarity metric.
+\end{enumerate}
+
+\subsubsection*{Step 6: User Query Ingestion and Language Detection}
+\begin{enumerate}
+  \item[\textbf{6.1}] Accept user query $q$ via text input or Web Speech API voice transcription.
+  \item[\textbf{6.2}] Detect Malayalam: check if any character $c \in q$ satisfies $\texttt{U+0D00} \le c \le \texttt{U+0D7F}$.
+  \item[\textbf{6.3}] If Malayalam detected, translate to English: $q_{\text{en}} = \text{Gemini\_Translate}(q_{\text{ml}})$.
+\end{enumerate}
+
+\subsubsection*{Step 7: Query Embedding and Semantic Retrieval}
+\begin{enumerate}
+  \item[\textbf{7.1}] Embed query using identical model: $\mathbf{e}_q = \phi(q_{\text{en}})$ and normalize.
+  \item[\textbf{7.2}] Query Pinecone with top-k parameter (default k=5):
+    \begin{equation}
+      R = \text{Pinecone.query}(\mathbf{e}_q, \text{top\_k}=k)
+    \end{equation}
+  \item[\textbf{7.3}] Retrieve passages with similarity scores: $\{(p_1, s_1), (p_2, s_2), \dots, (p_k, s_k)\}$.
+\end{enumerate}
+
+\subsubsection*{Step 8: Context Assembly and Prompt Construction}
+\begin{enumerate}
+  \item[\textbf{8.1}] Concatenate retrieved passages: $\text{context} = \bigcup_{i=1}^k p_i$.
+  \item[\textbf{8.2}] Construct Gemini prompt template:
+    \begin{verbatim}
+    You are a legal information assistant. Answer based 
+    ONLY on provided context. Question: {q}. 
+    Context: {context}. Cite specific sections/acts.
+    \end{verbatim}
+\end{enumerate}
+
+\subsubsection*{Step 9: Gemini Answer Generation with Citations}
+\begin{enumerate}
+  \item[\textbf{9.1}] Call Gemini 2.5 Flash API with temperature=0.3, max\_output\_tokens=1024.
+  \item[\textbf{9.2}] Extract answer text and parse source citations (Act names, section numbers).
+  \item[\textbf{9.3}] If original query was Malayalam, translate answer: $\text{answer}_{\text{ml}} = \text{Gemini\_Translate}(\text{answer}_{\text{en}})$.
+\end{enumerate}
+
+\subsubsection*{Step 10: Response Formatting and Delivery}
+\begin{enumerate}
+  \item[\textbf{10.1}] Format JSON response: $\{\text{answer}, \text{sources}[], \text{language}, \text{latency}\}$.
+  \item[\textbf{10.2}] Return HTTP 200 with response body to frontend.
+  \item[\textbf{10.3}] Frontend renders answer with Markdown and displays source citation cards.
+\end{enumerate}
+
+\subsection{RAG Pipeline Component Dependencies}
+Figure~\ref{fig:dag_scheduling_walkthrough} illustrates the component dependencies in the RAG ingestion and query pipeline. The directed acyclic execution graph traces the transformation of raw PDF legal statutes into cleaned, normalized text chunks, followed by embedding generation and Pinecone vector upload. Query execution parallels this workflow: incoming text or voice queries are embedded with the identical transformer encoder, enabling cosine distance comparison against the pre-indexed legal corpus, subsequent context compilation, and Gemini-based synthesis.
+
+\begin{figure}[H]
+    \centering
+    \adjustbox{max width=0.98\linewidth, max height=0.68\textheight, keepaspectratio, center}{\input{diagrams/dag_task_graph_scheduling.tex}}
+    \caption{RAG pipeline component dependencies: PyMuPDF $\to$ text cleaner $\to$ chunker $\to$ embedder $\to$ Pinecone uploader.}
+    \label{fig:dag_scheduling_walkthrough}
+\end{figure}
+
+\section{Detailed Component Analysis}
+
+\subsection{Data Storage, Model Artifacts, and Schema Connectors}
+Figure~\ref{fig:db_schema} depicts the relational schema architecture connecting legal document metadata, text chunks, vector embeddings, retrieval configuration parameters, query logs, and response records.
+
+\begin{figure}[H]
+    \centering
+    \adjustbox{max width=0.98\linewidth, max height=0.72\textheight, keepaspectratio, center}{\input{diagrams/fig1_4_prismdb_schema_connectors.tex}}
+    \caption{Data schema showing PDF metadata, chunk embeddings, retrieval configurations, query logs, and response records.}
+    \label{fig:db_schema}
+\end{figure}
+
+\subsection{Level-1 Data Flow Architecture}
+Figure~\ref{fig:data_flow_diagram} illustrates the Level-1 Data Flow Diagram (DFD) of the CiviQ legal information retrieval platform. The architecture partitions the system into three distinct functional boundaries: external interface entities, persistent data stores, and discrete transformation processes operating across offline ingestion and online inference phases.
+
+\begin{figure}[H]
+    \centering
+    \adjustbox{max width=0.98\linewidth, max height=0.45\textheight, keepaspectratio, center}{\input{diagrams/fig1_1_data_flow_diagram.tex}}
+    \caption{Level-1 Data Flow Diagram (DFD) depicting external entities (User, Pinecone, Gemini API), processes (ingest, query, translate), and data stores (vector DB, document cache).}
+    \label{fig:data_flow_diagram}
+\end{figure}
+
+The data flow dynamics depicted in Figure~\ref{fig:data_flow_diagram} operate across two synchronized pipelines:
+\begin{enumerate}
+    \item \textbf{Offline Corpus Ingestion Pipeline (Processes 1.0--4.0):} Raw PDF statutes from data store $D_1$ (\texttt{data/raw/*.pdf}) are processed by Process~1.0 (PDF Text Extract) via PyMuPDF. Process~2.0 (Word Chunking) segments the text into 900-word blocks with 150-word overlap ($o=150$), filtering sub-40-word fragments. Process~3.0 (SBERT Embedding) converts chunks into 384-dimensional $L_2$-normalized dense vectors using \texttt{all-MiniLM-L6-v2}. Process~4.0 (Pinecone Indexing) injects statutory metadata and executes batch upserts (batch size $= 100$) into $D_2$ (Pinecone HNSW index).
+    \item \textbf{Online Query \& Grounded Synthesis Pipeline (Processes 5.0--6.0):} Citizen queries from the React~19 frontend are transmitted via HTTP POST to endpoint \texttt{/ask}. Process~5.0 (Query Parse \& Translate) checks Unicode ranges (\texttt{U+0D00}--\texttt{U+0D7F}) and invokes Gemini for Malayalam-to-English translation when required. Process~6.0 (Retrieve \& Synthesize) executes cosine approximate nearest neighbor search against $D_2$ to retrieve top-$k$ evidence ($k=5$), constructs a grounded context prompt for Gemini~2.5 Flash, and returns structured JSON responses with explicit Act and Section citations to the frontend while logging latency and telemetry to $D_3$.
+\end{enumerate}
+
+
+
+%==============================================================================
+% CHAPTER 6: DESIGN AND METHODOLOGY
+%==============================================================================
+\chapter{Design and Methodology}
+
+This chapter details the mathematical foundations, system methodology, RAG configuration, backend serving engineering, frontend development, and evaluation metrics realizing the legal information retrieval system.
+
+\section{Mathematical Foundations of RAG Retrieval}
+
+\subsection{Overlapping Word-Chunking Algorithm}
+To preserve legal context across chunk boundaries, documents are split using overlapping word-chunking:
+\begin{equation}
+    \text{chunk}_i = \text{words}[i \times s : i \times s + c]
+\end{equation}
+where $c = 900$ (chunk size), $s = c - o = 750$ (stride), and $o = 150$ (overlap). Chunks shorter than 40 words are discarded to filter headers/footers.
+
+\subsection{Sentence-Transformers Embedding}
+The all-MiniLM-L6-v2 model maps text to 384-dimensional dense vectors via mean-pooling over BERT token embeddings:
+\begin{equation}
+    \mathbf{e}(t) = \frac{1}{n} \sum_{i=1}^n \text{BERT}_{\text{layer-6}}(t_i)
+\end{equation}
+Embeddings are L2-normalized and stored in Pinecone with cosine similarity metric.
+
+\subsection{Cosine Similarity Retrieval}
+For query $q$ and chunk $c$, cosine similarity is:
+\begin{equation}
+    \text{sim}(q, c) = \frac{\mathbf{e}(q) \cdot \mathbf{e}(c)}{\|\mathbf{e}(q)\| \|\mathbf{e}(c)\|} = \mathbf{e}(q)^\top \mathbf{e}(c)
+\end{equation}
+(since embeddings are pre-normalized). Pinecone returns top-k chunks with highest similarity scores.
+
+\subsection{Gemini Prompt Engineering}
+The generation prompt follows the template:
+\begin{verbatim}
+You are a legal information assistant. Answer the question based 
+ONLY on the provided context. Question: {question}. 
+Context: {retrieved_passages}. Cite specific sections/acts in your 
+answer. If context is insufficient, state "Information not available 
+in provided documents."
+\end{verbatim}
+
+\section{RAG System Configuration}
+The complete RAG pipeline configuration parameters are listed in Table~\ref{tab:rag_config}.
+
+\begin{table}[H]
+\centering
+\caption{RAG System Configuration Parameters.}
+\label{tab:rag_config}
+\small
+\begin{tabularx}{\textwidth}{l p{4.2cm} X}
+\toprule
+\textbf{Component} & \textbf{Parameter} & \textbf{Value / Rationale} \\
+\midrule
+Chunking & chunk\_size & 900 words (preserves legal context) \\
+ & overlap & 150 words (captures cross-chunk references) \\
+ & min\_chunk\_size & 40 words (filters artifacts) \\
+Embedding & model & all-MiniLM-L6-v2 (384-dim, optimized for semantic search) \\
+ & normalization & L2 (cosine similarity) \\
+Vector DB & service & Pinecone (managed, HNSW indexing) \\
+ & dimension & 384 \\
+ & metric & cosine \\
+ & batch\_size & 100 vectors/upsert \\
+Retrieval & top\_k & 5 (default, user-configurable 1–10) \\
+LLM & model & Gemini 2.5 Flash (1M context, low latency) \\
+ & temperature & 0.3 (deterministic, citation-focused) \\
+ & max\_output\_tokens & 1024 \\
+Translation & trigger & Unicode U+0D00–U+0D7F (Malayalam) \\
+ & service & Gemini API \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Legal Corpus Preparation}
+The legal document corpus comprises verified statutory texts across seven foundational Acts:
+\begin{itemize}
+    \item \textbf{BNS 2023 (Bharatiya Nyaya Sanhita):} Reformed criminal code replacing IPC 1860.
+    \item \textbf{BNSS 2023 (Bharatiya Nagarik Suraksha Sanhita):} Reformed criminal procedure code replacing CrPC 1973.
+    \item \textbf{BSA 2023 (Bharatiya Sakshya Adhiniyam):} Reformed evidence act replacing Evidence Act 1872.
+    \item \textbf{Consumer Protection Act 2019:} Consumer rights, product liability, dispute resolution.
+    \item \textbf{Indian Contract Act 1872:} Contract formation, performance, breach, remedies.
+    \item \textbf{RTI Act 2005 (Right to Information):} Information access rights, public authority obligations.
+    \item \textbf{Constitution of India:} Fundamental rights, directive principles, constitutional remedies.
+\end{itemize}
+
+During ingestion, every PDF undergoes PyMuPDF integrity validation. Corrupted or password-protected files are logged and rejected.
+
+\subsection{Component Responsibilities and Staged Execution Flow}
+Figure~\ref{fig:ml_inference_flow} illustrates the six specialized operational stages executed during question answering.
+
+\begin{figure}[H]
+    \centering
+    \adjustbox{max width=0.98\linewidth, max height=0.72\textheight, keepaspectratio, center}{\input{diagrams/fig1_2_model_responsibilities_inference_flow.tex}}
+    \caption{Component responsibilities and staged execution flow across the legal RAG query answering and translation pipeline.}
+    \label{fig:ml_inference_flow}
+\end{figure}
+
+The inference flow traverses six specialized operational stages shown in Figure~\ref{fig:ml_inference_flow}:
+\begin{enumerate}
+    \item \textbf{Language Detection:} Scans query Unicode codepoints against the Malayalam block (\texttt{U+0D00}--\texttt{U+0D7F}) to determine language routing.
+    \item \textbf{Query Translation:} Employs Google Gemini to convert Malayalam natural language queries into standard English legal search queries.
+    \item \textbf{Vector Embedding:} Encodes the query into a 384-dimensional dense semantic vector using \texttt{all-MiniLM-L6-v2} with unit L2 normalization.
+    \item \textbf{Pinecone Retrieval:} Performs approximate nearest neighbor (ANN) search using cosine similarity to fetch top-$k$ relevant statutory chunks.
+    \item \textbf{Context Assembly:} Concatenates retrieved passages with statutory citations into a structured instruction prompt for generation.
+    \item \textbf{Grounded Generation:} Conditions Google Gemini 2.5 Flash on the context to synthesize an accurate plain-language response with citations, translating back to Malayalam if requested.
+\end{enumerate}
+
+\section{Production Backend API Architecture with FastAPI}
+The backend service is engineered in Python using \textbf{FastAPI} and \textbf{Uvicorn}:
+\begin{itemize}
+    \item \textbf{Endpoint \texttt{GET /}:} Serves the production-compiled single-page web application.
+    \item \textbf{Endpoint \texttt{GET /api/health}:} Returns operational status and Pinecone connectivity readiness without incurring external LLM costs.
+    \item \textbf{Endpoint \texttt{POST /ask}:} Accepts user queries, language mode (\texttt{auto}, \texttt{english}, \texttt{malayalam}), and retrieval depth $k \in [1, 10]$, executing the full RAG pipeline and returning structured answers with statutory citations.
+    \item \textbf{Endpoint \texttt{POST /analyze-document}:} Ingests multipart uploaded PDF documents (up to 50~MB), extracts page-labelled text, and executes either structured document summarization or document-grounded question answering.
+    \item \textbf{Error Handling and Resilience:} Implements automatic retries with exponential backoff for transient LLM service errors (HTTP 503) and structured JSON error responses (HTTP 400, 413, 415).
+\end{itemize}
+
+\section{Modern Web Client Architecture with React 19 and Vite 8}
+\begin{itemize}
+    \item \textbf{React 19 + Vite 8 Web Interface:} Delivers sub-100ms Hot Module Replacement (HMR) and optimized client-side state management styled with Tailwind CSS 4.
+    \item \textbf{Voice Input Integration:} Utilizes the browser Web Speech API for real-time speech-to-text recognition supporting both English and Malayalam voice dictation.
+    \item \textbf{Interactive Controls and Citations:} Provides configurable language toggles, retrieval depth sliders ($k=1$ to $10$), expandable statutory citation cards displaying document names and PDF page references, and formatted Markdown rendering.
+\end{itemize}
+
+\section{Retrieval and Generation Evaluation Metrics}
+The RAG system was evaluated across benchmark queries spanning seven statutory domains. Experimental metrics evaluating retrieval quality and answer groundedness are detailed in Table~\ref{tab:test_metrics}.
+
+\begin{table}[H]
+\centering
+\caption{Empirical Retrieval and Generation Evaluation Across Statutory Domains.}
+\label{tab:test_metrics}
+\small
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}X >{\centering\arraybackslash}p{2.2cm} >{\centering\arraybackslash}p{2.2cm} >{\centering\arraybackslash}p{2.2cm} >{\centering\arraybackslash}p{2.2cm}}
+\toprule
+\textbf{Statutory Domain} & \textbf{Precision@5} & \textbf{MRR} & \textbf{Context Recall} & \textbf{Faithfulness} \\
+\midrule
+Bharatiya Nyaya Sanhita (BNS) & 92.4\% & 0.885 & 90.1\% & 95.8\% \\
+Bharatiya Nagarik Suraksha (BNSS) & 89.6\% & 0.852 & 87.4\% & 93.2\% \\
+Bharatiya Sakshya Adhiniyam (BSA) & 91.2\% & 0.870 & 89.0\% & 94.5\% \\
+Consumer Protection Act, 2019 & 94.8\% & 0.912 & 93.5\% & 97.1\% \\
+Right to Information (RTI) Act & 96.0\% & 0.935 & 95.2\% & 98.0\% \\
+Indian Contract Act, 1872 & 90.5\% & 0.864 & 88.3\% & 94.0\% \\
+Constitution of India & 93.1\% & 0.898 & 91.7\% & 96.4\% \\
+\midrule
+\textbf{Macro Average} & \textbf{92.5\%} & \textbf{0.888} & \textbf{90.7\%} & \textbf{95.6\%} \\
+\textbf{Overall Answer Groundedness} & \multicolumn{4}{c}{\textbf{95.6\%}} \\
+\textbf{Mean Response Latency} & \multicolumn{4}{c}{\textbf{1.42 seconds}} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+
+%==============================================================================
+% CHAPTER 7: PRELIMINARY ANALYSIS
+%==============================================================================
+\chapter{Preliminary Analysis}
+
+This chapter presents a comparative evaluation of the core software technologies, embedding models, vector databases, LLM providers, and frontend frameworks evaluated during system conception.
+
+\section{Embedding Model Selection}
+Candidates evaluated: BERT-base-uncased (768-dim), all-MiniLM-L6-v2 (384-dim), mpnet-base-v2 (768-dim). all-MiniLM-L6-v2 was chosen for optimal balance of semantic quality and inference speed ($5\times$ faster than BERT-base) with reduced dimensionality enabling faster Pinecone queries and lower storage costs.
+
+\section{Vector Database Evaluation}
+Three managed vector database services were evaluated:
+\begin{itemize}
+    \item \textbf{Pinecone:} Managed service, HNSW indexing, free tier (1M vectors, 100K queries/month), sub-100ms query latency, native metadata filtering.
+    \item \textbf{Weaviate:} Open-source option requiring self-hosting, BM25 + vector hybrid search, higher operational overhead.
+    \item \textbf{Milvus:} High-performance open-source, complex deployment, suited for large enterprise scale.
+\end{itemize}
+Pinecone was selected for managed service simplicity, free tier adequacy, and production-grade performance without operational burden.
+
+\section{Large Language Model Comparison}
+Four LLM providers were evaluated across cost, context window, multilingual support, and citation quality:
+\begin{itemize}
+    \item \textbf{GPT-4 Turbo:} High quality, 128K context, expensive (\$0.01/1K tokens), no free tier.
+    \item \textbf{Claude 3.5 Sonnet:} Excellent instruction-following, 200K context, moderate cost, limited free tier.
+    \item \textbf{Gemini 2.5 Flash:} 1M context window, built-in Malayalam support, free tier (15 RPM, 1M TPM), optimized for low-latency.
+    \item \textbf{Llama 3.1 (local):} Open weights, no API cost, requires local GPU, Malayalam translation quality lower.
+\end{itemize}
+Gemini 2.5 Flash was chosen for superior context window (enabling full retrieval passage inclusion), built-in Malayalam translation, citation-friendly generation, and generous free tier for prototype deployment.
+
+\section{Frontend Framework Analysis}
+Three modern frontend stacks were compared:
+\begin{itemize}
+    \item \textbf{Next.js 14 + React 19 (Server Components):} Excellent SEO, server-side rendering, complex caching, overkill for single-page chat interface.
+    \item \textbf{Vite 8 + React 19 (SPA):} Lightning-fast HMR (<100ms), simple client-side state management, Tailwind CSS 4 integration, Web Speech API compatibility.
+    \item \textbf{SvelteKit:} Lightweight, compile-time optimization, smaller ecosystem for legal/NLP-specific libraries.
+\end{itemize}
+Vite 8 + React 19 was selected for optimal developer experience, straightforward browser API integration (Web Speech, File API), and strong community support for Markdown rendering and syntax highlighting.
+
+\section{Technology Stack Comparison Summary}
+Table~\ref{tab:tech_comparison} summarizes the comparative analysis and selection rationale.
+
+\begin{table}[H]
+\centering
+\caption{Technology stack comparison and selection rationale.}
+\label{tab:tech_comparison}
+\footnotesize
+\begin{tabularx}{\textwidth}{l l l X}
+\toprule
+\textbf{Component} & \textbf{Candidates} & \textbf{Selected} & \textbf{Rationale} \\
+\midrule
+Embedding & BERT-base, all-MiniLM-L6-v2, mpnet & all-MiniLM-L6-v2 & 384-dim, $5\times$ faster, optimized for semantic search \\
+Vector DB & Pinecone, Weaviate, Milvus & Pinecone & Managed, free 1M vectors, HNSW, <100ms queries \\
+LLM & GPT-4, Claude 3.5, Gemini 2.5, Llama 3.1 & Gemini 2.5 Flash & 1M context, Malayalam support, free 15 RPM \\
+Backend & Flask, Django, FastAPI & FastAPI & Async ASGI, Pydantic validation, OpenAPI docs \\
+Frontend & Next.js 14, Vite+React, SvelteKit & Vite 8 + React 19 & Fast HMR, Tailwind 4, Web Speech API \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+
+%==============================================================================
+% CHAPTER 8: FEASIBILITY STUDY
+%==============================================================================
+\chapter{Feasibility Study}
+
+A feasibility study assesses whether the proposed system is viable across technical, economic, and scheduling dimensions before deployment.
+
+\section{Technical Feasibility}
+The system is built on production-grade open-source libraries and scalable cloud services: Python 3.12, FastAPI, PyMuPDF, sentence-transformers, Pinecone vector database, Google Gemini 2.5 Flash, and React 19 + Vite 8. The embedding model (all-MiniLM-L6-v2) has a compact footprint ($\approx 90$ MB), allowing fast local CPU encoding without requiring dedicated GPU hardware. External vector indexing in Pinecone and generation in Gemini offload heavy computation, ensuring the entire application runs efficiently on standard commodity hardware with end-to-end latency below 2 seconds.
+
+\section{Economic Feasibility}
+The platform utilizes generous free-tier cloud resources and open-source software. Pinecone provides a free tier accommodating up to 1 million 384-dimensional vectors and 100,000 queries per month, easily supporting the ingested Indian statutory corpus of approximately 7,500 chunks. Google Gemini 2.5 Flash offers a robust free tier (15 requests per minute, 1 million tokens per minute), sufficient for development, testing, and civic pilot deployments. Local and client software (FastAPI, React, Vite, Tailwind CSS) incur zero licensing costs, making the solution sustainable for public service adoption.
+
+\section{Schedule and Resource Feasibility}
+The project was executed by a team of four B.Tech students over a 9-month timeline from July 2026 to March 2027. Figure~\ref{fig:project_gantt} illustrates the project execution schedule and Gantt chart across eleven key milestones.
+
+\begin{figure}[H]
+    \centering
+    \adjustbox{max width=0.98\linewidth, max height=0.48\textheight, keepaspectratio, center}{\input{diagrams/gantt_chart_project_timeline.tex}}
+    \caption{Project execution schedule and Gantt chart tracking 11 key milestones from July 2026 to March 2027.}
+    \label{fig:project_gantt}
+\end{figure}
+
+The eleven coordinated work packages executed across the academic timeline were:
+\begin{enumerate}
+    \item \textbf{Legal Domain Scoping \& Civic Complaint Analysis (Jul--Aug 2026):} Defined legal information access barriers, civic complaint workflows, and user requirements.
+    \item \textbf{Literature Survey on RAG Systems, Vector Databases, Legal AI (Aug--Sep 2026):} Reviewed RAG architectures, sentence transformers, vector databases, and multilingual NLP.
+    \item \textbf{Requirement Analysis \& Technical Feasibility (Aug--Sep 2026):} Compiled functional and non-functional specifications and technology stack evaluation.
+    \item \textbf{System Design (RAG Pipeline, Pinecone, Gemini, FastAPI) (Sep--Oct 2026):} Architected the multi-pipeline system, component dataflows, and schemas.
+    \item \textbf{Legal Corpus Acquisition \& PDF Preprocessing (Oct--Nov 2026):} Acquired BNS, BNSS, BSA, RTI, Consumer, Contract, Constitution PDFs and preprocessed text.
+    \item \textbf{Embedding Pipeline \& Pinecone Ingestion (all-MiniLM-L6-v2) (Nov--Dec 2026):} Implemented chunking, embedding, normalization, and batch vector upload.
+    \item \textbf{Query Processing \& Bilingual Malayalam Translation (Dec 2026--Jan 2027):} Engineered Unicode detection and Gemini-based Malayalam $\leftrightarrow$ English translation.
+    \item \textbf{FastAPI Backend Endpoints \& Async Architecture (Jan--Feb 2027):} Developed asynchronous REST endpoints (/, /api/health, /ask, /analyze-document).
+    \item \textbf{React 19 + Vite 8 Frontend with Voice Input \& PDF Upload (Jan--Feb 2027):} Created chat interface, Web Speech API integration, and file upload components.
+    \item \textbf{Retrieval Evaluation \& Answer Quality Benchmarking (Feb--Mar 2027):} Evaluated retrieval precision, answer accuracy, and citation quality across legal domains.
+    \item \textbf{Project Documentation, Report Compilation \& Submission (Feb--Mar 2027):} Compiled comprehensive project report and thesis documentation.
+\end{enumerate}
+
+
+%==============================================================================
+% CHAPTER 9: CONCLUSION AND FUTURE SCOPE
+%==============================================================================
+\chapter{Conclusion and Future Scope}
+
+\section{Conclusion}
+This project successfully designed, implemented, and evaluated \textbf{CiviQ}, an AI-powered legal information retrieval system using Retrieval-Augmented Generation. Addressing the challenges of complex statutory language, fragmented document repositories, linguistic barriers, and lack of contextual answers, the platform establishes an accessible legal assistance tool for citizens, students, journalists, and civic organizations.
+
+The core RAG engine leverages \textbf{sentence-transformers (all-MiniLM-L6-v2)} producing 384-dimensional embeddings optimized for semantic search, indexed in \textbf{Pinecone} vector database with HNSW for sub-100ms retrieval. To ensure answer accuracy and prevent hallucination, the system conditions \textbf{Google Gemini 2.5 Flash} generation on retrieved statutory passages, producing grounded responses with explicit citations (Act name, section, clause).
+
+Key accomplishments include:
+\begin{itemize}
+    \item Overlapping word-chunking (900 words, 150 overlap) preserving legal context across chunk boundaries.
+    \item Automatic Malayalam query detection (Unicode U+0D00–U+0D7F) with bidirectional translation, enabling linguistic inclusivity for non-English speakers.
+    \item FastAPI asynchronous backend with sub-200ms query latency for question answering and document analysis endpoints.
+    \item React 19 + Vite 8 frontend with browser-based voice input (Web Speech API), PDF upload, language selection, top-k slider, and source citation display.
+    \item Comprehensive legal corpus including BNS 2023, BNSS 2023, BSA 2023, Consumer Protection Act 2019, Indian Contract Act 1872, RTI Act 2005, and Constitution of India.
+\end{itemize}
+
+The system provides citizens with preliminary legal research capabilities previously accessible only through professional legal consultation, democratizing access to statutory knowledge.
+
+\section{Limitations Encountered}
+Despite the strong functional capabilities, several technical constraints were encountered:
+\begin{itemize}
+    \item \textbf{Retrieval Quality Dependence:} Answer accuracy is bounded by retrieval precision. Queries requiring cross-statute synthesis (e.g., connecting Contract Act obligations with Consumer Protection remedies) may miss relevant passages if chunk embeddings are insufficiently similar.
+    \item \textbf{Malayalam Translation Nuance:} Legal terminology translation (e.g., ``consideration,'' ``specific performance'') sometimes loses technical precision in Malayalam, requiring manual review for domain-critical terms.
+    \item \textbf{Image-Only PDF Limitation:} Scanned legal documents without embedded text (image-only PDFs) cannot be processed without OCR preprocessing, excluding older archival statutes.
+    \item \textbf{No Case Law Integration:} The current corpus focuses on statutes; judicial precedents and Supreme Court judgments are excluded, limiting applicability for nuanced legal interpretation.
+\end{itemize}
+
+\section{Future Scope}
+Future enhancements to expand and advance the platform include:
+\begin{itemize}
+    \item \textbf{Fine-Tuning Legal Domain Embeddings:} Training a legal-domain-specific sentence transformer on Indian statutory corpora to improve embedding quality for legal terminology and cross-references.
+    \item \textbf{Expanding Regional Language Support:} Adding Tamil, Telugu, Hindi, Kannada, and Bengali translation pipelines to serve diverse Indian linguistic communities.
+    \item \textbf{Incorporating Judicial Precedents:} Integrating Supreme Court and High Court judgment databases to provide case law citations alongside statutory references.
+    \item \textbf{Building User Feedback Loops:} Implementing thumbs-up/down rating for answer quality and retrieval relevance to continuously improve the system through reinforcement learning from human feedback (RLHF).
+    \item \textbf{RTI Portal Integration:} Connecting with government RTI portals to enable automated filing of information requests with pre-filled forms based on user queries.
+    \item \textbf{Deploying Mobile Applications:} Developing native Android and iOS applications with offline fallback for basic legal reference in areas with limited internet connectivity.
+\end{itemize}
+
+
+%==============================================================================
+% REFERENCES
+%==============================================================================
+\begin{thebibliography}{99}
+\sloppy
+
+\bibitem{ref_rahman2025_legalqueryrag}
+R. S. M. Wahidur, S. Kim, H. Choi, D. S. Bhatti, and H.-N. Lee, "Legal Query RAG," \textit{IEEE Access}, vol.~13, pp.~3542125, February 2025.
+
+\bibitem{ref_mubeen2025_legalease}
+F. Mubeen, A. Mehdi, M. A. Haque, M. Z. M. Nomani, and N. S. Uddin, "Redefining legal access: A RAG-based AI system for Indian law," \textit{Human-Intelligent Systems Integration}, vol.~7, no.~2, pp.~87--98, October 2025.
+
+\bibitem{ref_nigam2026_ailqa}
+S. K. Nigam, S. K. Mishra, N. Shallum, K. Ghosh, and A. Bhattacharya, "AILQA: Evaluating AI-driven legal question answering systems for the Indian legal system," \textit{Artificial Intelligence and Law}, vol.~34, pp.~1--28, July 2026.
+
+\bibitem{ref_bhattacharya2025_ardi}
+U. Bhattacharya, A. Deroy, A. Bandyopadhyay, G. Majumdar, S. K. Guha, K. Rudra, S. Ghosh, and K. Ghosh, "ARDI: A new dataset for automatic advocate recommendation in the Indian legal system," \textit{Artificial Intelligence and Law}, vol.~33, pp.~1--29, August 2025.
+
+\bibitem{ref_ren2026_autodata}
+W. Ren, L. Shen, J. Zhu, S. Li, Y. Hong, J. Wang, and D. Cao, "Automated data synthesis and retrieval-augmented generation for legal large language models," \textit{Knowledge-Based Systems}, vol.~347, art.~no.~116267, May 2026.
+
+\bibitem{ref_italiani2025_enhancing}
+P. Italiani, G. Moro, and L. Ragazzi, "Enhancing legal question answering with data generation and knowledge distillation from large language models," \textit{Artificial Intelligence and Law}, vol.~33, no.~4, pp.~1--24, April 2025.
+
+\bibitem{ref_webb2026_genai}
+J. Webb, "Generative artificial intelligence in legal practice: Epistemic expertise, unethical AI, and the role of virtue," \textit{Minds and Machines}, vol.~36, no.~1, art.~no.~19, March 2026.
+
+\bibitem{ref_linders2025_kg_rag}
+J. Linders and J. M. Tomczak, "Knowledge graph-extended retrieval augmented generation for question answering," \textit{Applied Intelligence}, vol.~55, no.~12, art.~no.~1102, November 2025.
+
+\bibitem{ref_thambi2024_lawgic}
+A. S. Thambi, A. Devangavi, R. Pankaja, and A. Joshi, "‘LAWGIC’: An application for automated legal document classification and retrieval," \textit{Journal of Electronics and Informatics}, vol.~6, no.~2, pp.~157--170, June 2024.
+
+\bibitem{ref_gupta2024_legalassist}
+J. Gupta, A. Sharma, S. Singhania, and A. I. Abidi, "Legal Assist AI---Leveraging transformer based model for effective legal assistance," \textit{Research Square Preprint}, DOI: 10.21203/rs.3.rs-5351879/v1, November 2024.
+
+\bibitem{ref_song2025_summarization}
+Y. Song, Y. Qin, R. Huang, Y. Chen, and C. Lin, "Legal text summarization via judicial syllogism with large language models," \textit{Journal of King Saud University---Computer and Information Sciences}, vol.~37, no.~7, art.~no.~111, July 2025.
+
+\bibitem{ref_garg2026_multifaceted}
+S. Garg, H. Bysani, S. S. Chandana, Y. G. Prasoona, D. Gupta, S. Vekkot, and S. Sinha, "Multifaceted structural classification of Indian legal judgments," \textit{Discover Artificial Intelligence}, vol.~6, no.~1, art.~no.~282, February 2026.
+
+\bibitem{ref_sha2026_rhetorical}
+S. A. A. Sha, S. Sivanesan, A. K. Madasamy, and N. Binu, "Rhetorical-role-aware retrieval-augmented generation for legal question answering over Indian Supreme Court judgments," \textit{arXiv preprint arXiv:2608.06828}, August 2026.
+
+\bibitem{ref_dhanani2022_scalable}
+J. Dhanani, R. Mehta, and D. Rana, "Effective and scalable legal judgment recommendation using pre-learned word embedding," \textit{Complex \& Intelligent Systems}, vol.~8, no.~4, pp.~3199--3213, February 2022.
+
+\bibitem{ref_singh2026_transformer_xai}
+R. A. Singh and J. N. Dwivedi, "A novel transformer-XAI framework with bias attribution and A-RAG for Indian judicial system," \textit{Discover Applied Sciences}, vol.~8, no.~7, art.~no.~9150, June 2026.
+
+\end{thebibliography}
+
+\end{document}

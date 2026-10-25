@@ -1,0 +1,154 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usepackage{amsmath,amssymb}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shadows,shapes.geometric}
+
+% Color definitions
+\definecolor{lavenderDark}{RGB}{15, 44, 89}
+\definecolor{lavenderDeep}{RGB}{10, 28, 58}
+\definecolor{lavenderMedium}{RGB}{29, 78, 158}
+\definecolor{lavenderLight}{RGB}{240, 246, 255}
+\definecolor{lavenderBorder}{RGB}{180, 205, 237}
+\definecolor{prismTeal}{RGB}{13, 148, 136}
+\definecolor{prismMint}{RGB}{236, 253, 245}
+\definecolor{prismGold}{RGB}{217, 119, 6}
+\definecolor{prismDark}{RGB}{15, 23, 42}
+\definecolor{cInput}{RGB}{241, 245, 249}
+\definecolor{cPlanner}{RGB}{219, 234, 254}
+\definecolor{cReact}{RGB}{209, 250, 229}
+\definecolor{cTool}{RGB}{254, 243, 199}
+\definecolor{cSafety}{RGB}{254, 226, 226}
+\definecolor{cDeliverable}{RGB}{204, 251, 241}
+
+\begin{document}
+% Relational Entity & Storage Schema Connectors for Lung Disease Detection
+\begin{tikzpicture}[
+  x=1cm, y=1cm,
+  font=\sffamily,
+  tblcard/.style={
+    rectangle, rounded corners=4pt, draw=lavenderDark!75, line width=0.85pt, fill=white,
+    inner sep=5pt, text width=4.40cm, align=left,
+    drop shadow={shadow xshift=1pt, shadow yshift=-1pt, opacity=0.12}
+  },
+  fkarrow/.style={
+    -{Stealth[scale=0.85]}, line width=1.0pt, draw=lavenderDark!90
+  },
+  fklabel/.style={
+    font=\fontsize{6.2}{7.2}\selectfont\bfseries, fill=white, inner sep=1.5pt, text=lavenderDark
+  }
+]
+
+  % ================= COLUMN 1: DATASET & CONFIGURATION (x = -5.2) =================
+  
+  % Table 1: dataset_partition_schema
+  \node[tblcard] (dataset) at (-5.2, 2.5) {%
+    \centerline{\color{lavenderDark}\faFolderOpen\ \textbf{\fontsize{8.0}{9.5}\selectfont dataset\_partition\_store}}\\[3pt]
+    \rule{\linewidth}{0.4pt}\\[3pt]
+    {\fontsize{6.8}{8.0}\selectfont
+    \textbf{\color{lavenderDark}[PK]} \texttt{image\_path}: \textit{string} (Indexed)\\
+    \textbf{\color{prismTeal}[FLD]} \texttt{class\_label}: \textit{NORMAL/COVID/VIRAL}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{split}: \textit{train (70\%) / val / test}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{integrity}: \textit{valid / corrupt}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{tensor\_dims}: \textit{$(3, 224, 224)$ normalized}}
+  };
+
+  % Table 2: training_config_schema
+  \node[tblcard, below=0.70cm of dataset] (config) {%
+    \centerline{\color{lavenderDark}\faCogs\ \textbf{\fontsize{8.0}{9.5}\selectfont training\_config\_store}}\\[3pt]
+    \rule{\linewidth}{0.4pt}\\[3pt]
+    {\fontsize{6.8}{8.0}\selectfont
+    \textbf{\color{lavenderDark}[PK]} \texttt{config\_id}: \textit{string} (UUID)\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{image\_size}: \textit{224} $\cdot$ \texttt{batch\_size}: \textit{32}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{learning\_rate}: \textit{0.0001} (AdamW)\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{weight\_decay}: \textit{0.0001}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{patience}: \textit{6 epochs} (EarlyStop)\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{augmentations}: \textit{flip, rot $\pm 7^\circ$, jitter}}
+  };
+
+  % ================= COLUMN 2: MODEL CHECKPOINTS & EVALUATION (x = 0) =================
+  
+  % Table 3: model_checkpoint_schema
+  \node[tblcard] (checkpoint) at (0, 2.5) {%
+    \centerline{\color{lavenderDark}\faDatabase\ \textbf{\fontsize{8.0}{9.5}\selectfont model\_checkpoint\_store}}\\[3pt]
+    \rule{\linewidth}{0.4pt}\\[3pt]
+    {\fontsize{6.8}{8.0}\selectfont
+    \textbf{\color{lavenderDark}[PK]} \texttt{checkpoint\_id}: \textit{timestamp}\\
+    \textbf{\color{prismTeal}[FK]} \texttt{config\_id}: \textit{config reference}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{architecture}: \textit{DenseNet-121}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{lowest\_val\_loss}: \textit{0.1906 (ep 7)}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{weights\_path}: \textit{best\_model.pth}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{classes\_file}: \textit{classes.json}}
+  };
+
+  % Table 4: evaluation_telemetry_schema
+  \node[tblcard, below=0.70cm of checkpoint] (eval) {%
+    \centerline{\color{lavenderDark}\faChartLine\ \textbf{\fontsize{8.0}{9.5}\selectfont evaluation\_telemetry\_store}}\\[3pt]
+    \rule{\linewidth}{0.4pt}\\[3pt]
+    {\fontsize{6.8}{8.0}\selectfont
+    \textbf{\color{lavenderDark}[PK]} \texttt{eval\_id}: \textit{UUID}\\
+    \textbf{\color{prismTeal}[FK]} \texttt{checkpoint\_id}: \textit{model reference}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{test\_accuracy}: \textit{92.63\% (4546 imgs)}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{macro\_f1}: \textit{91.59\%} $\cdot$ \texttt{wt\_f1}: \textit{92.66\%}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{roc\_auc\_ovr}: \textit{98.50\%}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{class\_f1}: \textit{Norm: 94.7\%, Cov: 86.8\%}}
+  };
+
+  % ================= COLUMN 3: API CONTRACTS & CLIENT STATE (x = 5.2) =================
+  
+  % Table 5: api_prediction_schema
+  \node[tblcard] (prediction) at (5.2, 2.5) {%
+    \centerline{\color{lavenderDark}\faServer\ \textbf{\fontsize{8.0}{9.5}\selectfont api\_prediction\_schema}}\\[3pt]
+    \rule{\linewidth}{0.4pt}\\[3pt]
+    {\fontsize{6.8}{8.0}\selectfont
+    \textbf{\color{lavenderDark}[PK]} \texttt{prediction\_id}: \textit{UUID}\\
+    \textbf{\color{prismTeal}[FK]} \texttt{checkpoint\_id}: \textit{active model}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{success}: \textit{boolean (true)}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{predicted\_class}: \textit{string}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{confidence}: \textit{float (0.0 .. 1.0)}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{probabilities}: \textit{JSON map}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{processing\_time\_ms}: \textit{float ($\approx 42$\,ms)}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{safety\_message}: \textit{preliminary notice}}
+  };
+
+  % Table 6: client_ui_state_schema
+  \node[tblcard, below=0.70cm of prediction] (client) {%
+    \centerline{\color{lavenderDark}\faDesktop\ \textbf{\fontsize{8.0}{9.5}\selectfont client\_ui\_state\_schema}}\\[3pt]
+    \rule{\linewidth}{0.4pt}\\[3pt]
+    {\fontsize{6.8}{8.0}\selectfont
+    \textbf{\color{lavenderDark}[PK]} \texttt{session\_id}: \textit{UUID}\\
+    \textbf{\color{prismTeal}[FK]} \texttt{prediction\_id}: \textit{payload reference}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{image\_preview\_url}: \textit{blob/base64}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{gradcam\_overlay}: \textit{PNG heatmap}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{visual\_probabilities}: \textit{bar charts}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{client\_platform}: \textit{Web / Mobile Expo}}
+  };
+
+  % ================= RELATIONSHIPS / FOREIGN KEY CONNECTORS =================
+
+  % 1. Config -> Checkpoint
+  \draw[fkarrow] (config.east) to[bend right=20] 
+    node[above=1pt, fklabel]{config\_id} (checkpoint.west);
+
+  % 2. Dataset -> Checkpoint (Data used to train)
+  \draw[fkarrow] (dataset.east) -- 
+    node[above=1pt, fklabel]{train\_split} (checkpoint.west);
+
+  % 3. Checkpoint -> Evaluation
+  \draw[fkarrow] (checkpoint.south) -- 
+    node[right=2pt, fklabel]{checkpoint\_id} (eval.north);
+
+  % 4. Checkpoint -> API Prediction
+  \draw[fkarrow] (checkpoint.east) -- 
+    node[above=1pt, fklabel]{weights} (prediction.west);
+
+  % 5. API Prediction -> Client UI State
+  \draw[fkarrow] (prediction.south) -- 
+    node[right=2pt, fklabel]{prediction\_id} (client.north);
+
+  % 6. Eval metrics reference in Client UI
+  \draw[fkarrow, dashed] (eval.east) -- 
+    node[above=1pt, fklabel]{benchmarks} (client.west);
+
+\end{tikzpicture}
+\end{document}

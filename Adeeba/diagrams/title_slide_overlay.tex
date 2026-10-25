@@ -1,0 +1,100 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shadows,shapes.geometric,tikzmark}
+
+% Color definitions
+\definecolor{lavenderDark}{RGB}{15, 44, 89}
+\definecolor{lavenderDeep}{RGB}{10, 28, 58}
+\definecolor{lavenderMedium}{RGB}{29, 78, 158}
+\definecolor{lavenderLight}{RGB}{240, 246, 255}
+\definecolor{lavenderBorder}{RGB}{180, 205, 237}
+\definecolor{lavenderAccent}{RGB}{2, 132, 199}
+\definecolor{bannerGreen}{RGB}{76, 51, 122}
+\definecolor{prismNavy}{RGB}{15, 44, 89}
+\definecolor{prismBlue}{RGB}{29, 78, 158}
+\definecolor{prismTeal}{RGB}{13, 148, 136}
+\definecolor{prismMint}{RGB}{236, 253, 245}
+\definecolor{prismGold}{RGB}{217, 119, 6}
+\definecolor{prismDark}{RGB}{15, 23, 42}
+\definecolor{prismLight}{RGB}{248, 250, 252}
+\definecolor{prismIndigo}{RGB}{30, 58, 138}
+\definecolor{prismSlate}{RGB}{100, 116, 139}
+\definecolor{statusFail}{RGB}{220, 38, 38}
+\definecolor{cardBg}{RGB}{255,255,255}
+\definecolor{cInput}{RGB}{241, 245, 249}
+\definecolor{cStem}{RGB}{224, 242, 254}
+\definecolor{cStage1}{RGB}{209, 250, 229}
+\definecolor{cStage2}{RGB}{254, 243, 199}
+\definecolor{cStage3}{RGB}{254, 226, 226}
+\definecolor{cStage4}{RGB}{207, 250, 254}
+\definecolor{cHead}{RGB}{219, 234, 254}
+\definecolor{cOutput}{RGB}{255, 228, 230}
+\definecolor{cTask}{RGB}{231,233,236}
+\definecolor{cPlanner}{RGB}{219, 234, 254}
+\definecolor{cDispatch}{RGB}{169,220,235}
+\definecolor{cReact}{RGB}{209, 250, 229}
+\definecolor{cTool}{RGB}{254, 243, 199}
+\definecolor{cSafety}{RGB}{254, 226, 226}
+\definecolor{cMemory}{RGB}{214,185,230}
+\definecolor{cDeliverable}{RGB}{204, 251, 241}
+
+\begin{document}
+% Title Slide Decorative Overlay (Adapted for Standalone)
+% This version uses relative coordinates centered at (0,0) instead of current page anchors
+\begin{tikzpicture}[x=1cm, y=1cm]
+
+  % 1. Top Lavender Banner (centered at y=4cm as "top")
+  \node[
+    rounded corners=5pt,
+    fill=lavenderDark,
+    drop shadow={shadow xshift=1.5pt, shadow yshift=-2.0pt, opacity=0.35},
+    minimum width=15.2cm,
+    minimum height=0.98cm,
+    inner sep=0pt
+  ] at (0, 4.0) {};
+
+  \node[text=white, font=\bfseries\fontsize{13.5}{16}\selectfont] at (0, 4.0) {
+    PRISMSPACE - INTELLIGENT MULTI-AGENT PLATFORM
+  };
+
+  % 2. College Emblem (Placeholder - image would be here)
+  % \node at (0, 2.85) {\includegraphics[height=0.95cm]{cek-logo.png}};
+  \node[circle, draw=prismSlate, fill=lavenderLight, minimum size=0.95cm, inner sep=0pt] at (0, 2.85) {
+    \fontsize{8}{10}\selectfont\textbf{LOGO}
+  };
+
+  % 3. Department & College Text
+  \node[font=\footnotesize, align=center] at (0, 1.98) {
+    \textbf{Dept. of Computer Science \& Engineering}\\[0.12em]
+    College of Engineering, Karunagappally
+  };
+
+  % 4. Project Group Header
+  \node[font=\large\bfseries, text=lavenderDark] at (0, 1.25) {
+    Project Group 01
+  };
+
+  % 5. Students & Register Numbers Table
+  \node[font=\small] at (0, 0.20) {
+    \begin{tabular}{l@{\hspace{3.4cm}}l}
+      \textbf{NOBIN SIJO}        & KNP23CS082 \\
+      \textbf{PRANAV P}          & KNP23CS085 \\
+      \textbf{PRASANTH P}        & KNP23CS086 \\
+      \textbf{SANKAR NARAYAN S}  & KNP23CS094
+    \end{tabular}
+  };
+
+  % 6. Horizontal Lavender Accent Line
+  \draw[lavenderDark, line width=0.9pt] (-7.0, -0.78) -- (7.0, -0.78);
+
+  % 7. Project Coordinator & Guide Details
+  \node[align=center, font=\footnotesize] at (0, -1.90) {
+    {\color{lavenderDark}\textit{Project Coordinator \& Guide}}\\[0.25em]
+    \textbf{\small Dr. Leena Silvoster}\\[0.12em]
+    Associate Professor\\[0.08em]
+    College of Engineering, Karunagappally
+  };
+
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,191 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usepackage{amsmath,amssymb}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shadows,shapes.geometric}
+
+% Color definitions
+\definecolor{lavenderDark}{RGB}{15, 44, 89}
+\definecolor{lavenderDeep}{RGB}{10, 28, 58}
+\definecolor{lavenderMedium}{RGB}{29, 78, 158}
+\definecolor{lavenderLight}{RGB}{240, 246, 255}
+\definecolor{lavenderBorder}{RGB}{180, 205, 237}
+\definecolor{lavenderAccent}{RGB}{2, 132, 199}
+\definecolor{prismNavy}{RGB}{15, 44, 89}
+\definecolor{prismBlue}{RGB}{29, 78, 158}
+\definecolor{prismTeal}{RGB}{13, 148, 136}
+\definecolor{prismMint}{RGB}{236, 253, 245}
+\definecolor{prismGold}{RGB}{217, 119, 6}
+\definecolor{prismDark}{RGB}{15, 23, 42}
+\definecolor{prismLight}{RGB}{248, 250, 252}
+\definecolor{prismIndigo}{RGB}{30, 58, 138}
+\definecolor{prismSlate}{RGB}{100, 116, 139}
+\definecolor{statusFail}{RGB}{220, 38, 38}
+\definecolor{cInput}{RGB}{241, 245, 249}
+\definecolor{cStem}{RGB}{224, 242, 254}
+\definecolor{cStage1}{RGB}{209, 250, 229}
+\definecolor{cStage2}{RGB}{254, 243, 199}
+\definecolor{cStage3}{RGB}{254, 226, 226}
+\definecolor{cStage4}{RGB}{207, 250, 254}
+\definecolor{cHead}{RGB}{219, 234, 254}
+\definecolor{cOutput}{RGB}{255, 228, 230}
+
+\begin{document}
+% Zero-Overlap Complete System Architecture Map for Lung Disease Detection
+\begin{tikzpicture}[
+  x=1cm, y=1cm,
+  every node/.style={align=center},
+  group/.style={draw=lavenderMedium!70, dashed, line width=0.85pt,
+    fill=lavenderLight!25, rounded corners=8pt},
+  grouptitle/.style={fill=lavenderDark, text=white, font=\fontsize{7.5}{9.0}\selectfont\bfseries,
+    rounded corners=3pt, inner xsep=6pt, inner ysep=3.0pt},
+  colbox/.style={rectangle, rounded corners=4pt, line width=0.75pt,
+    minimum height=1.20cm, inner ysep=3.5pt, inner xsep=5pt,
+    font=\fontsize{6.8}{8.0}\selectfont\bfseries},
+  modelbox/.style={rectangle, rounded corners=3.5pt, line width=0.75pt,
+    draw=lavenderDark!85, fill=white,
+    minimum height=1.20cm, inner ysep=3.5pt, inner xsep=4.5pt,
+    font=\fontsize{6.6}{7.8}\selectfont},
+  arrow/.style={
+    -{Stealth[scale=0.85]}, line width=0.85pt, draw=lavenderDark!90
+  },
+  modelarrow/.style={
+    -{Stealth[scale=0.75]}, line width=0.75pt, draw=lavenderDark!80
+  },
+  badge/.style={
+    fill=white, draw=lavenderMedium!90, rounded corners=2.5pt, line width=0.60pt,
+    inner xsep=4.0pt, inner ysep=2.2pt, font=\fontsize{6.2}{7.2}\selectfont\bfseries
+  }
+]
+
+  %============================================================================
+  % COLUMN 1: PRESENTATION & CLIENT INTERFACE TIER
+  %============================================================================
+  \node[group, minimum width=3.60cm, minimum height=10.60cm] (g1) at (2.00, 5.80) {};
+  \node[grouptitle, anchor=west] at (0.25, 11.10) {1. Client Presentation Tier};
+
+  \node[colbox, text width=3.30cm, fill=cInput, draw=prismSlate!70] (g1_user) at (2.00, 9.80) {%
+    {\color{prismDark}\faUserMd\ \textbf{Clinical User / Radiologist}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Chest Radiograph Ingestion\\[1pt]Digital CXR / Mobile Film Scan}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStem, draw=prismIndigo!70] (g1_web) at (2.00, 7.30) {%
+    {\color{prismIndigo}\faDesktop\ \textbf{Next.js 15 Web Application}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont React 19 $\cdot$ TypeScript $\cdot$ Tailwind\\[1pt]Drag \& Drop $\cdot$ Live Probability Bars}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStage4, draw=prismBlue!80] (g1_mob) at (2.00, 4.80) {%
+    {\color{lavenderDark}\faMobile\ \textbf{Expo / React Native App}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Point-of-Care Bedside Scanner\\[1pt]Camera Capture $\cdot$ Pinch-to-Zoom}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStage1, draw=prismTeal!70] (g1_disclaimer) at (2.00, 2.30) {%
+    {\color{prismTeal!90!black}\faShieldVirus\ \textbf{Diagnostic Safety Boundary}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Preliminary Screening Disclaimer\\[1pt]Clinical Non-Diagnostic Notice}%
+  };
+
+  \draw[arrow] (g1_user) -- (g1_web);
+  \draw[arrow] (g1_user) to[bend right=25] (g1_mob);
+  \draw[arrow] (g1_web) -- (g1_disclaimer);
+  \draw[arrow] (g1_mob) -- (g1_disclaimer);
+
+  %============================================================================
+  % COLUMN 2: API GATEWAY & PREPROCESSING TIER
+  %============================================================================
+  \node[group, minimum width=3.60cm, minimum height=10.60cm] (g2) at (6.10, 5.80) {};
+  \node[grouptitle, anchor=west] at (4.35, 11.10) {2. API Gateway \& Validation};
+
+  \node[colbox, text width=3.30cm, fill=cStage2!60, draw=prismGold!80] (g2_fastapi) at (6.10, 9.80) {%
+    {\color{prismGold!90!black}\faServer\ \textbf{FastAPI REST Microservice}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Asynchronous ASGI (Uvicorn)\\[1pt]\texttt{/health} $\cdot$ \texttt{/predict} Routes}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cInput, draw=prismSlate!70] (g2_validate) at (6.10, 7.30) {%
+    {\color{prismDark}\faCheckCircle\ \textbf{Image Verification \& Audit}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont MIME: JPEG, PNG, WEBP, BMP\\[1pt]Payload Limit: $\le 10$\,MB $\cdot$ PIL Verify}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStage1, draw=prismTeal!80] (g2_preprocess) at (6.10, 4.80) {%
+    {\color{prismTeal!90!black}\faCrop\ \textbf{Tensor Normalization Engine}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont RGB Conversion $\cdot$ Resize $224\times 224$\\[1pt]ImageNet $\mu=[0.485,0.456,0.406]$}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStage3!60, draw=statusFail!70] (g2_error) at (6.10, 2.30) {%
+    {\color{statusFail}\faExclamationTriangle\ \textbf{HTTP Fault Mitigation}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont 400 Invalid Image $\cdot$ 413 Too Large\\[1pt]415 Format $\cdot$ 503 Model Unavailable}%
+  };
+
+  \draw[arrow] (g2_fastapi) -- (g2_validate);
+  \draw[arrow] (g2_validate) -- (g2_preprocess);
+  \draw[arrow] (g2_validate) -- (g2_error);
+
+  %============================================================================
+  % COLUMN 3: DEEP LEARNING & EXPLAINABILITY (DENSENET-121 + GRAD-CAM)
+  %============================================================================
+  \node[group, minimum width=4.10cm, minimum height=10.60cm] (g3) at (10.45, 5.80) {};
+  \node[grouptitle, anchor=west] at (8.45, 11.10) {3. Inference \& Explainability};
+
+  \node[colbox, text width=3.80cm, fill=cStem!70, draw=lavenderDark!80] (g3_stem) at (10.45, 9.80) {%
+    {\color{lavenderDark}\faLayerGroup\ \textbf{DenseNet-121 Feature Stem}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont $7\times 7$ Conv (s=2) + $3\times 3$ MaxPool\\[1pt]DenseBlocks 1--4 ($k=32$) + Transitions}%
+  };
+
+  \node[colbox, text width=3.80cm, fill=cHead, draw=lavenderMedium!90] (g3_head) at (10.45, 7.30) {%
+    {\color{lavenderDeep}\faBrain\ \textbf{Linear Classifier \& Softmax}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Global Avg Pooling ($1024$-dim)\\[1pt]Softmax $\to$ Normal, COVID, Viral Pneumonia}%
+  };
+
+  \node[colbox, text width=3.80cm, fill=cStage2!70, draw=prismGold!90] (g3_gradcam) at (10.45, 4.80) {%
+    {\color{prismGold!90!black}\faEye\ \textbf{Grad-CAM Saliency Engine}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Backward Hook on \texttt{denseblock4}\\[1pt]Gradients $\alpha_k^c$ $\cdot$ ReLU Activation Map}%
+  };
+
+  \node[colbox, text width=3.80cm, fill=cOutput, draw=prismBlue!70] (g3_overlay) at (10.45, 2.30) {%
+    {\color{prismNavy}\faPalette\ \textbf{Visual Saliency Map Synthesis}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Bilinear Interpolation to $224\times 224$\\[1pt]Jet Colormap Superimposition on Radiograph}%
+  };
+
+  \draw[arrow] (g3_stem) -- (g3_head);
+  \draw[arrow] (g3_stem) -- (g3_gradcam);
+  \draw[arrow] (g3_gradcam) -- (g3_overlay);
+
+  %============================================================================
+  % COLUMN 4: STORAGE, ARTIFACTS & EVALUATION
+  %============================================================================
+  \node[group, minimum width=3.60cm, minimum height=10.60cm] (g4) at (14.80, 5.80) {};
+  \node[grouptitle, anchor=west] at (13.05, 11.10) {4. Storage \& Artifacts};
+
+  \node[colbox, text width=3.30cm, fill=cInput, draw=prismSlate!70] (g4_weights) at (14.80, 9.80) {%
+    {\color{prismDark}\faDatabase\ \textbf{Model Weights Repository}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont \texttt{checkpoints/best\_model.pt}\\[1pt]\texttt{models/best\_model.pth} $\cdot$ \texttt{classes.json}}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStage1, draw=prismTeal!80] (g4_data) at (14.80, 7.30) {%
+    {\color{prismTeal!90!black}\faFolderOpen\ \textbf{Dataset \& Split Registry}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Stratified Splits (70 / 15 / 15)\\[1pt]\texttt{data/images/} $\cdot$ \texttt{corrupt\_images.csv}}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStem, draw=lavenderDark!70] (g4_eval) at (14.80, 4.80) {%
+    {\color{lavenderDark}\faChartLine\ \textbf{Evaluation \& Telemetry}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Accuracy: 92.63\% $\cdot$ ROC-AUC: 98.50\%\\[1pt]\texttt{evaluation.json} $\cdot$ Confusion Matrix}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStage4, draw=prismBlue!70] (g4_history) at (14.80, 2.30) {%
+    {\color{prismNavy}\faHistory\ \textbf{Training History Logs}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Loss \& Accuracy Curves ($\le 30$ ep)\\[1pt]Early Stopping Triggered (Patience=6)}%
+  };
+
+  \draw[arrow] (g4_weights) -- (g4_eval);
+  \draw[arrow] (g4_data) -- (g4_history);
+
+  %============================================================================
+  % INTER-COLUMN CONNECTIONS
+  %============================================================================
+  \draw[arrow, line width=1.1pt] (g1_web.east) -- (g2_fastapi.west);
+  \draw[arrow, line width=1.1pt] (g1_mob.east) to[bend left=10] (g2_fastapi.west);
+  \draw[arrow, line width=1.1pt] (g2_preprocess.east) to[bend left=10] (g3_stem.west);
+  \draw[arrow, line width=1.1pt] (g3_head.east) -- (g4_weights.west);
+  \draw[arrow, line width=1.1pt, dashed] (g3_overlay.west) to[bend left=20] (g1_web.east);
+
+\end{tikzpicture}
+\end{document}

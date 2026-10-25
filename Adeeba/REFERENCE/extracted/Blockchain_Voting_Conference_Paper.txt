@@ -1,0 +1,140 @@
+1
+A Survey on Secure and Transparent Electronic Voting
+Systems Using Blockchain Technology
+Adeeba Abdul Vahid Department of Computer Science College of Engineering Karunagappally
+Kerala, India
+Avani P Department of Computer Science College of Engineering Karunagappally
+Kerala, India
+Thara A Department of Computer Science College of Engineering Karunagappally
+Kerala, India
+Anwar Sadath Department of Computer Science College of Engineering Karunagappally
+Kerala, India
+Abstract—Conventional voting methods suffer from limited transparency, tampering, double voting and slow vote counting, while many electronic voting systems depend on a central authority that must be trusted blindly. This paper surveys blockchain-based electronic voting and presents a proposed Voting DApp that builds on an Ethereum smart contract design. In the proposed system, a Solidity smart contract enforces voter registration, candidate management, role-based administrator access and the prevention of duplicate voting. A React-based front end integrated with Web3.js and MetaMask lets registered voters authenticate with their wallets and cast ballots, while the administrator adds candidates and manages voter registrations. The survey of fifteen recent works shows that blockchain improves transparency, auditability and integrity, but that scalability, voter authentication, coercion resistance, gas cost and the lack of real-world validation remain open problems. The proposed system addresses double voting and unauthorized access directly, and the paper identifies authentication and scalability improvements as the main directions for future work.
+Index  Terms—Electronic  Voting,  Blockchain,  Smart Contracts, Ethereum, Double Voting Prevention, MetaMask, Decentralized Application, Voter Authentication.
+I. INTRODUCTION
+Voting is the basic mechanism through which citizens take part in a democracy, and the credibility of an election depends on how well the process protects the secrecy, integrity and verifiability of every vote. Traditional paper-based elections are exposed to booth capturing, ballot tampering, counting errors, logistical delay and a general lack of transparency. Electronic voting machines and online voting platforms reduce some of these problems, but they usually store votes in a centralized database managed by a single authority. Such a design creates a single point of failure and requires voters to trust that the records have not been altered.
+Blockchain technology offers a different trust model. A blockchain is a distributed, append-only ledger in which records are grouped into blocks that are linked through cryptographic hashes. Once a block is accepted by the network, changing it would require changing every later block on a majority of nodes, which makes tampering easy to detect and costly to attempt.
+Smart contracts, which are programs stored and executed on the blockchain, can enforce election rules automatically without a trusted intermediary. These properties make blockchain a natural candidate for electronic voting, and a large body of work has appeared since 2018.
+However, existing proposals differ widely in their consensus mechanisms, authentication methods and privacy techniques, and most of them have been evaluated only through simulation or on small elections. A clear comparison of these works is needed to understand what has actually been solved. In this paper we review fifteen recent papers on blockchain-based voting, identify their strengths and limitations, and use the findings to motivate a Voting DApp that uses an Ethereum smart contract, MetaMask wallet authentication and a React and Web3.js front end. The proposed system is based on the Voting DApp of Asha et al. [1] and is extended to address several gaps found in the literature.
+The main contributions of this paper are as follows. • A structured survey of blockchain-based voting systems covering frameworks, biometric and gesture authentication, privacy-preserving cryptography, surveys and trust studies. • A comparison of the surveyed works by technology, consensus mechanism, evaluation level and limitations. • A proposed methodology for a secure voting DApp with role-based access control and smart-contract-level prevention of double voting. • A discussion of open challenges and future directions for deployable blockchain voting.
+II. RELATED WORK
+A. Blockchain-Based Voting Frameworks and Consensus Design
+Farooq et al. [2] proposed a Voting Management System in which a mobile or web dApp checks a voter’s national ID, confirms that the voter has not already voted, converts the ballot into a transaction and adds it to the chain. A Chain Security Algorithm re-checks the integrity of the chain whenever a block is added, and the consensus algorithm can be exchanged for a different one. Their evaluation reports manageable response time and chain growth even at six million votes, although the system relies on constant connectivity, has no biometric layer and only mitigates a 51% attack through monitored miners.
+Shahzad and Crowcroft [3] observed that a polling day is short and bursty, so heavy Proof-of-Work is unnecessary. They
+
+--- Page Break ---
+
+2
+adjusted a consortium blockchain so that a presiding officer with a verified identity creates each block, votes are added as transactions during the day, and the block is sealed when polling closes using a proof-of-completeness hashing scheme. The design is cheap and tamper-evident, but it is purely conceptual and the election commission retains central control.
+Kshetri and Voas [4] described a wallet-and-coin model in which every voter holds one coin representing one vote, and casting a ballot transfers the coin to a candidate’s wallet. They also analysed practical obstacles and concluded that immature technology, high software defect rates, broadband requirements and political resistance make blockchain voting unready for national elections.
+Seftyanto et al. [5] designed an election system on Hyperledger Fabric for Indonesia in which each province is a separate organization. Voters authenticate with an e-ID card and fingerprint, and each vote becomes a Ballot asset. The work is a preliminary design without implementation, performance or scalability evaluation, and it requires heavy hardware at every polling station.
+B. Biometric and Gesture-Based Authentication
+Ajao et al. [6] combined a Raspberry Pi based device that captures face and fingerprint images, a deep convolutional neural network for matching, and an RFID tag as an additional eligibility check. Votes and biometric data are encrypted using Paillier homomorphic encryption and recorded on an Ethereum blockchain with Proof-of-Stake consensus. In a university election with 2,423 students the system reported 1,424.5 transactions per second, a 7.02 s mining time and 0% false acceptance and false rejection rates. The cost is dedicated biometric hardware at each voting point, a computationally heavy image pipeline and a gas fee for every vote.
+Mahmood et al. [7] focused on accessibility. A camera tracks facial landmarks and hand gestures so that a voter can operate a virtual keyboard by raising an eyebrow, moving the nose or pinching a finger, without touching any device. The system reported 100% precision and 99% recall with user satisfaction between 61% and 75.5%, but it needs good lighting and a quality camera, finger gestures are less accurate than facial gestures, and older users take noticeably longer.
+C. Privacy and Cryptographic Techniques
+Pérez García et al. [8] used an ElGamal-based blind signature protocol so that a central authority signs an encrypted ballot without seeing its content, which breaks the link between voter identity and vote. Ballots are split into two parts so that neither part alone reveals the choice, and the scheme runs on Hyperledger Fabric with PBFT consensus. Simulation shows full unlinkability and low per-voter computation cost, but voting time grows under congestion and the central authority remains a point of trust.
+Baniata and Caluna [9] proposed BP-Vot, which runs on Hyperledger Besu and anonymizes votes using a (k, ε) differential privacy scheme combined with Self-Sovereign Identity. The system achieved about one second per transaction and at least 98% vote-approximation accuracy, but it was tested only up to three nodes and 50,000 votes, it assumes an honest election authority, and it depends on a future rollout of standardized digital identity wallets.
+D. Surveys and Trust Studies
+Benabdallah et al. [10] reviewed blockchain e-voting proposals from 2010 to 2021 across the phases of initialization, identification, voting, counting and results. They concluded that blockchain cannot fully remove the central authority that manages eligibility, that public blockchains struggle to scale to national elections, and that coercion resistance is rarely achieved. Quzmar et al. [11] compared eight proposals and found that most are prototypes, several still rely on a centralized commission for key management, and no standard blockchain protocol exists for e-voting.
+Sah et al. [12] reviewed online voting architecture, blockchain frameworks and tools such as Ganache, Truffle and MetaMask, and reported pilot results of about 87% fewer fraud cases and roughly 10% higher turnout, while noting that scalability, authentication and rural internet access remain concerns. Barelli et al. [13] defined the fundamental properties of e-voting, including  integrity,  anonymity,  eligibility,  verifiability, receipt-freeness and coercion resistance, and catalogued attacks on real systems. They highlighted that blockchain transparency can de-anonymize voters, that compromised voter devices are rarely addressed, and that quantum computing threatens current cryptographic primitives.
+Wermelinger et al. [14] studied acceptance rather than technology. Using partial least squares structural equation modelling on responses from 1,851 Brazilian voters, they found that overall trust is the dominant factor behind both acceptance of electronic voting machines and demand for printed vote verification, and that this effect varies with gender, age, education and political orientation.
+E. Smart Contract Approaches and Network Support
+Chaudhary et al. [15] deployed a Remix-based election contract with addCandidate, authorize, vote and end functions, stored voting data through IPFS to reduce cost, and transmitted votes over a 5G network. The design reduced gas and storage cost, achieved a lower bit-error rate than 4G, and passed Echidna fuzz testing, but a person must still write and approve the contract and voter devices remain open to malware.
+The base work of Asha et al. [1] implements a Voting DApp on Ethereum in which the smart contract enforces candidate management, voter registration and duplicate voting prevention. Only the administrator can call addCandidate and registerVoter, voters connect with MetaMask, and a React and Web3.js interface reads results from the chain. The authors observe that gas price variation and the usability of the interface for non-technical users limit its suitability for large elections.
+F. Research Gap and Motivation
+Table I summarizes the surveyed works. Three gaps appear consistently. First, most systems are evaluated only through simulation or small elections, so behaviour at national scale is unproven. Second, voter authentication is the weakest link: systems that rely only on an ID check or a wallet are exposed to credential theft or sale, while systems that add biometrics need expensive hardware and heavy computation. Third, public blockchains impose gas cost and throughput limits, whereas permissioned designs reduce transparency and leave central control with the election authority.
+
+--- Page Break ---
+
+3
+There is therefore a need for a lightweight and understandable voting system that prevents double voting and unauthorized access at the smart contract level, uses a consensus mechanism suited to a short polling window, and keeps the voter interface simple. The proposed system targets this need.
+TABLE I COMPARISON OF SURVEYED WORKS
+Ref. Year Platform / Authentication Evaluation Main Limitation
+[2] 2022 Custom chain, PoW (pluggable); national ID, SHA-256
+Simulation (6 million votes)
+Needs constant connectivity, no biometrics
+[3] 2019 Consortium chain, no PoW; presiding officer, BSJC sealing
+Conceptual No prototype, central control
+[4] 2018 Public / permissioned; wallet and coin
+Analysis Immature technology, not national-ready
+[5] 2019 Hyperledger Fabric; e-ID card and fingerprint
+Design only No evaluation, heavy hardware
+[6] 2025 Ethereum, PoS; face, fingerprint, RFID, Paillier
+University election Biometric hardware, gas fee
+[7] 2024 PoW chain, Flask; face and hand gestures
+Simulation, questionnaires
+Lighting dependent, slower for older users
+[8] 2021 Hyperledger Fabric, PBFT; blind signature
+Simulation Central authority trust
+[9] 2025 Hyperledger Besu; differential privacy, SSI
+3 nodes, 50k votes Honest authority assumed
+[15] 2023 Ethereum, PoW, IPFS, 5G Simulation, Echidna
+Device malware, loopholes
+[1] 2025 Ethereum contract; MetaMask, role-based access
+Prototype on Remix
+Gas price, usability
+III. PROPOSED METHODOLOGY
+The proposed Voting DApp is designed to let only registered voters cast exactly one ballot, let only the administrator manage candidates and voters, and keep every transaction on a public and auditable ledger. By moving the election rules into a smart contract, the system removes the need for a trusted counting authority.  The  methodology  integrates  wallet-based authentication, smart contract enforcement, a web front end and real-time result display into a single framework.
+A. Overall System Workflow
+The workflow has five stages: system setup, registration, authentication, vote casting and result compilation. During setup the administrator deploys the smart contract and becomes its owner. During registration the administrator adds candidates and registers eligible voter wallet addresses. In authentication, a voter connects a MetaMask wallet and the DApp checks the address against the registered list. In vote casting the voter selects a candidate and confirms the transaction, and the contract validates and records the vote. After polling closes, results are read from the chain and displayed.
+B. System Architecture
+The architecture has three layers. The front-end layer is a web interface built with React and communicating through Web3.js, with separate pages for the administrator and for voters. The smart contract layer is written in Solidity and holds the logic for voter registration, candidate registration and vote casting. The blockchain layer is the Ethereum network on which the contract is deployed, and it stores every transaction in an unchangeable and transparent ledger. MetaMask, a browser wallet extension, connects the user’s account to the blockchain and signs each
+transaction.
+Each block stores a header and a body. The header contains the hash of the previous block, the hash of the current block, a timestamp and a nonce. The body contains the transaction data, namely the voter’s hash, the vote, the voter’s signature and the candidate’s vote. The integrity of the chain follows from the relation
+H(Bi) = SHA-256( H(Bi-1) || Ti || Txi || ni ) (1)
+where H(Bi) is the hash of block i, Ti is its timestamp, Txi is the set of transactions it contains and ni is the nonce. Any change in a past transaction changes H(Bi) and breaks every later link.
+C. Smart Contract Design
+The contract keeps the administrator address, a mapping from voter addresses to a voter record and an array of candidates. Four functions  implement  the  election  logic.  The  function addCandidate(name) can be called only by the administrator and stores a new candidate with an identifier and a vote count of zero. The function registerVoter(address) can be called only by the administrator and marks a wallet address as eligible. The function vote(candidateId) can be called only by a registered voter who has not yet voted, and it increments the selected candidate’s count. The function for results returns the candidate list with vote counts. Access restrictions are written as function modifiers, so that a call from any other account is rejected by the contract itself.
+D. Authentication and Role-Based Access
+A voter opens the home page and calls the connect function, which requests access to the MetaMask wallet. The connected address is compared with the list of registered voters, and voting is available only if the address has been registered. The administrator uses the same mechanism, but the contract additionally checks that the caller is the stored administrator address. Because every transaction is signed with the wallet’s private key, the identity of the sender cannot be forged by the front end.
+E. Prevention of Double Voting
+Double voting is prevented inside the contract rather than in the user interface. Each voter record holds two flags, registered and voted. The vote is accepted only when the following condition holds.
+Accept(v) = 1 if registered(v) = true AND voted(v) =
+false, otherwise 0 (2)
+When a vote is accepted, voted(v) is set to true in the same transaction in which the candidate’s count is incremented. Since both updates are part of one atomic transaction, a voter cannot vote twice even by calling the contract directly or by sending repeated requests. The total count for candidate c is
+N(c) = Σv [ vote(v) = c AND Accept(v) = 1 ] (3)
+and the sum of all N(c) can never exceed the number of registered voters.
+F. Consensus Mechanism
+The choice of consensus affects security, cost and speed. Proof-of-Work is very resistant to manipulation but consumes large computing resources. Proof-of-Stake is more energy efficient and scalable. Delegated Proof-of-Stake speeds up transactions but concentrates control in few validators, and
+
+--- Page Break ---
+
+4
+Proof-of-Authority gives high efficiency but depends on trusted authorities. Since a polling window lasts only a few hours, as observed in [3], and since the literature reports that Proof-of-Authority balances speed and security [1], [11], the proposed deployment uses a Proof-of-Authority style private or test network, with Ethereum public Proof-of-Stake as the option for a larger public deployment. The trade-off is that a Proof-of-Authority network depends on the honesty of its validators, which should be a set of independent institutions rather than a single body.
+G. Compilation and Display of Results
+Because every vote is recorded on the chain, the result can be computed and shown as soon as polling closes. The front end reads the candidate list and vote counts through Web3.js and listens to events emitted by the contract, so that the administrator and authorized users see updates without reloading. The final count is accurate and unchangeable since it is derived directly from the ledger.
+H. Security Testing and Deployment Considerations
+The smart contract is tested for common faults, including reentrancy, integer overflow and denial of service, using simulated elections in a controlled environment and automated analysis tools such as fuzz testing [15]. The modular design allows later extensions, such as an additional biometric or ID-based eligibility check at registration, storage of bulky data off-chain through IPFS, and a blind signature step for stronger ballot secrecy, as proposed in [6], [8], [15].
+IV. RESULTS AND DISCUSSION
+The reviewed systems and the proposed Voting DApp can be compared along four dimensions: integrity, authentication, privacy and scalability.
+On integrity, every surveyed blockchain system provides tamper-evident records, and the proposed DApp inherits this property directly from the Ethereum ledger. Double voting is prevented at the contract level by condition (2), which the base implementation demonstrated through successful registration, voting and result display on a test network [1]. Votes could not be altered once cast, and only registered wallets could vote.
+On authentication, wallet-only authentication is simple and gives non-repudiation of transactions, but it does not prove that the wallet owner is the eligible person. Systems with biometric checks reported very low error rates, for example 0% false acceptance in [6], but they need dedicated hardware and heavy processing and were validated only in a small election. Benabdallah et al. [10] also note that key theft or sale remains a weak point in all key-based schemes. The proposed system therefore treats wallet authentication as the baseline and ID or biometric verification at registration as the recommended extension.
+On privacy, a fully transparent public ledger can expose voting patterns, a concern raised in [13]. Blind signatures [8] and differential privacy [9] offer stronger anonymity, at the cost of more complex cryptography and a continuing trust in the issuing authority. Pseudonymous wallet addresses provide limited privacy in the proposed design, so an anonymity layer is an important extension.
+On scalability and cost, the evidence is mixed. The system of [2] handled six million votes in simulation, and [6] measured 1,424.5 transactions per second in a university election, but [10] and [13] conclude that public blockchains do not yet scale to national elections. The base DApp [1] performed adequately for several simultaneous transactions but reported that Ethereum gas price varies with network congestion, which may limit large elections. A permissioned or Proof-of-Authority network, off-chain storage and layer-2 solutions are the most practical ways to control this cost.
+Finally, technical security is not sufficient on its own. The study of [14] shows that voter acceptance depends strongly on trust and that this trust differs between demographic groups, so transparent verification and a simple interface are as important as the underlying cryptography. The usability finding of [1] and the accessibility work of [7] support this view.
+V. CONCLUSION
+This paper surveyed fifteen recent works on blockchain-based electronic voting and presented a proposed Voting DApp that combines an Ethereum smart contract, MetaMask authentication and a React and Web3.js interface. The survey shows that blockchain improves transparency, auditability and tamper resistance, but that it is not yet a complete standalone solution for national elections because of scalability limits, gas cost, weak voter authentication, limited coercion resistance and the absence of real-world validation. The proposed system enforces role-based access and prevents double voting inside the smart contract, giving a simple, verifiable and decentralized baseline. Future work will add stronger eligibility verification at registration, a privacy layer based on blind signatures, off-chain storage to reduce cost, deployment on a Proof-of-Authority network, and evaluation with larger numbers of voters and transactions under realistic conditions.
+VI. ACKNOWLEDGEMENT
+The authors thank the Department of Computer Science, College of Engineering Karunagappally, for the facilities and support provided for this work.
+REFERENCES
+[1]  P. Asha, P. G. Reddy, R. A. Canessane, J. Refonaa, L. Padma Suresh
+and R. S. Nancy Noella, “A Secure Approach to Mitigate Double Voting in Electronic Voting Systems using Blockchain Technology,” 2025 8th International Conference on Circuit, Power and Computing Technologies  (ICCPCT),  2025,  pp.  115–120,  doi: 10.1109/ICCPCT65132.2025.11176586. [2]  M. S. Farooq, U. Iftikhar and A. Khelifi, “A Framework to Make Voting
+System Transparent Using Blockchain Technology,” 2022. [3]  B. Shahzad and J. Crowcroft, “Trustworthy Electronic Voting Using
+Adjusted Blockchain Technology,” 2019. [4]  N. Kshetri and J. Voas, “Blockchain-Enabled E-Voting,” IEEE
+Software, 2018. [5]  D. Seftyanto, A. Amiruddin and A. R. Hakim, “Design of
+Blockchain-Based Electronic Election System Using Hyperledger: Case of Indonesia,” 2019. [6]  L. A. Ajao, B. U. Umar, H. O. Ohize, E. M. Dogo, E. Esenogho and M.
+Cameron, “Blockchain Integration With Multimodal Biometric Authentication System for Secure Smart Verifiable Electronic Voting System,” 2025. [7]  W. A. Mahmood, J. Waleed, A. R. Abbas, H. Alaskar, M. Altulyan and
+A. J. Hussain, “Intelligent Gesture-Enhanced Blockchain Voting: A
+
+--- Page Break ---
+
+5
+New Era of Secure and Accessible E-Voting,” 2024. [8]  J. C. Pérez García, A. Benslimane and S. Boutalbi, “Blockchain-Based
+System for E-Voting Using Blind Signature Protocol,” 2021. [9]  H. Baniata and G. Caluna, “BP-Vot: Blockchain-Based e-Voting Using
+Smart Contracts, Differential Privacy, and Self-Sovereign Identities,” 2025. [10]  A. Benabdallah, A. Audras, L. Coudert, N. El Madhoun and M. Badra,
+“Analysis of Blockchain Solutions for E-Voting: A Systematic Literature Review,” 2022. [11]  A. Quzmar, M. Qatawneh and S. Al-Maaitah, “E-Voting System Based
+on Blockchain Technology: A Survey,” 2021. [12]  A. Sah, A. Kumar and B. Bhushan, “Leveraging Blockchain
+Technology for Secure Online Voting Systems: A Comprehensive Review,” 2025. [13]  R. Barelli, M. D’Onghia and S. Longari, “Toward Secure Electronic
+Voting: A Survey on E-Voting Systems and Attacks,” 2025. [14]  C. C. Wermelinger, A. M. Mariano and J. M. da Silva, “Trust and
+Security in Critical Digital Infrastructures: A Conditional Analysis of Acceptance and Intention to Change in Electronic Voting Systems,” 2026. [15]  S. Chaudhary, S. Shah, R. Kakkar, R. Gupta, A. Alabdulatif, S.
+Tanwar, G. Sharma and P. N. Bokoro, “Blockchain-Based Secure Voting Mechanism Underlying 5G Network: A Smart Contract Approach,” 2023.

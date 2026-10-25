@@ -1,0 +1,63 @@
+# ─── LaTeX build artifacts ───────────────────────────────────────────────────
+*.aux
+*.log
+*.lof
+*.lot
+*.out
+*.toc
+*.synctex.gz
+*.synctex(busy)
+*.fls
+*.fdb_latexmk
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+*.nav
+*.snm
+*.vrb
+*.xdv
+texput.log
+
+# ─── Keep these ──────────────────────────────────────────────────────────────
+# .tex  → always tracked (source)
+# .pdf  → always tracked (compiled output / diagrams)
+# .png  → always tracked (images / figures)
+# .bib  → always tracked (bibliography)
+# .cls  → always tracked (document class)
+# .sty  → always tracked (style packages)
+
+# ─── OS / editor noise ───────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+
+# ─── Codebase folder ─────────────────────────────────────────────────────────
+codebase/
+
+# ─── Python ──────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# ─── Node / mobile ───────────────────────────────────────────────────────────
+node_modules/
+.expo/
+.expo-shared/
+
+# ─── Misc ────────────────────────────────────────────────────────────────────
+*.tmp
+*.bak
+
+# Nested git backup (temporary rename used during initial commit)
+.git_bak/

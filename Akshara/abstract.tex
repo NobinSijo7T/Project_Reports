@@ -1,0 +1,19 @@
+%============================= abstract.tex================================
+\chapter*{Abstract}%
+\addcontentsline{toc}{chapter}{Abstract}%
+\vspace{-25pt}
+
+\begin{spacing}{1.2}
+\noindent Rapid urban expansion and aging public infrastructure pose significant operational challenges for urban local bodies (ULBs) and municipal corporations. Conventional civic grievance redressal mechanisms are fundamentally hindered by manual triage delays, error-prone inter-departmental dispatching, lack of verifiable audit trails, and the absence of citizen engagement channels. Consequently, critical municipal hazards---such as hazardous road potholes, unattended solid waste accumulations, water pipeline ruptures, and defective streetlights---often experience prolonged resolution latencies and lack public accountability.
+
+\vspace{8pt}
+
+\noindent To address these systemic municipal service delivery bottlenecks, this project presents \textbf{CiviQ} (\textbf{AI-Powered Civic Issue Reporting and Complaint Management System}), a full-stack, automated civic technology platform engineered for automated triage, intelligent spatial routing, and transparent grievance resolution. The core diagnostic intelligence integrates a computer vision pipeline utilizing deep Convolutional Neural Networks and \textbf{YOLOv8} feature extractors for multi-class civic hazard identification, generating precise bounding box spatial localizations and calibrated confidence scores ($89\%$--$97\%$) across five core defect taxonomies: road surface disintegrations (potholes), solid waste accumulations, water supply leaks, electrical luminaire faults, and transit pathway hazards.
+
+\vspace{8pt}
+
+\noindent To resolve jurisdictional routing ambiguities, CiviQ implements a \textbf{Shapely Point-in-Polygon (PIP)} geospatial engine that dynamically interrogates GeoJSON multi-polygons comprising all 55 administrative wards of the Kollam Municipal Corporation. Upon geofence boundary verification, the platform executes automated department dispatching across the Public Works Department (PWD), Corporation Health \& Sanitation Wing, Kerala Water Authority (KWA), and Kerala State Electricity Board (KSEB). To foster participatory governance, a strict 1-upvote community consensus mechanism is enforced, automatically escalating complaints to High priority once reaching predefined civic thresholds ($\ge 3$ upvotes) and triggering immediate citizen notifications. Every state transition (\texttt{Pending}, \texttt{Under Review}, \texttt{In Progress}, \texttt{Resolved}, \texttt{Rejected}) is immutably recorded within a normalized \textbf{MySQL 8.0} audit history alongside simulated cryptographic SHA-256 transaction hashes. Deployed on a lightweight, asynchronous \textbf{Flask} REST architecture with an interactive \textbf{Leaflet OpenStreetMap} frontend, CiviQ establishes an accountable, auditable, and low-latency digital bridge between citizens and municipal authorities.
+\end{spacing}
+
+\thispagestyle{plain}
+%=======================================================================
