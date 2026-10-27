@@ -61,3 +61,5 @@ node_modules/
 
 # Nested git backup (temporary rename used during initial commit)
 .git_bak/
+
+*.pdf

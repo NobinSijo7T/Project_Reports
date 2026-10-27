@@ -1,0 +1,173 @@
+\documentclass[tikz,border=6pt]{standalone}
+\usepackage{tikz}
+\usepackage{amsmath,amssymb}
+\usepackage{fontawesome5}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shadows,shapes.geometric}
+
+% Color definitions (Publication Navy & Slate Palette matching Project Report)
+\definecolor{lavenderDark}{RGB}{15, 44, 89}
+\definecolor{lavenderDeep}{RGB}{10, 28, 58}
+\definecolor{lavenderMedium}{RGB}{29, 78, 158}
+\definecolor{lavenderLight}{RGB}{240, 246, 255}
+\definecolor{lavenderBorder}{RGB}{180, 205, 237}
+\definecolor{cInput}{RGB}{241, 245, 249}
+\definecolor{cStem}{RGB}{224, 242, 254}
+\definecolor{cStage1}{RGB}{220, 252, 231}      % Mint for Sampling/Spatial Attn
+\definecolor{cStage2}{RGB}{254, 243, 199}      % Amber for Detect / Track
+\definecolor{cStage4}{RGB}{224, 242, 254}      % Light Blue for SNN
+\definecolor{cHead}{RGB}{219, 234, 254}        % Soft Blue for Re-ID
+\definecolor{panelBgA}{RGB}{248, 250, 254}
+\definecolor{panelBgB}{RGB}{255, 252, 247}
+\definecolor{panelBorder}{RGB}{195, 210, 230}
+
+\begin{document}
+% Ensure colors are available even when included via \input with standalone package
+\providecolor{lavenderDark}{RGB}{15, 44, 89}
+\providecolor{lavenderDeep}{RGB}{10, 28, 58}
+\providecolor{lavenderMedium}{RGB}{29, 78, 158}
+\providecolor{lavenderLight}{RGB}{240, 246, 255}
+\providecolor{lavenderBorder}{RGB}{180, 205, 237}
+\providecolor{cInput}{RGB}{241, 245, 249}
+\providecolor{cStem}{RGB}{224, 242, 254}
+\providecolor{cStage1}{RGB}{220, 252, 231}
+\providecolor{cStage2}{RGB}{254, 243, 199}
+\providecolor{cStage4}{RGB}{224, 242, 254}
+\providecolor{cHead}{RGB}{219, 234, 254}
+\providecolor{panelBgA}{RGB}{248, 250, 254}
+\providecolor{panelBgB}{RGB}{255, 252, 247}
+\providecolor{panelBorder}{RGB}{195, 210, 230}
+
+% Level-1 Data Flow Diagram (DFD) for SNN-Based Anomaly Detection and Tracking System
+\begin{tikzpicture}[
+  font=\sffamily,
+  >=Latex,
+  % External Entity Style
+  entity/.style={
+    rectangle, draw=lavenderDark!90, line width=1.1pt, rounded corners=4pt,
+    align=center, inner sep=4.5pt, font=\fontsize{8.5}{10.5}\selectfont\bfseries,
+    text width=3.45cm, fill=cInput, drop shadow={shadow xshift=0.8pt, shadow yshift=-0.8pt, opacity=0.12}
+  },
+  % Data Store Style
+  store/.style={
+    rectangle, draw=lavenderMedium!90, line width=1.0pt, rounded corners=3pt,
+    align=center, inner sep=4.0pt, font=\fontsize{8.0}{9.5}\selectfont,
+    text width=3.45cm, fill=lavenderLight, drop shadow={shadow xshift=0.8pt, shadow yshift=-0.8pt, opacity=0.10}
+  },
+  % Process Style (Circles)
+  proc/.style={
+    circle, draw=lavenderMedium!95, line width=1.1pt,
+    align=center, inner sep=1.0pt, minimum size=2.15cm,
+    font=\fontsize{7.5}{9.0}\selectfont\bfseries,
+    drop shadow={shadow xshift=0.8pt, shadow yshift=-0.8pt, opacity=0.10}
+  },
+  procgreen/.style={proc, fill=cStage1},
+  procblue/.style={proc, fill=cStage4},
+  procgold/.style={proc, fill=cStage2},
+  prochead/.style={proc, fill=cHead},
+  % DFD Arrows
+  dfdarr/.style={
+    -{Stealth[length=4.5pt, width=3.2pt]}, line width=1.0pt, draw=lavenderDark!90
+  },
+  % Flow Labels
+  flowlbl/.style={
+    font=\fontsize{6.8}{8.0}\selectfont\bfseries, fill=white, inner sep=1.5pt,
+    text=lavenderDark, rounded corners=1.5pt, draw=lavenderBorder!70, line width=0.45pt
+  }
+]
+
+  % Grid layout:
+  % Columns at x = 0.0, 3.6, 7.2, 10.8 cm
+  % System A Row at y = 7.0 cm
+  % Camera Entity at (0.0, 10.4)
+  % Storage Tier at y = 4.0 cm
+  % System B Row at y = 1.0 cm
+  % Security Operator at (10.8, -2.1)
+
+  % ================= 1. EXTERNAL ENTITY: CAMERA =================
+  \node[entity] (camera) at (0.0, 10.4) {
+    \faVideo\ \ Camera Network\\[2pt]
+    {\fontsize{7.0}{8.2}\normalfont Edge Video Feeds}
+  };
+
+  % ================= 2. SYSTEM A: PROCESSES (y = 7.0) =================
+  \node[procgreen] (p1) at (0.0, 7.0) {1.0\\Clip\\Sampling};
+  \node[procgreen] (p2) at (3.6, 7.0) {2.0\\MobileNetV3\\Spatial Attn};
+  \node[procblue]  (p3) at (7.2, 7.0) {3.0\\Dual PLIF\\SNN Inference};
+  \node[procblue]  (p4) at (10.8, 7.0) {4.0\\Anomaly\\Gating ($\theta_a$)};
+
+  % Camera -> 1.0 Flow
+  \draw[dfdarr] (camera) -- node[left=2pt, flowlbl]{Video Stream} (p1);
+
+  % System A Inter-process arrows
+  \draw[dfdarr] (p1) -- node[above=1.5pt, flowlbl]{16 Frames} (p2);
+  \draw[dfdarr] (p2) -- node[above=1.5pt, flowlbl]{Spatial Maps} (p3);
+  \draw[dfdarr] (p3) -- node[above=1.5pt, flowlbl]{Spike Dyn.} (p4);
+
+  % ================= 3. DATA STORES (y = 4.0) =================
+  \node[store] (d1) at (0.0, 4.0) {
+    \faFolderOpen\ \textbf{D1: Frame Buffer}\\[2pt]
+    {\fontsize{7.0}{8.2}\selectfont \texttt{RAM Cache} $\cdot$ \mbox{16-Clip Window}}
+  };
+
+  \node[store] (d2) at (5.4, 4.0) {
+    \faFolder\ \textbf{D2: Query Registry}\\[2pt]
+    {\fontsize{7.0}{8.2}\selectfont \texttt{query/} $\cdot$ \mbox{Flagged Suspects}}
+  };
+
+  \node[store] (d3) at (10.8, 4.0) {
+    \faDatabase\ \textbf{D3: Tracklet Store}\\[2pt]
+    {\fontsize{7.0}{8.2}\selectfont \texttt{gallery/} $\cdot$ \mbox{512-d Embeddings}}
+  };
+
+  % System A to Data Stores
+  \draw[dfdarr] (p1) -- node[left=2pt, flowlbl]{Clips} (d1);
+  \draw[dfdarr] (p4.south) to[out=240, in=45] node[pos=0.45, above right=1.5pt, flowlbl]{Flagged Suspect} (d2.north east);
+
+  % ================= 4. SYSTEM B: PROCESSES (y = 1.0) =================
+  \node[procgold] (p5) at (0.0, 1.0) {5.0\\YOLOv8n\\Detect \& Pool};
+  \node[procgold] (p6) at (3.6, 1.0) {6.0\\ByteTrack\\2-Stage MOT};
+  \node[prochead] (p7) at (7.2, 1.0) {7.0\\OSNet-AIN\\Feature Extr.};
+  \node[prochead] (p8) at (10.8, 1.0) {8.0\\Tracklet\\Center \& Matching};
+
+  % Data Stores to System B
+  \draw[dfdarr] (d1) -- node[left=2pt, flowlbl]{Decode Frame} (p5);
+  \draw[dfdarr] (d2.south west) to[out=215, in=55] node[pos=0.48, above left=1.5pt, flowlbl]{Query Crops} (p5.north east);
+
+  % System B Inter-process arrows
+  \draw[dfdarr] (p5) -- node[above=1.5pt, flowlbl]{Detections} (p6);
+  \draw[dfdarr] (p6) -- node[above=1.5pt, flowlbl]{Tracklets} (p7);
+  \draw[dfdarr] (p7) -- node[above=1.5pt, flowlbl]{512-d Vec} (p8);
+
+  % System B to D3
+  \draw[dfdarr] (p8) -- node[right=2pt, flowlbl]{Centralized $\mathbf{c}_g$} (d3);
+
+  % ================= 5. EXTERNAL ENTITY: SECURITY OPERATOR =================
+  \node[entity, fill=cStem!80] (operator) at (10.8, -2.1) {
+    \faUserShield\ \ Security Operator\\[2pt]
+    {\fontsize{7.0}{8.2}\normalfont Alerts \& Trajectories}
+  };
+  \draw[dfdarr] (p8) -- node[right=2pt, flowlbl]{Matched Trajectory} (operator);
+
+  % ================= 6. BACKGROUND PANELS =================
+  \begin{scope}[on background layer]
+    % System A Panel
+    \filldraw[draw=lavenderMedium!60, dashed, line width=0.85pt, rounded corners=6pt, fill=panelBgA]
+      (-1.5, 5.60) rectangle (12.3, 8.80);
+    \node[anchor=north west, font=\fontsize{8.0}{9.5}\selectfont\bfseries, text=lavenderDark]
+      at (-1.3, 8.65) {\faBolt\ \ System A: Anomaly Detection Pipeline \normalfont\fontsize{7.2}{8.5}\selectfont(Continuous 24/7 Monitoring $\cdot$ 3.1\,W)};
+
+    % Communication & Storage Tier Panel
+    \filldraw[draw=lavenderBorder!85, line width=0.85pt, rounded corners=6pt, fill=lavenderLight!40]
+      (-1.5, 2.90) rectangle (12.3, 5.25);
+    \node[anchor=north west, font=\fontsize{8.0}{9.5}\selectfont\bfseries, text=lavenderDark]
+      at (-1.3, 5.12) {\faServer\ \ Communication \& Storage Tier \normalfont\fontsize{7.2}{8.5}\selectfont(Transactional Local Buffers \& Registry)};
+
+    % System B Panel
+    \filldraw[draw=lavenderMedium!60, dashed, line width=0.85pt, rounded corners=6pt, fill=panelBgB]
+      (-1.5, -0.40) rectangle (12.3, 2.65);
+    \node[anchor=north west, font=\fontsize{8.0}{9.5}\selectfont\bfseries, text=lavenderDark]
+      at (-1.3, 2.52) {\faSearch\ \ System B: Tracking \& Re-ID Engine \normalfont\fontsize{7.2}{8.5}\selectfont(Event-Triggered High-Capacity MOT)};
+  \end{scope}
+
+\end{tikzpicture}
+\end{document}

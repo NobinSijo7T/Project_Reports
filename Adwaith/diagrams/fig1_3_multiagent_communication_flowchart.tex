@@ -1,0 +1,129 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usepackage{amsmath,amssymb}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shadows,shapes.geometric}
+
+% Color definitions
+\definecolor{lavenderDark}{RGB}{15, 44, 89}
+\definecolor{lavenderDeep}{RGB}{10, 28, 58}
+\definecolor{lavenderMedium}{RGB}{29, 78, 158}
+\definecolor{lavenderLight}{RGB}{240, 246, 255}
+\definecolor{lavenderBorder}{RGB}{180, 205, 237}
+\definecolor{prismNavy}{RGB}{15, 44, 89}
+\definecolor{prismBlue}{RGB}{29, 78, 158}
+\definecolor{prismTeal}{RGB}{13, 148, 136}
+\definecolor{prismMint}{RGB}{236, 253, 245}
+\definecolor{prismGold}{RGB}{217, 119, 6}
+\definecolor{prismDark}{RGB}{15, 23, 42}
+\definecolor{statusFail}{RGB}{220, 38, 38}
+\definecolor{cInput}{RGB}{241, 245, 249}
+\definecolor{cStem}{RGB}{224, 242, 254}
+\definecolor{cStage1}{RGB}{209, 250, 229}
+\definecolor{cStage2}{RGB}{254, 243, 199}
+\definecolor{cHead}{RGB}{219, 234, 254}
+
+\begin{document}
+% Complete Operational Flowchart for Power Grid Event Diagnosis
+\begin{tikzpicture}[
+  x=1cm, y=1cm,
+  font=\sffamily,
+  startend/.style={
+    ellipse, draw=green!60!black, fill=green!45!black, text=white,
+    line width=0.9pt, inner sep=3.5pt, font=\fontsize{7.5}{8.5}\selectfont\bfseries,
+    minimum width=1.80cm, minimum height=0.60cm, drop shadow={opacity=0.12}
+  },
+  procbox/.style={
+    rectangle, rounded corners=3.5pt,
+    draw=lavenderDark!80, fill=white, text=black,
+    line width=0.85pt, inner sep=4.0pt, font=\fontsize{7.2}{8.5}\selectfont,
+    minimum height=0.75cm, text width=3.40cm, align=center, drop shadow={opacity=0.10}
+  },
+  decision/.style={
+    diamond, aspect=2.0,
+    draw=prismNavy, fill=lavenderLight, text=prismNavy,
+    line width=0.85pt, inner sep=2.5pt, font=\fontsize{6.8}{8.0}\selectfont\bfseries,
+    align=center, drop shadow={opacity=0.10}
+  },
+  errorbox/.style={
+    rectangle, rounded corners=3pt,
+    draw=statusFail!80, fill=statusFail!12, text=statusFail!90!black,
+    line width=0.80pt, inner sep=3.5pt, font=\fontsize{6.8}{7.8}\selectfont\bfseries,
+    minimum height=0.65cm, text width=2.40cm, align=center
+  },
+  flowarr/.style={
+    -{Stealth[scale=0.85]}, line width=0.85pt, draw=lavenderDark!90
+  },
+  failarr/.style={
+    -{Stealth[scale=0.80]}, line width=0.80pt, draw=statusFail!90, dashed
+  }
+]
+
+  % Row 1: Start
+  \node[startend] (start) at (0, 0) {START};
+
+  % Row 2: Ingest
+  \node[procbox, fill=cInput, below=0.55cm of start] (ingest)
+    {\faBolt\ \textbf{Ingest PMU/SCADA Stream}\\[1pt]Synchronized voltage, current, freq, $P/Q$};
+
+  % Row 3: Decision - Integrity
+  \node[decision, below=0.55cm of ingest] (dec_valid)
+    {Data Valid \&\\Synced?};
+
+  % Error handler
+  \node[errorbox, right=1.20cm of dec_valid] (err_stream)
+    {\faExclamationTriangle\ \textbf{Data Error}\\[1pt]Impute / Discard};
+
+  % Row 4: Preprocessing
+  \node[procbox, fill=cStage1, below=0.65cm of dec_valid] (preproc)
+    {\faSlidersH\ \textbf{Temporal Preprocessing}\\[1pt]Z-score scale $\cdot$ Sliding window $T \times D$};
+
+  % Row 5: Deep Latent Learning
+  \node[procbox, fill=cStem, below=0.55cm of preproc] (latent)
+    {\faBrain\ \textbf{Representation Learning}\\[1pt]TFT (VSN + Attention) vs VAEs};
+
+  % Row 6: 2D Projection
+  \node[procbox, fill=cStage2, below=0.55cm of latent] (project)
+    {\faCompress\ \textbf{2D Manifold Projection}\\[1pt]UMAP / t-SNE / PCA Embedding};
+
+  % Row 7: DBSCAN Clustering
+  \node[procbox, fill=cHead, below=0.55cm of project] (cluster)
+    {\faProjectDiagram\ \textbf{DBSCAN Density Partition}\\[1pt]Core clusters ($\epsilon, \text{MinPts}$) + Outliers};
+
+  % Row 8: Dashboard Rendering
+  \node[procbox, fill=lavenderLight, below=0.55cm of cluster] (dash)
+    {\faChartArea\ \textbf{Visual Analytics Dashboard}\\[1pt]2D Map $\cdot$ Tree $\cdot$ Vector Chart};
+
+  % Row 9: HITL Expert Inspection
+  \node[decision, below=0.55cm of dash] (dec_hitl)
+    {Event Pattern\\Confirmed?};
+
+  % HITL feedback loop on right
+  \node[procbox, fill=prismMint, right=1.20cm of dec_hitl] (hitl_adjust)
+    {\faUserCheck\ \textbf{HITL Adjustment}\\[1pt]Tune $\epsilon$ / Relative Compare};
+
+  % Row 10: Event Diagnosis Report
+  \node[procbox, fill=cStage1, below=0.65cm of dec_hitl] (report)
+    {\faClipboardCheck\ \textbf{Log Grid Event Diagnosis}\\[1pt]Event Class $\cdot$ Bus ID $\cdot$ Root Cause};
+
+  % Row 11: End
+  \node[startend, fill=red!70!black, below=0.55cm of report] (end) {END / LOOP};
+
+  % Connections
+  \draw[flowarr] (start) -- (ingest);
+  \draw[flowarr] (ingest) -- (dec_valid);
+  \draw[flowarr] (dec_valid) -- node[left, font=\fontsize{6.5}{7.5}\selectfont\bfseries]{Yes} (preproc);
+  \draw[failarr] (dec_valid) -- node[above, font=\fontsize{6.5}{7.5}\selectfont\bfseries]{No} (err_stream);
+  \draw[flowarr] (err_stream) |- (ingest);
+  \draw[flowarr] (preproc) -- (latent);
+  \draw[flowarr] (latent) -- (project);
+  \draw[flowarr] (project) -- (cluster);
+  \draw[flowarr] (cluster) -- (dash);
+  \draw[flowarr] (dash) -- (dec_hitl);
+  \draw[flowarr] (dec_hitl) -- node[left, font=\fontsize{6.5}{7.5}\selectfont\bfseries]{Yes} (report);
+  \draw[failarr] (dec_hitl) -- node[above, font=\fontsize{6.5}{7.5}\selectfont\bfseries]{No} (hitl_adjust);
+  \draw[flowarr] (hitl_adjust) |- (cluster);
+  \draw[flowarr] (report) -- (end);
+
+\end{tikzpicture}
+\end{document}

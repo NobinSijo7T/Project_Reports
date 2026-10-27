@@ -1,0 +1,311 @@
+\documentclass[tikz,border=12pt]{standalone}
+\usepackage{tikz}
+\usepackage{amsmath,amssymb}
+\usepackage{fontawesome5}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shadows,shapes.geometric}
+
+% High-Contrast Professional Publication Palette
+\definecolor{boxBg}{RGB}{252, 253, 255}
+\definecolor{boxBorder}{RGB}{40, 55, 75}
+\definecolor{subBoxBg}{RGB}{255, 255, 255}
+\definecolor{highlightBg}{RGB}{238, 245, 255}
+\definecolor{accentNavy}{RGB}{12, 30, 65}
+\definecolor{accentTeal}{RGB}{15, 118, 110}
+\definecolor{stageText}{RGB}{15, 23, 42}
+\definecolor{frameBg}{RGB}{248, 250, 253}
+\definecolor{outputBg}{RGB}{236, 253, 245}
+
+\begin{document}
+\begin{tikzpicture}[
+  font=\sffamily,
+  >=Latex,
+  line width=0.85pt,
+  % Node Styles
+  stageLbl/.style={
+    font=\fontsize{11}{13.5}\selectfont\bfseries,
+    text=accentNavy,
+    align=center,
+    inner sep=3pt
+  },
+  mainBox/.style={
+    draw=boxBorder,
+    fill=boxBg,
+    line width=0.9pt,
+    rounded corners=4pt,
+    align=center,
+    inner sep=6.5pt,
+    font=\fontsize{9.5}{12}\selectfont,
+    drop shadow={shadow xshift=1.0pt, shadow yshift=-1.0pt, opacity=0.10}
+  },
+  subBox/.style={
+    draw=boxBorder!80,
+    fill=subBoxBg,
+    line width=0.7pt,
+    rounded corners=3pt,
+    align=center,
+    inner sep=4.5pt,
+    font=\fontsize{8.8}{11.2}\selectfont
+  },
+  groupFrame/.style={
+    draw=accentNavy,
+    dashed,
+    line width=1.1pt,
+    rounded corners=6pt,
+    inner sep=12pt,
+    fill=frameBg
+  },
+  flowArr/.style={
+    ->,
+    line width=1.1pt,
+    draw=accentNavy
+  },
+  lblNode/.style={
+    font=\fontsize{8.5}{10.8}\selectfont\bfseries,
+    text=stageText,
+    fill=white,
+    draw=boxBorder!45,
+    line width=0.6pt,
+    inner sep=2.5pt,
+    rounded corners=2pt
+  }
+]
+
+  % =========================================================================
+  % 1. GALLERY ARM (Left Column, Center at x = 0, Width = 8.0 cm)
+  % =========================================================================
+
+  % Multi-Camera Video Streams
+  \node[mainBox, text width=8.0cm] (g_input) at (0, 0) {
+    \textbf{\Large Multi-Camera Video Streams}\\[3pt]
+    {\fontsize{8.8}{11.2}\selectfont Synchronized Video Ingestion $\cdot$ MP4 / AVI / MOV ($N$ Cameras)\\[1pt]
+    Temporal Wall-Clock Anchoring: $t_{\text{frame}} = f_{\text{id}} / \text{FPS}$}
+  };
+
+  % YOLOv8n Detector
+  \node[mainBox, text width=8.0cm, below=0.55cm of g_input] (yolo) {
+    \textbf{\Large YOLOv8n Person Detector}\\[3pt]
+    {\fontsize{8.8}{11.2}\selectfont Base Confidence Threshold $= 0.25$ $\cdot$ Filter: Person Class ($0$)\\[1pt]
+    Candidate Detections: $D_i = (x_1, y_1, x_2, y_2, c_i)$}
+  };
+  \draw[flowArr] (g_input) -- (yolo);
+
+  % ByteTrack Container Box
+  \node[mainBox, text width=8.0cm, below=0.95cm of yolo] (bytetrack) {
+    \textbf{\Large ByteTrack Multi-Object Association}\\[5pt]
+    \begin{tikzpicture}[baseline]
+      \node[subBox, text width=7.4cm] (bt_kalman) {
+        \textbf{8-D Constant-Velocity Kalman Filter State}\\[2pt]
+        $\mathbf{s}_k = (c_x, c_y, w, h, v_{c_x}, v_{c_y}, v_w, v_h)^T$
+      };
+      \node[subBox, text width=7.4cm, below=4pt of bt_kalman] (bt_s1) {
+        \textbf{Stage 1:} Score-Fused IoU Cost ($C_{kj} = 1 - \text{IoU} \cdot c_j$) + Hungarian
+      };
+      \node[subBox, text width=7.4cm, below=4pt of bt_s1] (bt_s2) {
+        \textbf{Stage 2:} Pure IoU Cost Matching (Recovery of Occluded Persons)
+      };
+    \end{tikzpicture}
+  };
+
+  % Two distinct parallel arrows from YOLO to ByteTrack with wide separation (xshift = +/- 2.4cm)
+  \draw[flowArr] ([xshift=-2.4cm]yolo.south) -- node[lblNode, midway]{High-Conf ($c_i \ge 0.6$)} ([xshift=-2.4cm]bytetrack.north);
+  \draw[flowArr] ([xshift=2.4cm]yolo.south) -- node[lblNode, midway]{Low-Conf ($0.1 \le c_i < 0.6$)} ([xshift=2.4cm]bytetrack.north);
+
+  % Frame Crop Extraction
+  \node[mainBox, text width=8.0cm, below=0.65cm of bytetrack] (crop_ext) {
+    \textbf{\Large Frame Crop Extraction}\\[3pt]
+    {\fontsize{8.8}{11.2}\selectfont Bounding-Box Clamping + \texttt{frame\_metadata.json} Logging}
+  };
+  \draw[flowArr] (bytetrack) -- node[lblNode]{Tracklets with Consistent Track IDs} (crop_ext);
+
+  % Cleanup Module
+  \node[mainBox, text width=8.0cm, below=0.55cm of crop_ext] (cleanup) {
+    \textbf{\Large Quality Filtering \& Salvage Module}\\[5pt]
+    \begin{tikzpicture}[baseline]
+      \node[subBox, text width=3.5cm] (blur) {
+        \textbf{Laplacian Blur Filter}\\[2pt]
+        Variance $\ge 30$ (Sharpen)
+      };
+      \node[subBox, text width=3.6cm, right=6pt of blur] (reval) {
+        \textbf{YOLO Re-Validation}\\[2pt]
+        Size $\ge 40\times40$, Aspect $\in [0.2, 2.0]$
+      };
+    \end{tikzpicture}
+  };
+  \draw[flowArr] (crop_ext) -- (cleanup);
+
+  % CLAHE Enhancement
+  \node[mainBox, text width=8.0cm, below=0.55cm of cleanup] (clahe) {
+    \textbf{\Large CLAHE Local Contrast Enhancement}\\[3pt]
+    {\fontsize{8.8}{11.2}\selectfont $\text{BGR} \to \text{LAB}$, L-Channel Equalization ($\text{clipLimit} = 2.0$, Grid $= 8\times8$), $\text{LAB} \to \text{BGR}$}
+  };
+  \draw[flowArr] (cleanup) -- node[lblNode]{Cleaned \& Validated Person Crops} (clahe);
+
+  % OSNet-AIN Feature Extraction
+  \node[mainBox, text width=8.0cm, below=0.65cm of clahe] (osnet) {
+    \textbf{\Large OSNet-AIN (\texttt{osnet\_ain\_x1\_0}) Embedder}\\[3pt]
+    {\fontsize{8.8}{11.2}\selectfont Omni-Scale 512-D Feature Maps $\cdot$ Per-Frame Unit $L_2$ Normalization ($\|\hat{\mathbf{f}}_i\|_2 = 1$)}
+  };
+  \draw[flowArr] (clahe) -- (osnet);
+
+  % Feature Centralization
+  \node[mainBox, text width=8.0cm, below=0.75cm of osnet] (fc) {
+    \textbf{\Large Tracklet Feature Centralization}\\[5pt]
+    \begin{tikzpicture}[baseline]
+      \node[subBox, text width=7.4cm] (fc_mah) {
+        \textbf{Mahalanobis Outlier Filtering (Quantile $q = 0.005$)}\\[2pt]
+        $d_M(\hat{\mathbf{f}}_i) = \sqrt{(\hat{\mathbf{f}}_i - \boldsymbol{\mu})^T \boldsymbol{\Sigma}^{-1} (\hat{\mathbf{f}}_i - \boldsymbol{\mu})}$, discard transient noise
+      };
+      \node[subBox, text width=7.4cm, below=4pt of fc_mah] (fc_mean) {
+        \textbf{Robust Mean Centroid Pooling:}\ $\mathbf{c}_k = \frac{1}{N^*} \sum_{i=1}^{N^*} \hat{\mathbf{f}}_i$
+      };
+      \node[subBox, text width=7.4cm, below=4pt of fc_mean] (fc_norm) {
+        \textbf{Unit Hypersphere Projection:}\ $\hat{\mathbf{c}}_g = \mathbf{c}_k / \|\mathbf{c}_k\|_2 \in \mathbb{S}^{511}$
+      };
+    \end{tikzpicture}
+  };
+  \draw[flowArr] (osnet) -- node[lblNode]{$\{\hat{\mathbf{f}}_1, \dots, \hat{\mathbf{f}}_N\} \in \mathbb{R}^{512}$ (Serialized .pt Embeddings)} (fc);
+
+  % Gallery Centralized Vectors output block
+  \node[mainBox, fill=highlightBg, text width=8.0cm, below=0.55cm of fc] (g_vecs) {
+    \textbf{\Large Gallery Centralized Identity Vectors $\{\hat{\mathbf{c}}_g\} \in \mathbb{R}^{512}$}\\[3pt]
+    {\fontsize{8.8}{11.2}\selectfont Stored per Camera View with Associated Spatial-Temporal Tracklet Metadata}
+  };
+  \draw[flowArr] (fc) -- (g_vecs);
+
+
+  % =========================================================================
+  % 2. QUERY ARM (Right Column, Center at x = 9.8, Width = 7.4 cm)
+  % =========================================================================
+
+  % Query Suspect Frames (Level with g_input)
+  \node[mainBox, text width=7.4cm] (q_input) at (9.8, 0) {
+    \textbf{\Large Query Suspect Frames}\\[3pt]
+    {\fontsize{8.8}{11.2}\selectfont Ingested from SNN Anomaly Module ($\theta_a \ge 0.521$)\\[1pt]
+    Flagged Suspect Person Crops + Frame Coordinates}
+  };
+
+  % Query Crop Validation & Quality Gate
+  \node[mainBox, text width=7.4cm, below=0.55cm of q_input] (q_val) {
+    \textbf{\Large Query Validation \& Quality Gate}\\[3pt]
+    {\fontsize{8.8}{11.2}\selectfont Proportion \& Size: Size $\ge 40\times40$, Aspect $\in [0.2, 2.0]$\\[1pt]
+    Laplacian Blur Check: $\text{Var}(\Delta I) \ge 30$ (Sharpen / Discard)}
+  };
+  \draw[flowArr] (q_input) -- (q_val);
+
+  % Query Feature Processing Pipeline Container
+  \node[mainBox, text width=7.4cm, below=0.95cm of q_val] (q_pipe) {
+    \textbf{\Large Query Feature Extraction Pipeline}\\[5pt]
+    \begin{tikzpicture}[baseline]
+      \node[subBox, text width=6.8cm] (qp_clahe) {
+        \textbf{CLAHE Contrast Enhancement}\\[2pt]
+        $\text{BGR} \to \text{LAB}$, L-Equalization ($\text{clipLimit}=2.0, 8\times8$)
+      };
+      \node[subBox, text width=6.8cm, below=4pt of qp_clahe] (qp_osnet) {
+        \textbf{OSNet-AIN (\texttt{osnet\_ain\_x1\_0}) Embedder}\\[2pt]
+        Omni-Scale Feature Learning ($256 \times 128 \to 512\text{-D}$)
+      };
+      \node[subBox, text width=6.8cm, below=4pt of qp_osnet] (qp_norm) {
+        \textbf{Per-Frame Unit Normalization:}\ $\hat{\mathbf{f}}_q = \mathbf{f}_q / \|\mathbf{f}_q\|_2 \in \mathbb{S}^{511}$
+      };
+    \end{tikzpicture}
+  };
+  \draw[flowArr] (q_val) -- node[lblNode]{Validated Suspect Image Crops} (q_pipe);
+
+  % Query Feature Centralization Container
+  \node[mainBox, text width=7.4cm, below=1.2cm of q_pipe] (q_center_box) {
+    \textbf{\Large Query Feature Centralization}\\[5pt]
+    \begin{tikzpicture}[baseline]
+      \node[subBox, text width=6.8cm] (qc_mah) {
+        \textbf{Mahalanobis Outlier Filtering ($q = 0.005$)}\\[2pt]
+        Rejection of Spurious Anomaly Artifacts
+      };
+      \node[subBox, text width=6.8cm, below=4pt of qc_mah] (qc_mean) {
+        \textbf{Robust Mean Centroid Pooling:}\ $\mathbf{c}_q = \frac{1}{M^*} \sum_{j=1}^{M^*} \hat{\mathbf{f}}_{q,j}$
+      };
+      \node[subBox, text width=6.8cm, below=4pt of qc_mean] (qc_norm) {
+        \textbf{Unit Normalization:}\ $\hat{\mathbf{q}} = \mathbf{c}_q / \|\mathbf{c}_q\|_2 \in \mathbb{S}^{511}$
+      };
+    \end{tikzpicture}
+  };
+  \draw[flowArr] (q_pipe) -- node[lblNode]{Query Frame Embeddings $\{\hat{\mathbf{f}}_q\} \in \mathbb{R}^{512}$} (q_center_box);
+
+  % Final Query Vector - Level with g_vecs
+  \node[mainBox, fill=highlightBg, text width=7.4cm] (q_vec) at (9.8, 0 |- g_vecs) {
+    \textbf{\Large Query Identity Vector $\hat{\mathbf{q}} \in \mathbb{R}^{512}$}\\[3pt]
+    {\fontsize{8.8}{11.2}\selectfont High-Fidelity Anomaly Identity Vector $\|\hat{\mathbf{q}}\|_2 = 1$\\[1pt]
+    Ready for Real-Time Cross-Camera Network Retrieval}
+  };
+  \draw[flowArr] (q_center_box) -- (q_vec);
+
+
+  % =========================================================================
+  % 3. GROUP FRAMES (GALLERY ARM & QUERY ARM)
+  % =========================================================================
+  \begin{scope}[on background layer]
+    \node[groupFrame, fit=(g_input)(g_vecs), label={[accentNavy, font=\fontsize{11}{13.5}\selectfont\bfseries]above:GALLERY ARM (Multi-Camera Pipeline)}] (gallery_frame) {};
+    \node[groupFrame, fit=(q_input)(q_vec), label={[accentNavy, font=\fontsize{11}{13.5}\selectfont\bfseries]above:QUERY ARM (SNN Anomaly Trigger)}] (query_frame) {};
+  \end{scope}
+
+
+  % =========================================================================
+  % 4. STAGE LABELS (OUTSIDE THE FRAMES ON THE MARGINS)
+  % =========================================================================
+  \node[stageLbl, left=0.6cm of bytetrack] {Detection\\\& Tracking};
+  \node[stageLbl, left=0.6cm of cleanup]   {Tracklet\\Processing};
+  \node[stageLbl, left=0.6cm of osnet]     {Feature\\Representation};
+  \node[stageLbl, right=0.6cm of q_pipe]   {Query Feature\\Processing};
+  \node[stageLbl, right=0.6cm of q_center_box] {Query Identity\\Centralization};
+
+
+  % =========================================================================
+  % 5. BOTTOM SECTION: IDENTITY MATCHING & OUTPUT
+  % =========================================================================
+  % Generous vertical clearance: cosine placed 2.8cm below g_vecs
+  \node[mainBox, text width=5.2cm, below=2.8cm of g_vecs.south, xshift=-0.4cm] (cosine) {
+    \textbf{\Large Cosine Similarity Matching}\\[4pt]
+    $s = \hat{\mathbf{q}} \cdot \hat{\mathbf{c}}_g = \cos(\theta_{\hat{\mathbf{q}}, \hat{\mathbf{c}}_g})$\\[3pt]
+    {\fontsize{8.8}{11.2}\selectfont Dot product over unit sphere $\mathbb{S}^{511}$\\[2pt]
+    Verification Threshold: $s \ge \theta_s = 0.75$}
+  };
+
+  \node[mainBox, text width=4.4cm, right=0.7cm of cosine] (lookup) {
+    \textbf{\Large Matched Tracklet\\Metadata Registry}\\[4pt]
+    {\fontsize{8.8}{11.2}\selectfont Multi-Camera Handover Times,\\Global Coordinates, Track IDs}
+  };
+
+  \node[mainBox, fill=outputBg, text width=4.8cm, right=0.7cm of lookup] (output_box) {
+    \textbf{\Large System Surveillance Output}\\[3pt]
+    \textbf{\large Cross-Camera Trajectory Map}\\[3pt]
+    {\fontsize{8.8}{11.2}\selectfont Annotated Video with Bounding Box Overlay\\[1pt]
+    Verified Suspect ID \& Timestamp Sequence}
+  };
+
+  % Section Title Header inside the bottom frame above lookup (concise, matching paper)
+  \node[font=\fontsize{11}{13.5}\selectfont\bfseries, text=accentNavy, above=0.35cm of lookup] (bottom_title) {
+    Identity Matching \& Output
+  };
+
+  % Sequential Arrows in Bottom Stage
+  \draw[flowArr] (cosine) -- (lookup);
+  \draw[flowArr] (lookup) -- (output_box);
+
+  % Gallery Vector flows straight down into Cosine Matching
+  \draw[flowArr] (g_vecs.south) -- (cosine.north);
+
+  % Midpoint Y coordinate strictly in the empty clearance between upper frames and bottom frame
+  \coordinate (ymid) at ($(gallery_frame.south)!0.50!(bottom_title.north)$);
+
+  % Query Vector flows down in right column, turns left in empty gap, and enters Cosine Matching cleanly!
+  \draw[flowArr] (q_vec.south) -- (q_vec.south |- ymid) -- node[lblNode, pos=0.35, above=2pt]{Query Vector $\hat{\mathbf{q}}$} ([xshift=1.4cm]cosine.north |- ymid) -- ([xshift=1.4cm]cosine.north);
+
+  % Input annotation from left for Gallery Vectors
+  \node[lblNode, left=0.6cm of cosine] (all_cams) {$\{\hat{\mathbf{c}}_g\}$ from\\All Cameras};
+  \draw[flowArr] (all_cams) -- (cosine);
+
+  % Bottom Group Frame cleanly enclosing bottom elements without text overlap
+  \begin{scope}[on background layer]
+    \node[groupFrame, fit=(cosine)(lookup)(output_box)(all_cams)(bottom_title)] (bottom_frame) {};
+  \end{scope}
+
+\end{tikzpicture}
+\end{document}

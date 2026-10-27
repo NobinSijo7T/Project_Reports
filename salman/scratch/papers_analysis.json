@@ -1,0 +1,287 @@
+[
+  {
+    "file": "1-s2.0-S0385814620301383-main.json",
+    "pages": 34,
+    "top_lines": [
+      "Auris Nasus Larynx 47 (2020) 493\u2013526",
+      "Contents lists available at ScienceDirect",
+      "Auris Nasus Larynx",
+      "j o u r n a l h o m e p a g e : w w w . e l s e v i e r . c o m / l o c a t e / a n l",
+      "Clinical practice guidelines for the diagnosis and management  of acute otitis media in children\u20142018 update",
+      "Tatsuya Hayashi a , \u2217, Ken Kitamura b , Sho Hashimoto c , Muneki Hotomi d ,  Hiromi Kojima e , Fumiyo Kudo f , Yumiko Maruyama g , Shoichi Sawada h ,  Hidenobu Taiji i , Goro Takahashi k , Haruo Takahashi l , Yoshifumi Uno m ,  Hisakazu Yano j",
+      "a Department Otolaryngology-Head and Neck Surgery, Asahikawa Medical University, 2-1-1-1 Midorigaoka Higashi, Asahikawa-shi,  Hokkaido 078-8510, Japan  b Shonan University of Medical Sciences, 16-48 Kamishinano, Totsuuka-ku, Yokohama-shi, Kanagawa 244-0806, Japan  c Department of Otolaryngology Head and Neck Surgery, National Hospital Organization Sendai Medical Center, 2-11-12 Miyagino,  Miyagino-ku, Sendai-shi, Miyagi 983-8520, Japan  d Department of Otolaryngology Head and Neck Surgery, Wakayama Medical University, 811-1 Kimiidera, Wakayama-shi, Wakayama  641-8509, Japan  e Department of Otolaryngology, Tokyo Jikei University School of Medicine, 3-25-8 Nishishimbashi, Minato-ku, Tokyo 105-8461, Japan  f Alice ENT Clinic, 2-36-21 Makuharihongo, Hanamigawa-ku, Chiba-shi, Chiba 262-0033, Japan  g Department of Otolaryngology, Kurobe City Hospital, 1108-1 Mikkaichi, Kurobe-shi, Toyama 938-8502, Japan  h Sawada ENT and Eye Clinic, 1734-5 Fukui-cho, Kochi-shi, Kochi 780-0965, Japan  i Department of Otolaryngology, Saiseikai Central Hospital, 1-4-17 Mita, Minato-ku, Tokyo 108-0073, Japan  j Department of Microbiology and Infectious Diseases, Nara Medical University, 840 Shijo-cho, Kashihara-shi, Nara 634-8521, Japan  k Yamahoshi ENT Clinic, 1-4-6 Shitoro, Nishi-ku, Hamamatsu-shi, Shizuoka 432-8069, Japan  l Department of Otolaryngology Head and Neck Surgery, Nagasaki University, 1-12-4 Sakamoto, Nagasaki-shi, Nagasaki 852-8523,  Japan  m Uno ENT Clinic, 3702-4 Tomihara, Kita-ku, Okayama-shi, Okayama 701-1153, Japan",
+      "A R T I C L E I N F O",
+      "Article history:  Received 3 April 2020  Accepted 27 May 2020  Available online 20 June 2020",
+      "Keywords:  Acute otitis media  Recurrent acute otitis media  Otoscopic findings  Diagnosis  Treatment  Antimicrobial resistance",
+      "A B S T R A C T",
+      "Objective: \u201cClinical Practice Guidelines for the Diagnosis and Management of Acute Otitis Me-  dia in Children\u20142018 update (2018 Guidelines)\u201d aim to provide appropriate recommendations  about the diagnosis and management of children with acute otitis media (AOM), including recur-  rent acute otitis media (recurrent AOM), in children under 15 years of age. These evidence-based  recommendations were created with the consensus of the subcommittee members, taking into  consideration unique characteristics of bacteriology and antimicrobial susceptibilities of AOM  pathogens in Japan, as well as global advances in vaccines."
+    ],
+    "abstract_preview": ""
+  },
+  {
+    "file": "1-s2.0-S1110016826002334-main.json",
+    "pages": 14,
+    "top_lines": [
+      "Original article",
+      "Mathematical modeling and feature extraction architecture of a  quantum-inspired attention network for UAV image classification",
+      "Hanaa Abu-Zinadah a,*",
+      ", Sayed Abdel-Khalek b",
+      "a Department of Mathematics and Statistics, College of Science, University of Jeddah, Jeddah, Saudi Arabia b Department of Mathematics, Faculty of Science, Sohag University, Sohag 82524, Egypt",
+      "A R T I C L E I N F O",
+      "Keywords: Image classification Remote sensing Quantum learning Feature extraction Quantum network Deep learning ConvNeXt",
+      "A B S T R A C T",
+      "In this study, a novel Quantum Self-Attention Neural Network for Multi-Model Aerial Image Classification  (QSANN-MAIC) is proposed. The objective of this paper is to develop a high-performance learning framework  capable of accurately classifying UAV-acquired aerial images. Initially, the proposed QSANN-MAIC model pre-  processes the input images through several enhancement steps, including noise reduction, sharpening,  contrast enhancement, and color correction, to eliminate unwanted distortions and improve image clarity for  further analysis. We have used a multi-model feature extraction framework to obtain rich and complementary  feature representations, integrating three architectures: a compact Vision Transformer, an enhanced ConvNeXt  model, and a fine-tuned VGG16 network. Subsequently, a quantum self-attention neural network is utilized to  perform the final classification by effectively capturing long-range dependencies among the extracted features.  To validate the effectiveness of the proposed QSANN-MAIC model, extensive simulations are conducted and  evaluated using multiple performance metrics. Comparative analysis demonstrates that the QSANN-MAIC  approach achieves improved performance across several evaluation measures.",
+      "1. Introduction",
+      "In recent years, Unmanned Aerial Vehicles (UAVs) have attracted  significant attention across various fields, including mobile relaying,  surveillance, data acquisition, and monitoring. UAVs are capable of  providing line-of-sight (LoS) communication links, which enhances  connectivity and improves the reliability of communication systems [1].  Owing to their relatively low cost, high mobility, and flexible deploy\u00ad ment capabilities, UAVs have been widely adopted for numerous ap\u00ad plications such as search and rescue missions, precision agriculture,  disaster monitoring, and early environmental observation [2]. Further\u00ad more, UAVs can function as mobile relay platforms to extend network  coverage and improve communication capacity. With the rapid growth  of the information technology (IT) sector, researchers are increasingly  focusing on utilizing UAVs to provide global internet access, particularly  for users located in remote or hard-to-reach areas [3]. UAV-based sys\u00ad tems also create an aerial communication environment that is highly  suitable for wireless transmission, as they can deliver wireless signals to  ground users in regions experiencing network congestion or lacking  sufficient terrestrial infrastructure [4].",
+      "Within UAV-based applications, land cover (LC) classification  plays a crucial role; however, developing a fully automated and reliable  classification system remains a challenging task. Aerial scene image  classification involves categorizing captured aerial imagery into  different subclasses in order to represent various ground objects and  land cover (LC) categories, which often consist of numerous semantic  classes [5]. In many practical remote sensing (RS) applications, such as  resource management, urban planning, and computer-based cartog\u00ad raphy, aerial image classification plays a significant role [6]. Typically,  several related object categories or LC types may appear across different  scene types. For example, both residential and commercial areas may  contain common elements such as buildings, roads, and trees; however,  they differ in terms of spatial arrangement and density distribution of  these components [7]. As a result, identifying aerial scenes based on  their structural characteristics and spatial patterns remains a chal\u00ad lenging task [8]."
+    ],
+    "abstract_preview": ""
+  },
+  {
+    "file": "1-s2.0-S2049080121004428-main.json",
+    "pages": 5,
+    "top_lines": [
+      "Annals of Medicine and Surgery 67 (2021) 102492",
+      "Available online 11 June 2021 2049-0801/\u00a9 2021 The Author(s). Published by Elsevier Ltd on behalf of IJS Publishing Group Ltd. This is an open access article under the CC BY-NC-ND license",
+      "(http://creativecommons.org/licenses/by-nc-nd/4.0/).",
+      "Cross-sectional Study",
+      "Management evaluation of patients with chronic suppurative otitis media:  A retrospective study",
+      "Sally Mahdiani *, Lina Lasminingrum, Denis Anugrah",
+      "Department of Otorhinolaryngology Head and Neck Surgery, Faculty of Medicine, Universitas Padjadjaran \u2013 Dr. Hasan Sadikin General Hospital, Bandung, Indonesia",
+      "A R T I C L E I N F O",
+      "Keywords:  Chronic suppurative otitis media (CSOM)  Characteristics  Recovery rate",
+      "A B S T R A C T",
+      "Background: Chronic suppurative otitis media (CSOM) is a chronic infection of the middle ear with perforation of  the tympanic membrane and secrete from the ear more for than two months, either continuously or intermit\u00ad tently. Chronic suppurative otitis media has a high prevalence and impact on the physical, social, and psycho\u00ad logical of the patients. This disease may be fatal and even cause death.  Objective: Analyzing management evaluation of CSOM patients.  Methods: A retrospective study was conducted based on medical records of CSOM patients from January  2017\u2013December 2019. The study used total sampling Chi-squared test with p < 0.05.  Results: There were 600 patients with CSOM in January 2017\u2013December 2019. Most of them were male, aged  36\u201345 years old with normal body mass index. There were 431 patients on the follow-up post-treatment by either  medical or surgical management. The recovery rate could be assessed from the evaluation of CSOM complaints 6  months after treatment, and the results were significant (p < 0.001). Conclusions: CSOM managements are in  the form of operative and non-operative that shows improvement within 6-month evaluation.",
+      "1. Background"
+    ],
+    "abstract_preview": ""
+  },
+  {
+    "file": "10278_2025_Article_1481.json",
+    "pages": 44,
+    "top_lines": [
+      "Vol:.(1234567890)",
+      "Journal of Imaging Informatics in Medicine (2025) 38:3928\u20133971 https://doi.org/10.1007/s10278-025-01481-y",
+      "REVIEW",
+      "Vision Transformers in Medical Imaging: a Comprehensive Review  of Advancements and Applications Across Multiple Diseases",
+      "Sanad Aburass1   \u00b7 Osama Dorgham2 \u00b7 Jamil Al Shaqsi3 \u00b7 Maha Abu Rumman2 \u00b7 Omar Al\u2010Kadi4",
+      "Received: 27 December 2024 / Revised: 15 February 2025 / Accepted: 11 March 2025 / Published online: 31 March 2025  \u00a9 The Author(s) under exclusive licence to Society for Imaging Informatics in Medicine 2025",
+      "Abstract The rapid advancement of artificial intelligence techniques, particularly deep learning, has transformed medical imaging.  This paper presents a comprehensive review of recent research that leverage vision transformer (ViT) models for medical  image classification across various disciplines. The medical fields of focus include breast cancer, skin lesions, magnetic  resonance imaging brain tumors, lung diseases, retinal and eye analysis, COVID-19, heart diseases, colon cancer, brain dis- orders, diabetic retinopathy, skin diseases, kidney diseases, lymph node diseases, and bone analysis. Each work is critically  analyzed and interpreted with respect to its performance, data preprocessing methodologies, model architecture, transfer  learning techniques, model interpretability, and identified challenges. Our findings suggest that ViT shows promising results  in the medical imaging domain, often outperforming traditional convolutional neural networks (CNN). A comprehensive  overview is presented in the form of figures and tables summarizing the key findings from each field. This paper provides  critical insights into the current state of medical image classification using ViT and highlights potential future directions  for this rapidly evolving research area.",
+      "Keywords  Vision transformers \u00b7 Medical image analysis \u00b7 Convolutional neural networks \u00b7 Medical image classification \u00b7  Clinical decision support",
+      "Introduction",
+      "In a world where medical imaging serves as the linchpin of  modern diagnostics, harnessing the full potential of each  pixel can be a matter of life and death. Convolutional neu- ral networks, which are the main type of deep learning, have  already shown that they can change this field by getting to  levels of accuracy that have never been seen before, yet as  we stand on the brink of a new era, vision transformers are  revolutionizing the field, challenging conventional wisdom  and setting new standards for performance [1\u20133]. One type  of deep learning model that is often used in computer vision  tasks is the CNN, which sorts images into groups and finds  objects in them, CNNs work by convolving the input image  with filters to extract local features and then aggregating  these features through pooling layers, CNNs, on the other  hand, have flaws, like features that are only available in set  sizes and the failure to record world context information well  [4\u20138]. ViTs are a new type of deep neural networks that have  shown promise as an option to CNNs for picture-taking tasks;  ViTs are inspired by the transformer architecture originally  introduced for natural language processing (NLP) tasks. The",
+      "*\t Sanad Aburass  \t saburass@luther.edu",
+      "Osama Dorgham  \t o.dorgham@bau.edu.jo"
+    ],
+    "abstract_preview": ""
+  },
+  {
+    "file": "10278_2025_Article_1664.json",
+    "pages": 16,
+    "top_lines": [
+      "Vol:.(1234567890)",
+      "Journal of Imaging Informatics in Medicine (2026) 39:3340\u20133355 https://doi.org/10.1007/s10278-025-01664-7",
+      "ORIGINAL PAPER",
+      "YOLOv5 Attention Analysis for Anterior Eye Disease Classification:  Grad\u2010CAM++ Feature Importance and Cut\u2010and\u2010Paste Validation",
+      "Yoshiyuki Kitaguchi1,15   \u00b7 Yuta Ueno2,15,16 \u00b7 Takefumi Yamaguchi3,15 \u00b7 Hiroki Maehara3,4,15 \u00b7 Dai Miyazaki5,15 \u00b7  Ryohei Nejima6,15 \u00b7 Takenori Inomata7,15 \u00b7 Naoko Kato8,15 \u00b7 Tai\u2010ichiro Chikama9,15 \u00b7 Jun Ominato10,15 \u00b7  Tatsuya Yunoki11,15 \u00b7 Kinya Tsubota12,15 \u00b7 Masahiro Oda13,15 \u00b7 Kensaku Mori13,15 \u00b7 Yu Yoshinaga1,15 \u00b7 Rikako Iwasaki1,15 \u00b7  Kohji Nishida1,14 \u00b7 Tetsuro Oshika2,15,16",
+      "Received: 16 May 2025 / Revised: 19 August 2025 / Accepted: 22 August 2025 / Published online: 13 October 2025  \u00a9 The Author(s) under exclusive licence to Society for Imaging Informatics in Medicine 2025",
+      "Abstract Purpose: To improve the explainability of a YOLOv5-based model for anterior segment disease diagnosis by combining  gradient-weighted class activation mapping ++ (Grad-CAM++) and cut-and-paste validation and evaluate the influence of  extracorneal information on diagnostic accuracy. Methods: In total, 1039 slit-lamp photographs across nine diagnostic categories were analyzed using a previously developed  YOLOv5 model. Grad-CAM++ was implemented to visualize the attention patterns across key network layers. To quantita- tively assess clinical relevance, attention maps were compared against expert-delineated lesion boundaries using Intersection  over Union (IoU). Furthermore, cut-and-paste validation was performed by systematically swapping the corneal regions with  different backgrounds to probe the reliance of the model on contextual information. Results: Grad-CAM++ analysis revealed hierarchical attention focus, progressing from broad in the early layers to highly  localized in the final layers, with layer 23 showing distinct disease-specific patterns. Cut-and-paste validation demonstrated  that model accuracy was highly dependent on the background context for certain diseases; for instance, the accuracy for  infectious keratitis and acute primary angle closure dropped significantly upon background alteration. Critically, the clinical  relevance of the attention maps measured by the IoU against expert annotations was significantly higher for correct predic- tions than for incorrect predictions, linking the model\u2019s visual explanation to its diagnostic reliability. Conclusion: Combining Grad-CAM++ with cut-and-paste validation provided a robust framework for evaluating the explain- ability of the YOLOv5 model. This dual approach reveals layer-specific attention dynamics and quantifies the model\u2019s  reliance on clinically relevant extracorneal features, thereby enhancing the transparency and trustworthiness of artificial  intelligence-based diagnostic systems in ophthalmology.",
+      "Keywords  YOLOv5 \u00b7 Explainable artificial intelligence \u00b7 Cut-and-paste validation \u00b7 Anterior segment disease",
+      "Introduction",
+      "Anterior segment diseases are a leading cause of prevent- able blindness worldwide, with conditions such as infectious  keratitis affecting millions of people annually, warranting  prompt and accurate diagnosis for preventing vision loss.  The complexity of the anterior segment pathology, rang- ing from subtle corneal infiltrates to diffuse inflammatory  patterns, poses significant diagnostic challenges even for  experienced ophthalmologists. This diagnostic complexity  has driven the development of artificial intelligence (AI)",
+      "systems to assist in clinical decision-making. Recent deep  learning models have demonstrated remarkable performance  in the detection of various anterior segment conditions, such  as infectious keratitis [1\u20135], herpes keratitis [6], pterygium  [7], eyelid tumors [8, 9], allergic conjunctivitis [10], and  cataracts [11, 12].",
+      "However, the clinical adoption of these high-performing  AI models faces a critical barrier: a lack of interpretability  in their decision-making processes. While models have dem- onstrated impressive accuracy metrics, with some achieving  superhuman performance in differentiating fungal keratitis  from bacterial keratitis (area under the curve [AUC] up to  0.99) [1, 4\u20137]\u2014clinicians remain reluctant to trust black-box  Extended author information available on the last page of the article"
+    ],
+    "abstract_preview": ""
+  },
+  {
+    "file": "Automated_diagnosis_of_ear_disease_using_ensemble_.json",
+    "pages": 9,
+    "top_lines": [
+      "Automated diagnosis of ear disease using ensemble deep learning with a big otoendoscopy image database",
+      "Dongchul Cha a,1, Chongwon Pae b,c,d,1, Si-Baek Seong b,c, Jae Young Choi a,c,\u204e\u204e, Hae-Jeong Park b,c,d,\u204e",
+      "a Department of Otorhinolaryngology, Yonsei University College of Medicine, Republic of Korea b Center for Systems and Translational Brain Sciences, Institute of Human Complexity and Systems Science, Yonsei University, Republic of Korea c BK21 PLUS Project for Medical Science, Yonsei University College of Medicine, Republic of Korea d Department of Nuclear Medicine, Yonsei University College of Medicine, Seoul, Republic of Korea",
+      "a b s t r a c t a r t i c l e i n f o",
+      "Article history: Received 21 May 2019 Received in revised form 19 June 2019 Accepted 25 June 2019 Available online 1 July 2019",
+      "Background: Ear and mastoid disease can easily be treated by early detection and appropriate medical care. How- ever, short of specialists and relatively low diagnostic accuracy calls for a new way of diagnostic strategy, in which deep learning may play a significant role. The current study presents a machine learning model to automatically diagnose ear disease using a large database of otoendoscopic images acquired in the clinical environment. Methods: Total 10,544 otoendoscopic images were used to train nine public convolution-based deep neural net- works to classify eardrum and external auditory canal features into six categories of ear diseases, covering most ear diseases (Normal, Attic retraction, Tympanic perforation, Otitis externa\u00b1myringitis, Tumor). After evaluating several optimization schemes, two best-performing models were selected to compose an ensemble classifier, by combining classification scores of each classifier. Findings: According to accuracy and training time, transfer learning models based on Inception-V3 and ResNet101 were chosen and the ensemble classifier using the two models yielded a significant improvement over each model, the accuracy of which is in average 93\u00b767% for the 5-folds cross-validation. Considering sub- stantial data-size dependency of classifier performance in the transfer learning, evaluated in this study, the high accuracy in the current model is attributable to the large database. Interpretation: The current study is unprecedented in terms of both disease diversity and diagnostic accuracy, which is compatible or even better than an average otolaryngologist. The classifier was trained with data in a var- ious acquisition condition, which is suitable for the practical environment. This study shows the usefulness of uti- lizing a deep learning model in the early detection and treatment of ear disease in the clinical situation. Fund: This research was supported by Brain Research Program through the National Research Foundation of Korea (NRF) funded by the Ministry of Science and ICT(NRF-2017M3C7A1049051). \u00a9 2019 The Authors. Published by Elsevier B.V. This is an open access article under the CC BY-NC-ND license (http://",
+      "creativecommons.org/licenses/by-nc-nd/4.0/).",
+      "Keywords: Convolutional neural network Deep learning Otoendoscopy Tympanic membrane Ear disease Ensemble learning",
+      "1. Introduction",
+      "Ear and mastoid disease (International Statistical Classification of Diseases and Related Health Problems (ICD) code H.60-H.95) is a com- mon disease that can easily be treated with early medical care. Never- theless, if one does not receive timely detection and appropriate",
+      "treatment, it may leave sequelae, such as hearing impairment. In the evaluation of ear and mastoid disease in the clinic, physical examination using conventional otoscopy or otoendoscopy as well as history taking is the first step. However, diagnosis by non-otolaryngologists using otoscopy or otoendoscopy is highly susceptible to misdiagnosis [1]. In a study by Pichichero, Poole [2], the correct diagnosis rate of otitis media diagnosed by 514 pediatricians using pneumatic otoscope was an average rate of 50%. The study also shows a higher (compared to pe- diatricians) but not a satisfactory accuracy of 73% when diagnosed by 188 otolaryngologists. This low diagnostic accuracy implies that diagno- sis of ear disease without the help of additional resources such as imag- ing or acoustic testing is difficult even for specialists. The short of specialists in the local clinic and their relatively low diagnostic accuracy calls for a new way of diagnostic strategy, in which machine learning may play a significant role.",
+      "EBioMedicine 45 (2019) 606\u2013614"
+    ],
+    "abstract_preview": ""
+  },
+  {
+    "file": "Clinical Otolaryngology - 2022 - Habib - Artificial intelligence to classify ear disease from otoscopy  A systematic review.json",
+    "pages": 13,
+    "top_lines": [
+      "Clinical Otolaryngology. 2022;47:401\u2013413.\t \ufeff\b  | 401 wileyonlinelibrary.com/journal/coa",
+      "Received: 16 November 2021 | Accepted: 27 February 2022",
+      "DOI: 10.1111/coa.13925",
+      "M E TA - \u00adA N A LY S I S",
+      "Artificial intelligence to classify ear disease from otoscopy:  A systematic review and meta-\u00adanalysis",
+      "Al-\u00adRahim Habib1,2,3  |   Majid Kajbafzadeh1 |   Zubair Hasan3 |   Eugene Wong3  |    Hasantha Gunasekera1,4 |   Chris Perry2,5 |   Raymond Sacks1 |   Ashnil Kumar6 |    Narinder Singh1,3",
+      "Meeting information: Verbal presentation at the 2021 Australian Society of Otolaryngology \u2013\u00ad Head and Neck Surgery Annual Scientific Meeting on Friday, 17 September 2021, in  Melbourne, Victoria, Australia and 2021 New Zealand Society of Otolaryngology -\u00ad Head & Neck Surgery Annual Scientific Meeting virtual conference on Friday, 25 February 2022.",
+      "1Faculty of Medicine and Health,  University of Sydney, Sydney, New South  Wales, Australia",
+      "2Department of Otolaryngology \u2013\u00ad Head  and Neck Surgery, Princess Alexandra  Hospital, Woolloongabba, Queensland,  Australia",
+      "3Department of Otolaryngology -\u00ad Head  and Neck Surgery, Westmead Hospital,  Westmead, New South Wales, Australia",
+      "4The Children\u2019s Hospital at Westmead,  Westmead, New South Wales, Australia",
+      "5University of Queensland Medical  School, Brisbane, Queensland, Australia"
+    ],
+    "abstract_preview": ""
+  },
+  {
+    "file": "diagnostics-16-00467-v2.json",
+    "pages": 12,
+    "top_lines": [
+      "Academic Editor: Zhuhuang Zhou",
+      "Received: 5 January 2026",
+      "Revised: 21 January 2026",
+      "Accepted: 30 January 2026",
+      "Published: 2 February 2026",
+      "Copyright: \u00a9 2026 by the authors.",
+      "Licensee MDPI, Basel, Switzerland.",
+      "This article is an open access article",
+      "distributed under the terms and",
+      "conditions of the Creative Commons",
+      "Attribution (CC BY) license.",
+      "Article Deep Learning-Based Semantic Segmentation and Classification of Otoscopic Images for Otitis Media Diagnosis and Health Promotion"
+    ],
+    "abstract_preview": ""
+  },
+  {
+    "file": "electronics-12-04846.json",
+    "pages": 23,
+    "top_lines": [
+      "Citation: Gao, Y.; Liu, J.; Li, W.; Hou,",
+      "M.; Li, Y.; Zhao, H. Augmented",
+      "Grad-CAM++: Super-Resolution",
+      "Saliency Maps for Visual Interpretation",
+      "of Deep Neural Network. Electronics",
+      "2023, 12, 4846. https://doi.org/",
+      "10.3390/electronics12234846",
+      "Received: 2 November 2023",
+      "Revised: 23 November 2023",
+      "Accepted: 28 November 2023",
+      "Published: 30 November 2023",
+      "Copyright: \u00a9 2023 by the authors."
+    ],
+    "abstract_preview": ""
+  },
+  {
+    "file": "s00405-025-09509-3.json",
+    "pages": 9,
+    "top_lines": [
+      "OTOLOGY",
+      "European Archives of Oto-Rhino-Laryngology (2025) 282:5645\u20135653 https://doi.org/10.1007/s00405-025-09509-3",
+      "Introduction",
+      "Tympanosclerosis (TS) is a disease of the eardrum and  middle ear characterized by hyaline degeneration [1\u20133].  This degenerative process begins in the submucosal con\u00ad nective tissue and spreads to all layers of connective tissue  [2]. Especially in cases of tympanosclerosis, in which the  eardrum and middle ear are affected together, bilateral hear\u00ad ing loss may develop as a result of fixation in the ossicles.  Developing hearing loss is an important health problem in  terms of social and treatment cost [1\u20134].",
+      "Considerable work has been done to establish the etio\u00ad pathogenesis of tympanosclerosis. Although its morphology  is well known, there is still no consensus on the etiology  and pathogenesis of tympanosclerosis. As possible causes  of tympanosclerosis, middle ear infections, immunologic  factors, genetic predisposition, oxidative stress, and trauma",
+      "Semih Van",
+      "semih.van1@gmail.com",
+      "1\t Department of Otolaryngology and Head & Neck Surgery  Ad\u0131yaman Training and Research Hospital, Ad\u0131yaman,  Turkey",
+      "2\t Department of Otolaryngology and Head & Neck Surgery,  Samsun University Samsun Training and Research Hospital,  Samsun, Turkey",
+      "3\t Department of Medical Pathology, Samsun University  Samsun Training and Research Hospital, Samsun, Turkey",
+      "4\t Department of Public Health, Samsun University Samsun  Training and Research Hospital, Samsun, Turkey",
+      "5\t Department of Otolaryngology and Head and Neck Surgery,  Samsun Training and Research Hospital, Samsun, Turkey"
+    ],
+    "abstract_preview": ""
+  },
+  {
+    "file": "s00521-024-10426-5 (1).json",
+    "pages": 9,
+    "top_lines": [
+      "ORIGINAL ARTICLE",
+      "OtoVision: Bridging machine learning and edge computing for effective and affordable ear disease diagnosis",
+      "Rishit Yokananth1 \u2022 Varun Gosula2",
+      "Received: 25 June 2024 / Accepted: 28 August 2024 / Published online: 28 November 2024 \u0002 The Author(s) 2024",
+      "Abstract The primary aim of this research is to tackle the issue of inaccurate and inconsistent ear disease detection, particularly in remote and under-resourced areas. Traditional diagnostic methods employed by general practitioners and otolaryngologists have shown limitations, underscoring the need for more reliable approaches in these challenging healthcare environments. In response to this issue, a digital otoscope powered by the Rockchip RK3566 processor and enhanced with machine learning capabilities has been developed. This device, using a novel camera system, captures high-resolution images of the patient\u2019s ear and applies image classification algorithms to identify and categorize various ear conditions in real time. The design of OtoVision emphasizes ease of use, affordability, and adaptability to different healthcare settings, aiming to make advanced diagnostic tools more accessible to underserved populations. Our testing and analysis reveal that OtoVision significantly enhances the accuracy of ear disease diagnosis. In controlled settings, the device achieved an accuracy rate of approximately 87% when connected to a desktop computer and 82% when operating on a standalone Rockchip single- board computer. These results indicate a substantial improvement over traditional diagnostic methods and demonstrate the potential of integrating machine learning technologies into medical diagnostics. OtoVision represents a step forward in the field of medical diagnostics, particularly for the detection of ear diseases in areas where specialist care is scarce. By leveraging machine learning and digital imaging, OtoVision offers a more accurate, accessible, and cost-effective solution compared to conventional methods. Ongoing development will focus on conducting extensive field testing.",
+      "Keywords Artificial intelligence \u0002 Biomedical engineering \u0002 Deep learning \u0002 Edge computing \u0002 Machine learning",
+      "1 Introduction",
+      "The necessity for improved ear disease detection, particu- larly in remote and under-resourced settings, is an urgent call for modern healthcare systems. The current diagnostic practices, usually carried out by general practitioners who are often the first line of defense for individuals presenting with symptoms related to auditory pathology, face incon- sistency and inaccuracy. This discrepancy is evident in Pichichero et al.\u2019s study, which reported a concerning 25% discrepancy between the diagnosis made by general",
+      "practitioners and those made by otolaryngology specialists [1]. Furthermore, pediatricians\u2019 correct diagnosis rate was a mere 50% compared to the 73% accuracy rate of oto- laryngologists [2]. These studies underscore the need for innovative and effective solutions to inaccurate diagnoses.",
+      "Recent strategies to address diagnostic challenges in otology increasingly rely on digital otoscopy, a tool that has become more prevalent due to its effectiveness. Digital otoscopes offer features like replay-video playback or frame-by-frame analysis, enhancing the learning experi- ence for medical students. In contrast, traditional medical otoscopes, while widely used, are often prohibitively expensive. This high initial cost limits their accessibility, particularly in low- and middle-income countries. For instance, while full-size otoscopes typically cost around $250, digital video otoscopes can start at $1000, making them unaffordable for many consumers and healthcare facilities in underprivileged areas [3, 4].",
+      "& Rishit Yokananth",
+      "rishit.yokananth@utexas.edu"
+    ],
+    "abstract_preview": ""
+  },
+  {
+    "file": "s00521-025-10990-4.json",
+    "pages": 16,
+    "top_lines": [
+      "ORIGINAL ARTICLE",
+      "Enhancing intra-aural disease classification with attention-based deep learning models",
+      "Furkancan Demircan1 \u2022 Murat Ekinci2 \u2022 Zafer Co \u0308mert1,3",
+      "Received: 6 December 2023 / Accepted: 3 January 2025 / Published online: 21 January 2025 \u0002 The Author(s) 2025",
+      "Abstract Ear diseases are defined as pathological conditions that indicate dysfunction or abnormal function of the ear organ, which is part of the auditory system of living organisms that regulates hearing and balance functions. These diseases usually manifest as conditions that affect the internal components of the ear structure and can manifest themselves with symptoms such as hearing loss, ear pain, balance problems, and fluid accumulation in the ear. The accuracy of the diagnosis depends on expert knowledge and subjective opinion. This method is prone to human error. This study presents a novel computer- aided diagnosis system for otoscope images of ear diseases, utilizing a vision transformer-based feature extractor combined with machine learning classifiers to provide accurate second opinions for ENT specialists. For this purpose, a new model based on state-of-the-art vision transformer feature extractor and machine learning models is proposed. In the experimental study, the dataset, comprising 880 eardrum images categorized into four classes (CSOM, earwax, myringosclerosis, and normal), was split into training (70%), validation (10%), and testing (20%) subsets. Each image was preprocessed to 420 9 380 pixels to fit the input dimensions of the models. The vision transformer architecture was utilized for feature extraction, followed by classification using various machine learning algorithms including kNN, SVM, and random forest. As a result, the model using vision transformer feature extractor and k-nearest neighbors (kNN) algorithm achieved 99.00% accuracy. In this study, a deep learning-based and computer-aided diagnosis system, in other words, a computational model, was developed instead of the current human error-prone disease diagnosis method used by ear nose throat (ENT) specialists. The main purpose of the deep learning-based decision support system is to support the diagnosis process where expert knowledge is difficult to access and to provide an alternative opinion to the expert diagnosis.",
+      "Keywords Classification \u0002 Ear diseases \u0002 Deep learning \u0002 Transformers \u0002 Machine learning",
+      "1 Introduction",
+      "Ear diseases, also known as otological disorders, refer to medical conditions that affect the structure and function of the ear. Ear diseases, which adversely affect people of all ages, cause various symptoms and complications if left untreated. Examples of these disorders include hearing loss, balance disorder, speech retardation, dizziness, nausea and ear pain. These conditions target different parts of the ear, including the outer, middle and inner ear. Common ear diseases in daily life include otitis media, otitis externa, tinnitus, hearing loss, Meniere\u2019s disease and earwax effect [1].",
+      "Diagnosing ear diseases typically involves ENT spe- cialists examining the inside of the ear using an otoscope. This process, while effective, is highly dependent on the",
+      "& Furkancan Demircan",
+      "furkancan.demircan@samsun.edu.tr",
+      "Murat Ekinci ekinci@ktu.edu.tr"
+    ],
+    "abstract_preview": ""
+  },
+  {
+    "file": "s44197-025-00396-9.json",
+    "pages": 12,
+    "top_lines": [
+      "RESEARCH ARTICLE",
+      "Journal of Epidemiology and Global Health           (2025) 15:55  https://doi.org/10.1007/s44197-025-00396-9",
+      "Anjola Onifade",
+      "anjola.onifade@nhs.net",
+      "1\t Department of ENT, University Hospitals Sussex, Brighton  and Hove, UK",
+      "2\t Department of ENT, Hull University Hospitals, Hull, UK",
+      "3\t Dept Global Health and Infection, Brighton and Sussex  Medical School, Brighton, UK",
+      "Abstract Background  Chronic Suppurative Otitis Media (CSOM) is a disorder characterised by a perforation of the tympanic mem\u00ad brane leading to ear discharge and hearing loss, a disability causing marginalisation in employment, education, social stigma,  and reduced wellbeing and quality of life. Previous studies on the global epidemiology of this condition, despite method\u00ad ological limitations, have estimated global prevalence at 200 million. Methods  Adhering to PRISMA guidelines, published literature was systematically reviewed across Ovid and Embase data\u00ad bases, with original community-based studies on CSOM published from 2004 to March 19th, 2025 extracted for final con\u00ad sideration on quality and relevance. Studies focusing on hospital populations were excluded as they seem more likely to  represent a biased group of severe cases. Published articles were analysed for data on CSOM prevalence and associated risk  factors. Results  From 5,394 articles, 29 cross-sectional studies met the inclusion criteria. Included studies predominantly originated  from low- and middle-income countries (LMICs) and focused on paediatric populations. A pooled average estimate revealed  a CSOM global prevalence of 3.8% of the global population, or 297 million people, 85% (252 million) of which in LMICs.  64 million (21.5%) of those affected had bilateral disease, and 184 million (62%) had disabling hearing loss defined as  > 25\u201330 dB. Hearing impairment was reported in only four studies, which affected 50\u201378% of participants. Frequency of ear  discharge was reported in only one study. Conclusion  The study identifies a significant global burden of CSOM, disproportionately affecting LMICs, and signals to  healthcare providers and policymakers a pressing need for initiatives to prevent and manage this disease.",
+      "Key Points Question  What is the global prevalence of Chronic Suppurative Otitis Media (CSOM) and which variables are associated  with variations in prevalence and sequelae? Findings  In this systematic review of 29 cross-sectional, community-based studies conducted between 2004 and 2024, the  global prevalence of CSOM was estimated at 3.8%, affecting approximately 297 million people, with 85% of cases found in  low- and middle-income countries. Bilateral disease was present in 21.5%, and 62% were associated with disabling hearing  loss, defined as > 25\u201330 dB. Meaning  CSOM remains a significant global health issue, disproportionately affecting low- and middle-income countries,  highlighting the urgent need for preventive and therapeutic interventions.",
+      "Keywords  Chronic suppurative otitis media \u00b7 Global burden of disease \u00b7 Health disparities \u00b7 Low- and middle-income  Countries \u00b7 Hearing loss epidemiology \u00b7 Public health interventions",
+      "Received: 15 January 2025 / Accepted: 21 March 2025 \u00a9 Crown 2025",
+      "Epidemiology of Chronic Suppurative Otitis Media: Systematic Review  To Estimate Global Prevalence"
+    ],
+    "abstract_preview": ""
+  },
+  {
+    "file": "Towards_Generalizable_Image_Classification_Models_for_Detecting_Middle_Ear_Diseases.json",
+    "pages": 15,
+    "top_lines": [
+      "VOLUME XX, 2017  1",
+      "Date of publication xxxx 00, 0000, date of current version xxxx 00, 0000.",
+      "Digital Object Identifier 10.1109/ACCESS.2024.Doi Number",
+      "Towards Generalizable Image Classification  Models for Detecting Middle Ear Diseases",
+      "Manfred Lindmark1, Thorbj\u00f6rn Lundberg2, Mimmi Werner3, Paolo Soda4, 1, Christer  Gr\u00f6nlund1, Fredrik \u00d6hberg1",
+      "1Department of Diagnostics and Intervention, Biomedical Engineering and Radiation Physics, Ume\u00e5 University, Ume\u00e5, Sweden   2Department of Public Health and Clinical Medicine, Unit of Family Medicine, Ume\u00e5 University, Ume\u00e5, Sweden   3Department of Clinical Sciences, Otorhinolaryngology, Ume\u00e5 University, Ume\u00e5, Sweden  4Research Unit of Computer Systems and Bioinformatics, Department of Engineering, Universit\u00e0 Campus Bio-Medico di Roma, Rome, Italy",
+      "Corresponding author: Manfred Lindmark (e-mail: manfred.lindmark@umu.se).",
+      "This work was funded by Centrala ALF ref. RV-979824, the University Hospital of Ume\u00e5, the Swedish Research Council and Sweden's  innovation agency VINNOVA.",
+      "ABSTRACT Diagnosing ear diseases from images of the tympanic membrane has emerged as a promising  application for deep learning-based classification models. While several studies report high diagnostic  accuracy, these models often struggle to generalize to external data that does not match the image  characteristics of the training data. This study aims to evaluate methods for enhancing model generalizability.  We trained artificial neural networks on tympanic membrane images from five datasets with a large  heterogeneity between them. The datasets consisted of images from different countries, captured with  different otoscope models, and with different image pre-processing applied at the source (e.g., colour  normalization, cropping, and resolution). Artificial neural networks for binary (normal/abnormal)  classification were trained on three datasets, and the models were evaluated on two. We explored several  strategies to improve generalizability, including image pre-processing, data augmentation, transfer learning,  and different network architectures. The effects of each investigated factor and their interactions were  determined through a full factorial experimental design and linear mixed-effects model. Our best  classification network achieved a mean accuracy of 83% (sensitivity 71%, specificity 91%) on external  datasets. In contrast, the baseline trained without an optimized training method and using non-processed  datasets yielded an accuracy of 53% (sensitivity 83%, specificity 34%). Our findings highlight how a better  choice of network, training and augmentation strategies, and data verification improve model generalizability.",
+      "INDEX TERMS Artificial intelligence, diagnostic imaging, generalizability, medical image classification,  otitis media.",
+      "I. INTRODUCTION  Globally, one in five people live with hearing loss, and  most of them lack access to interventions [1]. Many of these  cases are preventable with early detection and treatment. In  pediatric care, a very common diagnosis is acute otitis  media (AOM), which may need antibiotic treatment to  avoid severe complications. In underserved areas, where  there are few specialists available to diagnose ear diseases,  there is a need for new diagnostic tools that do not require  specialist knowledge or expensive equipment. This is one  of the motivations for developing computer vision-based  diagnostic support systems.  Computer vision models can be used for the classification  of ear diseases from images of the tympanic membrane",
+      "(TM; Figure 1) taken by simple digital otoscopes. In the last  years several studies have shown that using deep learning  (DL) methods such as convolutional neural networks  (CNNs) for the identification of different ear diseases can  outperform general practitioners when using only an image  of the ear drum as input [2]. However, there are several"
+    ],
+    "abstract_preview": "ABSTRACT Diagnosing ear diseases from images of the tympanic membrane has emerged as a promising  application for deep learning-based classification models. While several studies report high diagnostic  accuracy, these models often struggle to generalize to external data that does not match the image  characteristics of the training data. This study aims to evaluate methods for enhancing model gen"
+  },
+  {
+    "file": "Tympanosclerosis_and_atherosclerosis_pla.json",
+    "pages": 10,
+    "top_lines": [
+      "Vol.:(0123456789) 1 3",
+      "European Archives of Oto-Rhino-Laryngology  https://doi.org/10.1007/s00405-020-06451-4",
+      "OTOLOGY",
+      "Tympanosclerosis and atherosclerosis plaques:  a comparative analytical study on some new microbiological  and immunohistochemical aspects",
+      "Shadman Nemati1  \u00b7 Alia Saberi1  \u00b7 Ali Faghih Habibi1  \u00b7 Hossein Hemmati2  \u00b7 Reza Jafari\u2010Shakib3,4  \u00b7  Mojtaba Hedayati Ch5  \u00b7 Elahe Bozorgzadeh4,6",
+      "Received: 30 September 2020 / Accepted: 20 October 2020  \u00a9 Springer-Verlag GmbH Germany, part of Springer Nature 2020",
+      "Abstract Purpose The aim of this study was to compare chemical contents, expression of BMP-8a, and the presence of Mycoplasma  and ExoS-ExoU exotoxins producing Pseudomonas aeruginosa in tympanosclerosis (TS) and atherosclerosis (AS) plaques. Methods Thirty-six cases with TS and AS plaques (18 each) were selected and examined for chemical, immunohistochemi- cal, and microbial analysis. SPSS ver. 21 and t test analysis were used for comparing the findings, and the level of significance  was considered as p < 0.05. Results TS plaques showed lower carbon, higher calcium, and phosphorous contents compared to AS plaques (p value < 0.05).  Chlorine was detected in AS plaques (1.8 w%) which could probably be due to the presence of myeloperoxidase (MPO) in  atherosclerotic artery. Contrary to spherical shape of the surface of TS plaques, AS plaques were needle shaped. BMP-8a  expression in TS plaques (59.5%) was significantly higher (p value < 0.0001) than AS plaques (20%). Of the 18 TS specimens,  12, 14, and 3 were positive for ExoS, ExoU Pseudomonas aeruginosa, and Mycoplasma genes, respectively, while of the 18  AS specimens, 2, 2, and 3 were positive for ExoS, ExoU Pseudomonas aeruginosa, and Mycoplasma genes, respectively. Conclusion TS plaques are different from AS plaques in terms of elemental components, surface morphology, and BMP- 8a expression. Therefore, different calcification process and pathogenesis may be responsible for these two diseases. The  results of our study showed that both TS and AS plaques have genetic footprint of Mycoplasma, but the level of calcium  concentration-dependent exotoxins genes was found only in TS plaques.",
+      "Keywords Tympanosclerosis \u00b7 Atherosclerosis \u00b7 Scanning electron microscopy \u00b7 Pseudomonas aeruginosa \u00b7 BMP-8a",
+      "Introduction",
+      "Tympanosclerosis (TS) is a disorder of the middle-ear cav- ity where hyaline calcareous sediments are found on the  tympanic membrane, ossicular chain, and ligaments and  occasionally in the middle ear and mastoid surfaces [1].",
+      "Electronic supplementary material The online version of this  article (https ://doi.org/10.1007/s0040 5-020-06451 -4) contains  supplementary material, which is available to authorized users.",
+      "* Elahe Bozorgzadeh    Elahe.Bozorgzadeh@gmail.com"
+    ],
+    "abstract_preview": ""
+  }
+]

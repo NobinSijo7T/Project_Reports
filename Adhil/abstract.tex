@@ -1,0 +1,19 @@
+%============================= abstract.tex================================
+\chapter*{Abstract}%
+\addcontentsline{toc}{chapter}{Abstract}%
+\vspace{-25pt}
+
+\begin{spacing}{1.2}
+\noindent Security and surveillance networks face critical operational bottlenecks due to the computational demands and lack of end-to-end integration between anomaly detection and multi-camera tracking systems. Traditional deep learning architectures, particularly 3D Convolutional Neural Networks (3D CNNs), are prohibitively power-intensive for continuous 24/7 surveillance at the edge, while existing person tracking and re-identification systems typically operate as disconnected, continuous pipelines that process redundant video feeds indiscriminately. 
+
+\vspace{8pt}
+
+\noindent To address these challenges, this project presents an end-to-end neuromorphic edge intelligence framework that couples a hybrid \textbf{CNN--Spiking Neural Network (SNN)} anomaly detection module with an \textbf{event-triggered multi-camera person tracking} subsystem. The anomaly detection module (System~A) continuously monitors surveillance streams using a lightweight \textbf{MobileNetV3-Large} spatial backbone coupled with spatial attention, projecting frame embeddings into a dual-timescale spiking temporal processor composed of \textbf{Parametric Leaky Integrate-and-Fire (PLIF)} neurons trained with surrogate gradient backpropagation. When an anomalous event is detected with confidence exceeding a calibrated threshold ($\theta_a = 0.521$), System~A writes cropped suspect images and spatial-temporal metadata to a structured query registry, dynamically activating the multi-camera tracking subsystem (System~B). System~B executes two-tier \textbf{YOLOv8n} person detection, two-stage \textbf{ByteTrack} association with Kalman filtering, crop quality validation with CLAHE enhancement, and omni-scale re-identification feature extraction via \textbf{OSNet-AIN}. Robust identity matching across disjoint camera views is achieved through \textbf{Mahalanobis-filtered tracklet feature centralization} and cosine distance comparison.
+
+\vspace{8pt}
+
+\noindent Comprehensive empirical evaluations on the \textbf{UCF-Crime} dataset demonstrate that the proposed anomaly detection module achieves an accuracy of \textbf{90.11\%}, recall of \textbf{91.61\%}, and an \textbf{AUC-ROC of 0.9557}, while consuming only \textbf{3.1\,W} (13.34\,W peak on an NVIDIA T4 GPU), representing an \textbf{87\% energy reduction} over standard 3D CNN baselines. The event-triggered gating policy reduces downstream tracking computations by \textbf{94\%} and network bandwidth by \textbf{96.5\%}, maintaining real-time edge execution at \textbf{28\,FPS}. On the DukeMTMC re-identification benchmark structured for tracklet continuity, the proposed tracklet centralization pipeline achieves a \textbf{Rank-1 accuracy of 94.02\%} and \textbf{mAP of 86.62\%}, establishing a privacy-preserving, highly scalable, and energy-efficient solution for intelligent surveillance.
+\end{spacing}
+
+\thispagestyle{plain}
+%=======================================================================

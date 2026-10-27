@@ -1,0 +1,178 @@
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usepackage{amsmath,amssymb}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shadows,shapes.geometric}
+
+% Lavender Color Palette
+\definecolor{lavenderDark}{RGB}{15, 44, 89}
+\definecolor{lavenderDeep}{RGB}{10, 28, 58}
+\definecolor{lavenderMedium}{RGB}{29, 78, 158}
+\definecolor{lavenderLight}{RGB}{240, 246, 255}
+\definecolor{lavenderBorder}{RGB}{180, 205, 237}
+\definecolor{lavenderAccent}{RGB}{2, 132, 199}
+\definecolor{prismNavy}{RGB}{15, 44, 89}
+\definecolor{prismBlue}{RGB}{29, 78, 158}
+\definecolor{prismTeal}{RGB}{13, 148, 136}
+\definecolor{prismMint}{RGB}{236, 253, 245}
+\definecolor{prismGold}{RGB}{217, 119, 6}
+\definecolor{prismDark}{RGB}{15, 23, 42}
+\definecolor{prismLight}{RGB}{248, 250, 252}
+
+\begin{document}
+% End-to-End System Flow for Power Grid Explainable Visual Analytics
+\begin{tikzpicture}[
+    x=1cm, y=1cm,
+    font=\sffamily,
+    hdrbox/.style={
+        rectangle, draw=lavenderDark!90, line width=0.9pt, fill=lavenderDark!15,
+        rounded corners=3.5pt, inner sep=4.5pt, align=center,
+        text width=4.10cm,
+        font=\fontsize{8.5}{10.2}\selectfont\bfseries\color{lavenderDark}
+    },
+    stepbox/.style={
+        rectangle, draw=lavenderDark!70, line width=0.75pt, fill=white,
+        rounded corners=3pt, inner sep=4.0pt, align=left,
+        text width=4.10cm,
+        font=\fontsize{7.5}{9.0}\selectfont
+    },
+    enginebox/.style={
+        rectangle, draw=lavenderDark!80, line width=0.8pt, fill=lavenderLight!90,
+        rounded corners=3.5pt, inner sep=4.5pt, align=left,
+        text width=4.10cm,
+        font=\fontsize{7.2}{8.8}\selectfont
+    },
+    stagebox/.style={
+        rectangle, draw=lavenderMedium!80, dashed, rounded corners=6pt, line width=0.85pt,
+        fill=lavenderLight!35, inner xsep=6pt, inner ysep=6pt
+    },
+    flowarr/.style={
+        -{Stealth[scale=0.85]}, line width=0.9pt, draw=lavenderDark!90
+    },
+    transarr/.style={
+        -{Stealth[length=4.5pt, width=3.5pt]}, line width=1.15pt, draw=lavenderMedium
+    }
+]
+
+    % Stage 1: Ingestion & Sliding Window
+    \node [hdrbox] (h1) at (0, 7.8) {\faBolt\ 1. Grid Telemetry Ingestion};
+    \node [stepbox, below=0.25cm of h1] (s1) {
+        $\bullet$ PMU Synchrophasor Stream\\
+        $\bullet$ Voltage, Current, Frequency\\
+        $\bullet$ Active/Reactive Power $(P, Q)$
+    };
+    \node [enginebox, below=0.25cm of s1] (e1) {
+        \textbf{Ingestion Pipeline:}\\[1pt]
+        $\bullet$ Sub-second sync timestamps\\
+        $\bullet$ Missing value interpolation\\
+        $\bullet$ Multi-bus channel alignment
+    };
+    \draw [flowarr] (h1) -- (s1);
+    \draw [flowarr] (s1) -- (e1);
+
+    % Stage 2: Preprocessing & Framing
+    \node [hdrbox, below=0.65cm of e1] (h2) {\faSlidersH\ 2. Temporal Preprocessing};
+    \node [stepbox, below=0.25cm of h2] (s2) {
+        $\bullet$ Z-Score Standardization\\
+        $\bullet$ Sliding Window Segmentation\\
+        $\bullet$ Tensor Shaping: $\mathbf{X} \in \mathbb{R}^{T \times D}$
+    };
+    \node [enginebox, below=0.25cm of s2] (e2) {
+        \textbf{Tensor Normalizer:}\\[1pt]
+        $\bullet$ $\mathbf{x}_{\text{norm}} = (\mathbf{x} - \boldsymbol{\mu}) / \boldsymbol{\sigma}$\\
+        $\bullet$ Window stride $S=10$, length $T=128$\\
+        $\bullet$ Robust scaling against spikes
+    };
+    \draw [flowarr] (h2) -- (s2);
+    \draw [flowarr] (s2) -- (e2);
+
+    % Stage 3: Deep Latent Representation Learning
+    \node [hdrbox, right=1.65cm of h1] (h3) {\faBrain\ 3. Latent Learning Engine};
+    \node [stepbox, below=0.25cm of h3] (s3) {
+        $\bullet$ Temporal Fusion Transformer\\
+        $\bullet$ 1D-CNN VAE Baseline\\
+        $\bullet$ VAE-LSTM Recurrent Baseline
+    };
+    \node [enginebox, below=0.25cm of s3] (e3) {
+        \textbf{Feature Extraction:}\\[1pt]
+        $\bullet$ Variable Selection Networks (VSN)\\
+        $\bullet$ Multi-head temporal self-attention\\
+        $\bullet$ Bottleneck Latent Vector $\mathbf{z} \in \mathbb{R}^d$
+    };
+    \draw [flowarr] (h3) -- (s3);
+    \draw [flowarr] (s3) -- (e3);
+
+    % Stage 4: Dimensionality Reduction & Projection
+    \node [hdrbox, below=0.65cm of e3] (h4) {\faCompress\ 4. 2D Manifold Projection};
+    \node [stepbox, below=0.25cm of h4] (s4) {
+        $\bullet$ \textbf{UMAP} (Fuzzy Simplicial Sets)\\
+        $\bullet$ \textbf{t-SNE} (Student-$t$ Kernel)\\
+        $\bullet$ \textbf{PCA} (Principal Variance)
+    };
+    \node [enginebox, below=0.25cm of s4] (e4) {
+        \textbf{Manifold Mapping:}\\[1pt]
+        $\bullet$ $\Phi: \mathbb{R}^d \to \mathbb{R}^2$ coordinate embedding\\
+        $\bullet$ Preserves global / local topology\\
+        $\bullet$ Separates grid event trajectories
+    };
+    \draw [flowarr] (h4) -- (s4);
+    \draw [flowarr] (s4) -- (e4);
+
+    % Stage 5: Density Clustering & Validation
+    \node [hdrbox, right=1.65cm of h3] (h5) {\faProjectDiagram\ 5. Clustering \& Metrics};
+    \node [stepbox, below=0.25cm of h5] (s5) {
+        $\bullet$ \textbf{DBSCAN} Density Partition\\
+        $\bullet$ Core points, border points, noise\\
+        $\bullet$ Internal Validation Metrics
+    };
+    \node [enginebox, below=0.25cm of s5] (e5) {
+        \textbf{Cluster Assessment:}\\[1pt]
+        $\bullet$ Silhouette Coefficient ($S_i$)\\
+        $\bullet$ Davies-Bouldin ($DB$) Index\\
+        $\bullet$ Relative model comparison
+    };
+    \draw [flowarr] (h5) -- (s5);
+    \draw [flowarr] (s5) -- (e5);
+
+    % Stage 6: Interactive Visual Analytics Dashboard
+    \node [hdrbox, below=0.65cm of e5] (h6) {\faChartArea\ 6. Visual Analytics \& HITL};
+    \node [stepbox, below=0.25cm of h6] (s6) {
+        $\bullet$ 2D Latent Space Map\\
+        $\bullet$ Hierarchical Multi-Label Tree\\
+        $\bullet$ Latent Vector Comparison Chart
+    };
+    \node [enginebox, below=0.25cm of s6] (e6) {
+        \textbf{Expert Event Diagnosis:}\\[1pt]
+        $\bullet$ Interactive zoom, pan, lasso brush\\
+        $\bullet$ Root-cause pattern exploration\\
+        $\bullet$ Human-in-the-Loop event audit
+    };
+    \draw [flowarr] (h6) -- (s6);
+    \draw [flowarr] (s6) -- (e6);
+
+    % BACKGROUND BOXES: Drawn strictly behind text nodes using 'on background layer'
+    \begin{scope}[on background layer]
+        \node [stagebox, fit=(h1)(s1)(e1)] (box1) {};
+        \node [stagebox, fit=(h2)(s2)(e2)] (box2) {};
+        \node [stagebox, fit=(h3)(s3)(e3)] (box3) {};
+        \node [stagebox, fit=(h4)(s4)(e4)] (box4) {};
+        \node [stagebox, fit=(h5)(s5)(e5)] (box5) {};
+        \node [stagebox, fit=(h6)(s6)(e6)] (box6) {};
+    \end{scope}
+
+    % Inter-Stage Transitions
+    \draw [transarr] (box1.south) -- (box2.north);
+    \draw [transarr] (box2.east) -- (box4.west);
+    \draw [transarr] (box1.east) -- (box3.west);
+    \draw [transarr] (box3.south) -- (box4.north);
+    \draw [transarr] (box4.east) -- (box6.west);
+    \draw [transarr] (box3.east) -- (box5.west);
+    \draw [transarr] (box5.south) -- (box6.north);
+
+    % Feedback Loop
+    \draw [transarr, dashed, draw=prismGold!95!black] (box6.east) -- ++(0.65, 0) |- 
+        node[pos=0.25, right=2pt, font=\fontsize{7.2}{8.5}\selectfont\bfseries\color{prismGold!95!black}]{HITL Feedback}
+        (box5.east);
+
+\end{tikzpicture}
+\end{document}

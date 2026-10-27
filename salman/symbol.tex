@@ -1,0 +1,75 @@
+%==================================symbol.tex================================
+% List of Symbols and Abbreviations
+\chapter*{List of Symbols and Abbreviations}
+\addcontentsline{toc}{chapter}{List of Symbols and Abbreviations}%
+\vspace{-25pt}
+
+\begin{spacing}{1.02}
+\noindent \textbf{Abbreviations}
+\vspace{4pt}
+
+\noindent\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}p{2.8cm} p{11.2cm}@{}}
+\textbf{AOM} & Acute Otitis Media \\
+\textbf{CSOM} & Chronic Suppurative Otitis Media \\
+\textbf{TM} & Tympanic Membrane (Eardrum) \\
+\textbf{CoMViT} & Convolutional Multi-Head Vision Transformer \\
+\textbf{ViT} & Vision Transformer \\
+\textbf{CNN} & Convolutional Neural Network \\
+\textbf{CLAHE} & Contrast Limited Adaptive Histogram Equalization \\
+\textbf{Grad-CAM++} & Generalized Gradient-Weighted Class Activation Mapping \\
+\textbf{MixUp} & Controlled Linear Interpolation Augmentation \\
+\textbf{ACL} & Adaptive Curriculum Learning \\
+\textbf{CAD} & Computer-Aided Diagnosis / Detection \\
+\textbf{CDSS} & Clinical Decision Support System \\
+\textbf{ENT} & Ear, Nose, and Throat (Otolaryngology) \\
+\textbf{ROI} & Region of Interest \\
+\textbf{MSA} & Multi-Head Self-Attention \\
+\textbf{MLP} & Multi-Layer Perceptron \\
+\textbf{GAP} & Global Average Pooling \\
+\textbf{ROC} & Receiver Operating Characteristic \\
+\textbf{AUC} & Area Under the Curve \\
+\textbf{AUPRC} & Area Under the Precision-Recall Curve \\
+\textbf{F1} & Harmonic Mean of Precision and Recall \\
+\textbf{API} & Application Programming Interface \\
+\textbf{REST} & Representational State Transfer \\
+\textbf{ASGI} & Asynchronous Server Gateway Interface \\
+\textbf{HTTP} & Hypertext Transfer Protocol \\
+\textbf{JSON} & JavaScript Object Notation \\
+\textbf{PIL} & Python Imaging Library \\
+\textbf{SRS} & System Requirements Specification \\
+\textbf{DFD} & Data Flow Diagram \\
+\textbf{UI/UX} & User Interface / User Experience \\
+\end{tabular*}
+
+\vspace{6pt}
+\noindent \textbf{Mathematical Notations}
+\nopagebreak[4]
+\vspace{4pt}
+\nopagebreak[4]
+
+\noindent\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}p{2.8cm} p{11.2cm}@{}}
+$\mathbf{x} \in \mathbb{R}^{H \times W \times C}$ & Input otoscopic color image tensor ($224 \times 224 \times 3$) \\
+$\mathbf{x}_{\text{CLAHE}}$ & Contrast-enhanced otoscopic image tensor \\
+$\tilde{\mathbf{x}}, \tilde{y}$ & Synthesized input image and continuous label vector via MixUp \\
+$\lambda \sim \text{Beta}(\alpha, \alpha)$ & Convex interpolation mixing ratio parameter \\
+$\mathbf{z}_0$ & Initial 1D sequence of patch embeddings with class token \\
+$\mathbf{z}_L$ & Latent token feature representation from $L$-th CoMViT layer \\
+$\mathbf{W}_Q, \mathbf{W}_K, \mathbf{W}_V$ & Query, Key, and Value linear projection matrices \\
+$C$ & Total number of target diagnostic disease classes ($C=5$) \\
+$y_c \in \{0, 1\}$ & Ground-truth one-hot indicator for ear disease class $c$ \\
+$\hat{y}_c$ & Softmax predicted posterior probability for disease class $c$ \\
+$z_c$ & Raw unnormalized output logit for disease class $c$ \\
+$\mathcal{L}_{\text{CE}}$ & Multi-class Cross-Entropy loss function \\
+$\mathcal{L}_{\text{total}}$ & Objective loss function regularized with curriculum weighting \\
+$w_t(s)$ & Adaptive curriculum difficulty pacing weight for sample $s$ at epoch $t$ \\
+$A^k$ & Spatial activation map of channel $k$ in target feature block \\
+$\alpha_k^c$ & Higher-order gradient neuron importance weight in Grad-CAM++ for class $c$ \\
+$L_{\text{Grad-CAM++}}^c$ & Saliency heatmap intensity localizing pathological eardrum regions \\
+$\text{Precision}_c$ & Positive predictive value for ear disease class $c$ \\
+$\text{Recall}_c$ & Diagnostic sensitivity / True positive rate for class $c$ \\
+$\text{F1}_c$ & Macro-averaged balanced diagnostic harmonic score for class $c$ \\
+\end{tabular*}
+\end{spacing}
+
+\thispagestyle{plain}
+%=======================================================================

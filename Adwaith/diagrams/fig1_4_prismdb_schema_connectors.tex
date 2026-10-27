@@ -1,0 +1,144 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usepackage{amsmath,amssymb}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shadows,shapes.geometric}
+
+% Color definitions
+\definecolor{lavenderDark}{RGB}{15, 44, 89}
+\definecolor{lavenderDeep}{RGB}{10, 28, 58}
+\definecolor{lavenderMedium}{RGB}{29, 78, 158}
+\definecolor{lavenderLight}{RGB}{240, 246, 255}
+\definecolor{lavenderBorder}{RGB}{180, 205, 237}
+\definecolor{prismTeal}{RGB}{13, 148, 136}
+\definecolor{prismMint}{RGB}{236, 253, 245}
+\definecolor{prismGold}{RGB}{217, 119, 6}
+\definecolor{prismDark}{RGB}{15, 23, 42}
+\definecolor{prismBlue}{RGB}{29, 78, 158}
+\definecolor{cInput}{RGB}{241, 245, 249}
+\definecolor{cPlanner}{RGB}{219, 234, 254}
+\definecolor{cReact}{RGB}{209, 250, 229}
+\definecolor{cTool}{RGB}{254, 243, 199}
+\definecolor{cSafety}{RGB}{254, 226, 226}
+\definecolor{cDeliverable}{RGB}{204, 251, 241}
+
+\begin{document}
+% Relational Entity & Storage Schema Connectors for Power Grid Event Diagnosis
+\begin{tikzpicture}[
+  x=1cm, y=1cm,
+  font=\sffamily,
+  tblcard/.style={
+    rectangle, rounded corners=4pt, draw=lavenderDark!75, line width=0.85pt, fill=white,
+    inner sep=5pt, text width=4.50cm, align=left,
+    drop shadow={shadow xshift=1pt, shadow yshift=-1pt, opacity=0.12}
+  },
+  fkarrow/.style={
+    -{Stealth[scale=0.85]}, line width=1.0pt, draw=lavenderDark!90
+  },
+  fklabel/.style={
+    font=\fontsize{6.2}{7.2}\selectfont\bfseries, fill=white, inner sep=1.5pt, text=lavenderDark
+  }
+]
+
+  % ================= COLUMN 1: SIGNALS & LATENT REPS (x = -5.4) =================
+  
+  % Table 1: grid_signal_store
+  \node[tblcard] (signals) at (-5.4, 2.5) {%
+    \centerline{\color{lavenderDark}\faBolt\ \textbf{\fontsize{8.0}{9.5}\selectfont grid\_signal\_store}}\\[3pt]
+    \rule{\linewidth}{0.4pt}\\[3pt]
+    {\fontsize{6.8}{8.0}\selectfont
+    \textbf{\color{lavenderDark}[PK]} \texttt{signal\_id}: \textit{UUID} (Indexed)\\
+    \textbf{\color{prismTeal}[FLD]} \texttt{bus\_id}: \textit{integer} (Substation Bus)\\
+    \textbf{\color{prismTeal}[FLD]} \texttt{timestamp}: \textit{datetime} (GPS Synced)\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{voltage\_mag}, \texttt{current\_mag}: \textit{float}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{frequency}, \texttt{phase\_angle}: \textit{float}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{active\_P}, \texttt{reactive\_Q}: \textit{float}}
+  };
+
+  % Table 2: latent_representation_store
+  \node[tblcard, below=0.70cm of signals] (latent) {%
+    \centerline{\color{lavenderDark}\faBrain\ \textbf{\fontsize{8.0}{9.5}\selectfont latent\_representation\_store}}\\[3pt]
+    \rule{\linewidth}{0.4pt}\\[3pt]
+    {\fontsize{6.8}{8.0}\selectfont
+    \textbf{\color{lavenderDark}[PK]} \texttt{latent\_id}: \textit{UUID}\\
+    \textbf{\color{prismBlue}[FK]} \texttt{signal\_id} $\rightarrow$ \texttt{grid\_signal.signal\_id}\\
+    \textbf{\color{prismTeal}[FLD]} \texttt{model\_type}: \textit{TFT / CNN-VAE / LSTM}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{embedding\_vector}: \textit{float[$d$] ($d=128$)}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{reconstruction\_loss}: \textit{float}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{vsn\_weights}: \textit{json (Variable weights)}}
+  };
+
+  % ================= COLUMN 2: 2D PROJECTIONS & CLUSTERS (x = 0.0) =================
+
+  % Table 3: projection_coordinate_store
+  \node[tblcard] (proj) at (0.0, 2.5) {%
+    \centerline{\color{lavenderDark}\faCompress\ \textbf{\fontsize{8.0}{9.5}\selectfont projection\_coordinate\_store}}\\[3pt]
+    \rule{\linewidth}{0.4pt}\\[3pt]
+    {\fontsize{6.8}{8.0}\selectfont
+    \textbf{\color{lavenderDark}[PK]} \texttt{proj\_id}: \textit{UUID}\\
+    \textbf{\color{prismBlue}[FK]} \texttt{latent\_id} $\rightarrow$ \texttt{latent\_rep.latent\_id}\\
+    \textbf{\color{prismTeal}[FLD]} \texttt{method}: \textit{UMAP / t-SNE / PCA}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{coord\_x}: \textit{float (2D map coordinate)}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{coord\_y}: \textit{float (2D map coordinate)}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{hyperparams}: \textit{json ($n\_neighbors, min\_dist$)}}
+  };
+
+  % Table 4: cluster_partition_store
+  \node[tblcard, below=0.70cm of proj] (cluster) {%
+    \centerline{\color{lavenderDark}\faProjectDiagram\ \textbf{\fontsize{8.0}{9.5}\selectfont cluster\_partition\_store}}\\[3pt]
+    \rule{\linewidth}{0.4pt}\\[3pt]
+    {\fontsize{6.8}{8.0}\selectfont
+    \textbf{\color{lavenderDark}[PK]} \texttt{cluster\_id}: \textit{UUID}\\
+    \textbf{\color{prismBlue}[FK]} \texttt{proj\_id} $\rightarrow$ \texttt{projection.proj\_id}\\
+    \textbf{\color{prismTeal}[FLD]} \texttt{algorithm}: \textit{DBSCAN}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{eps\_radius}, \texttt{min\_pts}: \textit{float, int}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{cluster\_label}: \textit{integer (-1: Noise)}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{silhouette\_score}: \textit{float ($S_i$)}}
+  };
+
+  % ================= COLUMN 3: EVENT ANNOTATIONS & HITL (x = 5.4) =================
+
+  % Table 5: event_annotation_store
+  \node[tblcard] (events) at (5.4, 2.5) {%
+    \centerline{\color{lavenderDark}\faExclamationCircle\ \textbf{\fontsize{8.0}{9.5}\selectfont event\_annotation\_store}}\\[3pt]
+    \rule{\linewidth}{0.4pt}\\[3pt]
+    {\fontsize{6.8}{8.0}\selectfont
+    \textbf{\color{lavenderDark}[PK]} \texttt{event\_id}: \textit{UUID}\\
+    \textbf{\color{prismBlue}[FK]} \texttt{cluster\_id} $\rightarrow$ \texttt{cluster.cluster\_id}\\
+    \textbf{\color{prismTeal}[FLD]} \texttt{event\_category}: \textit{Fault / Trip / Oscil}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{severity\_level}: \textit{1 to 5}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{affected\_substations}: \textit{list[string]}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{timestamp\_onset}: \textit{datetime}}
+  };
+
+  % Table 6: hitl_evaluation_store
+  \node[tblcard, below=0.70cm of events] (hitl) {%
+    \centerline{\color{lavenderDark}\faUserCheck\ \textbf{\fontsize{8.0}{9.5}\selectfont hitl\_evaluation\_store}}\\[3pt]
+    \rule{\linewidth}{0.4pt}\\[3pt]
+    {\fontsize{6.8}{8.0}\selectfont
+    \textbf{\color{lavenderDark}[PK]} \texttt{eval\_id}: \textit{UUID}\\
+    \textbf{\color{prismBlue}[FK]} \texttt{event\_id} $\rightarrow$ \texttt{event\_annotation.event\_id}\\
+    \textbf{\color{prismTeal}[FLD]} \texttt{expert\_operator\_id}: \textit{string}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{validation\_status}: \textit{Approved / Flagged}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{davies\_bouldin\_idx}: \textit{float ($DB$)}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{feedback\_notes}: \textit{text}}
+  };
+
+  % Foreign Key Connections
+  \draw[fkarrow] (signals.south) -- (latent.north)
+    node[midway, right=1pt, fklabel]{1:N Signals};
+
+  \draw[fkarrow] (latent.east) -- (proj.west)
+    node[midway, above=1pt, fklabel]{1:N Proj};
+
+  \draw[fkarrow] (proj.south) -- (cluster.north)
+    node[midway, right=1pt, fklabel]{1:N Clusters};
+
+  \draw[fkarrow] (cluster.east) -- (events.west)
+    node[midway, above=1pt, fklabel]{1:N Events};
+
+  \draw[fkarrow] (events.south) -- (hitl.north)
+    node[midway, right=1pt, fklabel]{1:N HITL};
+
+\end{tikzpicture}
+\end{document}

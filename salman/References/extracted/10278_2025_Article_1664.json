@@ -1,0 +1,896 @@
+{
+  "source_file": "10278_2025_Article_1664.pdf",
+  "num_pages": 16,
+  "full_text": "Vol:.(1234567890)\nJournal of Imaging Informatics in Medicine (2026) 39:3340–3355 https://doi.org/10.1007/s10278-025-01664-7\nORIGINAL PAPER\nYOLOv5 Attention Analysis for Anterior Eye Disease Classification:  Grad‐CAM++ Feature Importance and Cut‐and‐Paste Validation\nYoshiyuki Kitaguchi1,15   · Yuta Ueno2,15,16 · Takefumi Yamaguchi3,15 · Hiroki Maehara3,4,15 · Dai Miyazaki5,15 ·  Ryohei Nejima6,15 · Takenori Inomata7,15 · Naoko Kato8,15 · Tai‐ichiro Chikama9,15 · Jun Ominato10,15 ·  Tatsuya Yunoki11,15 · Kinya Tsubota12,15 · Masahiro Oda13,15 · Kensaku Mori13,15 · Yu Yoshinaga1,15 · Rikako Iwasaki1,15 ·  Kohji Nishida1,14 · Tetsuro Oshika2,15,16\nReceived: 16 May 2025 / Revised: 19 August 2025 / Accepted: 22 August 2025 / Published online: 13 October 2025  © The Author(s) under exclusive licence to Society for Imaging Informatics in Medicine 2025\nAbstract Purpose: To improve the explainability of a YOLOv5-based model for anterior segment disease diagnosis by combining  gradient-weighted class activation mapping ++ (Grad-CAM++) and cut-and-paste validation and evaluate the influence of  extracorneal information on diagnostic accuracy. Methods: In total, 1039 slit-lamp photographs across nine diagnostic categories were analyzed using a previously developed  YOLOv5 model. Grad-CAM++ was implemented to visualize the attention patterns across key network layers. To quantita- tively assess clinical relevance, attention maps were compared against expert-delineated lesion boundaries using Intersection  over Union (IoU). Furthermore, cut-and-paste validation was performed by systematically swapping the corneal regions with  different backgrounds to probe the reliance of the model on contextual information. Results: Grad-CAM++ analysis revealed hierarchical attention focus, progressing from broad in the early layers to highly  localized in the final layers, with layer 23 showing distinct disease-specific patterns. Cut-and-paste validation demonstrated  that model accuracy was highly dependent on the background context for certain diseases; for instance, the accuracy for  infectious keratitis and acute primary angle closure dropped significantly upon background alteration. Critically, the clinical  relevance of the attention maps measured by the IoU against expert annotations was significantly higher for correct predic- tions than for incorrect predictions, linking the model’s visual explanation to its diagnostic reliability. Conclusion: Combining Grad-CAM++ with cut-and-paste validation provided a robust framework for evaluating the explain- ability of the YOLOv5 model. This dual approach reveals layer-specific attention dynamics and quantifies the model’s  reliance on clinically relevant extracorneal features, thereby enhancing the transparency and trustworthiness of artificial  intelligence-based diagnostic systems in ophthalmology.\nKeywords  YOLOv5 · Explainable artificial intelligence · Cut-and-paste validation · Anterior segment disease\nIntroduction\nAnterior segment diseases are a leading cause of prevent- able blindness worldwide, with conditions such as infectious  keratitis affecting millions of people annually, warranting  prompt and accurate diagnosis for preventing vision loss.  The complexity of the anterior segment pathology, rang- ing from subtle corneal infiltrates to diffuse inflammatory  patterns, poses significant diagnostic challenges even for  experienced ophthalmologists. This diagnostic complexity  has driven the development of artificial intelligence (AI)\nsystems to assist in clinical decision-making. Recent deep  learning models have demonstrated remarkable performance  in the detection of various anterior segment conditions, such  as infectious keratitis [1–5], herpes keratitis [6], pterygium  [7], eyelid tumors [8, 9], allergic conjunctivitis [10], and  cataracts [11, 12].\nHowever, the clinical adoption of these high-performing  AI models faces a critical barrier: a lack of interpretability  in their decision-making processes. While models have dem- onstrated impressive accuracy metrics, with some achieving  superhuman performance in differentiating fungal keratitis  from bacterial keratitis (area under the curve [AUC] up to  0.99) [1, 4–7]—clinicians remain reluctant to trust black-box  Extended author information available on the last page of the article\n\n--- Page Break ---\n\n3341 Journal of Imaging Informatics in Medicine (2026) 39:3340–3355\nsystems whose reasoning cannot be examined. This concern  is particularly acute in ophthalmology, where subtle visual  cues guide treatment decisions and misdiagnosis can lead to  irreversible vision loss. More troublingly, recent evidence  suggests that many medical AI models achieve high accuracy  through “shortcut learning,” exploiting spurious correlations  rather than learning clinically relevant features [13, 14]. For  instance, neuroimaging models have been shown to identify  MRI scanner types with 96% accuracy using hardware sig- natures rather than anatomical features, with performance  dropping to chance levels when these confounders were  removed [13].\nCurrent approaches to AI interpretability in anterior seg- ment imaging primarily rely on gradient-based visualiza- tion methods, particularly Gradient-weighted Class Activa- tion Mapping (Grad-CAM) [15]. Although Grad-CAM has  been widely adopted to highlight the regions of interest in  corneal images [1, 4–7], significant limitations compro- mise its clinical utility. First, Grad-CAM often produces  coarse, inconsistent localizations that may not align with  expert-identified pathological regions [16–18]. Second,  when applied to complex object detection architectures,  such as YOLO, which is increasingly used for multidisease  classification, the question of which network layer provides  clinically meaningful explanations remains unresolved  [19–22]. Third, and most critically, visualization methods  alone cannot determine whether models rely on appropri- ate clinical features or spurious contextual cues [23]. For  example, for infectious keratitis, a model may correctly  classify cases by detecting conjunctival hyperemia (a sec- ondary sign) rather than primary corneal pathology. This  could lead to misdiagnosis in two scenarios: missing early  infections that lack inflammatory signs, or incorrect diag- nosis of non-infectious conditions with hyperemia, such as  infectious keratitis.\nThese limitations necessitate a more comprehensive  approach to model validation. Therefore, this study aimed  to establish a framework for evaluating the explainability  and clinical reliability of AI models for anterior segment  disease diagnosis by implementing a novel two-stage  validation approach based on a previously developed  YOLOv5 model [12]. The first stage addresses the known  limitations of standard Grad-CAM, which can produce  coarse or inconsistent localizations [16–18]. To achieve  more refined attention maps, this study employs Grad- CAM++, an enhanced method that incorporates second- order gradients for more precise weighting and improved  localization [24–27]. While comparative studies have  demonstrated mixed results, with Grad-CAM++ strug- gling with smaller lesions in other domains [28], its effec- tiveness for larger, well-defined pathologies typical in  anterior segment imaging was assessed here. The second  stage employs “cut-and-paste” validation—systematically\naltering image contexts to directly test the model’s fea- ture dependence [29]. This technique probes whether the  model relies on primary pathological features or poten- tially misleading contextual cues, such as conjunctival  injection, which represent both clinically relevant infor- mation and a potential source of diagnostic bias. By com- bining these complementary methods, this study aimed to  answer three critical questions: (1) Which network layers  provide the most clinically interpretable explanations?  (2) To what extent do the models rely on corneal pathol- ogy versus the extracorneal context? (3) Can visualization  quality metrics predict diagnostic reliability? Answering  these questions is essential for developing trustworthy AI  systems that can safely augment clinical decision making  in ophthalmology.\nMaterials and Methods\nEthical Approval\nThis study was approved by the Institutional Ethics Review  Board of the Japanese Ophthalmological Society (protocol  number: 15000133–20001) and included 23 tertiary univer- sity hospitals. All the procedures followed the tenets of the  Declaration of Helsinki and the Japanese Guidelines for Life  Science and Medical Research. In view of the retrospective  design, the requirement for written informed consent was  waived and an opt-out approach was implemented, allow- ing patients to decline participation through an institutional  website.\nStudy Design\nThis study evaluated the interpretability of a deep learn- ing model based on the YOLOv5 architecture, previously  trained on a dataset of 5270 anterior segment photographs  from 5270 individual patients obtained using diffuse illu- mination through a multi-institutional collaborative net- work. The dataset was collected from 15 tertiary referral  centers across Japan. The model was designed to classify  the anterior segment conditions into nine categories: nor- mal, infectious keratitis, non-infectious keratitis, scar,  tumor, deposit, acute primary angle closure (APAC), lens  opacity, and bullous keratopathy. Standardized image  acquisition protocols and diagnostic criteria were applied  across all participating centers to ensure data consistency  and quality.\nFor this interpretability analysis, 1039 slit-lamp photo- graphs encompassing all nine diagnostic categories were  used: normal (258), infectious keratitis (129), non-infec- tious keratitis (71), scar (140), tumor (176), deposit (123),  APAC (11), lens opacity (68), and bullous keratopathy (63).\n\n--- Page Break ---\n\n3342 \t Journal of Imaging Informatics in Medicine (2026) 39:3340–3355\nThis dataset comprised 539 images from the previously  established CorneAI test set [12] and 500 additional images  were prospectively collected from the Japan Ocular Imaging  Registry. None of these 1039 images were included in the  training or validation datasets used to develop the YOLOv5  model, ensuring an unbiased evaluation of the model inter- pretability. To ensure standardized imaging conditions, all  the photographs were captured using a diffuse illumination  technique. Two board-certified ophthalmologists (YK and  YY) independently reviewed the images to verify the qual- ity and diagnostic accuracy. Their evaluation confirmed that  none of the images were blurred or under-exposed. Only  cases in which both ophthalmologists agreed on the diag- nosis were included in the dataset. To prevent potential bias,  duplicate images from the same patient or condition were  excluded. Furthermore, a preliminary inference using the  YOLOv5 model confirmed an accuracy of 85%, which is  consistent with previously reported results (Fig. S1) [12].\nYOLOv5 Model\nYOLOv5 consists of three main architectural components:  the backbone, neck, and head networks. Each component  serves a distinct function within the object detection pipe- line and works together to enable efficient and accurate  detection (Fig. 1) [30].\nThe backbone network functions primarily as a fea- ture extractor by utilizing a cross-stage partial network  architecture. Its core component, the C3 module, splits  the input features into two paths: one processes informa- tion through multiple bottleneck layers, whereas the other  directly dispatches the features. This dual-path structure  reduces computational complexity while preserving essen- tial feature information. Moreover, the backbone incorpo- rates a spatial pyramid pooling module in its final stage.  This module captures multiscale contextual information  through parallel pooling operations with different kernel\nFig. 1   YOLOv5 network architecture with Grad-CAM++ integration  points for explainability. The network comprises a backbone (feature  extraction via a cross-stage partial network, C3 modules, and fast spa- tial pyramid pooling), neck (feature fusion via a feature pyramid net- work and path aggregation network), and head (prediction). The head  uses three prediction layers (24-0, 24-1, and 24-2) connected to the  feature maps in layers 17 (for large objects), 20 (for medium objects),  and 23 (for small objects) to output the bounding boxes, object  presence, and class probabilities. The red arrows mark the Grad-\nCAM++ integration points before layers 17, 20, and 23 (within the  last CBS block of the C3 modules) and before each prediction head  (24-0, 24-1, and 24-2), enabling multiscale feature importance visual- ization. The lower panel details the C3 module structure (CBS blocks  and bottlenecks). This figure is adapted from the YOLOv5 official  architecture documentation (https://​docs.​ultra​lytics.​com/​yolov5/​tutor​ ials/​archi​tectu​re_​descr​iption/) [31], with modifications to show Grad- CAM++ integration points (red arrows).\n\n--- Page Break ---\n\n3343 Journal of Imaging Informatics in Medicine (2026) 39:3340–3355\nsizes, thereby enhancing the model’s ability to detect  objects at varying scales.\nThe C3 module was integrated throughout the network  to enhance feature processing. Each module includes a  1 × 1 convolution layer that splits the input features into  two branches: one processes the features through multiple  residual blocks, whereas the other bypasses these opera- tions. The outputs from both branches were subsequently  concatenated and refined through a final 1 × 1 convolu- tion layer, effectively combining local and global feature  information.\nIn the neck network, YOLOv5 utilizes a bidirectional fea- ture pyramid architecture that integrates a feature pyramid  network and path aggregation network. The feature pyra- mid network propagates semantically rich features from the  higher to lower feature maps, whereas the path aggregation  network transmits spatially precise localization features from  the lower to higher feature maps. This dual-path structure  enhances feature fusion across different network layers,  thereby improving overall detection performance.\nA key feature of YOLOv5 is its three prediction Heads,  which operate at different scales to enable multiscale object  detection. The first prediction head processes 80× 80 × 256  feature maps to detect large objects (Layer 17). The second  Head processes 40× 40 × 512 feature maps for medium- sized objects (Layer 20), whereas the third Head processes  20× 20 × 1024 feature maps for small objects (Layer 23).  Each prediction head generated an output channel containing  detection information, including object center coordinates,  bounding box dimensions, object presence probability, and  class probabilities, through a Conv2D layer (layers 24–0,  24–1, and 24–2). In YOLOv5, the likelihood calculation uses a sigmoid  function to compute the prediction scores. For a feature  value xb,c in the final layer, the predictive score sb,c is calcu- lated as sb,c = 1 1+e−xb,c , where b represents the index of the  estimated bounding boxes and c represents the category  index. This calculation normalized the prediction scores  between 0 and 1, with the highest-scoring category selected  as the final classification result.\nYOLOv5‐Grad‐CAM and YOLOv5‐Grad‐CAM++\nGrad-CAM++ was employed to effectively visualize the  model attention patterns within the multiscale architecture  of YOLOv5. This method enhances the visualization of the  attention regions, particularly in models with complex net- work structures, such as YOLOv5. This approach focuses on  two key stages, feature processing and final prediction, and  provides a comprehensive understanding of the decision- making process of the model.\nThe first set of the Grad-CAM++ layers was implemented  immediately before the 17_cv3_conv, 20_cv3_conv, and 23_ cv3_conv layers, which corresponded to the convolutional  layers of the final C3 modules (layers 17, 20, and 23, respec- tively). These layers processed information-rich features on  multiple spatial scales (80 × 80 × 256, 40 × 40 × 512, and  20 × 20 × 1024, respectively). The second set was positioned  immediately before the 24_m_0, 24_m_1, and 24_m_2 lay- ers, which served as the final prediction convolutional layers  (layers 24–0, 24–1, and 24–2, respectively), where the model  performed its final detection and classification decisions.  This dual-layer placement strategy, with visualization lay- ers positioned directly before the key convolutional layers,  made it possible to track how the network processed and  transformed the features throughout its architecture (Fig. 1).  These layer names follow the official YOLOv5 implementa- tion [31].\nThe Grad-CAM++ computation followed a systematic  approach. First, the gradients were calculated with respect  to the target class for each activation map. These gradients  undergo global average pooling to generate channel-wise  importance weights, which are then used to create weighted  combinations of the forward activation maps. Finally, a recti- fied linear unit activation function was applied to highlight  regions that positively contributed to model predictions [16].  Although Grad-CAM was initially implemented, the analysis  primarily focused on Grad-CAM++ owing to its superior  performance in localizing relevant features within complex  architectures.\nGrad‐CAM++ Feature Analysis\nTo comprehensively evaluate the model performance,  attention patterns across all nine diagnostic categories  were analyzed using Grad-CAM++ visualizations. As  outlined in the previous section, the analysis primarily  focused on layer 23, which was presumed to capture the  most relevant scale features for corneal lesion detection.  Attention maps were generated at three network depths  corresponding to the detection scales of the model and  normalized to a range of 0–1. To facilitate visual inter- pretation, these maps were color coded using a continuous  spectrum, with blue and red representing the lowest and  highest attention, respectively.\nThe analysis examined both the qualitative and quanti- tative aspects of attention patterns. A qualitative compari- son between Grad-CAM and Grad-CAM++ visualizations  was first performed, revealing that Grad-CAM++ pro- vided a more precise and clinically relevant localization  of the attention regions, particularly in layer 23. Based on  this qualitative assessment, Grad-CAM++ was selected\n\n--- Page Break ---\n\n3344 \t Journal of Imaging Informatics in Medicine (2026) 39:3340–3355\nfor the subsequent quantitative analyses. For a quantita- tive evaluation, the proportion of pixels with activation  values exceeding 50% of the bounding box area was cal- culated, and this metric was defined as the area of interest  (AOI_50). This value was computed for each layer (layers  17, 20, 23, 24–0, 24–1, and 24–2; Fig. 2) and across all  disease categories (normal, infectious keratitis, non-infec- tious keratitis, scar, tumor, deposit, APAC, lens opacity,  and bullous keratopathy). This approach allowed for a  systematic comparison of the attention patterns across  different conditions and network layers. These quantita- tive values were compared between correctly and incor- rectly classified cases to investigate the relationship  between the attention patterns and diagnostic accuracy.\nCut‐and‐Paste Validation\nTo determine whether the extracorneal information influ- enced the classification decisions of the model, a cut-and- paste validation approach was used. From the full data- set of 1039 images, a subset of 341 images meeting the  following criteria was selected to serve as background  templates: minimal eyelid overlap, correct model classifi- cation, and a predictive score exceeding 90%. The distribu- tions of the selected backgrounds were as follows: normal\n(n = 66), tumor (n = 64), deposit (n = 60), infectious kera- titis (n = 50), scar (n = 40), bullous keratopathy (n = 23),  noninfectious keratitis (n = 20), lens opacity (n = 12), and  APAC (n = 6).\nFor corneal extraction and replacement, CVAT annota- tion software (Intel Corporation, Santa Clara, USA) was  used to annotate the corneal regions with elliptical approx- imations, recording the center coordinates, major axis,  and minor axis of each cornea. Using these annotations,  a Python-based pipeline was developed to extract the 341  corneal regions from background images and systematically  replace the cornea in each of the 341 background templates.  To ensure proper fitting, the extracted corneas were scaled  along their major and minor axes to match the dimensions  of the corneal region of the target background, thereby gen- erating approximately 116,000 composite images for the  analysis (Fig. 3).\nValidation against Expert Annotations\nTo quantitatively validate the clinical relevance of the  attention maps, a direct comparison with expert-defined  lesion areas was performed. First, a ground-truth data- set was created by a board-certified ophthalmologist  (Y.Y.) who manually delineated the primary pathological\nFig. 2   Representative Grad- CAM++ visualizations across  different YOLOv5 layers. Infer- ence of normal corneal images.  Broad attention in the early lay- ers (layer 17), focused through  layer 20, was highly localized  in layer 23. Layer 24-2 exhibits  focused attention in the pupil- lary region, with no activation  in layers 24-0 and 24-1\n\n--- Page Break ---\n\n3345 Journal of Imaging Informatics in Medicine (2026) 39:3340–3355\nfindings in all 1039 test images. These annotations were  subsequently reviewed for consistency by two other oph- thalmologists (Y.K. and R.I.), and disagreements were  resolved by consensus. The attention maps of the model  were then evaluated against these expert annotations using  the following three standard metrics. The performance of  these metrics was compared between correctly and incor- rectly classified images to determine whether the clinical  relevance of the attention of the model correlated with its  diagnostic accuracy.\nEvaluation Metrics\nTo comprehensively assess the model’s performance and the  clinical relevance of its explanations, four primary evalua- tion metrics were employed.\nClassification Accuracy\nThis fundamental metric was used to evaluate the ability of  the model to correctly classify anterior segment diseases.  It is calculated as the proportion of correct predictions out  of the total number of images. Accuracy was the primary  metric for cut-and-paste validation, where changes in the  accuracy revealed the dependency of the model on the  image context.\nArea of Interest (AOI_50)\nThe AOI_50 was defined to quantitatively compare the char- acteristics of attention patterns. This metric represents the  proportion of pixels within a Grad-CAM++ heatmap with  activation values exceeding 50% of the maximum value rela- tive to the total area of the bounding box.\nIntersection over Union (IoU)\nThe IoU was calculated to validate the clinical relevance  of the attention maps. This metric measures the degree of  spatial overlap between a binarized heat map (using a 50%  maximum activation threshold) and the lesion area, which  was manually delineated by an expert ophthalmologist. A  higher IoU indicates better alignment between the model's  attention and the actual pathology.\nPointing Game Accuracy\nThis metric assesses whether the model’s most salient point  of attention falls within an expert-annotated lesion bound- ary. An explanation was considered successful if the point of  maximum activation (the “hottest” spot) in the heat map was  located within the expert annotation. This metric evaluates  the ability of the model to identify the most critical regions  for diagnosis.\n\n--- Page Break ---\n\n3346 \t Journal of Imaging Informatics in Medicine (2026) 39:3340–3355\nAlgorithm 1 Two-Stage Validation Framework for Model  Explainability\nObjective: To analyze the YOLOv5 model's attention patterns and assess the influence of extra-corneal context on\nclassification accuracy.\nInputs:\n- A pre-trained YOLOv5 model.\n- Test dataset of anterior segment images with ground truth labels.\nCurated set of background template images.\n- Set of expert-delineated lesion annotations for the test dataset.\nProcedure:\nStage 1: Grad-CAM++ Feature Importance and Relevance Analysis\n1. Initial Inference: For each image in the test dataset, process it through the YOLOv5 model to obtain the predicted\ndisease class.\n2. Attention Visualization: Generate Grad-CAM++ heat maps for the predicted class at the six key network layers.\nThis visualizes the regions on which the model focused at different feature-processing depths (Fig. 2).\n3. Quantitative feature analysis: The AOI_50 was calculated for each heat map. This metric quantifies the size of the\nhigh-attention region, allowing for statistical comparisons across different layers and disease categories (Fig. S2).\n4. Clinical Relevance Validation: Validate the generated heat maps against the expert-delineated annotations by\ncalculating the IoU and Pointing Game Accuracy. This step confirms the clinical relevance of the model's attention.\nStage 2: Cut-and-Paste Contextual Validation\n5. Corneal Extraction: For each image in the test dataset, the corneal region was segmented and extracted using\nelliptical annotations. This isolate was the primary diagnostic area (Fig. 3).\n6. Cornea-only validation: Extracted corneal images were processed using the YOLOv5 model to evaluate\nclassification performance without any background context. The accuracy of the cornea-only condition was also\nassessed (Fig. S4).\n7. Composite image synthesis The extracted corneas were systematically pasted onto the prepared background\ntemplates to generate a large set of composite images with varying contexts (Fig. 3).\n8. Composite Image Evaluation: The composite images were processed using the YOLOv5 model, and their\npredictions were compared against the ground-truth label to build a classification accuracy matrix, revealing the\ninfluence of different backgrounds (Fig. 5, Fig. S4).\nOutputs:\n- A set of Grad-CAM++ visualizations for qualitative interpretation of model attention.\nQuantitative AOI_50 data for statistical analysis of attention patterns.\nIoU and Pointing Game Accuracy scores, providing a quantitative measure of the clinical relevance of attention\nmaps.\n\n--- Page Break ---\n\n3347 Journal of Imaging Informatics in Medicine (2026) 39:3340–3355\nAn accuracy matrix from the cut-and-paste validation revealed the dependency of the model on background features.\nStatistical analysis\nNonparametric statistical tests were conducted to analyze the visualization patterns. The Kruskal–Wallis test was\nused to compare AOI_50 proportions across different network layers and disease categories, with post-hoc analyses\nperformed using Dunn's test with Bonferroni correction. For the cut-and-paste validation analysis, binomial and\nMcNemar’s tests were used to compare the classification accuracy across different image conditions. For\nquantitative evaluation against expert annotations, the Mann–Whitney U test was used to compare the metrics (IoU,\nPointing Game accuracy, and AOI_50) between groups stratified by the model's diagnostic accuracy (correct vs.\nincorrect). For all the analyses, statistical significance was set at p < 0.05. All statistical analyses were performed\nusing Python (version 3.10) using the scipy.stats and statsmodels packages.\nResults\nYOLOv5‐Grad‐CAM and YOLOv5‐Grad‐CAM++\nThe Grad-CAM +  + visualization provided insights into  the decision-making process of the model across different  layers. In the early feature extraction stage (layer 17), the  model exhibited broad attention patterns covering exten- sive areas of the anterior segment with multiple vertical  attention bands (Fig. 2). Quantitative analysis confirmed  that layer 17 exhibited the largest attention area (median  AOI_0.5 = 0.562, interquartile range [IQR]: 0.407–0.669;  Fig. S2a). As the network depth increased, attention pat- terns became more focused (layer 20, median = 0.397,  IQR: 0.233–0.535) and were further refined into a cen- trally concentrated region in layer 23 (median = 0.253,  IQR: 0.161–0.394; Fig. 2, S2a). Notably, layer 23 achieved  an optimal balance between localization and coverage,  effectively capturing diverse lesion shapes and distribu- tions across various diseases (Fig. 2). In the final prediction  head (layer 24), a distinct specialization pattern emerged:  layer 24–2 exhibited highly localized attention within the  pupillary region (median = 0.055, IQR: 0.036–0.097),  whereas layers 24–0 and 24–1 showed minimal to no  activation (median = 0.000, IQR: 0.000–0.000; Fig. S2a).  The differences in the attention areas across the layers  were statistically significant (Kruskal–Wallis H = 443.37,  p = 9.75 × 10−91). Post hoc analysis using Dunn’s test with  Bonferroni correction revealed that layer 17 varied signifi- cantly from all deeper layers (20, 23, 24_m_0, 24_m_1,  24_m_2; all adjusted p < 0.05), layer 20 differed from  layer 23 and all layer 24 variants (Bonferroni-adjusted  p < 0.05), and layer 23 differed from every layer 24 variant\n(Bonferroni-adjusted p < 0.05). Furthermore, layer24_m_2  differed significantly from layer24_m_0 and layer24_m_1  (Bonferroni-adjusted p < 0.05) (Fig. S2a). These findings  suggest the systematic refinement of attention patterns with  increasing network depth.\nIn layer 17, although attention remained broadly distrib- uted, significant inter-class heterogeneity was already pre- sent (Kruskal–Wallis H = 116.67, p = 1.61 × 10−21; Fig. S2b).  Median AOI_0.5 values were highest in infected and normal  cases; intermediate in scar, lens opacity, non-infection, and  bullous cases; and lowest in tumor, deposit, and APAC cases.  Infected and normal cases showed significantly greater atten- tion than tumor cases (Bonferroni-adjusted p < 0.001), and  deposits and APAC cases formed a low-attention tier sig- nificantly below the high or intermediate groups (all relevant  Bonferroni-adjusted pairwise p < 0.01). Thus, broad early  layer activation encoded patterned heterogeneity across dis- ease categories.\nIn layer 20, class-wise AOI_0.5 differences were  also statistically significant (Kruskal–Wallis H = 37.68,  p = 8.61 × 10−6). The median values ranged from 0.488  (no infection) and 0.467 (lens opacity) to 0.300 (deposit).  Dunn–Bonferroni post hoc testing showed that deposit  had significantly lower AOI_0.5 than scar (adjusted  p = 7.1 × 10−4), non-infection (2.0 × 10−3), infection  (2.1 × 10−3), and lens opacity (8.7 × 10−3), while no other pair- wise differences reached significance after adjustment. These  contrasts indicate that global heterogeneity at this intermedi- ate depth is driven predominantly by reduced spatial attention  in deposit cases.\nIn layer 23, distinct attention patterns were observed across  disease categories (Fig. S2d, 4). The normal and APAC cases  demonstrated compact, centrally concentrated attention in the\n\n--- Page Break ---\n\n3348 \t Journal of Imaging Informatics in Medicine (2026) 39:3340–3355\ncorneal apex region with median AOI_0.5 values of 0.147  (IQR, 0.117–0.187) and 0.084 (IQR, 0.057–0.115), respec- tively (Fig. 2, 4f). Patients with infectious keratitis exhib- ited central attention to overlapping lesions without fully  spanning their extent (median: 0.291 (IQR: 0.210–0.386);  Fig. 4a). The tumor and scar cases displayed broader maps  extending from the central cornea towards the peripheral or  limbal zones (median 0.396 [IQR: 0.350–0.454] and 0.381\n[IQR: 0.264–0.463], respectively; Fig. 4c, d). Noninfec- tious keratitis frequently produced the widest distribution,  covering the central and peripheral corneas (median 0.438  [IQR: 0.280–0.593]; Fig. 4b). Lens opacity and bullous  cases occupied intermediate ranges (medians 0.257 [IQR:  0.192–0.323] and 0.227 [IQR: 0.195–0.300]), while deposit  cases showed lower, more restricted attention (median 0.186  [IQR: 0.124–0.229]). Inter-class differences were highly\nFig. 4   Grad-CAM/Grad-CAM++ visualizations and expert’s annota- tion for layer 23 across different anterior segment disease categories.  (a) infectious keratitis, (b) non-infectious keratitis, (c) scar, (d) tumor,\n(e) deposit, (f) acute primary angle closure, (g) lens opacity, (h) bul- lous keratopathy Grad-CAM, gradient-weighted class activation map- ping\nFig. 3   Cut-and-paste validation  demonstrating the influence of  different background contexts  on model predictions. The origi- nal image, diagnosed as “infec- tion” with a Likelihood of 0.97  (upper-left), shows a decrease  in Likelihood to 0.66 when only  the cornea is cropped (lower- left). Replacing the background  with “non-infection” or “tumor”  backgrounds increased the like- lihood of “infection” to 0.79.  Conversely, backgrounds such  as “normal,” “scar,” \"deposit,”  \"lens opacity,” \"APAC,\" and  \"bullous” resulted in a \"scar\"  prediction, with the likelihood  of \"scar\" exceeding that of  \"infection\" (right) APAC, acute  primary angle closure\n\n--- Page Break ---\n\n3349 Journal of Imaging Informatics in Medicine (2026) 39:3340–3355\nsignificant (Kruskal–Wallis H = 443.37, p = 9.75 × 10−91;  Fig. S2d). Dunn–Bonferroni post hoc testing confirmed a  clear High-vs-Low pattern: non-infectious keratitis, tumor,  and scar each had larger AOI_0.5 than deposit, normal, and  APAC in all nine pairwise comparisons (adjusted p values  ranging from 5.7 × 10−10 to 1.9 × 10−8; e.g., non-infection vs.  APAC p < 1.9 × 10−8, scar vs. deposit p < 1 × 10−12). These  findings define a graded distribution of spatial attention at  layer 23, spanning diffuse coverage (noninfectious keratitis,  tumor, and scar) to a compact central focus (normal, APAC)  (Fig. 4).\nRepresentative misclassification cases revealed dis- tinctive attention patterns that deviated from the expected  disease-specific distributions. In the case of non-infectious  keratitis misclassified as normal despite the presence of  peripheral infiltrates (Fig. S3a), the corresponding Grad- CAM++ visualization revealed a centrally concentrated  attention pattern characteristic of normal eyes, failing to\nhighlight pathological changes in the peripheral cornea.  Similarly, in the case of APAC misclassified as nonin- fectious keratitis (Fig. S3b), the Grad-CAM++ heat map  exhibited a diffuse attention pattern typical of noninfec- tious keratitis, with broad areas of high activation across the  cornea, rather than the expected focused pattern associated  with angle closure.\nThe relationship between Grad-CAM++ attention pat- terns and diagnostic accuracy was analyzed by comparing  the attention maps of correctly and incorrectly classified  cases. In Layer 23, which captured the key disease features,  significant differences were observed. For cases predicted  as bullous keratopathy, infectious keratitis, and scarring, the  attention area (AOI_50) was significantly larger for incor- rect predictions than for correct predictions (p < 0.0001,  p = 0.030, and p = 0.034, respectively) (Fig. S4a). This  trend was also observed in the final prediction head (layer  24_m_2), whereas the earlier layers demonstrated different\nFig. 5   Accuracy matrix demonstrating the influence of background  on cornea classification in the cut-and-paste validation. Rows repre- sent ground-truth corneal conditions and columns represent the back- ground conditions. Each cell indicates the classification accuracy of\na specific corneal type when placed on a specific background, repre- senting the reduced model accuracy for infectious keratitis on other  backgrounds and several categories (normal, scar, and lens opacity)  on infectious backgrounds. APAC, acute primary angle closure\n\n--- Page Break ---\n\n3350 \t Journal of Imaging Informatics in Medicine (2026) 39:3340–3355\npatterns (see Supplementary Table S1 for a full layer-by- layer analysis).\nQuantitative Evaluation of Attention Maps  with Expert Annotations\nFor Grad-CAM, the quality of the attention map is a signifi- cant indicator of model performance. Both the mean IoU  and the Pointing Game accuracy were significantly higher  for correctly classified images than for incorrectly classi- fied ones (IoU: 0.322 vs. 0.190, p < 0.0001; Pointing Game  accuracy: 66.4% vs. 37.2%, p < 0.0001, Fig. S4b). For Grad- CAM++, the correlation was less direct. While the mean  IoU was also significantly higher for correct predictions than  for incorrect ones (0.331 vs. 0.230, p < 0.0001, Fig. S4c), its  Pointing Game accuracy was lower than that of Grad-CAM  and showed no significant difference between correctly  classified (28.5%) and incorrectly classified (29.7%) cases  (p = 0.840, Fig. S4a).\nDirect comparison between the two methods also varied  based on the accuracy of the model. For correctly classified  images, no significant difference was observed in the mean  IoU (p = 0.243); however, Grad-CAM was significantly  more accurate in the Pointing Game (66.4% vs. 28.5%,  p < 0.0001, Fig. S4b). Conversely, for incorrectly classified  images, Grad-CAM++ produced heat maps with a signifi- cantly higher mean IoU than Grad-CAM (0.230 vs. 0.190,  p = 0.027, Fig. S4c), whereas the difference in their Pointing  Game accuracy was not significant.\nCut‐and‐Paste Validation\nThe cut-and-paste validation analysis assessed the model  performance under three conditions: original images, cornea- only images, and composite images with varied backgrounds.  Because the original images were selected based on prior cor- rect classifications by the model, perfect accuracy (1.00) was  expected and observed across all nine diagnostic categories.\nCornea-only images exhibited variable performance (Fig.  S5). The deposition and lens opacity cases exhibited perfect  accuracy (1.00). High accuracy was also retained for tumor  (0.98), normal (0.97), and scar (0.94) cases, whereas signifi- cant decreases were observed for bullous keratopathy (0.83),  non-infectious keratitis (0.68), and infectious keratitis (0.54).  Most notably, the accuracy of APAC collapsed to 0.00, indi- cating a complete dependency on extracorneal features for  diagnosis. A binomial test confirmed that the accuracy for  all categories, except deposits and lens opacity, was signifi- cantly lower than the original perfect accuracy (p < 0.001).\nIn the composite image analysis in which the corneas were  placed against various backgrounds, the overall accuracy was  0.791 (Fig. S5). Infectious keratitis exhibited a significant\ndrop in accuracy of 0.448. Significant decreases from the orig- inal accuracy were also observed in the normal (0.73), scar  (0.82), lens opacity (0.81), and tumor (0.93) cases. In contrast,  the accuracies for noninfectious keratitis (0.78), APAC (0.69),  and bullous keratopathy (0.88) were higher than those in the  cornea-only condition; however, they were still lower than  the original accuracy. Binomial tests confirmed that all class  accuracies in the composite set were significantly lower than  the original perfect accuracy (all p < 0.001).\nCut-and-paste analysis revealed that the model’s reliance  on the background context varied significantly across differ- ent diseases (Fig. 5). Diagnoses of infectious keratitis and  APAC were highly dependent on their typical background.  For example, when an infectious keratitis cornea was placed  against a normal background, its classification accuracy  revealed a substantial decrease of 68.6% (from 93.3% to  24.7%; adjusted p < 0.001). Furthermore, the infectious kera- titis background itself frequently resulted in the misclassifi- cation of other conditions, causing the accuracy of the nor- mal corneas to decrease by 71.1% (p < 0.001). In contrast,  diagnoses such as tumors and deposits proved to be more  robust to background changes. Even when placed against a  challenging infectious keratitis background, the accuracies  for tumor and deposit corneas remained high at 78.5% and  83.9%, respectively. Thus, the model learned features that  were more localized to the cornea for these conditions.\nFurther analysis of the composite images with Grad- CAM++ visualization provided additional insights into the  influence of the background on classification (Fig. S6). When  normal and scarred corneas were placed against an infectious  background, the model classified them as having infectious  or noninfectious keratitis, respectively. In both cases, Grad- CAM +  + visualization revealed new attention points on the  conjunctiva, a feature absent in the original images (Fig. S6a,  b). In contrast, when a cornea with noninfectious keratitis  was placed against an infectious background, the model cor- rectly maintained the diagnosis of noninfectious keratitis,  and Grad-CAM++ visualization demonstrated attention  patterns on the conjunctiva, similar to those in the original  image (Fig. S6c). The classification of corneas with depos- its also remained unaffected by the infectious background,  with Grad-CAM++ visualization showing attention patterns  similar to those in the original image without focusing on the  extracorneal region (Fig. S6d).\nDiscussion\nThis study introduced a novel approach for evaluating the  explainability of a YOLOv5-based diagnostic model for  anterior segment diseases by combining Grad-CAM++ and  cut-and-paste validation. Using Grad-CAM +  +, the char- acteristic attention regions for each disease were visualized\n\n--- Page Break ---\n\n3351 Journal of Imaging Informatics in Medicine (2026) 39:3340–3355\nand the evolution of these regions across the network layers  was tracked. Furthermore, cut-and-paste validation was used  to assess the influence of extracorneal information on the  model judgment, revealing a high background dependency  of infectious keratitis. These findings enhance the transpar- ency of diagnostic processes of AI models and improve their  reliability in clinical applications.\nGrad-CAM++ analysis revealed distinct roles of different  YOLOv5 layers in the classification of corneal diseases. As  the network progressed, attention was increasingly focused  on the central cornea, culminating in the peak activation of  layer 24–2. This finding aligns with the results of He et al.  [22], who used a modified YOLOv5s model for blood cell  detection. Their study demonstrated that shallower layers  captured fine details of smaller cells such as lymphocytes,  whereas deeper layers processed broader patterns of larger  cells such as monocytes. In this study, functional speciali- zation was more pronounced. Because corneal pathologies  represent a relatively uniform, large-scale target, the model  learned to rely almost exclusively on a single prediction head  (layer 24–2) suited for this scale. This reflects an efficient,  task-specific adaptation of the model, rather than wasted  capacity. Notably, the misclassification of noninfectious ker- atitis as normal likely resulted from layer 23 failing to detect  subtle peripheral lesions. This underscores the importance  of understanding the layer-specific roles and the influence  of lesion size on diagnostic accuracy. These findings high- light the value of Grad-CAM++ in revealing these network  dynamics and suggest that clinicians should assess attention  patterns in both layers 23 and 24–2, considering lesion size  and extent, to optimize diagnostic performance.\nIn other domains of medical image analysis, Grad-CAM  and Grad-CAM++ have been applied to YOLO models pri- marily for object detection and localization, typically pro- ducing attention maps that highlight areas within the pre- dicted bounding boxes [32–34]. This outcome was expected  because the bounding-box regression task inherently directs  the attention of the model to regions containing target  objects. However, in this study, a different approach was  used to define the entire cornea as a bounding box during  training. This approach was chosen because of the charac- teristics of anterior segment diseases in which lesions can  be diffuse, irregular, or extend beyond the central cornea.  Although unconventional for typical YOLO applications,  the Grad-CAM++ analysis showed that the attention of the  model was appropriately localized to the lesions, even when  they extended beyond the central region. This indicates that  the model learned to identify diagnostically relevant features  outside the typical confines of object-centric bounding boxes,  demonstrating both the flexibility of the YOLOv5 architec- ture and the effectiveness of Grad-CAM++ in capturing  nuanced attention patterns in anterior segment images.\nThe rationale for selecting and using the AOI_50 metric  is grounded in the diffuse boundaries and complex shapes  of corneal lesions, making precise individual annotations  challenging. Rather than using AOI_50 to validate the accu- racy of the attention regions, this study primarily employed  a metric to quantitatively characterize the attention region  features across different classes. AOI_50 represents the pro- portion of the attention area relative to the bounding-box  area, which includes the entire cornea. This metric provides  a useful index for assessing the differences in the extent of  attention regions between classes. However, validating the  AOI_50 and comparing it with other metrics remain impor- tant areas for future research.\nThe cut-and-paste cornea-background matrix revealed  that the YOLOv5 model incorporates extracorneal features,  particularly conjunctival hyperemia, into diagnostic deci- sions, despite the final-layer Grad-CAM++ visualizations  emphasizing the corneal regions. This apparent paradox sug- gests that, although later network stages focus on corneal  pathology, earlier layers likely process broader contextual  cues that indirectly influence outcomes. The quantitative  analysis of attention patterns supports this finding, showing  that for infectious keratitis, the attention area is the larg- est in the early layers (layer 17) before narrowing in the  deeper layers (layer 23), a pattern consistent with the initial  processing of broad background features (Fig. S2). Direct  visual evidence for this dependency was provided by cut- and-paste analysis (Fig. S5), where placing a normal cornea  on a hyperemic background not only changed the diagno- sis, but also caused the Grad-CAM++ map to explicitly  highlight the conjunctiva, a region not attended to in the  original image. These findings demonstrate that final-layer  Grad-CAM++ explanations alone cannot fully capture the  hierarchical processing of multiregion features within the  model. The combined cut-and-paste/Grad-CAM++ approach  effectively dissects this complexity, revealing how clinically  relevant diagnostics such as hyperemia evaluation become  embedded in AI decision pathways. The challenge of han- dling this contextual information is reflected in the litera- ture; while some studies suggest that anatomical cropping or  modular feature analysis can mitigate contextual biases [35],  other studies have demonstrated that including the full image  with background context can lead to higher diagnostic accu- racy for infectious keratitis than by using cropped images  alone [36]. This highlights the crucial tradeoff between  eliminating potential biases and retaining valuable diag- nostic information from the background. Therefore, future  research should systematically assess whether imposing spa- tial constraints during training can enhance the focus of the  model on pathognomonic corneal features, while preserving  clinically relevant contextual integration.\nThe strong background dependency observed in the clas- sification of infectious keratitis raises concerns regarding\n\n--- Page Break ---\n\n3352 \t Journal of Imaging Informatics in Medicine (2026) 39:3340–3355\npotential misdiagnoses of atypical cases. For instance, early  stage infections or immunocompromised patients without  conjunctival hyperemia may be underdiagnosed, whereas  normal corneas with hyperemic backgrounds may be over- diagnosed. This underscores the importance of using this  AI model as a collaborative tool rather than as a definitive  diagnostic authority. Clinicians should critically evaluate  the AI output within a broader clinical context, particularly  when atypical features are present. Future studies should  focus on several directions to address these limitations.  First, priority must be given to collecting more diverse  datasets that include atypical cases such as infections with  minimal hyperemia. Second, advanced training methodolo- gies, such as imposing spatial constraints during training,  could be explored to enhance the model's focus on pathog- nomonic corneal features, while preserving clinically rele- vant contextual integration. Finally, clearly communicating  the known limitations of the model to clinicians is essential  to support responsible clinical integration.\nThe novelty of this study is the combined use of Grad- CAM +  + and cut-and-paste validation to evaluate the  explainability of the YOLOv5-based model for anterior seg- ment disease diagnosis. Each of the three prediction heads  of YOLOv5 was examined in detail. Although previous  studies applied Grad-CAM to YOLO models, they did not  specify the layers used for visualization [19–21]. By contrast,  this study demonstrated that Grad-CAM++ produced more  refined and localized attention maps than Grad-CAM, par- ticularly in the deeper layers of the YOLOv5 model, such as  layers 23 and 24–2. This enhanced localization is essential for  accurately identifying the regions within the anterior segment  that contribute to model predictions. Nevertheless, when this  approach is applied to other anterior segment conditions that  may present with smaller or multiple discrete lesions such  as multiple corneal foreign bodies, punctate epithelial ero- sions, or early stage dendritic keratitis, the limitations of  Grad-CAM++ in visualizing smaller objects may become  more pronounced [17, 28]. In such cases, alternative visu- alization methods or a combination of techniques may be  necessary to ensure accurate attention mapping. Compared  with other explainability methods such as LIME and SHAP,  cut-and-paste validation offers the advantage of inferring  attention among meaningful objects while preserving spatial  relationships within the image, which is essential for clini- cal interpretation. This approach provides valuable insights  into the decision-making process of the model, highlights  its strengths and limitations, and is expected to support the  development of more accurate and reliable AI models for the  diagnosis of anterior segment disease diagnosis [12].\nIn this study, quantitative heatmap characteristics were  shown to serve as indicators of diagnostic reliability, which  is a key aspect of real-world usability. A higher IoU with  expert-delineated lesions was a strong predictor of diagnostic\naccuracy for both Grad-CAM and Grad-CAM++. Moreover,  the two methods provide complementary reliability indica- tors. While Grad-CAM excelled at precisely identifying  the most critical pathological point, as shown by its supe- rior Pointing Game accuracy for correct predictions, Grad- CAM++ provided more robust overall lesion coverage. Addi- tionally, a large and diffuse attention area (AOI_50) from  Grad-CAM++ was associated with incorrect predictions for  diseases, such as bullous keratopathy and infectious kerati- tis, alerting clinicians to a higher risk of misclassification.  Therefore, these methods can be used in concert to generate a  multi-layered explanation that not only visualizes the model's  focus, but also provides quantitative indicators of prediction  reliability. Although further clinical validation is required,  this study provides a foundational framework for integrating  these tools into clinical decision support systems.\nThis study has certain limitations. First, the generaliz- ability of the findings is constrained by the characteristics  of the dataset. The study was conducted using a dataset col- lected from 15 institutions in Japan that were part of the  same group that provided the training data. However, it was  not validated using a truly external dataset from different  geographic or ethnic populations. The dataset primarily con- sisted of images from East Asian patients and was limited to  images captured with diffuse illumination. Furthermore, the  distribution of background images used in the cut-and-paste  validation was imbalanced across disease categories. Sec- ond, the interpretability assessment had methodological and  technical limitations. While this study introduced a quanti- tative validation against expert-delineated lesion areas, the  ground-truth annotations were established by a consensus  of three experts, and future work could benefit from valida- tion against annotations from a larger, more diverse group  of independent ophthalmologists. Importantly, this study  did not assess the practical utility of these explanatory tools  within a clinical workflow, which remains a key subject for  future investigation. Additionally, Grad-CAM++ visualiza- tions are inherently coarse because they are generated from  low-resolution feature maps (e.g., 20 × 20 pixels at layer 23)  inherent to the YOLOv5 architecture, which may not capture  the finest details of the lesion boundaries. Despite this tech- nical constraint, visualization provided clinically meaningful  insights into the attention patterns of the model.\nFuture studies should explore several key aspects of this  relationship. First, external validation is essential. The inter- pretability framework should be applied to datasets from dif- ferent institutions, geographic regions, and ethnic populations  using various imaging devices and slit-lamp illumination  techniques to confirm its generalizability. Second, the clini- cal utility of the framework must be formally assessed. This  includes not only more robust quantitative validation against  expert-annotated lesion areas, but also prospective user stud- ies to determine whether these tools can improve clinicians'\n\n--- Page Break ---\n\n3353 Journal of Imaging Informatics in Medicine (2026) 39:3340–3355\ndiagnostic accuracy, confidence, or efficiency. Ultimately,  building on these validations, future research should exam- ine how these explainability techniques can guide the appro- priate clinical implementation of AI models. This involves  integrating tools into clinical workflows, identifying poten- tial biases, and determining optimal usage conditions across  diverse clinical scenarios. Finally, methodological refine- ments such as developing more natural synthetic images for  cut-and-paste validation and further automating the process  would enable more extensive validation studies.\nFuture studies should explore several key aspects of this  relationship. External validation should assess whether  combining Grad-CAM++ visualization with cut-and-paste  validation effectively reveals the strengths and limitations of  the AI models when applied to datasets from different insti- tutions and imaging devices, including slit-lamp illumina- tion. Developing methods to generate more natural synthetic  images and automate the cut-and-paste validation process  would enable extensive validation studies. Ultimately, future  research should examine how these explainability techniques  guide the appropriate clinical implementation of AI models,  particularly for identifying potential biases and determining  optimal usage conditions across diverse clinical scenarios.\nConclusion\nThis study established that combining Grad-CAM++ visuali- zation with cut-and-paste validation provides a robust frame- work for evaluating the explainability and clinical reliability  of YOLOv5-based diagnostic models for anterior segment dis- eases. The dual approach revealed the layer-specific attention  dynamics and critically quantified the reliance of the model  on extracorneal features. This exposes a fundamental trade- off: while contextual cues such as conjunctival hyperemia can  enhance the diagnostic accuracy for conditions such as infec- tious keratitis, they also create a dependency that could lead to  misdiagnosis in atypical cases. Furthermore, this study demon- strates that quantitative metrics linking explanation quality to  diagnostic accuracy can serve as valuable indicators of predic- tion reliability. By not only enhancing the transparency of the  AI decision-making process but also identifying its limitations  and inherent trade-offs, this comprehensive validation method- ology offers crucial insights for the responsible development  and clinical integration of future AI diagnostic systems.\nSupplementary Information  The online version contains supplemen- tary material available at https://​doi.​org/​10.​1007/​s10278-​025-​01664-7.\nAcknowledgements  The authors would like to thank Editage [http://​ www.​edita​ge.​com] for editing and reviewing this manuscript for Eng- lish language.\nAuthor Contribution  Y.K. conceptualized the study design and drafted  the manuscript. Y.U. supervised the project and collected the clinical\ndata. T.Y. and H.M. collected and labeled the clinical data. M.O. devel- oped the computational pipeline. Y.Y. performed the expert annotation  of the data. All others (R.I., D.M., R.N., T.I., N.K., T.C., J.O., T.Y.,  K.T, K.N., and T.O.) critically reviewed and revised the manuscript and  approved the final version submitted for publication.\nFunding  This study was supported by the Japan Agency for Medical  Research and Development (Y.U. 24hma322004h0003). The funding  organization had no role in the study design and conduct, data collection,  management, analysis, or interpretation, manuscript preparation, review,  or approval, or the decision to submit the manuscript for publication.\nData Availability  Data supporting the findings of this study are avail- able from the corresponding author upon reasonable request, and with  permission from the Japan Ocular Imaging Registry. The code used  in this study is publicly available at https://​github.​com/​kitag​uchi77/​ yolov5-​gradc​am-​corne​ai.\nDeclarations\nEthics Approval  This study was approved by the Institutional Review  Board of the Japanese Ophthalmological Society (protocol number:  15000133–20001). All procedures conformed to the tenets of the Dec- laration of Helsinki and the Japanese Guidelines for Life Science and  Medical Research.\nConsent to Participate  The review committee determined that patient  consent was not required because the study used retrospectively col- lected de-identified slit-lamp microscopy images.\nConflict of interest  TY: Grants (Novartis Pharma); honoraria for lec- tures (Alcon Japan, HOYA, Novartis Pharma, AMO Japan, Santen  Pharmaceutical, Senju Pharmaceutical, Johnson & Johnson); MM:  Grants (Novartis Pharmaceutical); honoraria for lectures (Bayer  Yakuhin, Kowa Pharmaceutical, Alcon Japan, HOYA, Novartis Phar- maceutical, AMO Japan, Santen Pharmaceutical, Senju Pharmaceuti- cal, Johnson & Johnson K.K., Japan Ophthalmic Instruments Associa- tion). MA: Grants (Novartis Pharmaceutical, Santen Pharmaceutical),  honoraria for lectures (Novartis, Takeda, Senju, Chugai, Kowa),  support for attending meetings and travel (Wakamoto Pharmaceuti- cal, Novartis Pharmaceutical), and endowments (NIDEK). TI: non- financial support (Lion and Sony Network Communications), grants  (Yuimedi Inc., ROHTO Pharmaceutical, Kobayashi Pharmaceutical,  Kandenko., and Fukoku), and personal fees (Santen Pharmaceutical,  InnoJin Inc., and Ono Pharmaceutical), outside the submitted work.\nReferences\n1.\t Li Z, Jiang J, Chen K, Chen Q, Zheng Q, Liu X, Weng H, Wu S,\nChen W: Preventing corneal blindness caused by keratitis using  artificial intelligence. Nat Commun 12:3738, 2021. \t 2.\t Kuo MT, Hsu BW, Yin YK, Fang PC, Lai HY, Chen A, Yu MS,\nTseng VS: A deep learning approach in diagnosing fungal keratitis  based on corneal photographs. Sci Rep 10:14424, 2020. \t 3.\t Koyama A, Miyazaki D, Nakagawa Y, Ayatsuka Y, Miyake H,\nEhara F, Sasaki SI, Shimizu Y, Inoue Y: Determination of prob- ability of causative pathogen in infectious keratitis using deep  learning algorithm of slit-lamp images. Sci Rep 11:22642, 2021. \t 4.\t Redd TK, Prajna NV, Srinivasan M, Lalitha P, Krishnan T, Raja-\nraman R, Venugopal A, Acharya N, Seitzman GD, Lietman TM,  Keenan JD, Campbell JP, Song X: Image-based differentiation  of bacterial and fungal keratitis using deep convolutional neural  networks. Ophthalmol Sci 2:100119, 2022.\n\n--- Page Break ---\n\n3354 \t Journal of Imaging Informatics in Medicine (2026) 39:3340–3355\n5.\t Ghosh AK, Thammasudjarit R, Jongkhajornpong P, Attia J, Thak-\nkinstian A: Deep learning for discrimination between fungal kerati- tis and bacterial keratitis: DeepKeratitis. Cornea 41:616–622, 2022. \t 6.\t Natarajan R, Matai HD, Raman S, Kumar S, Ravichandran S, Swa-\nminathan S, Rani Alex JS: Advances in the diagnosis of herpes  simplex stromal necrotising keratitis: a feasibility study on deep  learning approach. Indian J Ophthalmol 70:2889–2894, 2022. \t 7.\t Fang X, Deshmukh M, Chee ML, Soh ZD, Teo ZL, Thakur S, Goh\nJHL, Liu YC, Husain R, Mehta JS, Wong TY, Cheng CY, Rim  TH, Tham YC: Deep learning algorithms for automatic detection  of pterygium using anterior segment photographs from slit-lamp  and hand-held cameras. Br J Ophthalmol 105:893–900, 2021. \t 8.\t Li Z, Qiang W, Chen H, Pei M, Yu X, Wang L, Li Z, Xie W, Wu\nX, Jiang J, Wu G: Artificial intelligence to detect malignant eyelid  tumors from photographic images. NPJ Digit Med 5:33, 2022. \t 9.\t Lee MJ, Yang MK, Khwarg SI, Oh EK, Choi YJ, Kim N, Choung\nH, Seo CW, Ha YJ, Cho MH, Cho BJ: Differentiating malignant and  benign eyelid lesions using deep learning. Sci Rep 13:4557, 2023. \t10.\t Yonehara M, Nakagawa Y, Ayatsuka Y, Hara Y, Shoji J, Ebihara\nN, Inomata T, Huang T, Nagino K, Fukuda K, Kishimoto T, Sumi  T, Fukushima A, Fujishima H, Kawai M, Takamura E, Uchio E,  Namba K, Koyama A, Haruki T, Sasaki SI, Shimizu Y, Miyazaki  D: Use of explainable AI on slit-lamp images of anterior surface  of eyes to diagnose allergic conjunctival diseases. Allergol Int  73:537–546, 2024. \t11.\t Keenan TDL, Chen Q, Agrón E, Tham YC, Goh JHL, Lei X, Ng\nYP, Liu Y, Xu X, Cheng CY, Bikbov MM, Jonas JB, Bhandari  S, Broadhead GK, Colyer MH, Corsini J, Cousineau-Krieger C,  Gensheimer W, Grasic D, Lamba T, Magone MT, Maiberger M,  Oshinsky A, Purt B, Shin SY, Thavikulwat AT, Lu Z, Chew EY;  AREDS Deep Learning Research Group: DeepLensNet: deep  learning automated diagnosis and quantitative classification of  cataract type and severity. Ophthalmology 129:85–95, 2022. \t12.\t Ueno Y, Oda M, Yamaguchi T, Fukuoka H, Nejima R, Kitaguchi\nY, Miyake M, Akiyama M, Miyata K, Kashiwagi K, Maeda N,  Shimazaki J, Noma H, Mori K, Oshika T: Deep learning model for  extensive smartphone-based diagnosis and triage of cataracts and  multiple corneal diseases. Br J Ophthalmol 108:1234–1242, 2024. \t13.\t Dinsdale NK, Jenkinson M, Namburete AIL: Deep learning-based\nunlearning of dataset bias for MRI harmonisation and confound  removal. Neuroimage 228:117689, 2021. \t14.\t Lin M, Weng N, Mikolaj K, Bashir Z, Svendsen MBS, Tolsgaard\nM, Christensen AN, Feragen A: Shortcut learning in medical  image segmentation. In: Lecture Notes in Computer Science.  Springer Nature Switzerland: Cham; 2024. p.623–633. \t15.\t Selvaraju RR, Cogswell M, Das A, Vedantam R, Parikh D, Batra\nD: Grad-CAM: visual explanations from deep networks via gra- dient-based localization. Int J Comput Vis 128:336–359, 2016. \t16.\t Venkatesh K, Mutasa S, Moore F, Sulam J, Yi PH: Gradient-\nbased saliency maps are not trustworthy visual explanations of  automated AI musculoskeletal diagnoses. J Imaging Inform Med  10:104–112, 2024. \t17.\t Saporta A, Gui X, Agrawal A, Pareek A, Truong SQH, Nguyen\nCDT, Ngo VD, Seekins J, Blankenberg FG, Ng AY, Lungren MP,  Rajpurkar P: Benchmarking saliency methods for chest X-ray  interpretation. Nat Mach Intell 4:801–812, 2022. \t18.\t Van Craenendonck T, Elen B, Gerrits N, De Boever P: Systematic\ncomparison of heatmapping techniques in deep learning in the  context of diabetic retinopathy lesion detection. Transl Vis Sci  Technol 9:64, 2020. \t19.\t Al-Tam RM, Al-Hejri AM, Alshamrani SS, Al-antari MA, Naran-\ngale SM: Multimodal breast cancer hybrid explainable computer- aided diagnosis using medical mammograms and ultrasound  images. Biocybern Biomed Eng 44:227–240, 2024. \t20.\t Koike Y, Yui M, Nakamura S, Yoshida A, Takegawa H, Anetai\nY, Hirota K, Tanigawa N: Artificial intelligence-aided lytic spinal\nbone metastasis classification on CT scans. Int J Comput Assist  Radiol Surg 18 :521–529, 2023. \t21.\t Till T, Tschauner S, Singer G, Lichtenegger K, Till H: Develop-\nment and optimization of AI algorithms for wrist fracture detec- tion in children using a freely available dataset. Front Pediatr  11:1291804, 2023. \t22.\t He Y: Automatic blood cell detection based on advanced\nYOLOv5s network. IEEE Access 12:3360142, 2024. \t23.\t Sourget T, Hestbek-Møller M, Jiménez-Sánchez A, Junchi Xu J,\nCheplygina V: Mask of truth: Model sensitivity to unexpected  regions of medical images. J Imaging Inform Med. 2:1–18, 2025. \t24.\t Chattopadhyay A, Sarkar A, Howlader P, Balasubramanian VN:\nGrad-CAM++: improved visual explanations for deep convolu- tional networks. arXiv preprint, 2017. \t25.\t Shyamalee T, Meedeniya D, Lim G, Karunarathne M: Automated\ntool support for glaucoma identification with explainability using  fundus images. IEEE Access 12:3359698, 2024. \t26.\t Chaddad A, Hu Y, Wu Y, Wen B, Kateb R: Generalizable and\nexplainable deep learning for medical image computing: an over- view. Curr Opin Biomed Eng 29:100567, 2024. \t27.\t Islam O, Assaduzzaman M, Hasan MZ: An explainable AI-based\nblood cell classification using optimized convolutional neural net- work. J Pathol Inform 15:100389, 2024. \t28.\t Zhang Y, Hong D, McClement D, Oladosu O, Pridham G, Slaney\nG: Grad-CAM helps interpret the deep learning models trained  to classify multiple sclerosis types using clinical brain magnetic  resonance imaging. J Neurosci Methods 350:109098, 2021. \t29.\t Goyal Y, Wu Z, Ernst J, Batra D, Parikh D, Lee S: Counterfactual\nVisual Explanations. Proc Mach Learn Res 101:500–509, 2019. \t30.\t Ragab MG, Abdulkadir SJ, Muneer A, Alqushaibi A, Sumiea EH,\nQureshi R: A comprehensive systematic review of YOLO for med- ical object detection (2018 to 2023). IEEE Access 12:3386826,  2024. \t31.\t Ultralytics: YOLOv5 computer software. 2020. Available at\nhttps://​github.​com/​ultra​lytics/​yolov5. Accessed January 4, 2025. \t32.\t Gaur L, Bhandari M, Razdan T, Mallik S, Zhao Z: Explanation-\ndriven deep learning model for prediction of brain tumour status  using MRI image data. Front Genet 13:822666, 2022. \t33.\t Aldughayfiq B, Ashfaq F, Jhanjhi NZ, Humayun M: Explainable\nAI for retinoblastoma diagnosis: interpreting deep learning mod- els with LIME and SHAP. Diagnostics (Basel) 13:1963, 2023. \t34.\t Fong RC, Vedaldi A: Interpretable explanations of black boxes\nby meaningful perturbation. Proc IEEE Int Conf Comput Vis  2959–2967, 2017. \t35.\t Hung N, Shih AK, Lin C, Kuo MT, Hwang YS, Wu WC, Kuo\nCF, Kang EY, Hsiao CH: Using slit-lamp images for deep learn- ing-based identification of bacterial and fungal keratitis: model  development and validation with different convolutional neural  networks. Diagnostics (Basel) 11:1246, 2021. \t36.\t Wang L, Chen K, Wen H, Zheng Q, Chen Y, Pu J, Chen W: Feasi-\nbility assessment of infectious keratitis depicted on slit-lamp and  smartphone photographs using deep learning. Int J Med Inform  155:104583, 2021. \t37.\t Mongan J, Moy L, Kahn CE JR: Checklist for Artificial Intel-\nligence in Medical Imaging (CLAIM): a guide for authors and  reviewers. Radiol Artif Intell 2:e200020, 2020.\nPublisher's Note  Springer Nature remains neutral with regard to  jurisdictional claims in published maps and institutional affiliations.\nSpringer Nature or its licensor (e.g. a society or other partner) holds  exclusive rights to this article under a publishing agreement with the  author(s) or other rightsholder(s); author self-archiving of the accepted  manuscript version of this article is solely governed by the terms of  such publishing agreement and applicable law.\n\n--- Page Break ---\n\n3355 Journal of Imaging Informatics in Medicine (2026) 39:3340–3355\nAuthors and Affiliations\nYoshiyuki Kitaguchi1,15   · Yuta Ueno2,15,16 · Takefumi Yamaguchi3,15 · Hiroki Maehara3,4,15 · Dai Miyazaki5,15 ·  Ryohei Nejima6,15 · Takenori Inomata7,15 · Naoko Kato8,15 · Tai‐ichiro Chikama9,15 · Jun Ominato10,15 ·  Tatsuya Yunoki11,15 · Kinya Tsubota12,15 · Masahiro Oda13,15 · Kensaku Mori13,15 · Yu Yoshinaga1,15 · Rikako Iwasaki1,15 ·  Kohji Nishida1,14 · Tetsuro Oshika2,15,16\n*\t Yoshiyuki Kitaguchi  \t kitaguchi@ophthal.med.osaka-u.ac.jp\n1\t Department of Ophthalmology, Osaka University  Graduate School of Medicine, 2‐2 Yamadaoka, Suita,  Osaka 565‐0871, Japan\n2\t Department of Ophthalmology, Faculty of Medicine,  University of Tsukuba, Ibaraki, Japan\n3\t Department of Ophthalmology, Tokyo Dental College  Ichikawa General Hospital, Chiba, Japan\n4\t Department of Ophthalmology, Fukushima Medical  University School of Medicine, Fukushima, Japan\n5\t Division of Ophthalmology and Visual Science, Faculty  of Medicine, Tottori University, Tottori, Japan\n6\t Department of Ophthalmology, Miyata Eye Hospital,  Miyazaki, Japan\n7\t Department of Ophthalmology, Juntendo University  Graduate School of Medicine, Tokyo, Japan\n8\t Department of Ophthalmology, Tsukazaki Hospital, Hyogo,  Japan\n9\t Division of Ophthalmology and Visual Science, Graduate  School of Biomedical and Health Sciences, Hiroshima  University, Hiroshima, Japan\n10\t Division of Ophthalmology and Visual Science, Graduate  School of Medical and Dental Sciences, Niigata University,  Niigata, Japan\n11\t Department of Ophthalmology, University of Toyama,  Toyama, Japan\n12\t Department of Ophthalmology, Tokyo Medical University,  Tokyo, Japan\n13\t Graduate School of Informatics, Nagoya University, Nagoya,  Japan\n14\t Institute for Open and Transdisciplinary Research Initiatives  (OTRI), Osaka University, Suita, Osaka, Japan\n15\t Japan Anterior Segment Artificial Intelligence Research  Group, Tsukuba, Japan\n16\t Ocular Imaging Registry,  Chuo‐ku, Tokyo, Japan",
+  "equations": [
+    {
+      "page": 1,
+      "raw_extracted": "Abstract Purpose: To improve the explainability of a YOLOv5-based model for anterior segment disease diagnosis by combining  gradient-weighted class activation mapping ++ (Grad-CAM++) and cut-and-paste validation and evaluate the influence of  extracorneal information on diagnostic accuracy. Methods: In total, 1039 slit-lamp photographs across nine diagnostic categories were analyzed using a previously developed  YOLOv5 model. Grad-CAM++ was implemented to visualize the attention patterns across key network layers. To quantita- tively assess clinical relevance, attention maps were compared against expert-delineated lesion boundaries using Intersection  over Union (IoU). Furthermore, cut-and-paste validation was performed by systematically swapping the corneal regions with  different backgrounds to probe the reliance of the model on contextual information. Results: Grad-CAM++ analysis revealed hierarchical attention focus, progressing from broad in the early layers to highly  localized in the final layers, with layer 23 showing distinct disease-specific patterns. Cut-and-paste validation demonstrated  that model accuracy was highly dependent on the background context for certain diseases; for instance, the accuracy for  infectious keratitis and acute primary angle closure dropped significantly upon background alteration. Critically, the clinical  relevance of the attention maps measured by the IoU against expert annotations was significantly higher for correct predic- tions than for incorrect predictions, linking the model’s visual explanation to its diagnostic reliability. Conclusion: Combining Grad-CAM++ with cut-and-paste validation provided a robust framework for evaluating the explain- ability of the YOLOv5 model. This dual approach reveals layer-specific attention dynamics and quantifies the model’s  reliance on clinically relevant extracorneal features, thereby enhancing the transparency and trustworthiness of artificial  intelligence-based diagnostic systems in ophthalmology.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 1,
+      "raw_extracted": "Keywords  YOLOv5 · Explainable artificial intelligence · Cut-and-paste validation · Anterior segment disease",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 1,
+      "raw_extracted": "Anterior segment diseases are a leading cause of prevent- able blindness worldwide, with conditions such as infectious  keratitis affecting millions of people annually, warranting  prompt and accurate diagnosis for preventing vision loss.  The complexity of the anterior segment pathology, rang- ing from subtle corneal infiltrates to diffuse inflammatory  patterns, poses significant diagnostic challenges even for  experienced ophthalmologists. This diagnostic complexity  has driven the development of artificial intelligence (AI)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 1,
+      "raw_extracted": "systems to assist in clinical decision-making. Recent deep  learning models have demonstrated remarkable performance  in the detection of various anterior segment conditions, such  as infectious keratitis [1–5], herpes keratitis [6], pterygium  [7], eyelid tumors [8, 9], allergic conjunctivitis [10], and  cataracts [11, 12].",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 1,
+      "raw_extracted": "However, the clinical adoption of these high-performing  AI models faces a critical barrier: a lack of interpretability  in their decision-making processes. While models have dem- onstrated impressive accuracy metrics, with some achieving  superhuman performance in differentiating fungal keratitis  from bacterial keratitis (area under the curve [AUC] up to  0.99) [1, 4–7]—clinicians remain reluctant to trust black-box  Extended author information available on the last page of the article",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "systems whose reasoning cannot be examined. This concern  is particularly acute in ophthalmology, where subtle visual  cues guide treatment decisions and misdiagnosis can lead to  irreversible vision loss. More troublingly, recent evidence  suggests that many medical AI models achieve high accuracy  through “shortcut learning,” exploiting spurious correlations  rather than learning clinically relevant features [13, 14]. For  instance, neuroimaging models have been shown to identify  MRI scanner types with 96% accuracy using hardware sig- natures rather than anatomical features, with performance  dropping to chance levels when these confounders were  removed [13].",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "Current approaches to AI interpretability in anterior seg- ment imaging primarily rely on gradient-based visualiza- tion methods, particularly Gradient-weighted Class Activa- tion Mapping (Grad-CAM) [15]. Although Grad-CAM has  been widely adopted to highlight the regions of interest in  corneal images [1, 4–7], significant limitations compro- mise its clinical utility. First, Grad-CAM often produces  coarse, inconsistent localizations that may not align with  expert-identified pathological regions [16–18]. Second,  when applied to complex object detection architectures,  such as YOLO, which is increasingly used for multidisease  classification, the question of which network layer provides  clinically meaningful explanations remains unresolved  [19–22]. Third, and most critically, visualization methods  alone cannot determine whether models rely on appropri- ate clinical features or spurious contextual cues [23]. For  example, for infectious keratitis, a model may correctly  classify cases by detecting conjunctival hyperemia (a sec- ondary sign) rather than primary corneal pathology. This  could lead to misdiagnosis in two scenarios: missing early  infections that lack inflammatory signs, or incorrect diag- nosis of non-infectious conditions with hyperemia, such as  infectious keratitis.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "These limitations necessitate a more comprehensive  approach to model validation. Therefore, this study aimed  to establish a framework for evaluating the explainability  and clinical reliability of AI models for anterior segment  disease diagnosis by implementing a novel two-stage  validation approach based on a previously developed  YOLOv5 model [12]. The first stage addresses the known  limitations of standard Grad-CAM, which can produce  coarse or inconsistent localizations [16–18]. To achieve  more refined attention maps, this study employs Grad- CAM++, an enhanced method that incorporates second- order gradients for more precise weighting and improved  localization [24–27]. While comparative studies have  demonstrated mixed results, with Grad-CAM++ strug- gling with smaller lesions in other domains [28], its effec- tiveness for larger, well-defined pathologies typical in  anterior segment imaging was assessed here. The second  stage employs “cut-and-paste” validation—systematically",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "altering image contexts to directly test the model’s fea- ture dependence [29]. This technique probes whether the  model relies on primary pathological features or poten- tially misleading contextual cues, such as conjunctival  injection, which represent both clinically relevant infor- mation and a potential source of diagnostic bias. By com- bining these complementary methods, this study aimed to  answer three critical questions: (1) Which network layers  provide the most clinically interpretable explanations?  (2) To what extent do the models rely on corneal pathol- ogy versus the extracorneal context? (3) Can visualization  quality metrics predict diagnostic reliability? Answering  these questions is essential for developing trustworthy AI  systems that can safely augment clinical decision making  in ophthalmology.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "This study was approved by the Institutional Ethics Review  Board of the Japanese Ophthalmological Society (protocol  number: 15000133–20001) and included 23 tertiary univer- sity hospitals. All the procedures followed the tenets of the  Declaration of Helsinki and the Japanese Guidelines for Life  Science and Medical Research. In view of the retrospective  design, the requirement for written informed consent was  waived and an opt-out approach was implemented, allow- ing patients to decline participation through an institutional  website.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "This study evaluated the interpretability of a deep learn- ing model based on the YOLOv5 architecture, previously  trained on a dataset of 5270 anterior segment photographs  from 5270 individual patients obtained using diffuse illu- mination through a multi-institutional collaborative net- work. The dataset was collected from 15 tertiary referral  centers across Japan. The model was designed to classify  the anterior segment conditions into nine categories: nor- mal, infectious keratitis, non-infectious keratitis, scar,  tumor, deposit, acute primary angle closure (APAC), lens  opacity, and bullous keratopathy. Standardized image  acquisition protocols and diagnostic criteria were applied  across all participating centers to ensure data consistency  and quality.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "For this interpretability analysis, 1039 slit-lamp photo- graphs encompassing all nine diagnostic categories were  used: normal (258), infectious keratitis (129), non-infec- tious keratitis (71), scar (140), tumor (176), deposit (123),  APAC (11), lens opacity (68), and bullous keratopathy (63).",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "This dataset comprised 539 images from the previously  established CorneAI test set [12] and 500 additional images  were prospectively collected from the Japan Ocular Imaging  Registry. None of these 1039 images were included in the  training or validation datasets used to develop the YOLOv5  model, ensuring an unbiased evaluation of the model inter- pretability. To ensure standardized imaging conditions, all  the photographs were captured using a diffuse illumination  technique. Two board-certified ophthalmologists (YK and  YY) independently reviewed the images to verify the qual- ity and diagnostic accuracy. Their evaluation confirmed that  none of the images were blurred or under-exposed. Only  cases in which both ophthalmologists agreed on the diag- nosis were included in the dataset. To prevent potential bias,  duplicate images from the same patient or condition were  excluded. Furthermore, a preliminary inference using the  YOLOv5 model confirmed an accuracy of 85%, which is  consistent with previously reported results (Fig. S1) [12].",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "YOLOv5 consists of three main architectural components:  the backbone, neck, and head networks. Each component  serves a distinct function within the object detection pipe- line and works together to enable efficient and accurate  detection (Fig. 1) [30].",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "The backbone network functions primarily as a fea- ture extractor by utilizing a cross-stage partial network  architecture. Its core component, the C3 module, splits  the input features into two paths: one processes informa- tion through multiple bottleneck layers, whereas the other  directly dispatches the features. This dual-path structure  reduces computational complexity while preserving essen- tial feature information. Moreover, the backbone incorpo- rates a spatial pyramid pooling module in its final stage.  This module captures multiscale contextual information  through parallel pooling operations with different kernel",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "Fig. 1   YOLOv5 network architecture with Grad-CAM++ integration  points for explainability. The network comprises a backbone (feature  extraction via a cross-stage partial network, C3 modules, and fast spa- tial pyramid pooling), neck (feature fusion via a feature pyramid net- work and path aggregation network), and head (prediction). The head  uses three prediction layers (24-0, 24-1, and 24-2) connected to the  feature maps in layers 17 (for large objects), 20 (for medium objects),  and 23 (for small objects) to output the bounding boxes, object  presence, and class probabilities. The red arrows mark the Grad-",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "CAM++ integration points before layers 17, 20, and 23 (within the  last CBS block of the C3 modules) and before each prediction head  (24-0, 24-1, and 24-2), enabling multiscale feature importance visual- ization. The lower panel details the C3 module structure (CBS blocks  and bottlenecks). This figure is adapted from the YOLOv5 official  architecture documentation (https://​docs.​ultra​lytics.​com/​yolov5/​tutor​ ials/​archi​tectu​re_​descr​iption/) [31], with modifications to show Grad- CAM++ integration points (red arrows).",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "sizes, thereby enhancing the model’s ability to detect  objects at varying scales.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "The C3 module was integrated throughout the network  to enhance feature processing. Each module includes a  1 × 1 convolution layer that splits the input features into  two branches: one processes the features through multiple  residual blocks, whereas the other bypasses these opera- tions. The outputs from both branches were subsequently  concatenated and refined through a final 1 × 1 convolu- tion layer, effectively combining local and global feature  information.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "In the neck network, YOLOv5 utilizes a bidirectional fea- ture pyramid architecture that integrates a feature pyramid  network and path aggregation network. The feature pyra- mid network propagates semantically rich features from the  higher to lower feature maps, whereas the path aggregation  network transmits spatially precise localization features from  the lower to higher feature maps. This dual-path structure  enhances feature fusion across different network layers,  thereby improving overall detection performance.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "A key feature of YOLOv5 is its three prediction Heads,  which operate at different scales to enable multiscale object  detection. The first prediction head processes 80× 80 × 256  feature maps to detect large objects (Layer 17). The second  Head processes 40× 40 × 512 feature maps for medium- sized objects (Layer 20), whereas the third Head processes  20× 20 × 1024 feature maps for small objects (Layer 23).  Each prediction head generated an output channel containing  detection information, including object center coordinates,  bounding box dimensions, object presence probability, and  class probabilities, through a Conv2D layer (layers 24–0,  24–1, and 24–2). In YOLOv5, the likelihood calculation uses a sigmoid  function to compute the prediction scores. For a feature  value xb,c in the final layer, the predictive score sb,c is calcu- lated as sb,c = 1 1+e−xb,c , where b represents the index of the  estimated bounding boxes and c represents the category  index. This calculation normalized the prediction scores  between 0 and 1, with the highest-scoring category selected  as the final classification result.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "Grad-CAM++ was employed to effectively visualize the  model attention patterns within the multiscale architecture  of YOLOv5. This method enhances the visualization of the  attention regions, particularly in models with complex net- work structures, such as YOLOv5. This approach focuses on  two key stages, feature processing and final prediction, and  provides a comprehensive understanding of the decision- making process of the model.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "The first set of the Grad-CAM++ layers was implemented  immediately before the 17_cv3_conv, 20_cv3_conv, and 23_ cv3_conv layers, which corresponded to the convolutional  layers of the final C3 modules (layers 17, 20, and 23, respec- tively). These layers processed information-rich features on  multiple spatial scales (80 × 80 × 256, 40 × 40 × 512, and  20 × 20 × 1024, respectively). The second set was positioned  immediately before the 24_m_0, 24_m_1, and 24_m_2 lay- ers, which served as the final prediction convolutional layers  (layers 24–0, 24–1, and 24–2, respectively), where the model  performed its final detection and classification decisions.  This dual-layer placement strategy, with visualization lay- ers positioned directly before the key convolutional layers,  made it possible to track how the network processed and  transformed the features throughout its architecture (Fig. 1).  These layer names follow the official YOLOv5 implementa- tion [31].",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "The Grad-CAM++ computation followed a systematic  approach. First, the gradients were calculated with respect  to the target class for each activation map. These gradients  undergo global average pooling to generate channel-wise  importance weights, which are then used to create weighted  combinations of the forward activation maps. Finally, a recti- fied linear unit activation function was applied to highlight  regions that positively contributed to model predictions [16].  Although Grad-CAM was initially implemented, the analysis  primarily focused on Grad-CAM++ owing to its superior  performance in localizing relevant features within complex  architectures.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "To comprehensively evaluate the model performance,  attention patterns across all nine diagnostic categories  were analyzed using Grad-CAM++ visualizations. As  outlined in the previous section, the analysis primarily  focused on layer 23, which was presumed to capture the  most relevant scale features for corneal lesion detection.  Attention maps were generated at three network depths  corresponding to the detection scales of the model and  normalized to a range of 0–1. To facilitate visual inter- pretation, these maps were color coded using a continuous  spectrum, with blue and red representing the lowest and  highest attention, respectively.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "The analysis examined both the qualitative and quanti- tative aspects of attention patterns. A qualitative compari- son between Grad-CAM and Grad-CAM++ visualizations  was first performed, revealing that Grad-CAM++ pro- vided a more precise and clinically relevant localization  of the attention regions, particularly in layer 23. Based on  this qualitative assessment, Grad-CAM++ was selected",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "for the subsequent quantitative analyses. For a quantita- tive evaluation, the proportion of pixels with activation  values exceeding 50% of the bounding box area was cal- culated, and this metric was defined as the area of interest  (AOI_50). This value was computed for each layer (layers  17, 20, 23, 24–0, 24–1, and 24–2; Fig. 2) and across all  disease categories (normal, infectious keratitis, non-infec- tious keratitis, scar, tumor, deposit, APAC, lens opacity,  and bullous keratopathy). This approach allowed for a  systematic comparison of the attention patterns across  different conditions and network layers. These quantita- tive values were compared between correctly and incor- rectly classified cases to investigate the relationship  between the attention patterns and diagnostic accuracy.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "To determine whether the extracorneal information influ- enced the classification decisions of the model, a cut-and- paste validation approach was used. From the full data- set of 1039 images, a subset of 341 images meeting the  following criteria was selected to serve as background  templates: minimal eyelid overlap, correct model classifi- cation, and a predictive score exceeding 90%. The distribu- tions of the selected backgrounds were as follows: normal",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "(n = 66), tumor (n = 64), deposit (n = 60), infectious kera- titis (n = 50), scar (n = 40), bullous keratopathy (n = 23),  noninfectious keratitis (n = 20), lens opacity (n = 12), and  APAC (n = 6).",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "For corneal extraction and replacement, CVAT annota- tion software (Intel Corporation, Santa Clara, USA) was  used to annotate the corneal regions with elliptical approx- imations, recording the center coordinates, major axis,  and minor axis of each cornea. Using these annotations,  a Python-based pipeline was developed to extract the 341  corneal regions from background images and systematically  replace the cornea in each of the 341 background templates.  To ensure proper fitting, the extracted corneas were scaled  along their major and minor axes to match the dimensions  of the corneal region of the target background, thereby gen- erating approximately 116,000 composite images for the  analysis (Fig. 3).",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "To quantitatively validate the clinical relevance of the  attention maps, a direct comparison with expert-defined  lesion areas was performed. First, a ground-truth data- set was created by a board-certified ophthalmologist  (Y.Y.) who manually delineated the primary pathological",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Fig. 2   Representative Grad- CAM++ visualizations across  different YOLOv5 layers. Infer- ence of normal corneal images.  Broad attention in the early lay- ers (layer 17), focused through  layer 20, was highly localized  in layer 23. Layer 24-2 exhibits  focused attention in the pupil- lary region, with no activation  in layers 24-0 and 24-1",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "findings in all 1039 test images. These annotations were  subsequently reviewed for consistency by two other oph- thalmologists (Y.K. and R.I.), and disagreements were  resolved by consensus. The attention maps of the model  were then evaluated against these expert annotations using  the following three standard metrics. The performance of  these metrics was compared between correctly and incor- rectly classified images to determine whether the clinical  relevance of the attention of the model correlated with its  diagnostic accuracy.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "To comprehensively assess the model’s performance and the  clinical relevance of its explanations, four primary evalua- tion metrics were employed.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "This fundamental metric was used to evaluate the ability of  the model to correctly classify anterior segment diseases.  It is calculated as the proportion of correct predictions out  of the total number of images. Accuracy was the primary  metric for cut-and-paste validation, where changes in the  accuracy revealed the dependency of the model on the  image context.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "The AOI_50 was defined to quantitatively compare the char- acteristics of attention patterns. This metric represents the  proportion of pixels within a Grad-CAM++ heatmap with  activation values exceeding 50% of the maximum value rela- tive to the total area of the bounding box.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "The IoU was calculated to validate the clinical relevance  of the attention maps. This metric measures the degree of  spatial overlap between a binarized heat map (using a 50%  maximum activation threshold) and the lesion area, which  was manually delineated by an expert ophthalmologist. A  higher IoU indicates better alignment between the model's  attention and the actual pathology.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "This metric assesses whether the model’s most salient point  of attention falls within an expert-annotated lesion bound- ary. An explanation was considered successful if the point of  maximum activation (the “hottest” spot) in the heat map was  located within the expert annotation. This metric evaluates  the ability of the model to identify the most critical regions  for diagnosis.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "Algorithm 1 Two-Stage Validation Framework for Model  Explainability",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "The Grad-CAM +  + visualization provided insights into  the decision-making process of the model across different  layers. In the early feature extraction stage (layer 17), the  model exhibited broad attention patterns covering exten- sive areas of the anterior segment with multiple vertical  attention bands (Fig. 2). Quantitative analysis confirmed  that layer 17 exhibited the largest attention area (median  AOI_0.5 = 0.562, interquartile range [IQR]: 0.407–0.669;  Fig. S2a). As the network depth increased, attention pat- terns became more focused (layer 20, median = 0.397,  IQR: 0.233–0.535) and were further refined into a cen- trally concentrated region in layer 23 (median = 0.253,  IQR: 0.161–0.394; Fig. 2, S2a). Notably, layer 23 achieved  an optimal balance between localization and coverage,  effectively capturing diverse lesion shapes and distribu- tions across various diseases (Fig. 2). In the final prediction  head (layer 24), a distinct specialization pattern emerged:  layer 24–2 exhibited highly localized attention within the  pupillary region (median = 0.055, IQR: 0.036–0.097),  whereas layers 24–0 and 24–1 showed minimal to no  activation (median = 0.000, IQR: 0.000–0.000; Fig. S2a).  The differences in the attention areas across the layers  were statistically significant (Kruskal–Wallis H = 443.37,  p = 9.75 × 10−91). Post hoc analysis using Dunn’s test with  Bonferroni correction revealed that layer 17 varied signifi- cantly from all deeper layers (20, 23, 24_m_0, 24_m_1,  24_m_2; all adjusted p < 0.05), layer 20 differed from  layer 23 and all layer 24 variants (Bonferroni-adjusted  p < 0.05), and layer 23 differed from every layer 24 variant",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "(Bonferroni-adjusted p < 0.05). Furthermore, layer24_m_2  differed significantly from layer24_m_0 and layer24_m_1  (Bonferroni-adjusted p < 0.05) (Fig. S2a). These findings  suggest the systematic refinement of attention patterns with  increasing network depth.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "In layer 17, although attention remained broadly distrib- uted, significant inter-class heterogeneity was already pre- sent (Kruskal–Wallis H = 116.67, p = 1.61 × 10−21; Fig. S2b).  Median AOI_0.5 values were highest in infected and normal  cases; intermediate in scar, lens opacity, non-infection, and  bullous cases; and lowest in tumor, deposit, and APAC cases.  Infected and normal cases showed significantly greater atten- tion than tumor cases (Bonferroni-adjusted p < 0.001), and  deposits and APAC cases formed a low-attention tier sig- nificantly below the high or intermediate groups (all relevant  Bonferroni-adjusted pairwise p < 0.01). Thus, broad early  layer activation encoded patterned heterogeneity across dis- ease categories.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "In layer 20, class-wise AOI_0.5 differences were  also statistically significant (Kruskal–Wallis H = 37.68,  p = 8.61 × 10−6). The median values ranged from 0.488  (no infection) and 0.467 (lens opacity) to 0.300 (deposit).  Dunn–Bonferroni post hoc testing showed that deposit  had significantly lower AOI_0.5 than scar (adjusted  p = 7.1 × 10−4), non-infection (2.0 × 10−3), infection  (2.1 × 10−3), and lens opacity (8.7 × 10−3), while no other pair- wise differences reached significance after adjustment. These  contrasts indicate that global heterogeneity at this intermedi- ate depth is driven predominantly by reduced spatial attention  in deposit cases.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "In layer 23, distinct attention patterns were observed across  disease categories (Fig. S2d, 4). The normal and APAC cases  demonstrated compact, centrally concentrated attention in the",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 9,
+      "raw_extracted": "corneal apex region with median AOI_0.5 values of 0.147  (IQR, 0.117–0.187) and 0.084 (IQR, 0.057–0.115), respec- tively (Fig. 2, 4f). Patients with infectious keratitis exhib- ited central attention to overlapping lesions without fully  spanning their extent (median: 0.291 (IQR: 0.210–0.386);  Fig. 4a). The tumor and scar cases displayed broader maps  extending from the central cornea towards the peripheral or  limbal zones (median 0.396 [IQR: 0.350–0.454] and 0.381",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 9,
+      "raw_extracted": "[IQR: 0.264–0.463], respectively; Fig. 4c, d). Noninfec- tious keratitis frequently produced the widest distribution,  covering the central and peripheral corneas (median 0.438  [IQR: 0.280–0.593]; Fig. 4b). Lens opacity and bullous  cases occupied intermediate ranges (medians 0.257 [IQR:  0.192–0.323] and 0.227 [IQR: 0.195–0.300]), while deposit  cases showed lower, more restricted attention (median 0.186  [IQR: 0.124–0.229]). Inter-class differences were highly",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 9,
+      "raw_extracted": "Fig. 4   Grad-CAM/Grad-CAM++ visualizations and expert’s annota- tion for layer 23 across different anterior segment disease categories.  (a) infectious keratitis, (b) non-infectious keratitis, (c) scar, (d) tumor,",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 9,
+      "raw_extracted": "(e) deposit, (f) acute primary angle closure, (g) lens opacity, (h) bul- lous keratopathy Grad-CAM, gradient-weighted class activation map- ping",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 9,
+      "raw_extracted": "Fig. 3   Cut-and-paste validation  demonstrating the influence of  different background contexts  on model predictions. The origi- nal image, diagnosed as “infec- tion” with a Likelihood of 0.97  (upper-left), shows a decrease  in Likelihood to 0.66 when only  the cornea is cropped (lower- left). Replacing the background  with “non-infection” or “tumor”  backgrounds increased the like- lihood of “infection” to 0.79.  Conversely, backgrounds such  as “normal,” “scar,” \"deposit,”  \"lens opacity,” \"APAC,\" and  \"bullous” resulted in a \"scar\"  prediction, with the likelihood  of \"scar\" exceeding that of  \"infection\" (right) APAC, acute  primary angle closure",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 10,
+      "raw_extracted": "significant (Kruskal–Wallis H = 443.37, p = 9.75 × 10−91;  Fig. S2d). Dunn–Bonferroni post hoc testing confirmed a  clear High-vs-Low pattern: non-infectious keratitis, tumor,  and scar each had larger AOI_0.5 than deposit, normal, and  APAC in all nine pairwise comparisons (adjusted p values  ranging from 5.7 × 10−10 to 1.9 × 10−8; e.g., non-infection vs.  APAC p < 1.9 × 10−8, scar vs. deposit p < 1 × 10−12). These  findings define a graded distribution of spatial attention at  layer 23, spanning diffuse coverage (noninfectious keratitis,  tumor, and scar) to a compact central focus (normal, APAC)  (Fig. 4).",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 10,
+      "raw_extracted": "Representative misclassification cases revealed dis- tinctive attention patterns that deviated from the expected  disease-specific distributions. In the case of non-infectious  keratitis misclassified as normal despite the presence of  peripheral infiltrates (Fig. S3a), the corresponding Grad- CAM++ visualization revealed a centrally concentrated  attention pattern characteristic of normal eyes, failing to",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 10,
+      "raw_extracted": "highlight pathological changes in the peripheral cornea.  Similarly, in the case of APAC misclassified as nonin- fectious keratitis (Fig. S3b), the Grad-CAM++ heat map  exhibited a diffuse attention pattern typical of noninfec- tious keratitis, with broad areas of high activation across the  cornea, rather than the expected focused pattern associated  with angle closure.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 10,
+      "raw_extracted": "The relationship between Grad-CAM++ attention pat- terns and diagnostic accuracy was analyzed by comparing  the attention maps of correctly and incorrectly classified  cases. In Layer 23, which captured the key disease features,  significant differences were observed. For cases predicted  as bullous keratopathy, infectious keratitis, and scarring, the  attention area (AOI_50) was significantly larger for incor- rect predictions than for correct predictions (p < 0.0001,  p = 0.030, and p = 0.034, respectively) (Fig. S4a). This  trend was also observed in the final prediction head (layer  24_m_2), whereas the earlier layers demonstrated different",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 10,
+      "raw_extracted": "Fig. 5   Accuracy matrix demonstrating the influence of background  on cornea classification in the cut-and-paste validation. Rows repre- sent ground-truth corneal conditions and columns represent the back- ground conditions. Each cell indicates the classification accuracy of",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 10,
+      "raw_extracted": "a specific corneal type when placed on a specific background, repre- senting the reduced model accuracy for infectious keratitis on other  backgrounds and several categories (normal, scar, and lens opacity)  on infectious backgrounds. APAC, acute primary angle closure",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 11,
+      "raw_extracted": "patterns (see Supplementary Table S1 for a full layer-by- layer analysis).",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 11,
+      "raw_extracted": "For Grad-CAM, the quality of the attention map is a signifi- cant indicator of model performance. Both the mean IoU  and the Pointing Game accuracy were significantly higher  for correctly classified images than for incorrectly classi- fied ones (IoU: 0.322 vs. 0.190, p < 0.0001; Pointing Game  accuracy: 66.4% vs. 37.2%, p < 0.0001, Fig. S4b). For Grad- CAM++, the correlation was less direct. While the mean  IoU was also significantly higher for correct predictions than  for incorrect ones (0.331 vs. 0.230, p < 0.0001, Fig. S4c), its  Pointing Game accuracy was lower than that of Grad-CAM  and showed no significant difference between correctly  classified (28.5%) and incorrectly classified (29.7%) cases  (p = 0.840, Fig. S4a).",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 11,
+      "raw_extracted": "Direct comparison between the two methods also varied  based on the accuracy of the model. For correctly classified  images, no significant difference was observed in the mean  IoU (p = 0.243); however, Grad-CAM was significantly  more accurate in the Pointing Game (66.4% vs. 28.5%,  p < 0.0001, Fig. S4b). Conversely, for incorrectly classified  images, Grad-CAM++ produced heat maps with a signifi- cantly higher mean IoU than Grad-CAM (0.230 vs. 0.190,  p = 0.027, Fig. S4c), whereas the difference in their Pointing  Game accuracy was not significant.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 11,
+      "raw_extracted": "The cut-and-paste validation analysis assessed the model  performance under three conditions: original images, cornea- only images, and composite images with varied backgrounds.  Because the original images were selected based on prior cor- rect classifications by the model, perfect accuracy (1.00) was  expected and observed across all nine diagnostic categories.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 11,
+      "raw_extracted": "Cornea-only images exhibited variable performance (Fig.  S5). The deposition and lens opacity cases exhibited perfect  accuracy (1.00). High accuracy was also retained for tumor  (0.98), normal (0.97), and scar (0.94) cases, whereas signifi- cant decreases were observed for bullous keratopathy (0.83),  non-infectious keratitis (0.68), and infectious keratitis (0.54).  Most notably, the accuracy of APAC collapsed to 0.00, indi- cating a complete dependency on extracorneal features for  diagnosis. A binomial test confirmed that the accuracy for  all categories, except deposits and lens opacity, was signifi- cantly lower than the original perfect accuracy (p < 0.001).",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 11,
+      "raw_extracted": "In the composite image analysis in which the corneas were  placed against various backgrounds, the overall accuracy was  0.791 (Fig. S5). Infectious keratitis exhibited a significant",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 11,
+      "raw_extracted": "drop in accuracy of 0.448. Significant decreases from the orig- inal accuracy were also observed in the normal (0.73), scar  (0.82), lens opacity (0.81), and tumor (0.93) cases. In contrast,  the accuracies for noninfectious keratitis (0.78), APAC (0.69),  and bullous keratopathy (0.88) were higher than those in the  cornea-only condition; however, they were still lower than  the original accuracy. Binomial tests confirmed that all class  accuracies in the composite set were significantly lower than  the original perfect accuracy (all p < 0.001).",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 11,
+      "raw_extracted": "Cut-and-paste analysis revealed that the model’s reliance  on the background context varied significantly across differ- ent diseases (Fig. 5). Diagnoses of infectious keratitis and  APAC were highly dependent on their typical background.  For example, when an infectious keratitis cornea was placed  against a normal background, its classification accuracy  revealed a substantial decrease of 68.6% (from 93.3% to  24.7%; adjusted p < 0.001). Furthermore, the infectious kera- titis background itself frequently resulted in the misclassifi- cation of other conditions, causing the accuracy of the nor- mal corneas to decrease by 71.1% (p < 0.001). In contrast,  diagnoses such as tumors and deposits proved to be more  robust to background changes. Even when placed against a  challenging infectious keratitis background, the accuracies  for tumor and deposit corneas remained high at 78.5% and  83.9%, respectively. Thus, the model learned features that  were more localized to the cornea for these conditions.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 11,
+      "raw_extracted": "Further analysis of the composite images with Grad- CAM++ visualization provided additional insights into the  influence of the background on classification (Fig. S6). When  normal and scarred corneas were placed against an infectious  background, the model classified them as having infectious  or noninfectious keratitis, respectively. In both cases, Grad- CAM +  + visualization revealed new attention points on the  conjunctiva, a feature absent in the original images (Fig. S6a,  b). In contrast, when a cornea with noninfectious keratitis  was placed against an infectious background, the model cor- rectly maintained the diagnosis of noninfectious keratitis,  and Grad-CAM++ visualization demonstrated attention  patterns on the conjunctiva, similar to those in the original  image (Fig. S6c). The classification of corneas with depos- its also remained unaffected by the infectious background,  with Grad-CAM++ visualization showing attention patterns  similar to those in the original image without focusing on the  extracorneal region (Fig. S6d).",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 11,
+      "raw_extracted": "This study introduced a novel approach for evaluating the  explainability of a YOLOv5-based diagnostic model for  anterior segment diseases by combining Grad-CAM++ and  cut-and-paste validation. Using Grad-CAM +  +, the char- acteristic attention regions for each disease were visualized",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "and the evolution of these regions across the network layers  was tracked. Furthermore, cut-and-paste validation was used  to assess the influence of extracorneal information on the  model judgment, revealing a high background dependency  of infectious keratitis. These findings enhance the transpar- ency of diagnostic processes of AI models and improve their  reliability in clinical applications.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "Grad-CAM++ analysis revealed distinct roles of different  YOLOv5 layers in the classification of corneal diseases. As  the network progressed, attention was increasingly focused  on the central cornea, culminating in the peak activation of  layer 24–2. This finding aligns with the results of He et al.  [22], who used a modified YOLOv5s model for blood cell  detection. Their study demonstrated that shallower layers  captured fine details of smaller cells such as lymphocytes,  whereas deeper layers processed broader patterns of larger  cells such as monocytes. In this study, functional speciali- zation was more pronounced. Because corneal pathologies  represent a relatively uniform, large-scale target, the model  learned to rely almost exclusively on a single prediction head  (layer 24–2) suited for this scale. This reflects an efficient,  task-specific adaptation of the model, rather than wasted  capacity. Notably, the misclassification of noninfectious ker- atitis as normal likely resulted from layer 23 failing to detect  subtle peripheral lesions. This underscores the importance  of understanding the layer-specific roles and the influence  of lesion size on diagnostic accuracy. These findings high- light the value of Grad-CAM++ in revealing these network  dynamics and suggest that clinicians should assess attention  patterns in both layers 23 and 24–2, considering lesion size  and extent, to optimize diagnostic performance.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "In other domains of medical image analysis, Grad-CAM  and Grad-CAM++ have been applied to YOLO models pri- marily for object detection and localization, typically pro- ducing attention maps that highlight areas within the pre- dicted bounding boxes [32–34]. This outcome was expected  because the bounding-box regression task inherently directs  the attention of the model to regions containing target  objects. However, in this study, a different approach was  used to define the entire cornea as a bounding box during  training. This approach was chosen because of the charac- teristics of anterior segment diseases in which lesions can  be diffuse, irregular, or extend beyond the central cornea.  Although unconventional for typical YOLO applications,  the Grad-CAM++ analysis showed that the attention of the  model was appropriately localized to the lesions, even when  they extended beyond the central region. This indicates that  the model learned to identify diagnostically relevant features  outside the typical confines of object-centric bounding boxes,  demonstrating both the flexibility of the YOLOv5 architec- ture and the effectiveness of Grad-CAM++ in capturing  nuanced attention patterns in anterior segment images.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "The rationale for selecting and using the AOI_50 metric  is grounded in the diffuse boundaries and complex shapes  of corneal lesions, making precise individual annotations  challenging. Rather than using AOI_50 to validate the accu- racy of the attention regions, this study primarily employed  a metric to quantitatively characterize the attention region  features across different classes. AOI_50 represents the pro- portion of the attention area relative to the bounding-box  area, which includes the entire cornea. This metric provides  a useful index for assessing the differences in the extent of  attention regions between classes. However, validating the  AOI_50 and comparing it with other metrics remain impor- tant areas for future research.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "The cut-and-paste cornea-background matrix revealed  that the YOLOv5 model incorporates extracorneal features,  particularly conjunctival hyperemia, into diagnostic deci- sions, despite the final-layer Grad-CAM++ visualizations  emphasizing the corneal regions. This apparent paradox sug- gests that, although later network stages focus on corneal  pathology, earlier layers likely process broader contextual  cues that indirectly influence outcomes. The quantitative  analysis of attention patterns supports this finding, showing  that for infectious keratitis, the attention area is the larg- est in the early layers (layer 17) before narrowing in the  deeper layers (layer 23), a pattern consistent with the initial  processing of broad background features (Fig. S2). Direct  visual evidence for this dependency was provided by cut- and-paste analysis (Fig. S5), where placing a normal cornea  on a hyperemic background not only changed the diagno- sis, but also caused the Grad-CAM++ map to explicitly  highlight the conjunctiva, a region not attended to in the  original image. These findings demonstrate that final-layer  Grad-CAM++ explanations alone cannot fully capture the  hierarchical processing of multiregion features within the  model. The combined cut-and-paste/Grad-CAM++ approach  effectively dissects this complexity, revealing how clinically  relevant diagnostics such as hyperemia evaluation become  embedded in AI decision pathways. The challenge of han- dling this contextual information is reflected in the litera- ture; while some studies suggest that anatomical cropping or  modular feature analysis can mitigate contextual biases [35],  other studies have demonstrated that including the full image  with background context can lead to higher diagnostic accu- racy for infectious keratitis than by using cropped images  alone [36]. This highlights the crucial tradeoff between  eliminating potential biases and retaining valuable diag- nostic information from the background. Therefore, future  research should systematically assess whether imposing spa- tial constraints during training can enhance the focus of the  model on pathognomonic corneal features, while preserving  clinically relevant contextual integration.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "The strong background dependency observed in the clas- sification of infectious keratitis raises concerns regarding",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "potential misdiagnoses of atypical cases. For instance, early  stage infections or immunocompromised patients without  conjunctival hyperemia may be underdiagnosed, whereas  normal corneas with hyperemic backgrounds may be over- diagnosed. This underscores the importance of using this  AI model as a collaborative tool rather than as a definitive  diagnostic authority. Clinicians should critically evaluate  the AI output within a broader clinical context, particularly  when atypical features are present. Future studies should  focus on several directions to address these limitations.  First, priority must be given to collecting more diverse  datasets that include atypical cases such as infections with  minimal hyperemia. Second, advanced training methodolo- gies, such as imposing spatial constraints during training,  could be explored to enhance the model's focus on pathog- nomonic corneal features, while preserving clinically rele- vant contextual integration. Finally, clearly communicating  the known limitations of the model to clinicians is essential  to support responsible clinical integration.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "The novelty of this study is the combined use of Grad- CAM +  + and cut-and-paste validation to evaluate the  explainability of the YOLOv5-based model for anterior seg- ment disease diagnosis. Each of the three prediction heads  of YOLOv5 was examined in detail. Although previous  studies applied Grad-CAM to YOLO models, they did not  specify the layers used for visualization [19–21]. By contrast,  this study demonstrated that Grad-CAM++ produced more  refined and localized attention maps than Grad-CAM, par- ticularly in the deeper layers of the YOLOv5 model, such as  layers 23 and 24–2. This enhanced localization is essential for  accurately identifying the regions within the anterior segment  that contribute to model predictions. Nevertheless, when this  approach is applied to other anterior segment conditions that  may present with smaller or multiple discrete lesions such  as multiple corneal foreign bodies, punctate epithelial ero- sions, or early stage dendritic keratitis, the limitations of  Grad-CAM++ in visualizing smaller objects may become  more pronounced [17, 28]. In such cases, alternative visu- alization methods or a combination of techniques may be  necessary to ensure accurate attention mapping. Compared  with other explainability methods such as LIME and SHAP,  cut-and-paste validation offers the advantage of inferring  attention among meaningful objects while preserving spatial  relationships within the image, which is essential for clini- cal interpretation. This approach provides valuable insights  into the decision-making process of the model, highlights  its strengths and limitations, and is expected to support the  development of more accurate and reliable AI models for the  diagnosis of anterior segment disease diagnosis [12].",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "In this study, quantitative heatmap characteristics were  shown to serve as indicators of diagnostic reliability, which  is a key aspect of real-world usability. A higher IoU with  expert-delineated lesions was a strong predictor of diagnostic",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "accuracy for both Grad-CAM and Grad-CAM++. Moreover,  the two methods provide complementary reliability indica- tors. While Grad-CAM excelled at precisely identifying  the most critical pathological point, as shown by its supe- rior Pointing Game accuracy for correct predictions, Grad- CAM++ provided more robust overall lesion coverage. Addi- tionally, a large and diffuse attention area (AOI_50) from  Grad-CAM++ was associated with incorrect predictions for  diseases, such as bullous keratopathy and infectious kerati- tis, alerting clinicians to a higher risk of misclassification.  Therefore, these methods can be used in concert to generate a  multi-layered explanation that not only visualizes the model's  focus, but also provides quantitative indicators of prediction  reliability. Although further clinical validation is required,  this study provides a foundational framework for integrating  these tools into clinical decision support systems.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "This study has certain limitations. First, the generaliz- ability of the findings is constrained by the characteristics  of the dataset. The study was conducted using a dataset col- lected from 15 institutions in Japan that were part of the  same group that provided the training data. However, it was  not validated using a truly external dataset from different  geographic or ethnic populations. The dataset primarily con- sisted of images from East Asian patients and was limited to  images captured with diffuse illumination. Furthermore, the  distribution of background images used in the cut-and-paste  validation was imbalanced across disease categories. Sec- ond, the interpretability assessment had methodological and  technical limitations. While this study introduced a quanti- tative validation against expert-delineated lesion areas, the  ground-truth annotations were established by a consensus  of three experts, and future work could benefit from valida- tion against annotations from a larger, more diverse group  of independent ophthalmologists. Importantly, this study  did not assess the practical utility of these explanatory tools  within a clinical workflow, which remains a key subject for  future investigation. Additionally, Grad-CAM++ visualiza- tions are inherently coarse because they are generated from  low-resolution feature maps (e.g., 20 × 20 pixels at layer 23)  inherent to the YOLOv5 architecture, which may not capture  the finest details of the lesion boundaries. Despite this tech- nical constraint, visualization provided clinically meaningful  insights into the attention patterns of the model.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "Future studies should explore several key aspects of this  relationship. First, external validation is essential. The inter- pretability framework should be applied to datasets from dif- ferent institutions, geographic regions, and ethnic populations  using various imaging devices and slit-lamp illumination  techniques to confirm its generalizability. Second, the clini- cal utility of the framework must be formally assessed. This  includes not only more robust quantitative validation against  expert-annotated lesion areas, but also prospective user stud- ies to determine whether these tools can improve clinicians'",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "diagnostic accuracy, confidence, or efficiency. Ultimately,  building on these validations, future research should exam- ine how these explainability techniques can guide the appro- priate clinical implementation of AI models. This involves  integrating tools into clinical workflows, identifying poten- tial biases, and determining optimal usage conditions across  diverse clinical scenarios. Finally, methodological refine- ments such as developing more natural synthetic images for  cut-and-paste validation and further automating the process  would enable more extensive validation studies.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "Future studies should explore several key aspects of this  relationship. External validation should assess whether  combining Grad-CAM++ visualization with cut-and-paste  validation effectively reveals the strengths and limitations of  the AI models when applied to datasets from different insti- tutions and imaging devices, including slit-lamp illumina- tion. Developing methods to generate more natural synthetic  images and automate the cut-and-paste validation process  would enable extensive validation studies. Ultimately, future  research should examine how these explainability techniques  guide the appropriate clinical implementation of AI models,  particularly for identifying potential biases and determining  optimal usage conditions across diverse clinical scenarios.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "This study established that combining Grad-CAM++ visuali- zation with cut-and-paste validation provides a robust frame- work for evaluating the explainability and clinical reliability  of YOLOv5-based diagnostic models for anterior segment dis- eases. The dual approach revealed the layer-specific attention  dynamics and critically quantified the reliance of the model  on extracorneal features. This exposes a fundamental trade- off: while contextual cues such as conjunctival hyperemia can  enhance the diagnostic accuracy for conditions such as infec- tious keratitis, they also create a dependency that could lead to  misdiagnosis in atypical cases. Furthermore, this study demon- strates that quantitative metrics linking explanation quality to  diagnostic accuracy can serve as valuable indicators of predic- tion reliability. By not only enhancing the transparency of the  AI decision-making process but also identifying its limitations  and inherent trade-offs, this comprehensive validation method- ology offers crucial insights for the responsible development  and clinical integration of future AI diagnostic systems.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "Supplementary Information  The online version contains supplemen- tary material available at https://​doi.​org/​10.​1007/​s10278-​025-​01664-7.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "Acknowledgements  The authors would like to thank Editage [http://​ www.​edita​ge.​com] for editing and reviewing this manuscript for Eng- lish language.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "Author Contribution  Y.K. conceptualized the study design and drafted  the manuscript. Y.U. supervised the project and collected the clinical",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "data. T.Y. and H.M. collected and labeled the clinical data. M.O. devel- oped the computational pipeline. Y.Y. performed the expert annotation  of the data. All others (R.I., D.M., R.N., T.I., N.K., T.C., J.O., T.Y.,  K.T, K.N., and T.O.) critically reviewed and revised the manuscript and  approved the final version submitted for publication.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "Funding  This study was supported by the Japan Agency for Medical  Research and Development (Y.U. 24hma322004h0003). The funding  organization had no role in the study design and conduct, data collection,  management, analysis, or interpretation, manuscript preparation, review,  or approval, or the decision to submit the manuscript for publication.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "Data Availability  Data supporting the findings of this study are avail- able from the corresponding author upon reasonable request, and with  permission from the Japan Ocular Imaging Registry. The code used  in this study is publicly available at https://​github.​com/​kitag​uchi77/​ yolov5-​gradc​am-​corne​ai.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "Ethics Approval  This study was approved by the Institutional Review  Board of the Japanese Ophthalmological Society (protocol number:  15000133–20001). All procedures conformed to the tenets of the Dec- laration of Helsinki and the Japanese Guidelines for Life Science and  Medical Research.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "Consent to Participate  The review committee determined that patient  consent was not required because the study used retrospectively col- lected de-identified slit-lamp microscopy images.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "Conflict of interest  TY: Grants (Novartis Pharma); honoraria for lec- tures (Alcon Japan, HOYA, Novartis Pharma, AMO Japan, Santen  Pharmaceutical, Senju Pharmaceutical, Johnson & Johnson); MM:  Grants (Novartis Pharmaceutical); honoraria for lectures (Bayer  Yakuhin, Kowa Pharmaceutical, Alcon Japan, HOYA, Novartis Phar- maceutical, AMO Japan, Santen Pharmaceutical, Senju Pharmaceuti- cal, Johnson & Johnson K.K., Japan Ophthalmic Instruments Associa- tion). MA: Grants (Novartis Pharmaceutical, Santen Pharmaceutical),  honoraria for lectures (Novartis, Takeda, Senju, Chugai, Kowa),  support for attending meetings and travel (Wakamoto Pharmaceuti- cal, Novartis Pharmaceutical), and endowments (NIDEK). TI: non- financial support (Lion and Sony Network Communications), grants  (Yuimedi Inc., ROHTO Pharmaceutical, Kobayashi Pharmaceutical,  Kandenko., and Fukoku), and personal fees (Santen Pharmaceutical,  InnoJin Inc., and Ono Pharmaceutical), outside the submitted work.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "1.\t Li Z, Jiang J, Chen K, Chen Q, Zheng Q, Liu X, Weng H, Wu S,",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "Chen W: Preventing corneal blindness caused by keratitis using  artificial intelligence. Nat Commun 12:3738, 2021. \t 2.\t Kuo MT, Hsu BW, Yin YK, Fang PC, Lai HY, Chen A, Yu MS,",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "Tseng VS: A deep learning approach in diagnosing fungal keratitis  based on corneal photographs. Sci Rep 10:14424, 2020. \t 3.\t Koyama A, Miyazaki D, Nakagawa Y, Ayatsuka Y, Miyake H,",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "Ehara F, Sasaki SI, Shimizu Y, Inoue Y: Determination of prob- ability of causative pathogen in infectious keratitis using deep  learning algorithm of slit-lamp images. Sci Rep 11:22642, 2021. \t 4.\t Redd TK, Prajna NV, Srinivasan M, Lalitha P, Krishnan T, Raja-",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "raman R, Venugopal A, Acharya N, Seitzman GD, Lietman TM,  Keenan JD, Campbell JP, Song X: Image-based differentiation  of bacterial and fungal keratitis using deep convolutional neural  networks. Ophthalmol Sci 2:100119, 2022.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "5.\t Ghosh AK, Thammasudjarit R, Jongkhajornpong P, Attia J, Thak-",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "kinstian A: Deep learning for discrimination between fungal kerati- tis and bacterial keratitis: DeepKeratitis. Cornea 41:616–622, 2022. \t 6.\t Natarajan R, Matai HD, Raman S, Kumar S, Ravichandran S, Swa-",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "minathan S, Rani Alex JS: Advances in the diagnosis of herpes  simplex stromal necrotising keratitis: a feasibility study on deep  learning approach. Indian J Ophthalmol 70:2889–2894, 2022. \t 7.\t Fang X, Deshmukh M, Chee ML, Soh ZD, Teo ZL, Thakur S, Goh",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "JHL, Liu YC, Husain R, Mehta JS, Wong TY, Cheng CY, Rim  TH, Tham YC: Deep learning algorithms for automatic detection  of pterygium using anterior segment photographs from slit-lamp  and hand-held cameras. Br J Ophthalmol 105:893–900, 2021. \t 8.\t Li Z, Qiang W, Chen H, Pei M, Yu X, Wang L, Li Z, Xie W, Wu",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "X, Jiang J, Wu G: Artificial intelligence to detect malignant eyelid  tumors from photographic images. NPJ Digit Med 5:33, 2022. \t 9.\t Lee MJ, Yang MK, Khwarg SI, Oh EK, Choi YJ, Kim N, Choung",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "H, Seo CW, Ha YJ, Cho MH, Cho BJ: Differentiating malignant and  benign eyelid lesions using deep learning. Sci Rep 13:4557, 2023. \t10.\t Yonehara M, Nakagawa Y, Ayatsuka Y, Hara Y, Shoji J, Ebihara",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "N, Inomata T, Huang T, Nagino K, Fukuda K, Kishimoto T, Sumi  T, Fukushima A, Fujishima H, Kawai M, Takamura E, Uchio E,  Namba K, Koyama A, Haruki T, Sasaki SI, Shimizu Y, Miyazaki  D: Use of explainable AI on slit-lamp images of anterior surface  of eyes to diagnose allergic conjunctival diseases. Allergol Int  73:537–546, 2024. \t11.\t Keenan TDL, Chen Q, Agrón E, Tham YC, Goh JHL, Lei X, Ng",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "YP, Liu Y, Xu X, Cheng CY, Bikbov MM, Jonas JB, Bhandari  S, Broadhead GK, Colyer MH, Corsini J, Cousineau-Krieger C,  Gensheimer W, Grasic D, Lamba T, Magone MT, Maiberger M,  Oshinsky A, Purt B, Shin SY, Thavikulwat AT, Lu Z, Chew EY;  AREDS Deep Learning Research Group: DeepLensNet: deep  learning automated diagnosis and quantitative classification of  cataract type and severity. Ophthalmology 129:85–95, 2022. \t12.\t Ueno Y, Oda M, Yamaguchi T, Fukuoka H, Nejima R, Kitaguchi",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "Y, Miyake M, Akiyama M, Miyata K, Kashiwagi K, Maeda N,  Shimazaki J, Noma H, Mori K, Oshika T: Deep learning model for  extensive smartphone-based diagnosis and triage of cataracts and  multiple corneal diseases. Br J Ophthalmol 108:1234–1242, 2024. \t13.\t Dinsdale NK, Jenkinson M, Namburete AIL: Deep learning-based",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "unlearning of dataset bias for MRI harmonisation and confound  removal. Neuroimage 228:117689, 2021. \t14.\t Lin M, Weng N, Mikolaj K, Bashir Z, Svendsen MBS, Tolsgaard",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "M, Christensen AN, Feragen A: Shortcut learning in medical  image segmentation. In: Lecture Notes in Computer Science.  Springer Nature Switzerland: Cham; 2024. p.623–633. \t15.\t Selvaraju RR, Cogswell M, Das A, Vedantam R, Parikh D, Batra",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "D: Grad-CAM: visual explanations from deep networks via gra- dient-based localization. Int J Comput Vis 128:336–359, 2016. \t16.\t Venkatesh K, Mutasa S, Moore F, Sulam J, Yi PH: Gradient-",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "based saliency maps are not trustworthy visual explanations of  automated AI musculoskeletal diagnoses. J Imaging Inform Med  10:104–112, 2024. \t17.\t Saporta A, Gui X, Agrawal A, Pareek A, Truong SQH, Nguyen",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "CDT, Ngo VD, Seekins J, Blankenberg FG, Ng AY, Lungren MP,  Rajpurkar P: Benchmarking saliency methods for chest X-ray  interpretation. Nat Mach Intell 4:801–812, 2022. \t18.\t Van Craenendonck T, Elen B, Gerrits N, De Boever P: Systematic",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "comparison of heatmapping techniques in deep learning in the  context of diabetic retinopathy lesion detection. Transl Vis Sci  Technol 9:64, 2020. \t19.\t Al-Tam RM, Al-Hejri AM, Alshamrani SS, Al-antari MA, Naran-",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "gale SM: Multimodal breast cancer hybrid explainable computer- aided diagnosis using medical mammograms and ultrasound  images. Biocybern Biomed Eng 44:227–240, 2024. \t20.\t Koike Y, Yui M, Nakamura S, Yoshida A, Takegawa H, Anetai",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "Y, Hirota K, Tanigawa N: Artificial intelligence-aided lytic spinal",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "bone metastasis classification on CT scans. Int J Comput Assist  Radiol Surg 18 :521–529, 2023. \t21.\t Till T, Tschauner S, Singer G, Lichtenegger K, Till H: Develop-",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "ment and optimization of AI algorithms for wrist fracture detec- tion in children using a freely available dataset. Front Pediatr  11:1291804, 2023. \t22.\t He Y: Automatic blood cell detection based on advanced",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "YOLOv5s network. IEEE Access 12:3360142, 2024. \t23.\t Sourget T, Hestbek-Møller M, Jiménez-Sánchez A, Junchi Xu J,",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "Cheplygina V: Mask of truth: Model sensitivity to unexpected  regions of medical images. J Imaging Inform Med. 2:1–18, 2025. \t24.\t Chattopadhyay A, Sarkar A, Howlader P, Balasubramanian VN:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "Grad-CAM++: improved visual explanations for deep convolu- tional networks. arXiv preprint, 2017. \t25.\t Shyamalee T, Meedeniya D, Lim G, Karunarathne M: Automated",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "tool support for glaucoma identification with explainability using  fundus images. IEEE Access 12:3359698, 2024. \t26.\t Chaddad A, Hu Y, Wu Y, Wen B, Kateb R: Generalizable and",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "explainable deep learning for medical image computing: an over- view. Curr Opin Biomed Eng 29:100567, 2024. \t27.\t Islam O, Assaduzzaman M, Hasan MZ: An explainable AI-based",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "blood cell classification using optimized convolutional neural net- work. J Pathol Inform 15:100389, 2024. \t28.\t Zhang Y, Hong D, McClement D, Oladosu O, Pridham G, Slaney",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "G: Grad-CAM helps interpret the deep learning models trained  to classify multiple sclerosis types using clinical brain magnetic  resonance imaging. J Neurosci Methods 350:109098, 2021. \t29.\t Goyal Y, Wu Z, Ernst J, Batra D, Parikh D, Lee S: Counterfactual",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "Visual Explanations. Proc Mach Learn Res 101:500–509, 2019. \t30.\t Ragab MG, Abdulkadir SJ, Muneer A, Alqushaibi A, Sumiea EH,",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "Qureshi R: A comprehensive systematic review of YOLO for med- ical object detection (2018 to 2023). IEEE Access 12:3386826,  2024. \t31.\t Ultralytics: YOLOv5 computer software. 2020. Available at",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "https://​github.​com/​ultra​lytics/​yolov5. Accessed January 4, 2025. \t32.\t Gaur L, Bhandari M, Razdan T, Mallik S, Zhao Z: Explanation-",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "driven deep learning model for prediction of brain tumour status  using MRI image data. Front Genet 13:822666, 2022. \t33.\t Aldughayfiq B, Ashfaq F, Jhanjhi NZ, Humayun M: Explainable",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "AI for retinoblastoma diagnosis: interpreting deep learning mod- els with LIME and SHAP. Diagnostics (Basel) 13:1963, 2023. \t34.\t Fong RC, Vedaldi A: Interpretable explanations of black boxes",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "by meaningful perturbation. Proc IEEE Int Conf Comput Vis  2959–2967, 2017. \t35.\t Hung N, Shih AK, Lin C, Kuo MT, Hwang YS, Wu WC, Kuo",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "CF, Kang EY, Hsiao CH: Using slit-lamp images for deep learn- ing-based identification of bacterial and fungal keratitis: model  development and validation with different convolutional neural  networks. Diagnostics (Basel) 11:1246, 2021. \t36.\t Wang L, Chen K, Wen H, Zheng Q, Chen Y, Pu J, Chen W: Feasi-",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "bility assessment of infectious keratitis depicted on slit-lamp and  smartphone photographs using deep learning. Int J Med Inform  155:104583, 2021. \t37.\t Mongan J, Moy L, Kahn CE JR: Checklist for Artificial Intel-",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "ligence in Medical Imaging (CLAIM): a guide for authors and  reviewers. Radiol Artif Intell 2:e200020, 2020.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "Publisher's Note  Springer Nature remains neutral with regard to  jurisdictional claims in published maps and institutional affiliations.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "Springer Nature or its licensor (e.g. a society or other partner) holds  exclusive rights to this article under a publishing agreement with the  author(s) or other rightsholder(s); author self-archiving of the accepted  manuscript version of this article is solely governed by the terms of  such publishing agreement and applicable law.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 16,
+      "raw_extracted": "*\t Yoshiyuki Kitaguchi  \t kitaguchi@ophthal.med.osaka-u.ac.jp",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 16,
+      "raw_extracted": "1\t Department of Ophthalmology, Osaka University  Graduate School of Medicine, 2‐2 Yamadaoka, Suita,  Osaka 565‐0871, Japan",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 16,
+      "raw_extracted": "2\t Department of Ophthalmology, Faculty of Medicine,  University of Tsukuba, Ibaraki, Japan",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 16,
+      "raw_extracted": "3\t Department of Ophthalmology, Tokyo Dental College  Ichikawa General Hospital, Chiba, Japan",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 16,
+      "raw_extracted": "4\t Department of Ophthalmology, Fukushima Medical  University School of Medicine, Fukushima, Japan",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 16,
+      "raw_extracted": "5\t Division of Ophthalmology and Visual Science, Faculty  of Medicine, Tottori University, Tottori, Japan",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 16,
+      "raw_extracted": "6\t Department of Ophthalmology, Miyata Eye Hospital,  Miyazaki, Japan",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 16,
+      "raw_extracted": "7\t Department of Ophthalmology, Juntendo University  Graduate School of Medicine, Tokyo, Japan",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 16,
+      "raw_extracted": "8\t Department of Ophthalmology, Tsukazaki Hospital, Hyogo,  Japan",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 16,
+      "raw_extracted": "9\t Division of Ophthalmology and Visual Science, Graduate  School of Biomedical and Health Sciences, Hiroshima  University, Hiroshima, Japan",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 16,
+      "raw_extracted": "10\t Division of Ophthalmology and Visual Science, Graduate  School of Medical and Dental Sciences, Niigata University,  Niigata, Japan",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 16,
+      "raw_extracted": "11\t Department of Ophthalmology, University of Toyama,  Toyama, Japan",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 16,
+      "raw_extracted": "12\t Department of Ophthalmology, Tokyo Medical University,  Tokyo, Japan",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 16,
+      "raw_extracted": "13\t Graduate School of Informatics, Nagoya University, Nagoya,  Japan",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 16,
+      "raw_extracted": "14\t Institute for Open and Transdisciplinary Research Initiatives  (OTRI), Osaka University, Suita, Osaka, Japan",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 16,
+      "raw_extracted": "15\t Japan Anterior Segment Artificial Intelligence Research  Group, Tsukuba, Japan",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 16,
+      "raw_extracted": "16\t Ocular Imaging Registry,  Chuo‐ku, Tokyo, Japan",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    }
+  ],
+  "warnings": []
+}

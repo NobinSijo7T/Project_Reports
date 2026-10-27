@@ -1,0 +1,1118 @@
+{
+  "source_file": "s41965-024-00166-9.pdf",
+  "num_pages": 8,
+  "full_text": "Vol:.(1234567890)\nJournal of Membrane Computing (2024) 6:310–317 https://doi.org/10.1007/s41965-024-00166-9\nRESEARCH ARTICLE\nApplications of spiking neural P systems in cybersecurity\nMihail‐Iulian Pleṣa1 · Marian Gheorghe2 · Florentin Ipate1 · Gexiang Zhang3\nReceived: 3 April 2024 / Accepted: 25 July 2024 / Published online: 13 August 2024  © The Author(s) 2024\nAbstract Spiking neural P systems are third-generation neural networks that are much more energy efficient than the current ones. In  this paper, we investigate for the first time the possibility of using spiking neural P systems to solve cybersecurity-related  problems. We proposed a new architecture called cyber spiking neural P systems (Cyber-SN P systems for short), which is  designed especially for cybersecurity data and problems. We trained multiple Cyber-SN P systems to detect malware on the  Android platform, phishing websites, and spam e-mails. We show through experiments that these networks can efficiently  classify cybersecurity-related data with much fewer training epochs than perceptron-based artificial neural networks.\nKeywords  Cybersecurity · Spiking neural P systems · Machine learning\n1  Introduction\nCybersecurity is one field in which machine learning has  a disruptive impact [14]. Currently, most threat detection  systems are based on signatures. The disadvantage of this  approach is that the attacker can easily modify the mal- ware to avoid detection. Machine learning algorithms can  automatically analyze large datasets to detect patterns that  can help to classify new entries. The most common type of  attack architecture consists of the deployment of malware  through a phishing website or a spam e-mail [22]. Deep  learning (DL) algorithms can be used successfully at differ- ent levels of this architecture:\n1.\t DL can detect spam e-mails. In this way, the user is no  longer exposed to mail containing malware [8]. 2.\t DL can detect phishing websites. In this way, even if  the user accesses a malicious URL by mistake, he is  informed of the vicious nature of the accessed website  [40].\n3.\t DL can detect malware. In this way, even if the user  downloads a malicious binary, the system can detect it  and stop its execution [33].\nAlthough they offer high performance, the DL algorithms  have a major disadvantage in terms of large energy con- sumption [39]. One reason why this happens is that the cur- rent deep learning algorithms are not inspired directly by the  way the human brain works [27]. Spiking neural networks,  in general, and spiking neural P systems (SN P systems for  short) in particular, represent a possible solution to this  problem [16]. SN P systems are neural networks inspired by  how the neural cells work and interact. Unlike current neural  networks, the neurons from an SN P system communicate  using discrete spiking. In an SN P system, each neuron has  a number of firing rules. When the firing condition is met,  the neuron will emit one spike to all neurons with which it  is connected. This raises the possibility of implementing  neural networks that are energy-efficient on neuromorphic  hardware [17]. In this paper, we analyze the possibility of  using the SN P system to solve three cybersecurity prob- lems: malware detection, website phishing detection, and  e-mail spam detection.  *\t Mihail‐Iulian Pleṣa  \t mihail-iulian.plesa@s.unibuc.ro\n1\t Department of Computer Science, University of Bucharest,  Bucharest, Romania\n2\t School of Electrical Engineering and Computer Science,  University of Bradford, Bradford, UK\n3\t School of Automation, Chengdu University of Information  Technology, Chengdu 610225, China\n\n--- Page Break ---\n\n311 Applications of spiking neural P systems in cybersecurity﻿\n2  \u0007Related work and our contribution\nIn general, there are two main categories of machine- learning algorithms used in malware detection: supervised  and unsupervised. Supervised learning requires a labeled  dataset used by the algorithm to learn how to classify new  samples. On the other hand, the purpose of unsupervised  learning algorithms, which do not require any labeled data,  is to compute an approximate distribution of the data- set. In Ref. [19], the authors propose an ML system that  detects Android malware by analyzing permission usage.  To detect the best classifier, they analyzed four different  algorithms: AdaBoost, Naive Bayes, Decision Trees, and  SVM [12]. In Ref. [18], it is presented a random forest  classifier is presented to detect malware based on more  than 377 features about Android APK. In Ref. [28], it is  proposed a decision tree approach that classifies samples  as malware or benign based on the operational codes in  machine language (opcode for short) frequency. In Ref.  [4], the authors presented DRACO, a machine-learning  framework that detects Android malware based on static  and dynamic features. Another idea of combining dimen- sionality reduction and a classifier for Android malware  detection is presented in Ref. [35]. All of these ideas were  based on classical machine learning algorithms. There  are also other more recent methods for detecting Android  malware using deep learning. In Ref. [29], the authors  proposed an artificial neural network that detects Android  malware based on dynamic features with more than 97%  accuracy. The authors in Ref. [38] proposed MalNet, a  deep learning architecture for malware detection with  automatic feature selection. The idea is to treat the mal- ware as a grayscale image and then use convolution neural  networks for classification. In Ref. [15], the authors used  deep belief networks to detect malware based on applica- tion programming interface (API) calls of the APK.\nSN P systems, and P systems in general, have varied  characteristics, each being designed from different biologi- cal phenomena found in neuronal cells [23, 24, 30, 32, 36].  There were also previous applications of SN P systems  in machine learning [5, 6, 26, 41, 44]. In Ref. [43], SN P  systems were used to construct a spiking convolutional  neural network. In Ref. [21], a specific SN P system called  dynamic threshold neural P system (DTN P system for  short) was used in medical image processing [3]. In Ref.  [42], the authors proposed a general classifier based on the  SN P system and tested it on the handwritten digit images  dataset (MNIST dataset for short) [9]. Two comprehensive  surveys on image processing using P systems are presented  in Refs. [10] and [37].\nThis paper studies, for the first time, solving cyber- security problems with SN P systems. Starting from the\nlayered spiking neural P systems (LSN P systems for  short) introduced in Ref. [42], we proposed a new spiking  neural network architecture called the cyber spiking neu- ral P systems. We train multiple Cyber-SN P systems to  detect malware on Android platforms, phishing websites,  and spam e-mails. Our experiments show that Cyber-SN  P systems require much less training epochs than percep- tron-based artificial neural networks (ANNs for short) for  comparable performances. The results obtained demon- strate the suitability of the SN P systems for a new range  of problems, namely in the area of cybersecurity.\nThe paper is organized as follows: in Sect. 3, we present  the Cyber-SN P systems; in Sect. 4, we describe the experi- ments in which we evaluate the Cyber-SN P systems in the  detection of malware, phishing websites, and spam e-mails.  Section 5 concludes the paper and suggests some further  research directions.\n3  \u0007Cyber‐SN P systems\nIn this section, we describe an efficient classifier for cyber- security problems based on the LSN P systems described  in Ref. [42].\nDefinition 1  A cyber spiking neural P system is defined as  the following construct:\n훱= ({a}, 휎p1, ⋯휎pk, 휎r1, 휎r2, 휎o, syn, IN, OUT)\nwhere:\n1.\t The symbol a denotes a spike. 2.\t 휎pi = {훼i, wij, ri} , 1 ≤i ≤k , 1 ≤j ≤2 denotes an input  proposition neuron:\n(a)\t 훼i represents the potential value of the neuron and\nis equal to the value of the ith feature from the  input vector. (b)\t wij denotes the weight on the synapse that connects\nthe neuron 휎pi to the neuron 휎rj . Initially, the weights  are chosen randomly from the range [0, 1].\n(c)\t ri denotes a set of firing rules of the form\nri:E1∕a훼i →a훼i , where E1 = {훼i ≥0}.\n3.\t 휎rj = {휃j, rj} , j ∈{1, 2} denotes a rule neuron:\n(a)\t 휃j denotes the potential value of the neuron.\n(b)\t rj denotes a set of firing rules of the form\nrj ∶E2∕a휃j →a휃j , where E2 = {휃j ≥0} and  휃j = (w1j × 훼1\n) + (w2j × 훼2\n) + ⋯+ (wkj × 훼k\n)\n.\n\n--- Page Break ---\n\n312 \t M.-I. Pleṣa et al.\n4.\t 휎o = {훼o, ro} denotes an output proposition neuron:\n(a)\t 훼o denotes the potential value of the neuron and\nis equal to the maximum of the potential values  received from the neurons 휎r1 and 휎r2. (b)\t ro denotes a set of firing rules of the form\nro ∶E3∕a훼o →a훼o , where E3 = {훼o ≥0}.\n5.\t syn = {(\n휎pi, 휎rj\n)\n,\n(\n휎rj, 휎o\n)\n, 1 ≤i ≤k, 1 ≤j ≤2\n}\n6.\t IN = {휎pi, 1 ≤i ≤k} 7.\t OUT = {휎o}\nFigure 1 shows the Cyber-SN P system used in this paper.  The running steps of the system are the following:\n1.\t The input is encoded using the standard scaling algo- rithm. If x is the training dataset, the scaling mechanism  transforms it into one that has a mean of 0 and a variance  of 1:\nwhere 흁x and 흈x represent the mean and the standard  deviation of the dataset, respectively. 2.\t The input layer will receive the encoded input. Each  neuron will send its potential value to all of the neu- rons from the hidden layer. The potential value of a  neuron from the hidden layer is the weighted sum of the  received potential values from the input neurons. 3.\t The neuron 휎o will output the maximum potential value  received from the hidden layer.\nThe learning in a Cyber-SN P system is based on a  slightly modified version of the Widrow–Hoff learning rule  [34]. The rule first applies the sigmoid function to the output  of the Cyber-SN P system and then updates the weights. The  reason for applying the sigmoid function is to transform the\nx ←x −흁x\n흈x\noutput of the system into a real value between 0 and 1, which  can be interpreted as a probability. Let ̃t be the output of the  system and by t the ground truth. Let W be the k × 2 matrix  of weights, where k represents the number of features of an  input vector. Updating the weights is done according to (1):\nwhere 휂 is the learning rate, x is the input and f is the sig- moid function:\n.\nThe learning rule will be applied for several training  epochs until satisfactory accuracy is obtained over the  training set.\nThere are certain differences specific to cybersecurity- related problems between this construction and the LSN  P systems proposed in Ref. [42]:\n1.\t Since cybersecurity-related problems require an input  with a large number of features, Cyber-SN P systems do  not require an encoding mechanism that increases the  dimensions of the input vector. The LSN P systems use  Taylor decomposition to transform an m-dimensional\ninput vector into one of ∑k\ni=1\ni m + i −1\n\ndimensions\n[42]. 2.\t The inputs of a Cyber-SN P system are not fuzzy values,  like the ones of an LSN P system. Thus, they are not  limited to real numbers from [0, 1] . This is important for  cybersecurity-related data where sensitivity to outliers  is important [11]. The inputs of an LSN P system are  encoded using the min–max normalization. In contrast,  Cyber-SN P systems use standard scaling, which is much  more sensitive to outliers than min–max normalization  [13].\n(1) W ⇐W + η(f(̃t) −t)x\nf(x) = 1 1 + e−x\nFig. 1   Cyber-SN P system\n\n--- Page Break ---\n\n313 Applications of spiking neural P systems in cybersecurity﻿\n3.\t Cybersecurity problems are usually solved using binary  classification algorithms, which greatly simplify the  model. Cyber-SN P systems have only three layers. The  LSN P systems are constructed with five layers. 4.\t In the cybersecurity field, it is important for a classi- fication algorithm to return not only the classification  result but also the associated probabilities for each  class. Cyber-SNP outputs a potential value that can be  transformed into a probability by applying the sigmoid  function. LSN P systems were defined to return only the  class to which the input belongs.\nIt is important to note that during the training process,  some of the weights might become negative. As a result,  it is not guaranteed that a neuron’s potential value will  always be positive. This characteristic ensures that neu- rons’ spiking behavior is dynamic and dependent on the  training data since a neuron from the input or hidden layer  will fire only if its potential value is positive.\n4  \u0007Experimental results\nIn this section, we experimentally assess the performances  of Cyber-SN P systems on cybersecurity-related tasks and  compare them with those of neural networks. For each  dataset, we measure the following characteristics of the  classifier:\n1.\t True positive (TP): represents a sample that is malicious  and is classified as malicious. 2.\t False positive (FP): represents a sample that is benign  but is classified as malicious. 3.\t True negative (TN): represents a sample that is benign  and is classified as benign. 4.\t False negative (FN): represents a sample that is mali- cious and is classified as benign.\nWe use four metrics to evaluate the classification algo- rithms [13]:\n1.\t Accuracy (Acc): represents the ratio between the number  of correctly classified samples and the total number of  samples:\n2.\t Precision (P): represents the ratio between the number  of samples correctly classified as malicious and the total  number of samples classified as malicious:\n(2) Acc = TP + TN TP + TN + FP + FN\n3.\t Recall (R): represents the ratio between the number of  samples correctly classified as malicious and the total  number of malicious samples:\n4.\t F1 score (F1): represents the harmonic mean between  the precision and recall:\nAll the experiments were performed using the Python pro- gramming language on an Apple Mac M1 Max platform  with 10 cores and 32 GB of RAM. All neural networks were  trained using the Tensorflow library, version 2.16.1. For each  dataset, 80% of the data is used to train the classifier and 20%  for testing. The source code for the experiments is available  at https://​github.​com/​miiip/​Cyber-​LSNP.\n4.1  \u0007Android malware detection\nThese experiments compare the Cyber-SN P systems with  neural networks for Android malware detection. The dataset  used is Drebin-215 [2]. Each sample in the dataset is charac- terized by 215 features from the following categories:\n1.\t API call signatures, e.g., onServiceConnected, Android. os.Binder, and attachInterface. 2.\t Manifest permission, e.g., SEND_SMS, READ_ PHONE_STATE, and RECEIVE_SMS. 3.\t Intent, e.g., Android.intent.action.PACKAGE_ REPLACED, Android.intent.action.TIME_SET, and  Android.intent.action.BATTERY_OKAY. 4.\t Commands signature, e.g., mount, remount, and chown.\nThe dataset is composed of 15,036 samples, of which 9476  are benign, and 5560 are malware.\nThe ANN has 215 input neurons and 2 output neurons  with Softmax activation function [1]. The network is trained  with the Adam optimizer using a learning rate of 0.001. In  each trial of the experiment, the ANN and the Cyber-SN\n(3) P = TP TP + FP\n(4) R = TP TP + FN\n(5) F1 = 2 ⋅P ⋅R\nP + R\nTable 1   Android malware detection—comparison between LNS P  system and ANN\nModel Number of  epochs\nAcc P R F1\nCyber-SN P\nsystem\n1.95 0.9690 0.9691 0.9690 0.9690\nANN 10.95 0.9761 0.9731 0.9621 0.9676\n\n--- Page Break ---\n\n314 \t M.-I. Pleṣa et al.\nP system were trained until the accuracy over the training  dataset was greater than 0.97. The performance metrics were  averaged over all trials, and the results are shown in Table 1.  Although the performances are similar, the main difference  between the two models is that the Cyber-SN P system uses,  on average, only 2.15 epochs for training, unlike the ANN,  which needs 11.75 epochs to be trained.\nTo illustrate the training behaviors of the Cyber-SN P sys- tem and the ANN, we trained both algorithms for 50 epochs.  As can be seen from Figs. 2 and 3, the training of the ANN  is smoother than that of the Cyber-SN P system for the same  learning rate.\n4.2  \u0007Phishing detection\nThese experiments compare the Cyber-SN P systems with  neural networks for website phishing detection. The dataset  used is constructed from [31]. There are 10,000 samples in  the dataset: 5000 representing legitimate websites and 5000  representing phishing websites. Each sample is composed of  48 features signifying different characteristics of the web- page [7]. There are three types of features:\n1.\t Discrete features: the number of dots in the URL, the  depth of the path in the URL, the number of special  characters in the URL (e.g., “-”, “ &”, “#”, “_”, and  “%”), the number of numeric characters in the URL, the  number of sensitive words in the URL (e.g., “banking”,  “safe”, and “secure”), the total number of characters in  the URL, etc. 2.\t Binary features: the existence of “@” symbol in the  URL, the existence of “ ∼ ” symbol in the URL, whether  the webpage uses HTTPS, whether the IP address is used  directly in the URL, the existence of the sequence “//” in  the URL, whether the most frequent domain named in\nthe source code of the webpage is corresponding to the  domain name from the URL, the existence of JavaScript  in the webpage, whether the function “mailto” is used in  the webpage, etc. 3.\t Continuous features: the percentage of external hyper- links to and from the webpage, the percentage of hyper- links fields containing empty value or self-redirect  value, etc.\nThe complete list of features, together with their descrip- tions, can be found in Ref. [7].\nSince each input of the Cyber-SN P system is a vector of  48 values and the output is binary, we compare the perfor- mances with those of an ANN with 48 input neurons and 2  output neurons. The activation function used in the ANN is  Softmax, and the network is trained using the Adam opti- mizer with a learning rate of 0.001 [1]. Both systems were  trained until the accuracy of the training dataset was greater  than 0.97. The averaged results are described in Table 2.  The Cyber-SN P system performed slightly better than the  ANN in terms of accuracy, precision, recall, and F1-score,  and it was trained on average for 1.1 epochs instead of 16.25.\nFigures 4 and 5 show the accuracies of the Cyber-SN  P system and the ANN with respect to the training epoch.  Both systems were trained for 50 epochs. As in the case of\nFig. 2   Malware detection—accuracy of the Cyber-SN P system with  respect to the training epoch\nFig. 3   Malware detection—accuracy of the ANN with respect to the  training epoch\nTable 2   Phishing detection—comparison between LNS P system and  ANN\nModel Number of  epochs\nAcc P R F1\nCyber-SN P\nsystem\n1.65 0.9905 0.9906 0.9905 0.9906\nANN 15.70 0.9889 0.9888 0.9891 0.9890\n\n--- Page Break ---\n\n315 Applications of spiking neural P systems in cybersecurity﻿\nmalware detection, the training of the ANN is smoother than  that of the Cyber-SN P system for the same learning rate.\n4.3  \u0007Spam detection\nThese experiments compare the Cyber-SN P systems with  neural networks for spam detection. The dataset used is  constructed from [20]. There are 5171 e-mails in the data- set. 3672 e-mails are ham while 1499 are spam. Unlike the  previous tasks, the samples are not composed of manually  crafted features but from raw text. To encode a text e-mail as  a vector of real numbers, we used the following procedure:\n1.\t Split the text into words based on spaces. 2.\t For each word, use a pre-trained embedding map to  transform the word into a vector of real numbers.\n3.\t The vector that represents the text is computed as the  average of the vectors assigned to each word from the  text.\nFor this experiment, we use the Glove map [25]. The  embedding map is pre-trained on 6 billion tokens and\nFig. 4   Phishing detection—accuracy of Cyber-SN P system with  respect to the training epoch\nFig. 5   Phishing detection—accuracy of the ANN with respect to the  training epoch\nTable 3   Spam detection - comparison between LNS P system and  ANN\nModel Number of  epochs\nAcc P R F1\nCyber-SN P\nsystem\n1.00 0.9443 0.9448 0.9443 0.9443\nANN 10.90 0.9603 0.9493 0.9723 0.9606\nFig. 6   Spam detection - Accuracy of Cyber-SN P system with respect  to the training epoch\nFig. 7   Spam detection - Accuracy of the ANN with respect to the  training epoch\n\n--- Page Break ---\n\n316 \t M.-I. Pleṣa et al.\noutputs for each input word a vector of 300 real numbers.  The map preserves the semantic meaning of the word, i.e.,  semantically close words are mapped to close vectors in  terms of Euclidean distance.\nBoth the Cyber-SN P system and the ANN have 300  input neurons and 2 output neurons. Similar to the other  experiments, the systems were trained until the accuracy  over the training dataset was greater than 0.93. The aver- aged results are described in Table 3. The performances  are similar, but the number of epochs needed to train the  ANN is almost ten times higher compared to the number  of epochs needed to train the Cyber-SN P system.\nFigures 6 and 7 show the accuracies of the Cyber-SN P  system and the ANN with respect to the training epoch. As  in previous experiments, the systems were trained for 50  epochs. The results indicate that the training of the ANN  is smoother than that of the Cyber-SN P system.\n5  \u0007Conclusions and further directions  of research\nWe demonstrated the performances of the Cyber-SN P sys- tems in three different types of attacks: malware infection,  website phishing, and e-mail spam spreading. Table 4 pre- sents a summary of our results. We experimentally showed  that Cyber-SN P systems can solve cybersecurity-related  problems much more efficiently in terms of training epochs  than perceptron-based neural networks. For the detection  of phishing websites, Cyber-SN P systems performed  better from the perspective of all analyzed metrics. For  all experiments, the training process of the ANN was  smoother than that of the Cyber-SN P system.\nThe first direction of research is to compare SN P sys- tems with other deep learning architectures, e.g., recur- rent neural network (RNN) and long short-term memory  (LSTM). The second one is to implement the Cyber-SN P  system on dedicated neuromorphic hardware and to asses  their energy consumption efficiency.\nFunding  This work was supported by the National Natural Science  Foundation of China (61972324), the Sichuan Science and Technology\nProgram (2023NSFSC1985) and Research Fund of Chengdu University  of Information Technology (KYTD202212).\nData availability  The datasets are available at: https://​www.​kaggle.​ com/​datas​ets/​balak​a18/​email-​spam-​class​ifica​tion-​datas​et-​csv, https://​ data.​mende​ley.​com/​datas​ets/​h3cgn​j8hft/1, https://​figsh​are.​com/​artic​les/​ datas​et/​Andro​id_​malwa​re_​datas​et_​for_​machi​ne_​learn​ing_2/​58546​53.\nOpen Access  This article is licensed under a Creative Commons Attri- bution 4.0 International License, which permits use, sharing, adapta- tion, distribution and reproduction in any medium or format, as long  as you give appropriate credit to the original author(s) and the source,  provide a link to the Creative Commons licence, and indicate if changes  were made. The images or other third party material in this article are  included in the article’s Creative Commons licence, unless indicated  otherwise in a credit line to the material. If material is not included in  the article’s Creative Commons licence and your intended use is not  permitted by statutory regulation or exceeds the permitted use, you will  need to obtain permission directly from the copyright holder. To view a  copy of this licence, visit http://creativecommons.org/licenses/by/4.0/.\nReferences\n1.\t Agarap, Abien Fred. (2018). Deep learning using rectified linear\nunits (ReLU). arXiv preprint arXiv:​1803.​08375 \t 2.\t Arp, Daniel, Spreitzenbarth, Michael, Hubner, Malte, Gascon,\nHugo, Rieck, Konrad, & Siemens, CERT. (2014). Drebin: Effec- tive and explainable detection of Android malware in your pocket.  In NDSS. (Vol. 14, pp. 23–26). \t 3.\t Bao, T., Zhou, N., Lv, Z., Peng, H., & Wang, J. (2020). Sequential\ndynamic threshold neural P systems. Journal of Membrane Com- puting, 2(4), 255–268. \t 4.\t Bhandari, S., Gupta, R., Laxmi, V., Gaur, M. S., Zemmari, A., &\nAnikeev, M. (2015). DRACO: DRoid analyst combo an Android  malware analysis framework. In Proceedings of the 8th Interna- tional Conference on Security of Information and Networks (pp.  283–289). \t 5.\t Ceon, Y. P., Anandharaj, H. C., Jebasingh, S., & Chandy, D. A.\n(2022). Generation of chain code pictures using cell-like spiking  neural P system with several types of spikes. Journal of Mem- brane Computing, 4(3), 243–250. \t 6.\t Chen, Y., Chen, Y., Zhang, G., Paul, P., Wu, T., Zhang, X., Rong,\nH., & Ma, X. (2021). A survey of learning spiking neural p sys- tems and a novel instance. International Journal of Unconven- tional Computing, 16, 173–200. \t 7.\t Chiew, Kang Leng, Tan, Choon Lin, Wong, KokSheik, Yong,\nKelvin SC., & Tiong, Wei King. (2019). A new hybrid ensemble  feature selection framework for machine learning-based phishing  detection system. Information Sciences, 484, 153–166. \t 8.\t Dada, E. G., Bassi, J. S., Chiroma, H., Adetunmbi, A. O., &\nAjibuwa, O. E. (2019). Machine learning for email spam filtering:\nTable 4   Comparison between  LNS P systems and ANN Attack Model Number of  epochs\nAcc P R F1\nMalware Cyber-SN P system 1.95 0.9690 0.9691 0.9690 0.9690 ANN 10.95 0.9761 0.9731 0.9621 0.9676 Phishing Cyber-SN P system 1.65 0.9905 0.9906 0.9905 0.9906 ANN 15.70 0.9889 0.9888 0.9891 0.9890 Spam Cyber-SN P system 1.00 0.9443 0.9448 0.9443 0.9443 ANN 10.90 0.9603 0.9493 0.9723 0.9606\n\n--- Page Break ---\n\n317 Applications of spiking neural P systems in cybersecurity﻿\nReview, approaches and open research problems. Heliyon, 5(6),  1080. \t 9.\t Deng, L. (2012). The MNIST database of handwritten digit\nimages for machine learning research. IEEE Signal Processing  Magazine, 29(6), 141–142. \t10.\t Díaz-Pernil, D., Gutiérrez-Naranjo, M. A., & Peng, H. (2019).\nMembrane computing and image processing: a short survey. Jour- nal of Membrane Computing, 1(1), 58–73. \t11.\t Evangelou, M., & Adams, N. M. (2020). An anomaly detection\nframework for cyber-security data. Computers & Security, 97,  101941. \t12.\t Geron, A. (2017). Hands-on machine learning with Scikit-Learn\nand TensorFlow: Concepts, tools, and techniques to build intel- ligent systems. Sebastopol, CA: O’Reilly Media. \t13.\t Goodfellow, I., Bengio, Y., & Courville, A. (2016). Deep learning.\nMIT press. \t14.\t Halbouni, A., Gunawan, T. S., Habaebi, M. H., Halbouni, M.,\nKartiwi, M., & Ahmad, R. (2022). Machine learning and deep  learning approaches for cybersecurity: A review. IEEE Access,  10, 19572–19585. \t15.\t Hou, S., Saas, A., Ye, Y., & Chen, L. (2016). Droiddelver: An\nAndroid malware detection system using deep belief network  based on API call blocks. In Web-Age Information Management:  WAIM 2016 International Workshops, MWDA, SDMMW, and  SemiBDMA, Nanchang, China, June 3–5, 2016, Revised Selected  Papers 17 (pp. 54–66). Springer. \t16.\t Ionescu, M., Păun, G., & Yokomori, T. (2006). Spiking neural P\nsystems. Fundamenta Informaticae, 71(2–3), 279–308. \t17.\t Kumar, S., Das, S., Badone, G., & Kumar, A. (2022). A Survey on\nEfficient Interconnects for Neuromorphic Systems. In Soft Com- puting: Theories and Applications: Proceedings of SoCTA 2021  (pp. 709–718). Springer. \t18.\t Li, J., Wang, Z., Wang, T., Tang, J., Yang, Y., & Zhou, Y. (2018).\nAn Android malware detection system based on feature fusion.  Chinese Journal of Electronics, 27(6), 1206–1213. \t19.\t Li, J., Sun, L., Yan, Q., Li, Z., Srisa-An, W., & Ye, H. (2018).\nSignificant permission identification for machine-learning-based  Android malware detection. IEEE Transactions on Industrial  Informatics, 14(7), 3216–3225. \t20.\t Metsis, V., Androutsopoulos, I., Paliouras, G. (2006). Spam filter-\ning with naive bayes-which naive bayes? In CEAS (Vol. 17, pp.  28–69). Mountain View, CA. \t21.\t Mi, S., Zhang, L., Peng, H., & Wang, J. (2021). Medical image\nfusion based on DTNP systems and Laplacian pyramid. Journal  of Membrane Computing, 3(4), 284–295. \t22.\t Mijwil, M., Unogwu, O. J., Filali, Y., Bala, I., & Al-Shahwani, H.\n(2023). Exploring the top five evolving threats in cybersecurity:  an in-depth overview. Mesopotamian Journal of Cybersecurity,  2023, 57–63. \t23.\t Pan, L., Song, B., & Zandron, C. (2023). On the computational\nefficiency of tissue P systems with evolutional symport/antiport  rules. Knowledge-Based Systems, 262, 110266. \t24.\t Pan, Y., Ge, X., Fang, C., & Fan, Y. (2020). A systematic literature\nreview of Android malware detection using static analysis. IEEE  Access, 8, 116363–116379. \t25.\t Pennington, J., Socher, R., Manning, C. D. (2014). Glove: Global\nvectors for word representation. In Proceedings of the 2014 con- ference on empirical methods in natural language processing  (EMNLP) (pp. 1532–1543) \t26.\t Plesa, M. I., Gheoghe, M., Ipate, F., & Zhang, G. (2022). A key\nagreement protocol based on spiking neural P systems with anti- spikes. Journal of Membrane Computing, 4(4), 341–351. \t27.\t Raichle, M. E., & Gusnard, D. A. (2002). Appraising the brain’s\nenergy budget. Proceedings of the National Academy of Sciences,  99(16), 10237–10239.\n28.\t Santos, I., Brezo, F., Ugarte-Pedrero, X., & Bringas, P. G. (2013).\nOpcode sequences as representation of executables for data-min- ing-based unknown malware detection. Information Sciences, 231,  64–82. \t29.\t Singh, L., Hofmann, M. (2017). Dynamic behavior analysis of\nAndroid applications for malware detection. In 2017 International  Conference on Intelligent Communication and Computational  Techniques (ICCT) (pp. 1–7). IEEE. \t30.\t Song, B., & Pan, L. (2021). Rule synchronization for tissue P\nsystems. Information and Computation, 281, 104685. \t31.\t Tan, C. L. (2018). Phishing dataset for machine learning: Feature\nevaluation. Mendeley Data, 1, 2018. \t32.\t Verlan, S., Freund, R., Alhazov, A., Ivanov, S., & Pan, L. (2020).\nA formal framework for spiking neural P systems. Journal of  Membrane Computing, 2(4), 355–368. \t33.\t Vinayakumar, R., Alazab, M., Soman, K. P., Poornachandran, P.,\n& Venkatraman, S. (2019). Robust intelligent malware detection  using deep learning. IEEE Access, 7, 46717–46738. \t34.\t Wang, Z.-Q., Manry, M. T., & Schiano, J. L. (2000). LMS learning\nalgorithms: misconceptions and new results on convergence. IEEE  Transactions on Neural Networks, 11(1), 47–56. \t35.\t Wei, L., Luo, W., Weng, J., Zhong, Y., Zhang, X., & Yan, Z.\n(2017). Machine learning-based malicious application detection  of Android. IEEE Access, 5, 25591–25601. \t36.\t Wu, T., Lyu, Q., & Pan, L. (2021). Evolution-communication\nspiking neural P systems. International Journal of Neural Sys- tems, 31(02), 2050064. \t37.\t Yahya, R. I., Shamsuddin, S. M., Yahya, S. I., Hasan, S., Al-Salibi,\nB., Al-Khafaji, G. (2016). Image segmentation using membrane  computing: a literature survey. In International Conference on  Bio-Inspired Computing: Theories and Applications (pp. 314– 335). Springer. \t38.\t Yan, J., Qi, Y., & Rao, Q. (2018). Detecting malware with an\nensemble method based on deep neural network. Security and  Communication Networks, 2018, 1–16. https://​doi.​org/​10.​1155/​ 2018/​72470​95 \t39.\t Yang, T.-J., Chen, Y.-H., Emer, J., Sze, V. (2017). A method to\nestimate the energy consumption of deep neural networks. In 2017  51st asilomar conference on signals, systems, and computers (pp.  1916–1920). IEEE. \t40.\t Yi, P., Guan, Y., Zou, F., Yao, Y., Wang, W., & Zhu, T. (2018).\nWeb phishing detection using a deep learning framework. Wire- less Communications and Mobile Computing, 2018, 4678746. \t41.\t Zhang, H., Liu, X., & Shao, Y. (2022). Chinese dialect tone’s\nrecognition using gated spiking neural P systems. Journal of  Membrane Computing, 4(4), 284–292. \t42.\t Zhang, G., Zhang, X., Rong, H., Paul, P., Zhu, M., Neri, F., &\nOng, Y.-S. (2022). A layered spiking neural system for classifica- tion problems. International Journal of Neural Systems, 32(08),  2250023. \t43.\t Zhang, X., & Liu, X. (2022). Multiview Clustering of Adaptive\nSparse Representation Based on Coupled P Systems. Entropy,  24(4), 568. \t44.\t Zhao, S., Zhang, L., Liu, Z., Peng, H., & Wang, J. (2022). Con-\nvSNP: A deep learning model embedded with SNP-like neurons.  Journal of Membrane Computing, 4(1), 87–95.\nPublisher's Note  Springer Nature remains neutral with regard to  jurisdictional claims in published maps and institutional affiliations.",
+  "equations": [
+    {
+      "page": 1,
+      "raw_extracted": "Abstract Spiking neural P systems are third-generation neural networks that are much more energy efficient than the current ones. In  this paper, we investigate for the first time the possibility of using spiking neural P systems to solve cybersecurity-related  problems. We proposed a new architecture called cyber spiking neural P systems (Cyber-SN P systems for short), which is  designed especially for cybersecurity data and problems. We trained multiple Cyber-SN P systems to detect malware on the  Android platform, phishing websites, and spam e-mails. We show through experiments that these networks can efficiently  classify cybersecurity-related data with much fewer training epochs than perceptron-based artificial neural networks.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 1,
+      "raw_extracted": "Keywords  Cybersecurity · Spiking neural P systems · Machine learning",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 1,
+      "raw_extracted": "Cybersecurity is one field in which machine learning has  a disruptive impact [14]. Currently, most threat detection  systems are based on signatures. The disadvantage of this  approach is that the attacker can easily modify the mal- ware to avoid detection. Machine learning algorithms can  automatically analyze large datasets to detect patterns that  can help to classify new entries. The most common type of  attack architecture consists of the deployment of malware  through a phishing website or a spam e-mail [22]. Deep  learning (DL) algorithms can be used successfully at differ- ent levels of this architecture:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 1,
+      "raw_extracted": "1.\t DL can detect spam e-mails. In this way, the user is no  longer exposed to mail containing malware [8]. 2.\t DL can detect phishing websites. In this way, even if  the user accesses a malicious URL by mistake, he is  informed of the vicious nature of the accessed website  [40].",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 1,
+      "raw_extracted": "3.\t DL can detect malware. In this way, even if the user  downloads a malicious binary, the system can detect it  and stop its execution [33].",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 1,
+      "raw_extracted": "Although they offer high performance, the DL algorithms  have a major disadvantage in terms of large energy con- sumption [39]. One reason why this happens is that the cur- rent deep learning algorithms are not inspired directly by the  way the human brain works [27]. Spiking neural networks,  in general, and spiking neural P systems (SN P systems for  short) in particular, represent a possible solution to this  problem [16]. SN P systems are neural networks inspired by  how the neural cells work and interact. Unlike current neural  networks, the neurons from an SN P system communicate  using discrete spiking. In an SN P system, each neuron has  a number of firing rules. When the firing condition is met,  the neuron will emit one spike to all neurons with which it  is connected. This raises the possibility of implementing  neural networks that are energy-efficient on neuromorphic  hardware [17]. In this paper, we analyze the possibility of  using the SN P system to solve three cybersecurity prob- lems: malware detection, website phishing detection, and  e-mail spam detection.  *\t Mihail‐Iulian Pleṣa  \t mihail-iulian.plesa@s.unibuc.ro",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 1,
+      "raw_extracted": "1\t Department of Computer Science, University of Bucharest,  Bucharest, Romania",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 1,
+      "raw_extracted": "2\t School of Electrical Engineering and Computer Science,  University of Bradford, Bradford, UK",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 1,
+      "raw_extracted": "3\t School of Automation, Chengdu University of Information  Technology, Chengdu 610225, China",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "In general, there are two main categories of machine- learning algorithms used in malware detection: supervised  and unsupervised. Supervised learning requires a labeled  dataset used by the algorithm to learn how to classify new  samples. On the other hand, the purpose of unsupervised  learning algorithms, which do not require any labeled data,  is to compute an approximate distribution of the data- set. In Ref. [19], the authors propose an ML system that  detects Android malware by analyzing permission usage.  To detect the best classifier, they analyzed four different  algorithms: AdaBoost, Naive Bayes, Decision Trees, and  SVM [12]. In Ref. [18], it is presented a random forest  classifier is presented to detect malware based on more  than 377 features about Android APK. In Ref. [28], it is  proposed a decision tree approach that classifies samples  as malware or benign based on the operational codes in  machine language (opcode for short) frequency. In Ref.  [4], the authors presented DRACO, a machine-learning  framework that detects Android malware based on static  and dynamic features. Another idea of combining dimen- sionality reduction and a classifier for Android malware  detection is presented in Ref. [35]. All of these ideas were  based on classical machine learning algorithms. There  are also other more recent methods for detecting Android  malware using deep learning. In Ref. [29], the authors  proposed an artificial neural network that detects Android  malware based on dynamic features with more than 97%  accuracy. The authors in Ref. [38] proposed MalNet, a  deep learning architecture for malware detection with  automatic feature selection. The idea is to treat the mal- ware as a grayscale image and then use convolution neural  networks for classification. In Ref. [15], the authors used  deep belief networks to detect malware based on applica- tion programming interface (API) calls of the APK.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "SN P systems, and P systems in general, have varied  characteristics, each being designed from different biologi- cal phenomena found in neuronal cells [23, 24, 30, 32, 36].  There were also previous applications of SN P systems  in machine learning [5, 6, 26, 41, 44]. In Ref. [43], SN P  systems were used to construct a spiking convolutional  neural network. In Ref. [21], a specific SN P system called  dynamic threshold neural P system (DTN P system for  short) was used in medical image processing [3]. In Ref.  [42], the authors proposed a general classifier based on the  SN P system and tested it on the handwritten digit images  dataset (MNIST dataset for short) [9]. Two comprehensive  surveys on image processing using P systems are presented  in Refs. [10] and [37].",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "This paper studies, for the first time, solving cyber- security problems with SN P systems. Starting from the",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "layered spiking neural P systems (LSN P systems for  short) introduced in Ref. [42], we proposed a new spiking  neural network architecture called the cyber spiking neu- ral P systems. We train multiple Cyber-SN P systems to  detect malware on Android platforms, phishing websites,  and spam e-mails. Our experiments show that Cyber-SN  P systems require much less training epochs than percep- tron-based artificial neural networks (ANNs for short) for  comparable performances. The results obtained demon- strate the suitability of the SN P systems for a new range  of problems, namely in the area of cybersecurity.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "The paper is organized as follows: in Sect. 3, we present  the Cyber-SN P systems; in Sect. 4, we describe the experi- ments in which we evaluate the Cyber-SN P systems in the  detection of malware, phishing websites, and spam e-mails.  Section 5 concludes the paper and suggests some further  research directions.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "In this section, we describe an efficient classifier for cyber- security problems based on the LSN P systems described  in Ref. [42].",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "Definition 1  A cyber spiking neural P system is defined as  the following construct:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "훱= ({a}, 휎p1, ⋯휎pk, 휎r1, 휎r2, 휎o, syn, IN, OUT)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "where:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "1.\t The symbol a denotes a spike. 2.\t 휎pi = {훼i, wij, ri} , 1 ≤i ≤k , 1 ≤j ≤2 denotes an input  proposition neuron:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "(a)\t 훼i represents the potential value of the neuron and",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "is equal to the value of the ith feature from the  input vector. (b)\t wij denotes the weight on the synapse that connects",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "the neuron 휎pi to the neuron 휎rj . Initially, the weights  are chosen randomly from the range [0, 1].",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "(c)\t ri denotes a set of firing rules of the form",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "ri:E1∕a훼i →a훼i , where E1 = {훼i ≥0}.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "3.\t 휎rj = {휃j, rj} , j ∈{1, 2} denotes a rule neuron:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "(a)\t 휃j denotes the potential value of the neuron.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "(b)\t rj denotes a set of firing rules of the form",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "rj ∶E2∕a휃j →a휃j , where E2 = {휃j ≥0} and  휃j = (w1j × 훼1",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": ") + (w2j × 훼2",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": ") + ⋯+ (wkj × 훼k",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": ")",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": ".",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "4.\t 휎o = {훼o, ro} denotes an output proposition neuron:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "(a)\t 훼o denotes the potential value of the neuron and",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "is equal to the maximum of the potential values  received from the neurons 휎r1 and 휎r2. (b)\t ro denotes a set of firing rules of the form",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "ro ∶E3∕a훼o →a훼o , where E3 = {훼o ≥0}.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "5.\t syn = {(",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "휎pi, 휎rj",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": ")",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": ",",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "(",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "휎rj, 휎o",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": ")",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": ", 1 ≤i ≤k, 1 ≤j ≤2",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "}",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "6.\t IN = {휎pi, 1 ≤i ≤k} 7.\t OUT = {휎o}",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "Figure 1 shows the Cyber-SN P system used in this paper.  The running steps of the system are the following:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "1.\t The input is encoded using the standard scaling algo- rithm. If x is the training dataset, the scaling mechanism  transforms it into one that has a mean of 0 and a variance  of 1:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "where 흁x and 흈x represent the mean and the standard  deviation of the dataset, respectively. 2.\t The input layer will receive the encoded input. Each  neuron will send its potential value to all of the neu- rons from the hidden layer. The potential value of a  neuron from the hidden layer is the weighted sum of the  received potential values from the input neurons. 3.\t The neuron 휎o will output the maximum potential value  received from the hidden layer.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "The learning in a Cyber-SN P system is based on a  slightly modified version of the Widrow–Hoff learning rule  [34]. The rule first applies the sigmoid function to the output  of the Cyber-SN P system and then updates the weights. The  reason for applying the sigmoid function is to transform the",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "x ←x −흁x",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "흈x",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "output of the system into a real value between 0 and 1, which  can be interpreted as a probability. Let ̃t be the output of the  system and by t the ground truth. Let W be the k × 2 matrix  of weights, where k represents the number of features of an  input vector. Updating the weights is done according to (1):",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "where 휂 is the learning rate, x is the input and f is the sig- moid function:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": ".",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "The learning rule will be applied for several training  epochs until satisfactory accuracy is obtained over the  training set.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "There are certain differences specific to cybersecurity- related problems between this construction and the LSN  P systems proposed in Ref. [42]:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "1.\t Since cybersecurity-related problems require an input  with a large number of features, Cyber-SN P systems do  not require an encoding mechanism that increases the  dimensions of the input vector. The LSN P systems use  Taylor decomposition to transform an m-dimensional",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "input vector into one of ∑k",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "i=1",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "i m + i −1",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "dimensions",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "[42]. 2.\t The inputs of a Cyber-SN P system are not fuzzy values,  like the ones of an LSN P system. Thus, they are not  limited to real numbers from [0, 1] . This is important for  cybersecurity-related data where sensitivity to outliers  is important [11]. The inputs of an LSN P system are  encoded using the min–max normalization. In contrast,  Cyber-SN P systems use standard scaling, which is much  more sensitive to outliers than min–max normalization  [13].",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "(1) W ⇐W + η(f(̃t) −t)x",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "f(x) = 1 1 + e−x",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "Fig. 1   Cyber-SN P system",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "3.\t Cybersecurity problems are usually solved using binary  classification algorithms, which greatly simplify the  model. Cyber-SN P systems have only three layers. The  LSN P systems are constructed with five layers. 4.\t In the cybersecurity field, it is important for a classi- fication algorithm to return not only the classification  result but also the associated probabilities for each  class. Cyber-SNP outputs a potential value that can be  transformed into a probability by applying the sigmoid  function. LSN P systems were defined to return only the  class to which the input belongs.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "It is important to note that during the training process,  some of the weights might become negative. As a result,  it is not guaranteed that a neuron’s potential value will  always be positive. This characteristic ensures that neu- rons’ spiking behavior is dynamic and dependent on the  training data since a neuron from the input or hidden layer  will fire only if its potential value is positive.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "In this section, we experimentally assess the performances  of Cyber-SN P systems on cybersecurity-related tasks and  compare them with those of neural networks. For each  dataset, we measure the following characteristics of the  classifier:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "1.\t True positive (TP): represents a sample that is malicious  and is classified as malicious. 2.\t False positive (FP): represents a sample that is benign  but is classified as malicious. 3.\t True negative (TN): represents a sample that is benign  and is classified as benign. 4.\t False negative (FN): represents a sample that is mali- cious and is classified as benign.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "We use four metrics to evaluate the classification algo- rithms [13]:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "1.\t Accuracy (Acc): represents the ratio between the number  of correctly classified samples and the total number of  samples:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "2.\t Precision (P): represents the ratio between the number  of samples correctly classified as malicious and the total  number of samples classified as malicious:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "(2) Acc = TP + TN TP + TN + FP + FN",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "3.\t Recall (R): represents the ratio between the number of  samples correctly classified as malicious and the total  number of malicious samples:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "4.\t F1 score (F1): represents the harmonic mean between  the precision and recall:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "All the experiments were performed using the Python pro- gramming language on an Apple Mac M1 Max platform  with 10 cores and 32 GB of RAM. All neural networks were  trained using the Tensorflow library, version 2.16.1. For each  dataset, 80% of the data is used to train the classifier and 20%  for testing. The source code for the experiments is available  at https://​github.​com/​miiip/​Cyber-​LSNP.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "These experiments compare the Cyber-SN P systems with  neural networks for Android malware detection. The dataset  used is Drebin-215 [2]. Each sample in the dataset is charac- terized by 215 features from the following categories:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "1.\t API call signatures, e.g., onServiceConnected, Android. os.Binder, and attachInterface. 2.\t Manifest permission, e.g., SEND_SMS, READ_ PHONE_STATE, and RECEIVE_SMS. 3.\t Intent, e.g., Android.intent.action.PACKAGE_ REPLACED, Android.intent.action.TIME_SET, and  Android.intent.action.BATTERY_OKAY. 4.\t Commands signature, e.g., mount, remount, and chown.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "The dataset is composed of 15,036 samples, of which 9476  are benign, and 5560 are malware.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "The ANN has 215 input neurons and 2 output neurons  with Softmax activation function [1]. The network is trained  with the Adam optimizer using a learning rate of 0.001. In  each trial of the experiment, the ANN and the Cyber-SN",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "(3) P = TP TP + FP",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "(4) R = TP TP + FN",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "(5) F1 = 2 ⋅P ⋅R",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "P + R",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "Table 1   Android malware detection—comparison between LNS P  system and ANN",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "Model Number of  epochs",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "Acc P R F1",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "Cyber-SN P",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "system",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "1.95 0.9690 0.9691 0.9690 0.9690",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "ANN 10.95 0.9761 0.9731 0.9621 0.9676",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "P system were trained until the accuracy over the training  dataset was greater than 0.97. The performance metrics were  averaged over all trials, and the results are shown in Table 1.  Although the performances are similar, the main difference  between the two models is that the Cyber-SN P system uses,  on average, only 2.15 epochs for training, unlike the ANN,  which needs 11.75 epochs to be trained.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "To illustrate the training behaviors of the Cyber-SN P sys- tem and the ANN, we trained both algorithms for 50 epochs.  As can be seen from Figs. 2 and 3, the training of the ANN  is smoother than that of the Cyber-SN P system for the same  learning rate.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "These experiments compare the Cyber-SN P systems with  neural networks for website phishing detection. The dataset  used is constructed from [31]. There are 10,000 samples in  the dataset: 5000 representing legitimate websites and 5000  representing phishing websites. Each sample is composed of  48 features signifying different characteristics of the web- page [7]. There are three types of features:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "1.\t Discrete features: the number of dots in the URL, the  depth of the path in the URL, the number of special  characters in the URL (e.g., “-”, “ &”, “#”, “_”, and  “%”), the number of numeric characters in the URL, the  number of sensitive words in the URL (e.g., “banking”,  “safe”, and “secure”), the total number of characters in  the URL, etc. 2.\t Binary features: the existence of “@” symbol in the  URL, the existence of “ ∼ ” symbol in the URL, whether  the webpage uses HTTPS, whether the IP address is used  directly in the URL, the existence of the sequence “//” in  the URL, whether the most frequent domain named in",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "the source code of the webpage is corresponding to the  domain name from the URL, the existence of JavaScript  in the webpage, whether the function “mailto” is used in  the webpage, etc. 3.\t Continuous features: the percentage of external hyper- links to and from the webpage, the percentage of hyper- links fields containing empty value or self-redirect  value, etc.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "The complete list of features, together with their descrip- tions, can be found in Ref. [7].",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Since each input of the Cyber-SN P system is a vector of  48 values and the output is binary, we compare the perfor- mances with those of an ANN with 48 input neurons and 2  output neurons. The activation function used in the ANN is  Softmax, and the network is trained using the Adam opti- mizer with a learning rate of 0.001 [1]. Both systems were  trained until the accuracy of the training dataset was greater  than 0.97. The averaged results are described in Table 2.  The Cyber-SN P system performed slightly better than the  ANN in terms of accuracy, precision, recall, and F1-score,  and it was trained on average for 1.1 epochs instead of 16.25.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Figures 4 and 5 show the accuracies of the Cyber-SN  P system and the ANN with respect to the training epoch.  Both systems were trained for 50 epochs. As in the case of",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Fig. 2   Malware detection—accuracy of the Cyber-SN P system with  respect to the training epoch",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Fig. 3   Malware detection—accuracy of the ANN with respect to the  training epoch",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Table 2   Phishing detection—comparison between LNS P system and  ANN",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Model Number of  epochs",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Acc P R F1",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Cyber-SN P",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "system",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "1.65 0.9905 0.9906 0.9905 0.9906",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "ANN 15.70 0.9889 0.9888 0.9891 0.9890",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "malware detection, the training of the ANN is smoother than  that of the Cyber-SN P system for the same learning rate.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "These experiments compare the Cyber-SN P systems with  neural networks for spam detection. The dataset used is  constructed from [20]. There are 5171 e-mails in the data- set. 3672 e-mails are ham while 1499 are spam. Unlike the  previous tasks, the samples are not composed of manually  crafted features but from raw text. To encode a text e-mail as  a vector of real numbers, we used the following procedure:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "1.\t Split the text into words based on spaces. 2.\t For each word, use a pre-trained embedding map to  transform the word into a vector of real numbers.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "3.\t The vector that represents the text is computed as the  average of the vectors assigned to each word from the  text.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "For this experiment, we use the Glove map [25]. The  embedding map is pre-trained on 6 billion tokens and",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Fig. 4   Phishing detection—accuracy of Cyber-SN P system with  respect to the training epoch",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Fig. 5   Phishing detection—accuracy of the ANN with respect to the  training epoch",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Table 3   Spam detection - comparison between LNS P system and  ANN",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Model Number of  epochs",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Acc P R F1",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Cyber-SN P",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "system",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "1.00 0.9443 0.9448 0.9443 0.9443",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "ANN 10.90 0.9603 0.9493 0.9723 0.9606",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Fig. 6   Spam detection - Accuracy of Cyber-SN P system with respect  to the training epoch",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Fig. 7   Spam detection - Accuracy of the ANN with respect to the  training epoch",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "outputs for each input word a vector of 300 real numbers.  The map preserves the semantic meaning of the word, i.e.,  semantically close words are mapped to close vectors in  terms of Euclidean distance.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "Both the Cyber-SN P system and the ANN have 300  input neurons and 2 output neurons. Similar to the other  experiments, the systems were trained until the accuracy  over the training dataset was greater than 0.93. The aver- aged results are described in Table 3. The performances  are similar, but the number of epochs needed to train the  ANN is almost ten times higher compared to the number  of epochs needed to train the Cyber-SN P system.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "Figures 6 and 7 show the accuracies of the Cyber-SN P  system and the ANN with respect to the training epoch. As  in previous experiments, the systems were trained for 50  epochs. The results indicate that the training of the ANN  is smoother than that of the Cyber-SN P system.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "We demonstrated the performances of the Cyber-SN P sys- tems in three different types of attacks: malware infection,  website phishing, and e-mail spam spreading. Table 4 pre- sents a summary of our results. We experimentally showed  that Cyber-SN P systems can solve cybersecurity-related  problems much more efficiently in terms of training epochs  than perceptron-based neural networks. For the detection  of phishing websites, Cyber-SN P systems performed  better from the perspective of all analyzed metrics. For  all experiments, the training process of the ANN was  smoother than that of the Cyber-SN P system.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "The first direction of research is to compare SN P sys- tems with other deep learning architectures, e.g., recur- rent neural network (RNN) and long short-term memory  (LSTM). The second one is to implement the Cyber-SN P  system on dedicated neuromorphic hardware and to asses  their energy consumption efficiency.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "Funding  This work was supported by the National Natural Science  Foundation of China (61972324), the Sichuan Science and Technology",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "Program (2023NSFSC1985) and Research Fund of Chengdu University  of Information Technology (KYTD202212).",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "Data availability  The datasets are available at: https://​www.​kaggle.​ com/​datas​ets/​balak​a18/​email-​spam-​class​ifica​tion-​datas​et-​csv, https://​ data.​mende​ley.​com/​datas​ets/​h3cgn​j8hft/1, https://​figsh​are.​com/​artic​les/​ datas​et/​Andro​id_​malwa​re_​datas​et_​for_​machi​ne_​learn​ing_2/​58546​53.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "Open Access  This article is licensed under a Creative Commons Attri- bution 4.0 International License, which permits use, sharing, adapta- tion, distribution and reproduction in any medium or format, as long  as you give appropriate credit to the original author(s) and the source,  provide a link to the Creative Commons licence, and indicate if changes  were made. The images or other third party material in this article are  included in the article’s Creative Commons licence, unless indicated  otherwise in a credit line to the material. If material is not included in  the article’s Creative Commons licence and your intended use is not  permitted by statutory regulation or exceeds the permitted use, you will  need to obtain permission directly from the copyright holder. To view a  copy of this licence, visit http://creativecommons.org/licenses/by/4.0/.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "1.\t Agarap, Abien Fred. (2018). Deep learning using rectified linear",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "units (ReLU). arXiv preprint arXiv:​1803.​08375 \t 2.\t Arp, Daniel, Spreitzenbarth, Michael, Hubner, Malte, Gascon,",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "Hugo, Rieck, Konrad, & Siemens, CERT. (2014). Drebin: Effec- tive and explainable detection of Android malware in your pocket.  In NDSS. (Vol. 14, pp. 23–26). \t 3.\t Bao, T., Zhou, N., Lv, Z., Peng, H., & Wang, J. (2020). Sequential",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "dynamic threshold neural P systems. Journal of Membrane Com- puting, 2(4), 255–268. \t 4.\t Bhandari, S., Gupta, R., Laxmi, V., Gaur, M. S., Zemmari, A., &",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "Anikeev, M. (2015). DRACO: DRoid analyst combo an Android  malware analysis framework. In Proceedings of the 8th Interna- tional Conference on Security of Information and Networks (pp.  283–289). \t 5.\t Ceon, Y. P., Anandharaj, H. C., Jebasingh, S., & Chandy, D. A.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "(2022). Generation of chain code pictures using cell-like spiking  neural P system with several types of spikes. Journal of Mem- brane Computing, 4(3), 243–250. \t 6.\t Chen, Y., Chen, Y., Zhang, G., Paul, P., Wu, T., Zhang, X., Rong,",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "H., & Ma, X. (2021). A survey of learning spiking neural p sys- tems and a novel instance. International Journal of Unconven- tional Computing, 16, 173–200. \t 7.\t Chiew, Kang Leng, Tan, Choon Lin, Wong, KokSheik, Yong,",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "Kelvin SC., & Tiong, Wei King. (2019). A new hybrid ensemble  feature selection framework for machine learning-based phishing  detection system. Information Sciences, 484, 153–166. \t 8.\t Dada, E. G., Bassi, J. S., Chiroma, H., Adetunmbi, A. O., &",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "Ajibuwa, O. E. (2019). Machine learning for email spam filtering:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "Table 4   Comparison between  LNS P systems and ANN Attack Model Number of  epochs",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "Acc P R F1",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "Malware Cyber-SN P system 1.95 0.9690 0.9691 0.9690 0.9690 ANN 10.95 0.9761 0.9731 0.9621 0.9676 Phishing Cyber-SN P system 1.65 0.9905 0.9906 0.9905 0.9906 ANN 15.70 0.9889 0.9888 0.9891 0.9890 Spam Cyber-SN P system 1.00 0.9443 0.9448 0.9443 0.9443 ANN 10.90 0.9603 0.9493 0.9723 0.9606",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "Review, approaches and open research problems. Heliyon, 5(6),  1080. \t 9.\t Deng, L. (2012). The MNIST database of handwritten digit",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "images for machine learning research. IEEE Signal Processing  Magazine, 29(6), 141–142. \t10.\t Díaz-Pernil, D., Gutiérrez-Naranjo, M. A., & Peng, H. (2019).",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "Membrane computing and image processing: a short survey. Jour- nal of Membrane Computing, 1(1), 58–73. \t11.\t Evangelou, M., & Adams, N. M. (2020). An anomaly detection",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "framework for cyber-security data. Computers & Security, 97,  101941. \t12.\t Geron, A. (2017). Hands-on machine learning with Scikit-Learn",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "and TensorFlow: Concepts, tools, and techniques to build intel- ligent systems. Sebastopol, CA: O’Reilly Media. \t13.\t Goodfellow, I., Bengio, Y., & Courville, A. (2016). Deep learning.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "MIT press. \t14.\t Halbouni, A., Gunawan, T. S., Habaebi, M. H., Halbouni, M.,",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "Kartiwi, M., & Ahmad, R. (2022). Machine learning and deep  learning approaches for cybersecurity: A review. IEEE Access,  10, 19572–19585. \t15.\t Hou, S., Saas, A., Ye, Y., & Chen, L. (2016). Droiddelver: An",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "Android malware detection system using deep belief network  based on API call blocks. In Web-Age Information Management:  WAIM 2016 International Workshops, MWDA, SDMMW, and  SemiBDMA, Nanchang, China, June 3–5, 2016, Revised Selected  Papers 17 (pp. 54–66). Springer. \t16.\t Ionescu, M., Păun, G., & Yokomori, T. (2006). Spiking neural P",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "systems. Fundamenta Informaticae, 71(2–3), 279–308. \t17.\t Kumar, S., Das, S., Badone, G., & Kumar, A. (2022). A Survey on",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "Efficient Interconnects for Neuromorphic Systems. In Soft Com- puting: Theories and Applications: Proceedings of SoCTA 2021  (pp. 709–718). Springer. \t18.\t Li, J., Wang, Z., Wang, T., Tang, J., Yang, Y., & Zhou, Y. (2018).",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "An Android malware detection system based on feature fusion.  Chinese Journal of Electronics, 27(6), 1206–1213. \t19.\t Li, J., Sun, L., Yan, Q., Li, Z., Srisa-An, W., & Ye, H. (2018).",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "Significant permission identification for machine-learning-based  Android malware detection. IEEE Transactions on Industrial  Informatics, 14(7), 3216–3225. \t20.\t Metsis, V., Androutsopoulos, I., Paliouras, G. (2006). Spam filter-",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "ing with naive bayes-which naive bayes? In CEAS (Vol. 17, pp.  28–69). Mountain View, CA. \t21.\t Mi, S., Zhang, L., Peng, H., & Wang, J. (2021). Medical image",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "fusion based on DTNP systems and Laplacian pyramid. Journal  of Membrane Computing, 3(4), 284–295. \t22.\t Mijwil, M., Unogwu, O. J., Filali, Y., Bala, I., & Al-Shahwani, H.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "(2023). Exploring the top five evolving threats in cybersecurity:  an in-depth overview. Mesopotamian Journal of Cybersecurity,  2023, 57–63. \t23.\t Pan, L., Song, B., & Zandron, C. (2023). On the computational",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "efficiency of tissue P systems with evolutional symport/antiport  rules. Knowledge-Based Systems, 262, 110266. \t24.\t Pan, Y., Ge, X., Fang, C., & Fan, Y. (2020). A systematic literature",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "review of Android malware detection using static analysis. IEEE  Access, 8, 116363–116379. \t25.\t Pennington, J., Socher, R., Manning, C. D. (2014). Glove: Global",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "vectors for word representation. In Proceedings of the 2014 con- ference on empirical methods in natural language processing  (EMNLP) (pp. 1532–1543) \t26.\t Plesa, M. I., Gheoghe, M., Ipate, F., & Zhang, G. (2022). A key",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "agreement protocol based on spiking neural P systems with anti- spikes. Journal of Membrane Computing, 4(4), 341–351. \t27.\t Raichle, M. E., & Gusnard, D. A. (2002). Appraising the brain’s",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "energy budget. Proceedings of the National Academy of Sciences,  99(16), 10237–10239.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "28.\t Santos, I., Brezo, F., Ugarte-Pedrero, X., & Bringas, P. G. (2013).",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "Opcode sequences as representation of executables for data-min- ing-based unknown malware detection. Information Sciences, 231,  64–82. \t29.\t Singh, L., Hofmann, M. (2017). Dynamic behavior analysis of",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "Android applications for malware detection. In 2017 International  Conference on Intelligent Communication and Computational  Techniques (ICCT) (pp. 1–7). IEEE. \t30.\t Song, B., & Pan, L. (2021). Rule synchronization for tissue P",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "systems. Information and Computation, 281, 104685. \t31.\t Tan, C. L. (2018). Phishing dataset for machine learning: Feature",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "evaluation. Mendeley Data, 1, 2018. \t32.\t Verlan, S., Freund, R., Alhazov, A., Ivanov, S., & Pan, L. (2020).",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "A formal framework for spiking neural P systems. Journal of  Membrane Computing, 2(4), 355–368. \t33.\t Vinayakumar, R., Alazab, M., Soman, K. P., Poornachandran, P.,",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "& Venkatraman, S. (2019). Robust intelligent malware detection  using deep learning. IEEE Access, 7, 46717–46738. \t34.\t Wang, Z.-Q., Manry, M. T., & Schiano, J. L. (2000). LMS learning",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "algorithms: misconceptions and new results on convergence. IEEE  Transactions on Neural Networks, 11(1), 47–56. \t35.\t Wei, L., Luo, W., Weng, J., Zhong, Y., Zhang, X., & Yan, Z.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "(2017). Machine learning-based malicious application detection  of Android. IEEE Access, 5, 25591–25601. \t36.\t Wu, T., Lyu, Q., & Pan, L. (2021). Evolution-communication",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "spiking neural P systems. International Journal of Neural Sys- tems, 31(02), 2050064. \t37.\t Yahya, R. I., Shamsuddin, S. M., Yahya, S. I., Hasan, S., Al-Salibi,",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "B., Al-Khafaji, G. (2016). Image segmentation using membrane  computing: a literature survey. In International Conference on  Bio-Inspired Computing: Theories and Applications (pp. 314– 335). Springer. \t38.\t Yan, J., Qi, Y., & Rao, Q. (2018). Detecting malware with an",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "ensemble method based on deep neural network. Security and  Communication Networks, 2018, 1–16. https://​doi.​org/​10.​1155/​ 2018/​72470​95 \t39.\t Yang, T.-J., Chen, Y.-H., Emer, J., Sze, V. (2017). A method to",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "estimate the energy consumption of deep neural networks. In 2017  51st asilomar conference on signals, systems, and computers (pp.  1916–1920). IEEE. \t40.\t Yi, P., Guan, Y., Zou, F., Yao, Y., Wang, W., & Zhu, T. (2018).",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "Web phishing detection using a deep learning framework. Wire- less Communications and Mobile Computing, 2018, 4678746. \t41.\t Zhang, H., Liu, X., & Shao, Y. (2022). Chinese dialect tone’s",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "recognition using gated spiking neural P systems. Journal of  Membrane Computing, 4(4), 284–292. \t42.\t Zhang, G., Zhang, X., Rong, H., Paul, P., Zhu, M., Neri, F., &",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "Ong, Y.-S. (2022). A layered spiking neural system for classifica- tion problems. International Journal of Neural Systems, 32(08),  2250023. \t43.\t Zhang, X., & Liu, X. (2022). Multiview Clustering of Adaptive",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "Sparse Representation Based on Coupled P Systems. Entropy,  24(4), 568. \t44.\t Zhao, S., Zhang, L., Liu, Z., Peng, H., & Wang, J. (2022). Con-",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "vSNP: A deep learning model embedded with SNP-like neurons.  Journal of Membrane Computing, 4(1), 87–95.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "Publisher's Note  Springer Nature remains neutral with regard to  jurisdictional claims in published maps and institutional affiliations.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    }
+  ],
+  "warnings": []
+}

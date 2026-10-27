@@ -1,0 +1,1231 @@
+\documentclass[12pt,a4paper]{report}
+
+%==============================================================================
+% PREAMBLE AND PACKAGES (Aligned with CEK / KTU B.Tech Project Format)
+%==============================================================================
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{fancyhdr}
+\usepackage{cite}
+\usepackage{a4wide}
+\usepackage{float}
+\usepackage{epsfig}
+\usepackage{longtable}
+\usepackage{enumerate}
+\usepackage{afterpage}
+\usepackage{multirow}
+\usepackage{ragged2e}
+\usepackage{gensymb}
+\usepackage{amsfonts} 
+\usepackage[left=3.5cm,top=1.5cm,right=3cm,bottom=3cm]{geometry}
+\usepackage{setspace}           
+\usepackage{txfonts}
+\usepackage{standalone}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usetikzlibrary{calc, shapes.geometric, arrows, arrows.meta, positioning, fit, backgrounds, shadows, tikzmark}
+
+% Color definitions for TikZ diagrams (Clinical Deep Navy, Ocean Blue & Cyan Palette)
+\definecolor{lavenderDark}{RGB}{15, 44, 89}
+\definecolor{lavenderDeep}{RGB}{10, 28, 58}
+\definecolor{lavenderMedium}{RGB}{29, 78, 158}
+\definecolor{lavenderLight}{RGB}{240, 246, 255}
+\definecolor{lavenderBorder}{RGB}{180, 205, 237}
+\definecolor{lavenderAccent}{RGB}{2, 132, 199}
+\definecolor{prismNavy}{RGB}{15, 44, 89}
+\definecolor{prismBlue}{RGB}{29, 78, 158}
+\definecolor{prismTeal}{RGB}{13, 148, 136}
+\definecolor{prismMint}{RGB}{236, 253, 245}
+\definecolor{prismGold}{RGB}{217, 119, 6}
+\definecolor{prismDark}{RGB}{15, 23, 42}
+\definecolor{prismLight}{RGB}{248, 250, 252}
+\definecolor{prismIndigo}{RGB}{30, 58, 138}
+\definecolor{prismSlate}{RGB}{100, 116, 139}
+\definecolor{statusFail}{RGB}{220, 38, 38}
+\definecolor{cInput}{RGB}{241, 245, 249}
+\definecolor{cStem}{RGB}{224, 242, 254}
+\definecolor{cStage1}{RGB}{209, 250, 229}
+\definecolor{cStage2}{RGB}{254, 243, 199}
+\definecolor{cStage3}{RGB}{254, 226, 226}
+\definecolor{cStage4}{RGB}{207, 250, 254}
+\definecolor{cHead}{RGB}{219, 234, 254}
+\definecolor{cOutput}{RGB}{255, 228, 230}
+\definecolor{cDeliverable}{RGB}{204, 251, 241}
+\definecolor{panelBgA}{RGB}{248, 250, 254}
+\definecolor{panelBgB}{RGB}{255, 252, 247}
+\definecolor{panelBorder}{RGB}{195, 210, 230}
+
+\usepackage{subfiles}
+\usepackage{adjustbox}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins}
+
+\newcommand{\Usefont}[1]{\fontfamily{#1}\selectfont}
+
+\usepackage{lscape}
+\linespread{1.5}
+
+\usepackage{url}
+\usepackage{subcaption}
+\usepackage[intoc, english]{nomencl}
+\usepackage[nottoc]{tocbibind}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{hyperref}
+
+% Compact chapter-opening layout
+\makeatletter
+\def\@makechapterhead#1{%
+  \vspace*{0pt}%
+  {\parindent\z@ \raggedright \normalfont
+    \ifnum\c@secnumdepth>\m@ne
+      \huge\bfseries \@chapapp\space \thechapter
+      \par\nobreak
+      \vskip 10pt
+    \fi
+    \interlinepenalty\@M
+    \Huge\bfseries #1\par\nobreak
+    \vskip 15pt
+  }}
+\makeatother
+
+\hypersetup{
+    plainpages=false,
+    pdfpagelabels=true,
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=black,
+    pdftitle={Spiking Neural Network-Based Anomaly Detection and Tracking},
+    pdfauthor={Adhil N, Adarsh A S, Adwaith Raj, Abhishek Suresh}
+}
+
+% Spacing and line-breaking settings to prevent overflow and overfull hboxes
+\setlength{\headheight}{15pt}
+\hyphenpenalty=1000
+\tolerance=2000
+\emergencystretch=2.5em
+
+\bibliographystyle{IEEEtran}
+\renewcommand{\bibname}{References}
+
+% Figure search path
+\graphicspath{{figures/}{diagrams/}{./}}
+
+%==============================================================================
+% METADATA DEFINITIONS (Project Group & CEK)
+%==============================================================================
+\gdef \title{SPIKING NEURAL NETWORK-BASED ANOMALY DETECTION AND TRACKING}
+\gdef \shorttitle{SNN-Based Anomaly Detection and Tracking}
+
+\gdef \authorA{ADHIL N}
+\gdef \rollnoA{KNP23CS014}
+
+\gdef \authorB{ADARSH A S}
+\gdef \rollnoB{KNP23CS010}
+
+\gdef \authorC{ADWAITH RAJ}
+\gdef \rollnoC{KNP23CS019}
+
+\gdef \authorD{ABHISHEK SURESH}
+\gdef \rollnoD{KNP23CS008}
+
+\gdef \acadyear{2026--2027}
+\gdef \submonth{October 2026}
+\gdef \month{October 2026}
+\gdef \date{28-10-2026}
+\gdef \dept{Computer Science and Engineering}
+\gdef \deptabbr{Dept.\ of CSE}
+\gdef \degree{Bachelor of Technology}
+\gdef \branch{Computer Science and Engineering}
+\gdef \college{College of Engineering Karunagappally}
+\gdef \collegeplace{Kollam}
+\gdef \collegetown{Karunagappally}
+
+\gdef \guide{Mrs. Swathi S}
+\gdef \guidedes{Assistant Professor}
+\gdef \coordinator{Dr. Smitha P}
+\gdef \coordinatordes{Associate Professor and HOD}
+\gdef \semcordinatorA{Dr. Smitha P}
+\gdef \semcordinatorAdes{Associate Professor and HOD}
+\gdef \hod{Dr. Smitha P}
+\gdef \hoddes{Associate Professor and HOD}
+
+\providecommand{\candidateName}{\authorA}
+\providecommand{\candidateRoll}{\rollnoA}
+
+%==============================================================================
+% DOCUMENT BODY
+%==============================================================================
+
+\begin{document}
+
+%------------------------------------------------------------------------------
+% FRONT MATTER
+%------------------------------------------------------------------------------
+\hypersetup{pageanchor=false}
+\include{coverpage}
+\include{vision_mission}
+\include{certificate1}
+\ifdefined\hasIndividualCert
+\include{certificate_individual}
+\fi
+\include{declaration}
+\hypersetup{pageanchor=true}
+
+\cleardoublepage
+\pagenumbering{roman}
+\pagestyle{plain}
+
+\include{abstract}
+\include{acknowledgement}
+
+\cleardoublepage
+\tableofcontents
+\cleardoublepage
+\listoffigures
+\cleardoublepage
+\listoftables
+\cleardoublepage
+
+\include{symbol}
+
+%------------------------------------------------------------------------------
+% MAIN BODY (Arabic Numbering & Header/Footer)
+%------------------------------------------------------------------------------
+\cleardoublepage
+\setcounter{page}{1}
+\pagenumbering{arabic}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\fontsize{9}{11}\selectfont \textit{\shorttitle}}
+\fancyhead[R]{\fontsize{9}{11}\selectfont \textit{\deptabbr, CEK}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+%==============================================================================
+% CHAPTER 1: INTRODUCTION
+%==============================================================================
+\chapter[Introduction]{\Huge Introduction}
+
+Security and video surveillance networks represent critical public infrastructure across contemporary smart cities, institutional campuses, industrial facilities, and transport hubs. With the worldwide multiplication of Closed-Circuit Television (CCTV) cameras generating petabytes of visual data every hour, traditional surveillance operations face severe scalability and operational bottlenecks. Human monitoring of hundreds of concurrent feeds is notoriously labor-intensive, error-prone, and unsustainable over long shifts, leading to undetected security breaches, delays in emergency intervention, and compromised public safety.
+
+\section{Background and Overview}
+To overcome the limitations of manual monitoring, automated Video Anomaly Detection (VAD) and Multi-Target Multi-Camera Tracking (MTMCT) have emerged as pivotal research domains in computer vision. VAD aims to identify irregular, illicit, or dangerous occurrences---such as assaults, robberies, weapon brandishing, fighting, and unauthorized intrusions---without requiring exhaustive manual supervision. Concurrently, MTMCT and Person Re-Identification (Re-ID) aim to re-identify and track individuals across non-overlapping camera views, mapping their spatio-temporal trajectories across large physical environments.
+
+Despite substantial advances in artificial intelligence, modern automated surveillance systems suffer from two foundational architectural flaws:
+\begin{enumerate}[(i)]
+    \item \textbf{Prohibitive Energy Consumption of 3D CNNs:} State-of-the-art deep learning architectures for spatiotemporal video analysis, such as 3D Convolutional Neural Networks (3D CNNs like C3D, I3D, and SlowFast), process dense video volumes indiscriminately. These models dissipate large amounts of power (frequently exceeding $40\,\text{W}$ to $80\,\text{W}$ per stream) and require hundreds of GFLOPs of computation per video clip. Such high thermal and electrical demands are incompatible with energy-constrained edge deployment on local cameras, where continuous 24/7 operation is strictly required.
+    \item \textbf{Disconnected, Continuous Standalone Architectures:} In conventional deployments, anomaly detection and multi-camera tracking operate as uncoordinated, independent silos. Tracking and Re-ID engines run continuously across all cameras, exhaustively detecting and tracking every passerby regardless of whether any suspicious activity has occurred. Because anomalous incidents are statistically rare (constituting less than 6\% of real-world surveillance footage), over 94\% of continuous tracking computations and video transmission bandwidth are entirely wasted on routine, benign activities.
+\end{enumerate}
+
+\section{Motivation}
+This research is motivated by the urgent practical necessity for an energy-efficient, biologically inspired, and unified surveillance framework. In biological visual systems, processing is inherently sparse and event-driven: the mammalian retina and visual cortex do not transmit full-resolution frames continuously at high clock frequencies. Instead, visual neurons remain largely quiescent during static, unremarkable scenes, emitting discrete action potentials (spikes) only when novel or salient temporal changes occur.
+
+Spiking Neural Networks (SNNs), recognized as the third generation of neural network models, mathematically capture this sparse, event-driven computing paradigm. By communicating via discrete binary spikes rather than continuous floating-point activations, SNNs offer dramatic energy reductions and low latency when deployed on neuromorphic and edge computing hardware. Furthermore, by pairing a lightweight convolutional backbone (MobileNetV3) with a dual-timescale SNN temporal processor, an edge device can continuously monitor video streams with minimal power consumption, serving as an intelligent event-triggered gating mechanism for downstream multi-camera tracking.
+
+\section{Proposed Solution: SNN-Based Anomaly Detection and Event-Driven Tracking}
+To overcome these limitations, this project presents an end-to-end neuromorphic edge surveillance framework integrating two complementary, tightly coupled subsystems:
+\begin{itemize}
+    \item \textbf{System A (Continuous Low-Power Anomaly Detector):} Operates 24/7 at the camera edge, ingesting 16-frame video clips. It extracts spatial feature maps using a truncated, pretrained MobileNetV3-Large backbone, refines them with spatial attention, and models temporal dynamics using a dual-timescale SNN composed of Parametric Leaky Integrate-and-Fire (PLIF) neurons trained via surrogate gradient backpropagation.
+    \item \textbf{System B (Event-Triggered Multi-Camera Person Tracking):} Remains in a low-power dormant state until System~A detects an anomaly with confidence exceeding a calibrated decision threshold ($\theta_a = 0.521$). Upon triggering, System~A automatically extracts suspect person crops, bounding boxes, and timestamp metadata to a structured query folder. System~B immediately activates, deploying YOLOv8n for person detection, two-stage ByteTrack for trajectory association, Contrast Limited Adaptive Histogram Equalization (CLAHE) for illumination enhancement, OSNet-AIN for omni-scale re-identification feature extraction, and Mahalanobis-filtered tracklet centralization for cross-camera matching.
+\end{itemize}
+
+\section{Objectives of the Project}
+The primary scientific, algorithmic, and engineering objectives of this project are:
+\begin{enumerate}
+    \item To design a lightweight, hybrid CNN--SNN deep learning architecture capable of real-time video anomaly detection on edge computing hardware.
+    \item To implement a dual-timescale spiking temporal processor using Parametric Leaky Integrate-and-Fire (PLIF) neurons with learnable membrane time constants that capture both rapid transient actions (e.g., assaults) and gradual temporal evolutions (e.g., burglary).
+    \item To overcome the non-differentiability of biological spike emission by formulating a smooth surrogate gradient backpropagation through time (BPTT) framework.
+    \item To engineer an event-driven inter-system gating interface that drastically curtails redundant tracking computations by activating downstream Re-ID modules only when confirmed anomalies occur.
+    \item To formulate a two-tier person detection and association pipeline combining YOLOv8n with two-stage ByteTrack Kalman filtering to preserve tracklet temporal continuity under severe occlusions.
+    \item To develop a robust person re-identification framework employing OSNet-AIN with Mahalanobis-filtered tracklet feature centralization to overcome cross-camera viewpoint variations and domain shifts.
+    \item To evaluate detection and tracking accuracy, energy consumption, and inference throughput across established public surveillance benchmarks, including UCF-Crime, DukeMTMC-reID, Market-1501, ShanghaiTech Campus, and UCSD Pedestrian.
+\end{enumerate}
+
+\section{Scope and Impact}
+The proposed framework is targeted for decentralized smart surveillance networks in municipal public spaces, commercial complexes, university campuses, and residential sectors. By restricting high-bandwidth video transmission and heavy tracking computation to verified anomaly windows, the system preserves citizen privacy, drastically cuts network bandwidth requirements by over 96\%, and enables sustainable 24/7 battery- or solar-powered edge deployment.
+
+\section{Organization of the Report}
+The remainder of this report is organized into the following chapters:
+\begin{itemize}
+    \item \textbf{Chapter 2 (Literature Survey):} Synthesizes foundational theoretical principles and conducts an exhaustive comparative survey of twelve contemporary state-of-the-art investigations in bio-inspired spiking networks, deep video anomaly detection, imbalanced learning, and multi-camera tracking, highlighting critical research gaps.
+    \item \textbf{Chapter 3 (Problem Definition):} Formulates the core mathematical and architectural problems, establishes edge resource constraints, and formalizes the underlying equations.
+    \item \textbf{Chapter 4 (Requirements Specification):} Details the complete Software and Hardware Requirements Specification (SRS), functional requirements, and non-functional metrics.
+    \item \textbf{Chapter 5 (System Architecture and Design):} Details the high-level system structure, the constituent components of System~A and System~B, the event-driven gating algorithm, and Level-1 Data Flow Diagrams.
+    \item \textbf{Chapter 6 (Design and Methodology):} Expounds the mathematical foundations of PLIF neuron dynamics, surrogate gradient learning, dual-timescale fusion, focal loss formulation, and tracklet feature centralization.
+    \item \textbf{Chapter 7 (Experimental Results and Analysis):} Presents extensive empirical evaluations, ROC curves, confusion matrices, ablation studies, efficiency benchmarks, and qualitative visualizations.
+    \item \textbf{Chapter 8 (Feasibility Study):} Evaluates technical, economic, and schedule feasibility alongside the project milestone Gantt chart.
+    \item \textbf{Chapter 9 (Conclusion and Future Scope):} Summarizes project contributions, notes operational limitations, and charts prospective research trajectories.
+\end{itemize}
+
+
+%==============================================================================
+% CHAPTER 2: LITERATURE SURVEY
+%==============================================================================
+\chapter[Literature Survey]{\Huge Literature Survey}
+
+Automated video surveillance systems operate at the convergence of spatiotemporal feature learning, multi-target tracking, deep metric learning, and neuromorphic computing. This chapter presents a comprehensive literature survey synthesizing foundational paradigms and recent state-of-the-art investigations in video anomaly detection, bio-inspired spiking neural networks, multi-camera tracking, and resource-constrained edge computing.
+
+\section{Foundational Domains and Research Pillars}
+The evolution of intelligent video surveillance is anchored in three core research domains:
+
+\subsection{Video Anomaly Detection}
+Early investigations into video anomaly detection relied heavily on handcrafted spatiotemporal features and statistical modeling. Background subtraction techniques utilizing Gaussian Mixture Models (GMM)~\cite{ref_stauffer1999_gmm} and kernel density estimation formed the initial foundation of motion-based anomaly detection. While effective in controlled, static indoor environments, these methods suffered severe degradation when subjected to dynamic backgrounds, illumination shifts, weather changes, and dense crowds. Subsequent optical flow methods attempted to model normal motion patterns by calculating pixel-level velocity fields; however, dense optical flow computation remains computationally prohibitive for real-time edge processing and exhibits extreme sensitivity to visual sensor noise.
+
+The advent of deep convolutional neural networks revolutionized video surveillance. Initial deep learning approaches framed anomaly detection as a semi-supervised reconstruction problem using convolutional autoencoders~\cite{ref_hasan2016_regularity}, Variational Autoencoders (VAEs), and Generative Adversarial Networks (GANs). These methods train solely on normal surveillance footage under the hypothesis that anomalous events will exhibit abnormally high reconstruction errors. While conceptually attractive, reconstruction-based approaches suffer from two key shortcomings: first, over-capacity autoencoders often generalize too well, successfully reconstructing anomalous events with low error; second, they process every frame exhaustively, demanding high computational power regardless of whether anomalies are present.
+
+To address complex multi-class surveillance scenarios, Sultani et~al.~\cite{ref_sultani2018_ucfcrime} introduced a weakly supervised Multiple Instance Learning (MIL) framework evaluated on the large-scale UCF-Crime dataset. By training on video-level labels without requiring tedious frame-by-frame annotations, their approach achieved significant gains in detecting real-world crimes. However, standard spatiotemporal architectures, including 3D Convolutional Neural Networks (C3D, I3D), require over 100 GFLOPs per clip, dissipating between $40\,\text{W}$ and $80\,\text{W}$ during inference~\cite{ref_sultani2018_ucfcrime}. Such power dissipation severely restricts their deployment on edge surveillance cameras.
+
+\subsection{Multi-Camera Tracking and Person Re-Identification}
+Multi-Target Multi-Camera Tracking (MTMCT) requires three interconnected tasks: person detection, single-camera trajectory tracking, and cross-camera identity matching (Re-ID). For object detection, single-stage detectors such as YOLOv3~\cite{ref_redmon2018_yolov3} and YOLOv8~\cite{ref_jocher2023_yolov8} offer an optimal trade-off between localization precision and inference latency, enabling rapid candidate generation on edge devices.
+
+For single-camera tracking, Simple Online and Realtime Tracking (SORT)~\cite{ref_bewley2016_sort} demonstrated the power of Kalman filtering combined with the Hungarian algorithm. However, standard SORT frequently loses identities under occlusion or sudden camera jitter. To overcome this, Zhang et~al.~\cite{ref_zhang2022_bytetrack} developed ByteTrack, a multi-object tracking algorithm that associates almost every detection box by separating candidates into high-confidence and low-confidence pools. By recovering true objects from low-confidence boxes, ByteTrack drastically mitigates fragmentation and identity switches.
+
+In person re-identification, the goal is to associate person appearances across non-overlapping camera views. Zheng et~al.~\cite{ref_zheng2016_reid_survey} surveyed the evolution from handcrafted color histograms to deep metric learning. Hermans et~al.~\cite{ref_hermans2017_triplet} demonstrated the effectiveness of batch-hard triplet loss for learning robust feature embeddings. To capture multi-scale person representations spanning global body posture to fine-grained local cues (e.g., shoes, logos, bags), Zhou et~al.~\cite{ref_zhou2019_osnet} designed OSNet (Omni-Scale Network). Zhou et~al.~\cite{ref_zhou2021_osnet_ain} further enhanced this architecture with OSNet-AIN, incorporating Attentive Instance Normalization to suppress camera-specific illumination biases and improve cross-domain generalization. Nevertheless, existing tracking systems assume continuous execution, processing massive volumes of benign footage and squandering energy.
+
+\subsection{Neuromorphic Computing and Spiking Neural Networks}
+Spiking Neural Networks (SNNs) emulate biological neural computation by communicating via sparse, event-driven action potentials (spikes) emitted only when neuronal membrane potentials exceed a threshold. Unlike traditional Artificial Neural Networks (ANNs) that execute dense matrix multiplications at every forward pass, SNNs perform event-driven accumulation, saving significant energy on specialized neuromorphic hardware or edge processors.
+
+Historically, the non-differentiable nature of discrete spike generation hindered the training of deep SNNs via backpropagation. Researchers traditionally converted pretrained ANNs to SNNs, a process requiring large time windows ($T > 100$) and incurring substantial accuracy degradation. Recently, Neftci et~al.~\cite{ref_neftci2019_surrogate} demonstrated that surrogate gradient learning enables direct supervised training of deep SNNs using backpropagation through time (BPTT). Kundu et~al.~\cite{ref_kundu2021_spikin} applied spiking networks to temporal action recognition, proving that temporal dynamics can be captured within small latency windows ($T \le 16$). However, existing SNN literature has focused primarily on static image benchmarks (e.g., neuromorphic MNIST, CIFAR) or isolated action classification, with no prior investigation integrating SNNs into an event-gated, multi-camera surveillance tracking ecosystem.
+
+\section{Systematic Survey of Contemporary Literature}
+To establish the state-of-the-art across anomaly detection, bio-inspired computing, and edge architectures, this section provides an in-depth analytical survey of twelve recent key studies:
+
+\subsection{Bio-Inspired and Neuromorphic Spiking Architectures}
+
+\subsubsection{Convolutional Spiking Neural Network (CSNN) for Intrusion Detection}
+Xie and Chen~\cite{ref_xie2024_csnn} proposed a lightweight and energy-efficient intrusion detection model based on Convolutional Spiking Neural Networks (CSNN). To bridge discrete spike computation and complex continuous feature inputs, the authors engineered a novel \textit{time-value} spike encoding algorithm, wherein spikes emitted earlier in the temporal window are assigned geometrically higher weighting ($N_t = 2 \cdot N_{t+1}$). Furthermore, a custom loss function was designed combining classification prediction error ($\beta$) with ranking supervision ($\alpha$), driving the model to maximize the prediction margin. Evaluated on the CSE-CIC-IDS2018 and CIC-DDoS2019 benchmarks, the CSNN achieved superior classification accuracy ($96.85\%$ to $99.93\%$), outperforming baseline spiking models (Spiking DFR + MLP and Spike-DHS) with a $23\%$ gain in detection accuracy, a $19\%$ latency improvement, and a $28\%$ to $51\%$ reduction in energy consumption. However, the architecture is formulated for static tabular network features mapped into binary matrices, leaving unaddressed the continuous temporal dynamics of surveillance video clips and spatial object localization.
+
+\subsubsection{Online Evolving Spiking Neural Networks (eSNN) for Streaming Outliers}
+B{\"a}{\ss}ler, Kortus, and G{\"u}hring~\cite{ref_bassler2022_esnn} developed an unsupervised anomaly detection framework for multivariate streaming time series utilizing online evolving Spiking Neural Networks (eSNN). Their approach introduced three key contributions: (1) a rank-order-based learning rule that adjusts synaptic weights using precise incoming spike timing without iterative offline backpropagation, (2) an online encoding mechanism employing multi-dimensional Gaussian Receptive Fields (GRF) to project multivariate continuous signals into temporal spike trains, and (3) a continuous outlier scoring function for enhanced interpretability. Evaluated on the Numenta Anomaly Benchmark (NAB) and synthetic multivariate streams, the evolving SNN demonstrated superior real-time adaptation and anomaly recall while requiring substantially lower computational memory than conventional sliding-window detectors. Nevertheless, the model is inherently bounded to low-to-medium dimensional sensory signals and cannot directly process high-dimensional spatial pixel matrices without heavy external visual feature extraction.
+
+\subsubsection{Cyber Spiking Neural P Systems (Cyber-SN P) for Threat Detection}
+Ple{\c{s}}a, Gheorghe, Ipate, and Zhang~\cite{ref_plesa2024_snp} investigated the application of membrane computing to cybersecurity, formulating Cyber Spiking Neural P (Cyber-SN P) systems. SN P systems represent a class of third-generation distributed, parallel bio-inspired computing models wherein neurons reside in compartments and communicate via discrete spiking rules. The authors developed tailored Cyber-SN P architectures for Android malware detection, phishing URL identification, and email spam filtering. Experimental comparisons demonstrated that Cyber-SN P systems achieve classification accuracy on par with multi-layer perceptrons while requiring drastically fewer training epochs and exhibiting ultra-low energy dissipation suitable for neuromorphic hardware. However, the discrete rule-based membrane mechanics lack differentiable backpropagation capabilities, restricting their scalability to deep end-to-end vision pipelines.
+
+\subsubsection{Immune-Inspired Anomaly Detection by Design in Edge Systems}
+Pinto, Gon{\c{c}}alves, Delsing, and Tovar~\cite{ref_pinto2022_dca} proposed an embedded anomaly-based host intrusion detection system (A-HIDS) for resource-constrained industrial Edge devices by leveraging the bio-inspired incremental Dendritic Cell Algorithm (iDCA). The framework was implemented following a model-based engineering (MBE) paradigm adhering to the IEC 61499 function block standard, enabling native security-by-design integration. Tested on industrial Edge controllers monitoring OPC UA network traffic, the iDCA model successfully recognized multi-stage attacks with minimal CPU and memory overhead, demonstrating zero performance degradation on primary control tasks. Despite its edge efficiency, the algorithm relies on pre-engineered categorical antigen-signal mappings and does not extend to multi-camera computer vision or continuous visual tracking.
+
+\subsection{Deep Video Anomaly Detection and Visual Attention}
+
+\subsubsection{Inflated 3D Convolution and Deep Multiple Instance Learning}
+Elmetwally, Eldeeb, and Elmougy~\cite{ref_elmetwally2024_i3d} addressed automated video anomaly detection in surveillance footage by integrating Inflated 3D Convolutional Networks (I3D-ResNet50) with deep Multiple Instance Learning (MIL). The system models regular and anomalous surveillance clips as positive and negative bags containing temporal video snippets. Snippet-level features are extracted using an I3D-ResNet50 backbone subjected to 10-crop spatiotemporal data augmentation and scored via fully connected layers. Evaluated on the UCF-Crime and UCF-101 benchmarks across 13 anomalous event classes (including fighting, burglary, and road accidents), the architecture achieved an Area Under the ROC Curve (AUC) of $82.85\%$ within 10,000 optimization iterations, surpassing classical C3D and 2D-CNN baselines. However, the heavy computational footprint of 3D convolutions ($>50\,\text{W}$ power dissipation and dense temporal volume convolutions) induces prohibitive thermal and latency bottlenecks on edge cameras, while omitting any identity tracking across cameras.
+
+\subsubsection{Dual-Channel Autoencoder with Key Region Feature Enhancement (KRFE-DAE)}
+Ye, Song, Zhao, and Zhang~\cite{ref_ye2024_krfe} identified that conventional autoencoder-based video anomaly detectors either fail to suppress dynamic background noise (frame-level methods) or discard essential contextual interactions (object-level methods). To overcome this dilemma, they formulated the KRFE-DAE algorithm comprising two interconnected innovations: (1) a Key Region Extraction Network (KREN) that segments moving foreground regions with high anomaly probability from redundant background pixels, and (2) a dual-channel autoencoder that fuses key region features with complete global context, augmented by channel attention modules across the decoder deconvolution layers. Evaluated across three challenging public benchmarks, the method achieved frame-level AUCs of $97.4\%$ on UCSD Ped2, $86.8\%$ on CUHK Avenue, and $74.2\%$ on ShanghaiTech Campus. While highly accurate, the dual-stream pixel reconstruction generates heavy computational latency, and the reconstruction error paradigm remains prone to false negatives when autoencoders over-generalize to complex unseen anomalous motions.
+
+\subsection{Imbalanced Classification, Explainability, and Robustness}
+
+\subsubsection{Ensemble Undersampling for Extreme Class Imbalance}
+Pimsarn, Boongoen, Iam-On, Naik, and Yang~\cite{ref_pimsarn2022_imbalance} addressed the severe class imbalance problem inherent in real-world anomaly detection, where abnormal incidents constitute a tiny fraction of observations. Under adversarial conditions where attackers deliberately obfuscate signatures, standard detectors suffer severe degradation. The authors formulated a multiple-clustering-based undersampling ensemble framework that builds an accurate, diverse pool of cluster centroids representing the majority class, subsequently optimizing representative subsets via three distinct objective functions (FF-Majority, FF-Minority, and FF-Overall). Benchmark evaluations demonstrated significant improvements in minority-class F1-score and Matthews Correlation Coefficient (MCC) over SMOTE and random undersampling. Their findings underscore that unweighted loss functions fail in rare-event surveillance, directly motivating the adoption of focal loss formulations in our visual anomaly classifier.
+
+\subsubsection{Explainable Subspace Anomaly Detection (SPINEX)}
+Naser and Naser~\cite{ref_naser2025_spinex} introduced SPINEX-anomaly (Similarity-based Predictions with Explainable Neighbors Exploration), a novel algorithm that identifies outliers by exploring similarity metrics and higher-order feature interactions across multiple projected subspaces. Evaluated extensively across 39 synthetic and real-world benchmark datasets against 21 established anomaly detection algorithms, SPINEX achieved top-tier performance (ranking 1st on synthetic benchmarks and 7th on complex real datasets) with a moderate computational complexity of $\mathcal{O}(n \log n \times d)$. Significantly, the algorithm provides native post-hoc explainability, generating local neighbor attributions for each detected outlier. While powerful for structured multidimensional tabular data, its distance-metric paradigm cannot directly process raw spatiotemporal pixel grids or high-rate video streams.
+
+\subsubsection{Graph-Based Attribute Extension for Networked SCADA Systems}
+Anwar, Lundberg, and Borg~\cite{ref_anwar2022_scada} tackled unsupervised anomaly detection in critical infrastructure supervisory control and data acquisition (SCADA) networks. Standard machine learning classifiers frequently incur high error rates due to the statistical overlap between normal and anomalous packets. The authors developed a graph-based behavioral attribute extension technique, modeling communicating nodes as vertices and deriving structural graph properties to augment standard IEC 60870-5-104 telemetry features. When paired with Support Vector Data Description (SVDD), the enhanced attribute set raised the average F1-score from $0.6$ to $0.9$ and boosted the MCC from $0.3$ to $0.8$, while reducing the missed-alert rate to an exceptional $\le 0.3\%$. The study proves that structural topology and behavioral enrichment are vital for disambiguating borderline anomalous behavior.
+
+\subsubsection{Cascaded Hybrid Classifiers for Behavioral Anomaly Detection}
+Rahman, Halder, Uddin, and Acharjee~\cite{ref_rahman2021_social} developed a cascaded hybrid classification system (DT-SVMNB) to detect behavioral anomalies and malicious actors in online networks. The architecture cascades three complementary machine learning stages: (1) a C5.0 Decision Tree to rapidly partition inputs into normal and candidate anomalous pools with minimal memory overhead, (2) a Support Vector Machine (SVM) to classify fine-grained anomaly subtypes, and (3) a Naive Bayesian Classifier (NBC) to categorize high-risk states. By incorporating $k$-means clustering to prevent forced assignment, the hybrid framework attained $\sim 98\%$ accuracy across real-world datasets. This cascaded philosophy highlights the computational advantage of deploying a lightweight first-stage filter to gate heavy downstream classification pipelines.
+
+\subsection{Industrial Systems Auditing and Neural Network Taxonomy}
+
+\subsubsection{Empirical Challenges of Machine Learning in Operational Control Systems}
+Raman, Ahmed, and Mathur~\cite{ref_raman2021_ics} presented a landmark experimental evaluation investigating data-centric versus behavioral machine learning anomaly detectors deployed in live, operational municipal infrastructure (a city-scale water treatment testbed). The authors elucidated critical real-world failure modes that historical offline datasets obscure: sensor noise drift, temporal distribution shifts, high false alarm rates under routine operational changes, and non-stationary process dynamics. Their findings demonstrated that purely data-driven models without domain-informed architectural constraints generate untenable false positive burdens, proving the absolute necessity of combining temporal physical priors with robust thresholding in mission-critical deployments.
+
+\subsubsection{Comprehensive Survey of Deep Neural Networks for Anomaly Detection}
+Drewek-Ossowicka, Pietro{\l}aj, and Rumi{\'n}ski~\cite{ref_drewek2021_survey} conducted a systematic survey and comparative benchmarking of neural network architectures utilized in intrusion and anomaly detection systems. Their taxonomy categorized feedforward networks, deep CNNs, Recurrent Neural Networks (LSTM, GRU), Deep Belief Networks (DBN), and Autoencoders across established benchmarks (NSL-KDD, UNSW-NB15, Kyoto). The survey synthesized detection rates, false alarm vulnerabilities, and training complexities, concluding that while deep recurrent and convolutional models provide high detection rates, their extreme computational demands pose severe impediments for real-time edge computing, identifying lightweight hybrid models and energy-efficient neural processing as the most pressing future research frontier.
+
+\section{Summary and Comparative Analysis}
+Table~\ref{tab:literature_survey_summary} provides a comprehensive structured comparison of the surveyed literature alongside foundational benchmarks, delineating their core methodologies, evaluated datasets, primary strengths, and identified research limitations.
+
+\begin{table}[H]
+\centering
+\caption{Systematic Summary and Comparative Analysis of Surveyed Literature}
+\label{tab:literature_survey_summary}
+\vspace{4pt}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|p{3.2cm}|p{3.8cm}|p{3.2cm}|p{4.2cm}|p{4.5cm}|}
+\hline
+\textbf{Author(s) \& Year} & \textbf{Core Methodology} & \textbf{Benchmark Dataset} & \textbf{Key Strengths \& Findings} & \textbf{Identified Gaps \& Limitations} \\
+\hline
+\hline
+Xie \& Chen (2024)~\cite{ref_xie2024_csnn} & Convolutional Spiking Neural Network (CSNN) with time-value encoding & CSE-CIC-IDS2018, CIC-DDoS2019 & 96.85\%--99.93\% accuracy; 28\%--51\% energy reduction over baseline SNNs & Evaluated on tabular packet matrices; no spatiotemporal video or multi-camera tracking. \\
+\hline
+B{\"a}{\ss}ler et~al. (2022)~\cite{ref_bassler2022_esnn} & Online evolving SNN (eSNN) with rank-order learning \& Gaussian Receptive Fields & Numenta Anomaly Benchmark (NAB) & Real-time online streaming adaptation; low memory; no offline pre-training required & Limited to multivariate time series; cannot process high-dimensional spatial video frames. \\
+\hline
+Ple{\c{s}}a et~al. (2024)~\cite{ref_plesa2024_snp} & Cyber Spiking Neural P (Cyber-SN P) membrane computing systems & Android malware, Phishing URLs, Spam & High accuracy with few epochs; ultra-low energy dissipation on neuromorphic hardware & Discrete rule-based membrane models; lacks differentiable BPTT for deep visual learning. \\
+\hline
+Pinto et~al. (2022)~\cite{ref_pinto2022_dca} & Embedded dendritic cell algorithm (iDCA) via IEC 61499 function blocks & Industrial OPC UA Edge telemetry & Embedded on Edge devices with minimal CPU/RAM overhead; zero control interruption & Pre-defined antigen mappings; confined to industrial protocol packets; no visual tracking. \\
+\hline
+Elmetwally et~al. (2024)~\cite{ref_elmetwally2024_i3d} & I3D-ResNet50 spatiotemporal backbone + Multiple Instance Learning (MIL) & UCF-Crime, UCF-101 (13 abnormal classes) & 82.85\% AUC on UCF-Crime; effectively captures complex anomalous crimes & Heavy 3D-CNN ($>50\,\text{W}$) induces prohibitive thermal/latency load on edge cameras; no Re-ID. \\
+\hline
+Ye et~al. (2024)~\cite{ref_ye2024_krfe} & Key Region Extraction (KREN) + Dual-Channel Autoencoder (KRFE-DAE) & UCSD Ped2, CUHK Avenue, ShanghaiTech & 97.4\% AUC on Ped2; filters background redundancy while preserving context & Pixel reconstruction error over-generalizes to anomalies; heavy dual-stream decoder; no tracking. \\
+\hline
+Pimsarn et~al. (2022)~\cite{ref_pimsarn2022_imbalance} & Multi-clustering undersampling ensemble (FF-Majority/Minority/Overall) & Adversarial obfuscated connection telemetry & Resilient minority detection under extreme class imbalance and adversarial attacks & Focused on TCP connection logs; does not handle temporal video streams or edge hardware budgets. \\
+\hline
+Naser \& Naser (2025)~\cite{ref_naser2025_spinex} & SPINEX: Similarity-based Predictions with Explainable Neighbors Exploration & 39 synthetic \& real-world benchmarks & Ranked 1st on synthetic, 7th on real datasets; moderate $\mathcal{O}(n \log n \times d)$ complexity; native explainability & Distance-metric based; cannot model continuous spatiotemporal pixel grids or video spike dynamics. \\
+\hline
+Anwar et~al. (2022)~\cite{ref_anwar2022_scada} & Graph topological attribute extension + One-Class SVM / SVDD & IEC 60870-5-104 SCADA protocol data & F1-score improved from 0.6 to 0.9; MCC from 0.3 to 0.8; $\le 0.3\%$ missed-alert rate & Restricted to SCADA network graph topology; no capability for optical surveillance or tracking. \\
+\hline
+Rahman et~al. (2021)~\cite{ref_rahman2021_social} & Cascaded hybrid DT-SVMNB (C5.0 Decision Tree, SVM, Naive Bayes) & Online social network behavioral benchmarks & 98\% accuracy; cascaded design reduces memory footprint and feature dimensionality & Static user metadata features; unable to model continuous visual temporal dynamics. \\
+\hline
+Raman et~al. (2021)~\cite{ref_raman2021_ics} & Empirical evaluation of data-centric vs. behavioral ML on live infrastructure & Municipal water treatment testbed (SWaT) & Uncovers live failure modes: sensor noise drift, false alarms, need for physics priors & Limited to physical process telemetry; does not explore video surveillance or camera networks. \\
+\hline
+Drewek-Ossowicka et~al. (2021)~\cite{ref_drewek2021_survey} & Systematic survey of Feedforward, CNN, RNN, and Autoencoder architectures & NSL-KDD, UNSW-NB15, Kyoto datasets & Comprehensive taxonomy; benchmarks detection rates, latency, and false alarm vulnerabilities & Excludes spiking neuromorphic models; confirms deep models are too heavy for edge deployment. \\
+\hline
+Sultani et~al. (2018)~\cite{ref_sultani2018_ucfcrime} & Weakly supervised 3D-CNN (C3D) + ranking loss on video bags & UCF-Crime surveillance benchmark & Pioneer weakly supervised VAD benchmark; 75.4\% frame-level AUC & Prohibitive computation ($>80\,\text{W}$); cannot operate 24/7 on battery/solar edge cameras. \\
+\hline
+Zhang et~al. (2022)~\cite{ref_zhang2022_bytetrack} & ByteTrack: Multi-object tracking associating every detection box & MOT17, MOT20 benchmarks & 80.3 MOTA; recovers low-score occluded bounding boxes via Kalman association & Designed for continuous execution; wastes $>94\%$ computation tracking benign scenes in idle video. \\
+\hline
+Zhou et~al. (2021)~\cite{ref_zhou2021_osnet_ain} & OSNet-AIN: Omni-scale network with Attentive Instance Normalization & Market-1501, DukeMTMC-reID & 85.9\% mAP; suppresses camera-specific illumination biases across views & Evaluates static bounding box crops; vulnerable to transient occlusions without tracklet centralization. \\
+\hline
+\end{tabular}%
+}
+\end{table}
+
+\section{Research Gaps Identified and Motivation for Proposed Framework}
+A critical synthesis of the surveyed literature reveals four fundamental research gaps that existing methodologies fail to bridge:
+\begin{enumerate}
+    \item \textbf{The Computational-Accuracy Paradox at the Edge:} High-accuracy video anomaly detectors (such as 3D-CNNs~\cite{ref_sultani2018_ucfcrime,ref_elmetwally2024_i3d} and dual-stream autoencoders~\cite{ref_ye2024_krfe}) require tens to hundreds of GFLOPs per clip, consuming between $40\,\text{W}$ and $80\,\text{W}$. Conversely, lightweight edge filters exhibit high false alarm rates. Spiking Neural Networks offer theoretical promise for energy efficiency~\cite{ref_xie2024_csnn,ref_bassler2022_esnn,ref_plesa2024_snp}, but have remained confined to tabular data or static benchmarks without end-to-end integration for video surveillance.
+    \item \textbf{Total Absence of Event-Driven Inter-System Gating:} In contemporary surveillance deployments, video anomaly detection and multi-camera tracking operate as uncoordinated standalone silos~\cite{ref_zhang2022_bytetrack,ref_zhou2021_osnet_ain}. Tracking and Re-ID engines run continuously across all camera feeds, exhaustively tracking every individual regardless of activity. Because anomalous events constitute less than $6\%$ of surveillance footage, over $94\%$ of multi-camera tracking energy and network bandwidth are squandered on routine, benign activities.
+    \item \textbf{Vulnerability to Class Imbalance and Rare-Event Drift:} Anomalous events in real-world streams are exceptionally rare ($<1\%$)~\cite{ref_pimsarn2022_imbalance,ref_raman2021_ics}. Standard cross-entropy loss functions cause neural networks to become biased toward majority normal backgrounds, resulting in missed detections or unacceptable false positive rates.
+    \item \textbf{Single-Frame Re-ID Vulnerability vs. Tracklet-Level Continuity:} Existing person re-identification models evaluate isolated, static bounding box crops~\cite{ref_hermans2017_triplet,ref_zhou2019_osnet}. Without leveraging the temporal continuity provided by multi-object trackers and robust tracklet feature centralization, cross-camera Re-ID remains fragile against transient occlusions, camera angle shifts, and lighting variations.
+\end{enumerate}
+
+To directly address these limitations, this project designs and validates a biologically inspired, unified surveillance framework. By coupling a lightweight MobileNetV3-Large convolutional backbone with a dual-timescale Spiking Neural Network (PLIF neurons trained via surrogate gradients), our continuous detector operates within an ultra-low $15\,\text{W}$ power budget. Furthermore, it functions as an event-driven gating interface that awakens downstream YOLOv8n, ByteTrack, and OSNet-AIN tracking pipelines only upon confirmed anomalous events, simultaneously mitigating class imbalance via focal loss and achieving robust cross-camera suspect re-identification.
+
+
+%==============================================================================
+% CHAPTER 3: PROBLEM DEFINITION
+%==============================================================================
+\chapter{Problem Definition}
+
+Modern intelligent surveillance infrastructures deployed across large facilities face severe technical trade-offs between detection accuracy, multi-camera tracking continuity, privacy preservation, and power consumption. This chapter formulates the mathematical and architectural problem addressed in this work.
+
+\section{Problem Statement}
+Given continuous, multi-channel video streams $\mathcal{V} = \{V_1, V_2, \dots, V_M\}$ acquired from $M$ non-overlapping edge surveillance cameras, the objective is twofold:
+\begin{enumerate}
+    \item \textbf{Anomaly Detection:} Continuously monitor each stream $V_m$ in real-time ($FPS \ge 25$) to detect anomalous temporal events with high precision, high recall, and an ultra-low energy budget ($P_{\text{detect}} \le 15\,\text{W}$).
+    \item \textbf{Suspect Tracking and Re-Identification:} Upon confirming an anomalous event at timestamp $t^*$ on camera $m^*$, automatically localize the anomalous actor, initiate multi-object tracking, and re-identify the suspect across all remaining cameras $\{V_j\}_{j \ne m^*}$ to reconstruct their full spatio-temporal path across the facility.
+\end{enumerate}
+
+\section{Edge Computing and Energy Constraints}
+Surveillance cameras deployed in smart cities and expansive facilities often operate under stringent power envelopes:
+\begin{itemize}
+    \item \textbf{Power Envelope:} Many edge cameras are powered over Ethernet (PoE, IEEE 802.3af/at with $15.4\,\text{W}$ to $30\,\text{W}$ limits) or decentralized solar-battery systems. Continuous execution of heavy deep learning models ($> 40\,\text{W}$) induces thermal throttling and device failure.
+    \item \textbf{Bandwidth Bottlenecks:} Streaming uncompressed $1080p$ video from dozens of cameras across wide-area wireless networks induces massive network congestion and packet drops.
+    \item \textbf{Privacy Regulations:} Continuous streaming and cloud storage of unflagged, identifiable citizen footage violate privacy statutes (e.g., GDPR, Digital Personal Data Protection Act). Local processing with event-triggered metadata logging ensures privacy compliance.
+\end{itemize}
+
+\section{Mathematical Formulation}
+
+\subsection{Spiking Neuron Dynamics and PLIF Membrane Potential}
+In biological and neuromorphic systems, neurons communicate through discrete binary events. In this work, the temporal processor is modeled using Parametric Leaky Integrate-and-Fire (PLIF) neurons. The sub-threshold membrane potential $V[t]$ at discrete time step $t \in \{1, 2, \dots, T\}$ evolves according to:
+\begin{equation}
+    V[t] = V[t-1] + \frac{1}{\tau} \left( X[t] - (V[t-1] - V_{\text{rest}}) \right)
+\end{equation}
+where $X[t]$ denotes the incoming synaptic input current, $V_{\text{rest}}$ is the resting potential (set to 0 without loss of generality), and $\tau$ is the learnable membrane time constant:
+\begin{equation}
+    \frac{1}{\tau} = \text{sigmoid}(a) = \frac{1}{1 + e^{-a}}
+\end{equation}
+with $a$ being a trainable parameter optimized during backpropagation.
+
+When the membrane potential $V[t]$ reaches or exceeds the threshold $V_{\text{th}}$, the neuron fires a discrete spike $S[t] \in \{0, 1\}$:
+\begin{equation}
+    S[t] = \Theta(V[t] - V_{\text{th}}) = 
+    \begin{cases} 
+      1 & \text{if } V[t] \ge V_{\text{th}} \\ 
+      0 & \text{if } V[t] < V_{\text{th}} 
+   \end{cases}
+\end{equation}
+Following spike emission, the membrane potential undergoes a hard reset:
+\begin{equation}
+    V[t] \leftarrow V[t] (1 - S[t])
+\end{equation}
+
+\subsection{Surrogate Gradient Formulation}
+Because the Heaviside step function $\Theta(\cdot)$ has a derivative that is zero everywhere except at the origin where it is undefined ($\frac{d\Theta}{dV} = \delta(V)$), standard backpropagation cannot pass gradients to earlier layers. To enable gradient-based optimization through time (BPTT), a smooth surrogate gradient function $\sigma'(x)$ is substituted during the backward pass:
+\begin{equation}
+    \frac{\partial S[t]}{\partial V[t]} \approx \sigma'(V[t] - V_{\text{th}}) = \frac{1}{\pi} \frac{\alpha}{1 + \alpha^2 (V[t] - V_{\text{th}})^2}
+\end{equation}
+where $\alpha$ is a scaling hyperparameter controlling the gradient smoothness and width.
+
+\subsection{Multi-Camera Tracking and Re-Identification}
+Single-camera tracking maintains a state vector for each active track $k$:
+\begin{equation}
+    \mathbf{s}_k = (c_x, c_y, w, h, v_{c_x}, v_{c_y}, v_w, v_h)^T
+\end{equation}
+which is propagated across frames via a constant-velocity Kalman filter.
+
+For person re-identification, each validated bounding box crop is mapped into an $L_2$-normalized 512-dimensional embedding space:
+\begin{equation}
+    \hat{\mathbf{f}}_i = \frac{\mathbf{f}_i}{\|\mathbf{f}_i\|_2} \in \mathbb{R}^{512}, \quad \|\hat{\mathbf{f}}_i\|_2 = 1
+\end{equation}
+Tracklet feature centralization aggregates all valid frame-level features $\mathcal{F}_k = \{\hat{\mathbf{f}}_i\}_{i=1}^{N^*}$ into a single centroid:
+\begin{equation}
+    \mathbf{c}_k = \frac{1}{N^*} \sum_{i=1}^{N^*} \hat{\mathbf{f}}_i
+\end{equation}
+Identity matching between a query tracklet $\mathbf{c}_q$ and gallery tracklets $\mathbf{c}_g$ is evaluated using cosine similarity:
+\begin{equation}
+    \text{sim}(\mathbf{c}_q, \mathbf{c}_g) = \mathbf{c}_q^T \mathbf{c}_g
+\end{equation}
+A positive identity match across camera views is declared when $\text{sim}(\mathbf{c}_q, \mathbf{c}_g) \ge \theta_s = 0.75$.
+
+\section{System Boundaries and Scope}
+The scope of this project encompasses real-time video anomaly detection on edge devices, automated query crop extraction upon confirmed anomalies, and multi-camera person tracking and Re-ID across disjoint camera views. The system assumes calibrated edge cameras operating under standard surveillance lighting conditions ($\ge 10\,\text{lux}$). Extreme pitch-black environments without infrared illumination are excluded from this project scope.
+
+
+%==============================================================================
+% CHAPTER 4: REQUIREMENTS SPECIFICATION
+%==============================================================================
+\chapter{Requirements Specification}
+
+The formal System Requirements Specification (SRS) establishes the functional capabilities, operational quality attributes, and hardware/software constraints governing the design, implementation, and deployment of the SNN-based anomaly detection and tracking framework.
+
+\section{Functional Requirements}
+The core functional requirements of the system are categorized into monitoring, triggering, tracking, and re-identification:
+
+\begin{enumerate}[{FR}-1:]
+    \item \textbf{Continuous Clip Ingestion:} The system shall continuously ingest video streams from IP surveillance cameras, slicing incoming frames into temporal clips of $T = 16$ frames at $224 \times 224$ resolution.
+    \item \textbf{Spatial Feature Extraction and Attention:} The system shall extract deep spatial feature representations using a truncated MobileNetV3-Large backbone, followed by channel reduction to 256 dimensions and spatial attention weighting.
+    \item \textbf{Dual-Timescale SNN Anomaly Classification:} The system shall model clip temporal dynamics through parallel fast and slow PLIF spiking pathways, adaptively fusing their spike trains to produce video-level and frame-level anomaly confidence scores.
+    \item \textbf{Event-Driven Gating and Suspect Query Registration:} When the predicted anomaly confidence exceeds the operational threshold $\theta_a = 0.521$, the system shall automatically trigger the tracking subsystem, cropping suspect person images, bounding boxes, frame indices, and timestamps to a structured query folder.
+    \item \textbf{Two-Tier YOLOv8n Person Detection:} The tracking subsystem shall decode full-resolution frames, executing YOLOv8n inference and partitioning detected person bounding boxes into a high-confidence pool ($c_i \ge 0.6$) and a low-confidence pool ($0.1 \le c_i < 0.6$).
+    \item \textbf{Two-Stage ByteTrack Association:} The system shall track persons across frames using ByteTrack, associating high-confidence boxes via score-fused IoU cost in Stage 1, and recovering occluded or blurred persons using low-confidence boxes via pure IoU cost in Stage 2.
+    \item \textbf{Crop Quality Validation and CLAHE Salvage:} Extracted person crops shall be validated against minimum size ($40 \times 40$), aspect ratio ($[0.2, 2.0]$), and Laplacian blur ($\ge 30$). Defective frames shall undergo CLAHE contrast enhancement and aspect-ratio padding before feature extraction.
+    \item \textbf{Omni-Scale Feature Extraction and Tracklet Centralization:} The system shall extract 512-dimensional $L_2$-normalized feature embeddings using OSNet-AIN, filter outlier frames using Mahalanobis distance rejection, and compute the centralized tracklet identity vector $\mathbf{c}_k$.
+    \item \textbf{Cross-Camera Matching and Trajectory Output:} The system shall compare the query suspect vector $\mathbf{c}_q$ against all gallery tracklets using cosine similarity, outputting the reconstructed spatio-temporal trajectory across the camera network when similarity exceeds $\theta_s = 0.75$.
+\end{enumerate}
+
+\section{Non-Functional Requirements}
+The operational quality attributes required for real-world deployment include:
+\begin{itemize}
+    \item \textbf{Real-Time Throughput:} The complete anomaly detection pipeline shall achieve an inference throughput of at least $25\,\text{FPS}$ ($28\,\text{FPS}$ measured on $720p$ streams), ensuring zero frame buffering or dropped frames.
+    \item \textbf{Energy Efficiency and Power Budget:} Power dissipation during continuous SNN monitoring shall not exceed $15\,\text{W}$ ($3.1\,\text{W}$ measured for SNN processor, $11.5\,\text{W}$ with tracking active), achieving over $80\%$ power savings compared to standard 3D CNNs.
+    \item \textbf{Memory Footprint:} Peak system memory utilization shall remain below $4.5\,\text{GB}$ VRAM, allowing unhindered execution on embedded edge hardware such as the NVIDIA Jetson Orin ($8\,\text{GB}$) or Jetson Nano ($4\,\text{GB}$).
+    \item \textbf{Network Bandwidth Reduction:} Video transmission shall be event-driven; transmitting only 512-dimensional feature vectors and suspect metadata rather than continuous raw video streams shall achieve at least $95\%$ bandwidth reduction ($96.5\%$ measured).
+    \item \textbf{Privacy Preservation:} Raw video data shall be processed and discarded at the edge camera node; personally identifiable visual data shall never leave the local camera unless an anomaly is confirmed.
+\end{itemize}
+
+\section{Hardware and Software Requirements}
+
+\subsection{Hardware Environment}
+\begin{itemize}
+    \item \textbf{Development and Training Host:} NVIDIA Tesla T4 GPU ($16\,\text{GB}$ GDDR6 VRAM), Intel Xeon CPU ($2.20\,\text{GHz}$), $16\,\text{GB}$ DDR4 System RAM, $100\,\text{GB}$ SSD storage.
+    \item \textbf{Target Edge Deployment Nodes:} NVIDIA Jetson Orin Nano ($8\,\text{GB}$) or Jetson Nano ($4\,\text{GB}$), 4-core to 6-core ARM Cortex-A78AE CPU, 1024-core NVIDIA Ampere architecture GPU with Tensor Cores.
+    \item \textbf{Surveillance Visual Sensors:} IP Surveillance Cameras delivering RTSP H.264/H.265 video streams at $1080p$ / $720p$ resolution, $30\,\text{FPS}$.
+\end{itemize}
+
+\subsection{Software Specifications}
+\begin{itemize}
+    \item \textbf{Operating System:} Ubuntu 22.04 LTS / Linux 64-bit environment.
+    \item \textbf{Core Programming Language:} Python 3.8+ (optimized with PyTorch 2.0 and CUDA 11.8).
+    \item \textbf{Deep Learning and Neuromorphic Frameworks:} PyTorch 2.0, SpikingJelly / snnTorch for PLIF surrogate gradient dynamics.
+    \item \textbf{Computer Vision and Tracking Libraries:} Ultralytics YOLOv8 for person detection, Torchreid for OSNet-AIN metric extraction, ByteTrack for MOT, and OpenCV 4.8 for frame manipulation, CLAHE, and video I/O.
+    \item \textbf{Scientific Computing:} NumPy, SciPy, Scikit-learn (Mahalanobis distance, covariance inversion, ROC/AUC metrics), Matplotlib for empirical plotting.
+\end{itemize}
+
+
+%==============================================================================
+% CHAPTER 5: SYSTEM ARCHITECTURE AND DESIGN
+%==============================================================================
+\chapter{System Architecture and Design}
+
+The system is designed as a decoupled, event-driven multi-tier architecture partitioned into two specialized subsystems: \textbf{System A} (Continuous SNN Anomaly Detector) and \textbf{System B} (Multi-Camera Person Tracking and Re-Identification Engine).
+
+\section{High-Level Architecture}
+Figure~\ref{fig:snn_cnn_arch} and Figure~\ref{fig:tracking_arch} illustrate the decoupled architectures of System~A and System~B, respectively. The complete system workflow operates across three functional tiers:
+\begin{enumerate}
+    \item \textbf{Edge Monitoring Tier (System A):} Operates 24/7 on local camera nodes, continuously scanning 16-frame clips using a lightweight MobileNetV3 backbone and dual-timescale PLIF SNN. It functions as a low-power, intelligent guardian.
+    \item \textbf{Event-Triggered Tracking Tier (System B):} Awakens only when an anomaly is verified ($\theta_a \ge 0.521$). It deploys YOLOv8n, two-stage ByteTrack, CLAHE image enhancement, and OSNet-AIN for tracking and cross-camera Re-ID.
+    \item \textbf{Communication and Storage Tier:} Structured file-system registry storing cropped anomaly suspect images, bounding box coordinates, and 512-dimensional centralized tracklet vectors.
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \adjustbox{max width=0.98\linewidth, max height=0.78\textheight, keepaspectratio}{\includegraphics{figures/fig1_snn_cnn_architecture.png}}
+    \caption{SNN--CNN hybrid anomaly detection architecture (System~A), illustrating MobileNetV3 feature extraction, spatial attention, and dual-timescale PLIF spiking temporal processor.}
+    \label{fig:snn_cnn_arch}
+\end{figure}
+
+\section{System A: SNN-CNN Hybrid Anomaly Detector}
+System~A processes fixed-length temporal clips of 16 consecutive frames resized to $224 \times 224 \times 3$. As shown in Figure~\ref{fig:snn_cnn_arch}, the processing pipeline consists of nine sequential stages:
+\begin{enumerate}
+    \item \textbf{Spatial Backbone:} A lightweight MobileNetV3-Large network pretrained on ImageNet extracts rich spatial features while minimizing GFLOPs. The network is truncated prior to classification, outputting feature maps with 960 channels.
+    \item \textbf{Channel Reduction:} A $1 \times 1$ convolution reduces channels from 960 to 256, followed by BatchNorm and Hardswish activation. Adaptive average pooling resizes the spatial dimension to $4 \times 4$, yielding a 4096-dimensional representation per frame.
+    \item \textbf{Spatial Attention:} A lightweight spatial attention block highlights salient regions:
+    \begin{equation}
+        \mathbf{A}_{\text{spatial}} = \sigma \left( \text{Conv}_{1 \times 1} \left( \text{Hardswish} \left( \text{Conv}_{1 \times 1}(\mathbf{F}) \right) \right) \right)
+    \end{equation}
+    The attended feature map is obtained via element-wise multiplication with $\mathbf{F}$.
+    \item \textbf{Temporal Projection:} Each frame representation is projected into a 256-dimensional embedding using a two-layer MLP with BatchNorm, Hardswish, and dropout:
+    \begin{equation}
+        \mathbf{z}_t = \sigma \left( \mathbf{W}_2 \left( \phi(\mathbf{W}_1 \mathbf{x}_t) \right) \right)
+    \end{equation}
+    \item \textbf{Dual-Timescale Spiking Temporal Processor:} Models temporal dynamics using two parallel PLIF spiking pathways:
+    \begin{itemize}
+        \item \textit{Fast Pathway:} Equipped with a small membrane time constant ($\tau_{\text{fast}} \approx 2.0$) to capture rapid, sharp temporal variations (e.g., punches, falls, sudden weapon brandishing).
+        \item \textit{Slow Pathway:} Configured with a larger time constant ($\tau_{\text{slow}} \approx 8.0$) to capture sustained, slow temporal evolutions (e.g., loitering, forced door opening, burglary).
+    \end{itemize}
+    Spike outputs $\mathbf{S}_f(t) = \text{PLIF}_{\text{fast}}(\mathbf{z}_t)$ and $\mathbf{S}_s(t) = \text{PLIF}_{\text{slow}}(\mathbf{z}_t)$ are adaptively fused via a learnable gating vector $\mathbf{g}_t$:
+    \begin{equation}
+        \mathbf{g}_t = \sigma(\mathbf{W}_g [\mathbf{S}_f(t), \mathbf{S}_s(t)])
+    \end{equation}
+    \begin{equation}
+        \mathbf{h}_t = \mathbf{g}_t \odot \mathbf{S}_f(t) + (1 - \mathbf{g}_t) \odot \mathbf{S}_s(t)
+    \end{equation}
+    \item \textbf{Group Normalization:} Group normalization ($GN(\mathbf{h}_t)$) stabilizes temporal training.
+    \item \textbf{Temporal Attention:} Assigns importance weights $\alpha_t$ across time steps:
+    \begin{equation}
+        \alpha_t = \frac{\exp(\mathbf{W}_a \hat{\mathbf{h}}_t)}{\sum_{k=1}^T \exp(\mathbf{W}_a \hat{\mathbf{h}}_k)}
+    \end{equation}
+    \item \textbf{Hybrid Temporal Pooling:} Combines weighted averaging and max pooling:
+    \begin{equation}
+        \mathbf{h}_{\text{video}} = 0.7 \sum_{t=1}^T \alpha_t \hat{\mathbf{h}}_t + 0.3 \max_t (\hat{\mathbf{h}}_t)
+    \end{equation}
+    \item \textbf{Dual Classification Heads:} Produces video-level logits $\mathbf{y}_{\text{video}} = \mathbf{W}_v \mathbf{h}_{\text{video}} + \mathbf{b}_v$ and frame-level logits $\mathbf{y}_t^{\text{frame}} = \mathbf{W}_f \hat{\mathbf{h}}_t + \mathbf{b}_f$.
+\end{enumerate}
+
+\section{System B: Event-Triggered Multi-Camera Tracking Engine}
+Figure~\ref{fig:tracking_arch} delineates the complete multi-camera person tracking and identity re-identification architecture.
+
+\clearpage
+\begin{figure}[p]
+    \centering
+    \vspace*{-0.5cm}
+    \includegraphics[width=\linewidth,height=0.90\textheight,keepaspectratio]{fig2_multicamera_tracking_architecture.pdf}
+    \caption{Multi-camera person tracking architecture (System~B), incorporating YOLOv8n detection, two-stage ByteTrack association, quality filtering, and OSNet-AIN re-identification.}
+    \label{fig:tracking_arch}
+\end{figure}
+\clearpage
+
+System~B comprises eight coordinated operational modules:
+\begin{enumerate}
+    \item \textbf{Video Acquisition and Clock Anchoring:} Video streams are decoded via OpenCV; every frame is anchored to wall-clock time via $t_{\text{frame}} = \frac{f_{\text{id}}}{\text{FPS}}$.
+    \item \textbf{Two-Tier YOLOv8n Person Detection:} Detections $D_i = (x_1, y_1, x_2, y_2, c_i)$ are partitioned into high-confidence ($c_i \ge 0.6$) and low-confidence ($0.1 \le c_i < 0.6$) pools.
+    \item \textbf{Two-Stage ByteTrack Association:} A constant-velocity Kalman filter predicts track states. Stage 1 associates active tracks with high-confidence detections using score-fused IoU cost $C_{kj} = 1 - \text{IoU}(\hat{\mathbf{s}}_k, D_j) \cdot c_j$, solved via the Hungarian algorithm ($\theta_m = 0.8$). Stage 2 matches surviving unmatched tracks against low-confidence detections via pure IoU cost, recovering occluded suspects.
+    \item \textbf{Crop Validation and CLAHE Salvage:} Bounding boxes are clamped, and crops are validated against size ($\ge 40 \times 40$), aspect ratio ($[0.2, 2.0]$), and Laplacian variance ($\ge 30$). Non-conforming crops are salvaged using CLAHE local contrast enhancement in LAB space ($\text{clipLimit} = 2.0, \text{grid} = 8 \times 8$).
+    \item \textbf{OSNet-AIN Feature Extraction:} Person crops resized to $256 \times 128$ are processed by OSNet-AIN ($x1.0$), outputting a 512-dimensional embedding immediately projected onto the unit hypersphere: $\hat{\mathbf{f}}_i = \mathbf{f}_i / \|\mathbf{f}_i\|_2$ ($\|\hat{\mathbf{f}}_i\|_2 = 1$).
+    \item \textbf{Mahalanobis-Filtered Tracklet Feature Centralization:} Outlier frame features deviating beyond the $[q, 1-q]$ quantile of Mahalanobis distance are discarded. The centralized identity vector is computed as $\mathbf{c}_k = \frac{1}{N^*} \sum_{i=1}^{N^*} \hat{\mathbf{f}}_i$.
+    \item \textbf{Query Extraction Interface:} Suspect crops flagged by System~A undergo identical CLAHE enhancement, OSNet-AIN extraction, and centralization, yielding the query vector $\mathbf{c}_q \in \mathbb{R}^{512}$.
+    \item \textbf{Cross-Camera Matching:} Query vector $\mathbf{c}_q$ is matched against all gallery tracklet vectors $\mathbf{c}_g$ via cosine similarity. A match is verified when $\mathbf{c}_q^T \mathbf{c}_g \ge \theta_s = 0.75$, enabling full trajectory reconstruction across the camera network.
+\end{enumerate}
+
+\section{System Flowchart and Algorithms}
+The complete event-driven execution lifecycle governing the interaction between System~A and System~B is formalized in Algorithm~\ref{alg:event_driven_pipeline}.
+
+\begin{tcolorbox}[colback=white,colframe=lavenderDark,title={\textbf{Algorithm 1: Event-Driven Surveillance Pipeline}},fonttitle=\bfseries]
+\label{alg:event_driven_pipeline}
+\begin{small}
+\begin{enumerate}
+    \item \textbf{Initialize:} System A in low-power monitoring mode ($\theta_a = 0.521$, $\theta_s = 0.75$).
+    \item \textbf{Loop:} While surveillance stream active do:
+    \begin{enumerate}
+        \item Read incoming frame $F_t$; construct 16-frame clip $[F_{t-15}, \dots, F_t]$.
+        \item Compute anomaly score $A(F_t)$ using MobileNetV3 + Dual-PLIF SNN.
+        \item \textbf{If} $A(F_t) \ge \theta_a$ \textbf{then}:
+        \begin{enumerate}
+            \item Save flagged suspect crop and metadata $(x_1, y_1, x_2, y_2, t_{\text{frame}})$ to \texttt{query/}.
+            \item Activate System B tracking pipeline; record $t_{\text{frame}} = f_{\text{id}} / \text{FPS}$.
+            \item \textbf{While} anomaly persists do:
+            \begin{enumerate}
+                \item Run YOLOv8n on $F_t$ for person class; partition into high ($c_i \ge 0.6$) and low ($0.1 \le c_i < 0.6$) pools.
+                \item Predict tracks with Kalman filter; assign high-confidence pool via score-fused IoU cost (Stage 1).
+                \item Re-match unmatched tracks against low-confidence pool via pure IoU (Stage 2).
+                \item Validate person crops (size $\ge 40 \times 40$, blur $\ge 30$); apply CLAHE salvage.
+                \item Extract 512-d feature vectors via OSNet-AIN and $L_2$-normalize ($\hat{\mathbf{f}}_i = \mathbf{f}_i / \|\mathbf{f}_i\|_2$).
+            \end{enumerate}
+            \item Compute centralized gallery vectors $\mathbf{c}_g$ after Mahalanobis outlier filtering.
+            \item Compute query vector $\mathbf{c}_q$ from flagged crops.
+            \item Compute cosine similarity $\text{sim}(\mathbf{c}_q, \mathbf{c}_g) = \mathbf{c}_q^T \mathbf{c}_g$.
+            \item \textbf{If} $\text{sim}(\mathbf{c}_q, \mathbf{c}_g) \ge \theta_s$ \textbf{then} output matched trajectory across cameras.
+        \end{enumerate}
+        \item \textbf{Else}: Maintain low-power SNN monitoring state ($3.1\,\text{W}$).
+    \end{enumerate}
+\end{enumerate}
+\end{small}
+\end{tcolorbox}
+
+\section{Level-1 Data Flow Architecture}
+Figure~\ref{fig:data_flow_diagram} illustrates the Level-1 Data Flow Diagram (DFD) delineating external entities, data stores, and discrete transformation processes across the system.
+
+\begin{figure}[H]
+    \centering
+    \adjustbox{max width=0.98\linewidth, max height=0.68\textheight, keepaspectratio, center}{\input{diagrams/fig1_1_data_flow_diagram.tex}}
+    \caption{Level-1 Data Flow Diagram (DFD) illustrating external entities (Camera, Security Operator), transformation processes, and data stores (Frame Buffer D1, Query Registry D2, Tracklet Store D3).}
+    \label{fig:data_flow_diagram}
+\end{figure}
+
+
+%==============================================================================
+% CHAPTER 6: DESIGN AND METHODOLOGY
+%==============================================================================
+\chapter{Design and Methodology}
+
+This chapter details the mathematical foundations of the spiking neuron dynamics, surrogate gradient backpropagation through time, loss optimization, and tracklet feature centralization.
+
+\section{Spiking Neuron Dynamics and Learnable Membrane Time Constant}
+The Parametric Leaky Integrate-and-Fire (PLIF) neuron bridges the gap between biologically realistic continuous-time neuronal models and discrete tensor computation. The continuous-time leaky integrator is governed by:
+\begin{equation}
+    \tau \frac{dV(t)}{dt} = -(V(t) - V_{\text{rest}}) + R \cdot I(t)
+\end{equation}
+where $\tau = RC$ denotes the membrane time constant. Discretizing this differential equation with Euler's method over time step $\Delta t$ yields the recursive relation:
+\begin{equation}
+    V[t] = V[t-1] + \frac{1}{\tau} \left( X[t] - (V[t-1] - V_{\text{rest}}) \right)
+\end{equation}
+In the PLIF formulation, $\frac{1}{\tau}$ is rendered learnable via parameter $a$:
+\begin{equation}
+    k = \frac{1}{\tau} = \text{sigmoid}(a) = \frac{1}{1 + e^{-a}}, \quad k \in (0, 1)
+\end{equation}
+This parameterization guarantees numerical stability: $k$ remains strictly bounded between 0 and 1, ensuring that the membrane potential neither explodes nor loses all historical charge in a single step.
+
+\section{Surrogate Gradient Formulation for Backpropagation Through Time}
+During the forward pass, spike generation is deterministic and discontinuous:
+\begin{equation}
+    S[t] = \Theta(V[t] - V_{\text{th}}) = 
+    \begin{cases} 
+      1 & \text{if } V[t] \ge V_{\text{th}} \\ 
+      0 & \text{if } V[t] < V_{\text{th}} 
+   \end{cases}
+\end{equation}
+In standard backpropagation, the chain rule requires calculating $\frac{\partial S[t]}{\partial V[t]}$. Because the exact derivative of $\Theta$ is zero everywhere except at $V[t] = V_{\text{th}}$ where it is undefined, backpropagation fails.
+
+To overcome this, we employ the ArcTangent (ATan) surrogate gradient:
+\begin{equation}
+    \sigma(x) = \frac{1}{\pi} \arctan\left(\frac{\pi}{2} \alpha x\right) + \frac{1}{2}
+\end{equation}
+whose derivative is:
+\begin{equation}
+    \sigma'(x) = \frac{\alpha}{2 (1 + (\frac{\pi}{2} \alpha x)^2)}
+\end{equation}
+This surrogate derivative provides a continuous, non-zero gradient window around the threshold $V_{\text{th}}$, allowing gradients from the temporal loss to propagate back through all 16 time steps.
+
+\section{Dual-Timescale Spiking Temporal Fusion}
+Human actions exhibit heterogeneous temporal velocities: violent assaults involve rapid body movements occurring across fractions of a second, whereas property theft or burglary involves deliberate, extended actions lasting several seconds. Single-timescale models fail to capture both dynamics concurrently.
+
+Our dual-timescale architecture processes the projected features $\mathbf{z}_t$ through two distinct PLIF populations in parallel:
+\begin{equation}
+    \mathbf{S}_f(t) = \text{PLIF}_{\text{fast}}(\mathbf{z}_t; a_{\text{fast}}), \quad \mathbf{S}_s(t) = \text{PLIF}_{\text{slow}}(\mathbf{z}_t; a_{\text{slow}})
+\end{equation}
+The fast pathway initializes $a_{\text{fast}}$ such that $\tau_{\text{fast}} \approx 2.0$, while the slow pathway initializes $a_{\text{slow}}$ such that $\tau_{\text{slow}} \approx 8.0$. An adaptive gating network learns the optimal fusion coefficient:
+\begin{equation}
+    \mathbf{g}_t = \text{sigmoid}(\mathbf{W}_g [\mathbf{S}_f(t), \mathbf{S}_s(t)] + \mathbf{b}_g)
+\end{equation}
+\begin{equation}
+    \mathbf{h}_t = \mathbf{g}_t \odot \mathbf{S}_f(t) + (1 - \mathbf{g}_t) \odot \mathbf{S}_s(t)
+\end{equation}
+
+\section{Loss Function Formulation}
+Surveillance datasets feature extreme class imbalance: normal events vastly outnumber anomalous occurrences. Standard cross-entropy loss leads to model collapse toward the majority class. To resolve this, we formulate a multi-task focal loss combining video-level and frame-level objectives:
+\begin{equation}
+    \mathcal{L} = \mathcal{L}_{\text{video}} + \lambda \mathcal{L}_{\text{frame}}
+\end{equation}
+where $\lambda = 0.1$ balances the frame-level contribution.
+
+\subsection{Video-Level Weighted Focal Loss}
+\begin{equation}
+    \mathcal{L}_{\text{video}} = - w_t (1 - p_t)^\gamma \log(p_t)
+\end{equation}
+where $\gamma = 2.0$ suppresses well-classified easy samples, and $w_t$ is a class-dependent weighting factor:
+\begin{equation}
+    w_t = \begin{cases} \frac{N_{\text{total}}}{2 N_{\text{anom}}} & \text{if anomalous} \\ \frac{N_{\text{total}}}{2 N_{\text{normal}}} & \text{if normal} \end{cases}
+\end{equation}
+
+\subsection{Frame-Level Focal Loss}
+\begin{equation}
+    \mathcal{L}_{\text{frame}} = - \alpha_t (1 - p_t)^\gamma \log(p_t)
+\end{equation}
+evaluated exclusively on anomalous clips with $\gamma = 2.0$ and $\alpha_t = 0.25$.
+
+\section{Tracklet Feature Centralization and Re-ID Metric Formulation}
+\enlargethispage{\baselineskip}
+{\setlength{\abovedisplayskip}{5pt}
+\setlength{\belowdisplayskip}{5pt}
+\setlength{\abovedisplayshortskip}{3pt}
+\setlength{\belowdisplayshortskip}{3pt}
+Single-frame Re-ID embeddings are vulnerable to momentary motion blur, self-occlusion, or unusual posture. In the proposed pipeline, ByteTrack provides temporal continuity, grouping consecutive detections into tracklet $\mathcal{T}_k = \{\mathbf{x}_{k, 1}, \mathbf{x}_{k, 2}, \dots, \mathbf{x}_{k, N}\}$.
+
+For each crop, OSNet-AIN extracts feature vector $\mathbf{f}_i \in \mathbb{R}^{512}$, which is immediately projected onto the unit sphere ($\hat{\mathbf{f}}_i = \mathbf{f}_i / \|\mathbf{f}_i\|_2$). When tracklet length $N \ge 5$, Mahalanobis outlier filtering removes transient noise:
+\begin{equation}
+    D_M(\hat{\mathbf{f}}_i) = \sqrt{(\hat{\mathbf{f}}_i - \boldsymbol{\mu})^T \boldsymbol{\Sigma}^{-1} (\hat{\mathbf{f}}_i - \boldsymbol{\mu})}
+\end{equation}
+where $\boldsymbol{\mu}$ and $\boldsymbol{\Sigma}$ denote the sample mean and covariance of the tracklet. Frames with $D_M$ exceeding the 99.5th percentile are discarded. The final centralized identity vector $\mathbf{c}_k$ is computed over the remaining $N^*$ frames:
+\begin{equation}
+    \mathbf{c}_k = \frac{1}{N^*} \sum_{i=1}^{N^*} \hat{\mathbf{f}}_i
+\end{equation}
+Under the assumption that intra-identity feature variations follow a multivariate Gaussian distribution, $\mathbf{c}_k$ represents the maximum-likelihood centroid of the individual's appearance.
+
+\section{Energy and Computational Complexity Modeling}
+In traditional deep ANNs, every artificial neuron performs a Multiply-Accumulate (MAC) operation at every clock cycle:
+\begin{equation}
+    E_{\text{ANN}} = N_{\text{MAC}} \times E_{\text{MAC}}
+\end{equation}
+where $E_{\text{MAC}} \approx 4.6\,\text{pJ}$ on modern $45\,\text{nm}$ CMOS technology. In SNNs, because activations are binary spikes $S \in \{0, 1\}$, multiplication is eliminated; synaptic computation reduces to sparse Add (AC) operations (Synaptic Operations or SOPs):
+\begin{equation}
+    E_{\text{SNN}} = N_{\text{SOP}} \times E_{\text{AC}}
+\end{equation}
+where $E_{\text{AC}} \approx 0.9\,\text{pJ}$---over $5\times$ more energy-efficient per operation. Combined with high spike sparsity (neurons firing in less than $15\%$ of time steps), the computational energy is reduced by over $87\%$.
+\par}
+
+
+%==============================================================================
+% CHAPTER 7: EXPERIMENTAL RESULTS AND ANALYSIS
+%==============================================================================
+\chapter{Experimental Results and Analysis}
+
+To validate the proposed neuromorphic anomaly detection and multi-camera tracking framework, comprehensive empirical evaluations were conducted across multiple benchmark surveillance datasets.
+
+\section{Benchmark Datasets}
+The primary evaluation was conducted on the large-scale \textbf{UCF-Crime} dataset~\cite{ref_sultani2018_ucfcrime}. Table~\ref{tab:ucf_crime_stats} summarizes the dataset statistics.
+
+\begin{table}[H]
+    \centering
+    \caption{UCF-Crime Dataset Statistics.}
+    \label{tab:ucf_crime_stats}
+    \resizebox{0.95\linewidth}{!}{
+    \begin{tabular}{ll}
+        \toprule
+        \textbf{Dataset Property} & \textbf{Value / Specification} \\
+        \midrule
+        Total Untrimmed Videos & 500 \\
+        Total Activity Classes & 14 (13 anomalous classes + 1 normal class) \\
+        Total Duration & $\approx 42$ hours \\
+        Average Video Duration & 302.28 seconds \\
+        Video Frame Rate & 30 FPS \\
+        Dominant Resolution & $320 \times 240$ (65\% of corpus), remainder up to $720p$ \\
+        Anomalous Categories & Abuse, Arrest, Arson, Assault, Burglary, \\
+                             & Explosion, Fighting, Robbery, Shooting, \\
+                             & Shoplifting, Stealing, Vandalism, Road Accidents \\
+        \bottomrule
+    \end{tabular}}
+\end{table}
+
+For tracking and person re-identification, the pipeline was evaluated on \textbf{DukeMTMC-reID} and \textbf{Market-1501}~\cite{ref_zheng2016_reid_survey}, with the DukeMTMC evaluation set rearranged to emulate the sequential tracklet output produced by ByteTrack. Cross-dataset zero-shot generalization was assessed on \textbf{ShanghaiTech Campus} and \textbf{UCSD Pedestrian}.
+
+\section{Anomaly Detection Performance}
+Table~\ref{tab:anomaly_results} presents the quantitative test performance of the proposed hybrid MobileNetV3-SNN model on the UCF-Crime test set.
+
+\begin{table}[H]
+    \centering
+    \caption{Anomaly Detection Quantitative Test Results on UCF-Crime.}
+    \label{tab:anomaly_results}
+    \resizebox{0.80\linewidth}{!}{
+    \begin{tabular}{lc}
+        \toprule
+        \textbf{Evaluation Metric} & \textbf{Achieved Score} \\
+        \midrule
+        Accuracy & \textbf{0.9011} (90.11\%) \\
+        Precision & \textbf{0.9034} (90.34\%) \\
+        Recall & \textbf{0.9161} (91.61\%) \\
+        F1-Score & \textbf{0.9097} (90.97\%) \\
+        AUC-ROC & \textbf{0.9557} (0.956) \\
+        Optimal Decision Threshold ($\theta_a$) & \textbf{0.521} \\
+        \bottomrule
+    \end{tabular}}
+\end{table}
+
+The model achieves an outstanding recall of $91.61\%$ and an AUC-ROC of $0.9557$, demonstrating exceptional sensitivity in detecting real-world crimes. The confusion matrix on the 263-clip test set is presented in Table~\ref{tab:confusion_matrix}.
+
+\begin{table}[H]
+    \centering
+    \caption{Confusion Matrix on UCF-Crime Test Set (263 Clips).}
+    \label{tab:confusion_matrix}
+    \resizebox{0.75\linewidth}{!}{
+    \begin{tabular}{lcc}
+        \toprule
+        & \textbf{Predicted Normal} & \textbf{Predicted Anomaly} \\
+        \midrule
+        \textbf{Actual Normal} & 106 (TN) & 14 (FP) \\
+        \textbf{Actual Anomaly} & 14 (FN) & 129 (TP) \\
+        \bottomrule
+    \end{tabular}}
+\end{table}
+
+An in-depth failure analysis revealed that false positives (14 cases) were primarily caused by rapid non-anomalous human motions (e.g., celebratory running, athletic gestures, $60\%$) and camera glare/shadow artifacts ($25\%$). False negatives (14 cases) arose from subtle, highly localized anomalies such as discreet pickpocketing ($40\%$) or low-light conditions ($25\%$).
+
+Figure~\ref{fig:f1_threshold} and Figure~\ref{fig:roc_curve} display the F1-score and Recall curves across decision thresholds alongside the Receiver Operating Characteristic (ROC) curve.
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth, keepaspectratio]{figures/fig3_f1_recall_vs_threshold.png}
+        \caption{F1-score and recall vs.\ threshold $\theta_a$ on UCF-Crime test set.}
+        \label{fig:f1_threshold}
+    \end{minipage}\hfill
+    \begin{minipage}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\linewidth, keepaspectratio]{figures/fig4_roc_curve.png}
+        \caption{Receiver Operating Characteristic (ROC) curve ($\text{AUC} = 0.9557$).}
+        \label{fig:roc_curve}
+    \end{minipage}
+    
+\end{figure}
+
+As shown in Figure~\ref{fig:f1_threshold}, the optimal threshold $\theta_a = 0.521$ balances precision and recall, maximizing the F1-score. The high AUC of $0.9557$ in Figure~\ref{fig:roc_curve} confirms the discriminative power of the dual-timescale PLIF temporal processor.
+
+\section{Multi-Camera Person Tracking and Re-ID Performance}
+Table~\ref{tab:reid_results} evaluates cross-camera person re-identification performance on the DukeMTMC-reID benchmark.
+
+\begin{table}[H]
+    \centering
+    \caption{Cross-Camera Person Re-Identification Performance on DukeMTMC.}
+    \label{tab:reid_results}
+    \resizebox{\linewidth}{!}{
+    \begin{tabular}{lcccc}
+        \toprule
+        \textbf{Model Architecture and Pipeline} & \textbf{mAP} & \textbf{Rank-1} & \textbf{Rank-5} & \textbf{Rank-10} \\
+        \midrule
+        OSNet-IBN (Market-1501 weights, standard) & 26.7\% & 48.5\% & 62.3\% & 67.4\% \\
+        OSNet-AIN x1.0 (Market-1501 weights, standard) & 30.5\% & 52.4\% & 66.1\% & 71.2\% \\
+        OSNet-AIN x1.0 (ImageNet weights + Centralization) & 47.04\% & 66.95\% & 82.62\% & 88.04\% \\
+        \textbf{Proposed Full Pipeline (ByteTrack + Centralization)} & \textbf{86.62\%} & \textbf{94.02\%} & \textbf{96.86\%} & \textbf{99.00\%} \\
+        \bottomrule
+    \end{tabular}}
+\end{table}
+
+Standard single-frame OSNet-AIN achieves only $52.4\%$ Rank-1 accuracy due to domain shift between Market-1501 and DukeMTMC. In sharp contrast, our full pipeline incorporating ByteTrack tracklet generation and Mahalanobis-filtered feature centralization achieves \textbf{94.02\% Rank-1 accuracy} and \textbf{86.62\% mAP}---an improvement of \textbf{41.62 percentage points}, confirming that tracklet-level feature centralization is the dominant contributor to cross-camera robustness.
+
+\subsection{Sensitivity to Tracking Quality}
+To evaluate the impact of tracking continuity on Re-ID accuracy, we simulated a degraded tracker with $10\%$ increased identity fragmentation, as detailed in Table~\ref{tab:tracker_degradation}.
+
+\begin{table}[H]
+    \centering
+    \caption{Impact of ByteTrack Tracking Quality on Downstream Re-ID.}
+    \label{tab:tracker_degradation}
+    \resizebox{0.95\linewidth}{!}{
+    \begin{tabular}{lcc}
+        \toprule
+        \textbf{Tracking Input Quality to Re-ID} & \textbf{Rank-1 Accuracy} & \textbf{mAP} \\
+        \midrule
+        \textbf{ByteTrack (Proposed Full Pipeline)} & \textbf{94.02\%} & \textbf{86.62\%} \\
+        ByteTrack (Degraded Simulation, $-10\%$ association) & 85.90\% ($-8.12\,\text{pp}$) & 77.89\% ($-8.73\,\text{pp}$) \\
+        \bottomrule
+    \end{tabular}}
+\end{table}
+
+The degraded tracker causes Rank-1 accuracy to drop from $94.02\%$ to $85.90\%$, confirming that robust tracklet continuity is a mandatory prerequisite for identity centralization.
+
+\section{System Efficiency and Power Consumption}
+Table~\ref{tab:system_efficiency} summarizes the system efficiency metrics measured on an NVIDIA T4 GPU and an NVIDIA Jetson Orin edge platform.
+
+\begin{table}[H]
+    \centering
+    \caption{System Operational Efficiency and Resource Utilization.}
+    \label{tab:system_efficiency}
+    \resizebox{0.95\linewidth}{!}{
+    \begin{tabular}{lc}
+        \toprule
+        \textbf{Performance Metric} & \textbf{Measured Value} \\
+        \midrule
+        Inference Speed & \textbf{28 FPS} ($720p$ input streams) \\
+        Power Dissipation (SNN Anomaly Monitoring Mode) & \textbf{3.1 W} \\
+        Power Dissipation (Tracking Subsystem Active) & \textbf{11.5 W} \\
+        Idle Device Power & \textbf{0.8 W} \\
+        Peak GPU Memory Footprint & \textbf{4.2 GB} \\
+        Network Bandwidth Reduction & \textbf{96.5\%} \\
+        \bottomrule
+    \end{tabular}}
+\end{table}
+
+Compared to standard 3D CNN baselines (C3D dissipating $42.7\,\text{W}$), our SNN monitoring reduces energy consumption by \textbf{87\%}. Furthermore, because anomalies occur in only $\approx 6\%$ of surveillance footage, the event-driven gating policy reduces downstream tracking workload by \textbf{94\%}. Transmitting only 512-dimensional vectors rather than raw video reduces network bandwidth consumption by \textbf{96.5\%}.
+
+\section{Ablation Studies}
+Table~\ref{tab:ablation_study} consolidates extensive ablation experiments conducted across temporal processors, attention modules, and convolutional backbones on the UCF-Crime benchmark.
+
+\begin{table}[H]
+    \centering
+    \caption{Ablation Study: Accuracy, Power, and Energy Summary on UCF-Crime.}
+    \label{tab:ablation_study}
+    \resizebox{\linewidth}{!}{
+    \begin{tabular}{lcccccc}
+        \toprule
+        \textbf{Architectural Configuration} & \textbf{Accuracy} & \textbf{F1} & \textbf{Precision} & \textbf{Recall} & \textbf{Power (W)} & \textbf{Energy / Clip} \\
+        \midrule
+        \textbf{Proposed Full System (MobileNetV3 + SNN)} & \textbf{0.9011} & \textbf{0.9097} & \textbf{0.9034} & \textbf{0.9161} & \textbf{13.34 W} & \textbf{307 mJ} \\
+        \midrule
+        \multicolumn{7}{l}{\textit{Temporal Processor Variants:}} \\
+        SNN $\to$ Bidirectional LSTM & 0.9200 & 0.9270 & 0.9180 & 0.9370 & 77.84 W & 686.31 mJ \\
+        SNN $\to$ GRU & 0.8973 & 0.9090 & 0.8770 & 0.9440 & 13.85 W & 141.86 mJ \\
+        SNN $\to$ Transformer Encoder & 0.8783 & 0.9410 & 0.9070 & 0.9780 & 12.91 W & 1,092.03 J \\
+        \midrule
+        \multicolumn{7}{l}{\textit{Attention Module Variants:}} \\
+        Remove Temporal Attention & 0.8821 & 0.9340 & 0.9250 & 0.9440 & 12.81 W & 90.99 mJ \\
+        Remove Spatial Attention & 0.8897 & 0.9040 & 0.8610 & 0.9510 & 12.81 W & 92.43 mJ \\
+        Remove Both Attention Modules & 0.8631 & 0.8810 & 0.8370 & 0.9300 & 13.52 W & 157.09 mJ \\
+        \midrule
+        \multicolumn{7}{l}{\textit{Backbone Variants:}} \\
+        ResNet-18 + SNN & 0.8631 & 0.8780 & 0.8500 & 0.9090 & 16.80 W & -- \\
+        Custom CNN + SNN & 0.8251 & 0.8320 & 0.8700 & 0.7970 & 12.70 W & 239.80 mJ \\
+        SNN Only (No CNN Backbone) & 0.6274 & 0.7150 & 0.6120 & 0.8600 & 11.45 W & 40.30 mJ \\
+        \bottomrule
+    \end{tabular}}
+\end{table}
+
+Figure~\ref{fig:normalized_power_acc} illustrates the normalized accuracy versus power consumption across configurations.
+
+\begin{figure}[H]
+    \centering
+    \adjustbox{max width=0.85\linewidth, max height=0.45\textheight, keepaspectratio}{\includegraphics{figures/fig5_normalized_accuracy_power.png}}
+    \caption{Normalized comparison of accuracy and power consumption across temporal processors, attention modules, and convolutional backbones.}
+    \label{fig:normalized_power_acc}
+\end{figure}
+
+While a Bidirectional LSTM achieves slightly higher raw accuracy ($92.0\%$), it requires an unsustainable $77.84\,\text{W}$ of power ($5.8\times$ higher than our SNN). The proposed MobileNetV3-SNN achieves the optimal Pareto-frontier balance of high accuracy ($90.11\%$) and edge-viable power consumption ($13.34\,\text{W}$).
+
+\section{Cross-Dataset Generalization}
+Table~\ref{tab:cross_dataset} presents zero-shot evaluation of the full, unmodified proposed model on two external surveillance benchmarks.
+
+\begin{table}[H]
+    \centering
+    \caption{Zero-Shot Generalization Across External Surveillance Datasets.}
+    \label{tab:cross_dataset}
+    \resizebox{\linewidth}{!}{
+    \begin{tabular}{lcccl}
+        \toprule
+        \textbf{Dataset} & \textbf{F1-Score} & \textbf{AUC-ROC} & \textbf{Accuracy} & \textbf{Domain Notes} \\
+        \midrule
+        \textbf{UCF-Crime} & 0.9097 & 0.9557 & 0.9011 & Training domain \\
+        \textbf{ShanghaiTech Campus} & 0.8330 & 0.9860 & 0.9330 & Zero-shot, outdoor university campus \\
+        \textbf{UCSD Pedestrian} & 0.6670 & 0.7220 & 0.8670 & Zero-shot, grayscale overhead walkway \\
+        \bottomrule
+    \end{tabular}}
+\end{table}
+
+On ShanghaiTech Campus, the model achieves a remarkable AUC-ROC of $0.9860$ without any retraining, proving that the dual-timescale PLIF SNN learns transferable temporal dynamics rather than dataset-specific artifacts.
+
+\section{Comparison with State-of-the-Art Methods}
+Table~\ref{tab:sota_comparison} compares the proposed framework against existing baseline methods on the UCF-Crime benchmark.
+
+\begin{table}[H]
+    \centering
+    \caption{Comparative Anomaly Detection Benchmark on UCF-Crime.}
+    \label{tab:sota_comparison}
+    \resizebox{0.95\linewidth}{!}{
+    \begin{tabular}{lcccc}
+        \toprule
+        \textbf{Method / Architecture} & \textbf{F1-Score} & \textbf{AUC-ROC} & \textbf{Power (W)} & \textbf{Speed (FPS)} \\
+        \midrule
+        \textbf{Proposed (MobileNetV3 + SNN)} & \textbf{0.9097} & \textbf{0.9557} & \textbf{13.34 W} & \textbf{28} \\
+        3D-CNN Baseline (C3D)~\cite{ref_sultani2018_ucfcrime} & 0.8910 & 0.9410 & $\approx 42.7\,\text{W}$ & 17 \\
+        Convolutional Autoencoder~\cite{ref_hasan2016_regularity} & 0.8340 & 0.8970 & $\approx 8.3\,\text{W}$ & 33 \\
+        SVM + Spatiotemporal HOG & 0.7240 & 0.7830 & $\approx 2.1\,\text{W}$ & 48 \\
+        \bottomrule
+    \end{tabular}}
+\end{table}
+
+The proposed framework achieves the highest F1-score ($0.9097$) and AUC ($0.9557$) while operating at $28\,\text{FPS}$ with an energy budget less than one-third of standard 3D CNNs.
+
+\section{Qualitative Analysis}
+Figure~\ref{fig:qualitative_examples} presents qualitative detection examples on the UCF-Crime dataset, illustrating how the spatial-temporal attention maps localize anomalous actions (e.g., street fights, burglary, physical assaults).
+
+\begin{figure}[H]
+    \centering
+    \adjustbox{max width=0.92\linewidth, max height=0.45\textheight, keepaspectratio}{\includegraphics{figures/fig6_qualitative_anomaly_examples.png}}
+    \caption{Qualitative examples of detected anomalies on the UCF-Crime dataset with attention heatmaps indicating localized anomalous actions.}
+    \label{fig:qualitative_examples}
+\end{figure}
+
+Figure~\ref{fig:end_to_end_pipeline} depicts the execution stages of the end-to-end tracking pipeline across anomaly activation, query image cropping, single-camera ByteTrack tracking, and cross-camera Re-ID.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \adjustbox{max width=\linewidth, max height=0.26\textheight, keepaspectratio}{\includegraphics{figures/fig7a_anomaly_activation.png}}
+        \caption{Anomaly-triggered activation}
+        \label{fig:pipe_a}
+    \end{subfigure}\hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \adjustbox{max width=\linewidth, max height=0.26\textheight, keepaspectratio}{\includegraphics{figures/fig7b_query_extraction.png}}
+        \caption{Query image extraction}
+        \label{fig:pipe_b}
+    \end{subfigure}
+    \vskip\baselineskip
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \adjustbox{max width=\linewidth, max height=0.26\textheight, keepaspectratio}{\includegraphics{figures/fig7c_single_camera_tracking.png}}
+        \caption{Single-camera ByteTrack tracking}
+        \label{fig:pipe_c}
+    \end{subfigure}\hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \adjustbox{max width=\linewidth, max height=0.26\textheight, keepaspectratio}{\includegraphics{figures/fig7d_multicamera_reid.png}}
+        \caption{Multi-camera OSNet-AIN Re-ID}
+        \label{fig:pipe_d}
+    \end{subfigure}
+    \caption{End-to-end event-driven surveillance tracking pipeline across operational phases.}
+    \label{fig:end_to_end_pipeline}
+\end{figure}
+
+
+%==============================================================================
+% CHAPTER 8: FEASIBILITY STUDY
+%==============================================================================
+\chapter{Feasibility Study}
+
+A comprehensive feasibility study was undertaken to evaluate the technical viability, economic sustainability, and project schedule feasibility of deploying the proposed SNN-based anomaly detection and tracking framework.
+
+\section{Technical Feasibility}
+The system leverages open-source, production-grade deep learning and computer vision frameworks (PyTorch 2.0, CUDA, OpenCV, Ultralytics YOLOv8, Torchreid). The computational profile is tailored specifically for embedded edge hardware:
+\begin{itemize}
+    \item \textbf{Edge Compute Compatibility:} System~A requires only $4.2\,\text{GB}$ peak VRAM and $13.34\,\text{W}$ peak power, operating comfortably within the thermal and electrical envelope of edge platforms such as the NVIDIA Jetson Orin Nano ($8\,\text{GB}$) or Jetson Xavier.
+    \item \textbf{Decoupled Event-Driven Policy:} By gating heavy multi-camera tracking behind confirmed anomalies, the system prevents computational overload, ensuring sustained $28\,\text{FPS}$ processing on edge devices.
+\end{itemize}
+
+\section{Economic and Operational Feasibility}
+Traditional automated surveillance architectures require dedicated high-performance server clusters with liquid cooling to process dozens of 3D CNN streams, resulting in tens of thousands of dollars in capital expenditure (CapEx) and exorbitant electrical bills (OpEx). In contrast:
+\begin{itemize}
+    \item \textbf{Power Savings:} Consuming only $3.1\,\text{W}$ during baseline monitoring achieves an $87\%$ reduction in electrical consumption, making solar-powered remote surveillance feasible.
+    \item \textbf{Bandwidth Savings:} A $96.5\%$ reduction in transmitted video bandwidth eliminates the need for expensive dedicated fiber-optic or high-tier 5G industrial cellular plans.
+    \item \textbf{Privacy Compliance:} Eliminating continuous cloud streaming of unflagged citizen video eliminates compliance risks associated with data protection regulations.
+\end{itemize}
+
+\section{Schedule and Resource Feasibility}
+The project was executed by a team of four undergraduate B.Tech students over an intensive 9-month development lifecycle spanning July 2026 to March 2027. Figure~\ref{fig:project_gantt} illustrates the project execution schedule and Gantt chart across eleven primary milestones.
+
+\begin{figure}[H]
+    \centering
+    \adjustbox{max width=0.98\linewidth, max height=0.48\textheight, keepaspectratio, center}{\input{diagrams/gantt_chart_project_timeline.tex}}
+    \caption{Project execution schedule and Gantt chart tracking 11 key milestones from July 2026 to March 2027.}
+    \label{fig:project_gantt}
+\end{figure}
+
+
+%==============================================================================
+% CHAPTER 9: CONCLUSION AND FUTURE SCOPE
+%==============================================================================
+\chapter{Conclusion and Future Scope}
+
+\section{Conclusion}
+This project successfully designed, implemented, and empirically validated an end-to-end neuromorphic edge intelligence surveillance framework that couples a hybrid CNN--SNN anomaly detection module with an event-driven multi-camera person tracking subsystem. By addressing the critical challenges of excessive power consumption in 3D CNNs and the operational inefficiency of continuous uncoordinated tracking, the system establishes a new benchmark for energy-efficient, privacy-preserving smart surveillance.
+
+Key technical accomplishments include:
+\begin{itemize}
+    \item Implementation of a dual-timescale spiking temporal processor utilizing Parametric Leaky Integrate-and-Fire (PLIF) neurons with learnable membrane time constants, successfully trained via surrogate gradient backpropagation through time.
+    \item Demonstration of $90.11\%$ accuracy, $91.61\%$ recall, and an AUC-ROC of $0.9557$ on the UCF-Crime benchmark while consuming only $3.1\,\text{W}$ during monitoring ($13.34\,\text{W}$ peak on an NVIDIA T4 GPU)---representing an $87\%$ energy reduction over conventional 3D CNNs.
+    \item Formulation of an event-driven gating mechanism that curtails downstream tracking computation by $94\%$ and video transmission bandwidth by $96.5\%$, sustaining real-time edge execution at $28\,\text{FPS}$.
+    \item Formulation of tracklet-level Mahalanobis-filtered feature centralization using OSNet-AIN, elevating DukeMTMC cross-camera Re-ID Rank-1 accuracy to $94.02\%$ and mAP to $86.62\%$ (a 41.62 percentage-point improvement over single-frame baselines).
+    \item Verification of strong zero-shot cross-dataset generalizability on the ShanghaiTech Campus benchmark ($\text{AUC} = 0.9860$).
+\end{itemize}
+
+\section{Limitations Encountered}
+Despite the strong performance, several technical constraints were identified during investigation:
+\begin{itemize}
+    \item \textbf{Absence of Person-Level Anomaly Annotations:} Benchmark surveillance datasets (e.g., UCF-Crime) provide video- or frame-level anomaly labels, but lack bounding box annotations identifying the specific perpetrator. Consequently, detection and tracking must be trained modularly rather than in an end-to-end jointly supervised loss formulation.
+    \item \textbf{Extreme Low-Light Conditions:} Detection accuracy degrades under low-illumination scenarios ($< 10\,\text{lux}$), where MobileNetV3 feature maps suffer high sensor noise.
+    \item \textbf{Crowd Occlusions:} Dense crowd environments increase identity fragmentation during ByteTrack association, reducing tracklet sample sizes for feature centralization.
+\end{itemize}
+
+\section{Future Research Directions}
+Prospective research directions to advance the platform include:
+\begin{itemize}
+    \item \textbf{Hardware Deployment on Neuromorphic ASICs:} Deploying the trained SNN weights directly onto specialized neuromorphic hardware (e.g., Intel Loihi 2, SynSense Speck, or BrainChip Akida) to achieve sub-watt power consumption ($< 500\,\text{mW}$).
+    \item \textbf{Transformer--SNN Hybrids:} Investigating hybrid architectures combining linear attention mechanisms with spiking recurrent layers for enhanced long-range temporal reasoning.
+    \item \textbf{Multimodal Audio-Visual Fusion:} Incorporating directional acoustic sensors to detect glass shattering, gunshots, or screaming, activating cameras before anomalies enter the field of view.
+    \item \textbf{Federated Continual Learning:} Enabling privacy-preserving collaborative learning across distributed edge camera nodes, allowing local models to adapt to site-specific anomalies without centralizing video data.
+    \item \textbf{Curating Person-Level Anomaly Datasets:} Developing dedicated surveillance datasets with spatio-temporal bounding box annotations linking anomalies directly to individual tracklets.
+\end{itemize}
+
+
+%==============================================================================
+% REFERENCES
+%==============================================================================
+\begin{thebibliography}{99}
+\sloppy
+
+\bibitem{ref_hasan2016_regularity}
+M.~Hasan, J.~Choi, J.~Neumann, A.~K.~Roy-Chowdhury, and L.~S.~Davis, ``Learning temporal regularity in video sequences,'' in \textit{Proc. IEEE Conf. Computer Vision and Pattern Recognition (CVPR)}, 2016, pp.~733--742.
+
+\bibitem{ref_sultani2018_ucfcrime}
+W.~Sultani, C.~Chen, and M.~Shah, ``Real-world anomaly detection in surveillance videos,'' in \textit{Proc. IEEE Conf. Computer Vision and Pattern Recognition (CVPR)}, 2018, pp.~6479--6488.
+
+\bibitem{ref_hermans2017_triplet}
+A.~Hermans, L.~Beyer, and B.~Leibe, ``In defense of the triplet loss for person re-identification,'' \textit{arXiv preprint arXiv:1703.07737}, 2017.
+
+\bibitem{ref_redmon2018_yolov3}
+J.~Redmon and A.~Farhadi, ``YOLOv3: An incremental improvement,'' \textit{arXiv preprint arXiv:1804.02767}, 2018.
+
+\bibitem{ref_zhang2022_bytetrack}
+Y.~Zhang, P.~Sun, Y.~Jiang, D.~Yu, F.~Weng, Z.~Yuan, P.~Luo, W.~Liu, and X.~Wang, ``ByteTrack: Multi-object tracking by associating every detection box,'' in \textit{Proc. European Conf. Computer Vision (ECCV)}, 2022, pp.~1--21.
+
+\bibitem{ref_zhou2019_osnet}
+K.~Zhou, Y.~Yang, A.~Cavallaro, and T.~Xiang, ``Omni-scale feature learning for person re-identification,'' in \textit{Proc. IEEE Int. Conf. Computer Vision (ICCV)}, 2019, pp.~3702--3712.
+
+\bibitem{ref_neftci2019_surrogate}
+E.~O.~Neftci, H.~Mostafa, and F.~Zenke, ``Surrogate gradient learning in spiking neural networks: Bringing the power of gradient-based optimization to neuromorphic hardware,'' \textit{IEEE Signal Processing Magazine}, vol.~36, no.~6, pp.~61--63, 2019.
+
+\bibitem{ref_kundu2021_spikin}
+S.~Kundu, G.~Datta, M.~Pedram, and P.~A.~Beerel, ``SpiKin: Spiking kinetics for temporal processing,'' in \textit{Proc. Int. Joint Conf. Neural Networks (IJCNN)}, 2021, pp.~1--8.
+
+\bibitem{ref_he2016_resnet}
+K.~He, X.~Zhang, S.~Ren, and J.~Sun, ``Deep residual learning for image recognition,'' in \textit{Proc. IEEE Conf. Computer Vision and Pattern Recognition (CVPR)}, 2016, pp.~770--778.
+
+\bibitem{ref_lin2017_focal}
+T.-Y.~Lin, P.~Goyal, R.~Girshick, K.~He, and P.~Doll{\'a}r, ``Focal loss for dense object detection,'' in \textit{Proc. IEEE Int. Conf. Computer Vision (ICCV)}, 2017, pp.~2980--2988.
+
+\bibitem{ref_bewley2016_sort}
+A.~Bewley, Z.~Ge, L.~Ott, F.~Ramos, and B.~Upcroft, ``Simple online and realtime tracking,'' in \textit{Proc. IEEE Int. Conf. Image Processing (ICIP)}, 2016, pp.~3464--3468.
+
+\bibitem{ref_zheng2016_reid_survey}
+L.~Zheng, Y.~Yang, and A.~G.~Hauptmann, ``Person re-identification: Past, present and future,'' \textit{arXiv preprint arXiv:1610.02984}, 2016.
+
+\bibitem{ref_wang2023_efficientreid}
+C.~Wang, Y.~Zhang, X.~Liu, and H.~Wang, ``EfficientReID: A lightweight person re-identification model for edge deployment,'' \textit{IEEE Trans. Circuits and Systems for Video Technology}, vol.~33, no.~8, pp.~4120--4132, 2023.
+
+\bibitem{ref_liu2022_yolotiny}
+Y.~Liu, X.~Zhang, H.~Chen, and J.~Sun, ``Edge YOLO-Tiny: Real-time object detection on resource-constrained devices,'' \textit{IEEE Internet of Things Journal}, vol.~9, no.~15, pp.~13245--13258, 2022.
+
+\bibitem{ref_stauffer1999_gmm}
+C.~Stauffer and W.~E.~L.~Grimson, ``Adaptive background mixture models for real-time tracking,'' in \textit{Proc. IEEE Conf. Computer Vision and Pattern Recognition (CVPR)}, 1999, pp.~246--252.
+
+\bibitem{ref_jocher2023_yolov8}
+G.~Jocher, A.~Chaurasia, and J.~Qiu, ``Ultralytics YOLOv8,'' 2023. [Online]. Available: \url{https://github.com/ultralytics/ultralytics}
+
+\bibitem{ref_zhou2021_osnet_ain}
+K.~Zhou, Y.~Yang, A.~Cavallaro, and T.~Xiang, ``Learning generalizable representations for person re-identification by domain-invariant mapping network,'' in \textit{Proc. IEEE Conf. Computer Vision and Pattern Recognition (CVPR)}, 2021, pp.~12162--12172.
+
+\bibitem{ref_xie2024_csnn}
+Y.~Xie and H.~Chen, ``A novel method for effective intrusion detection based on convolutional speaking neural networks,'' \textit{Journal of King Saud University - Computer and Information Sciences}, vol.~36, no.~2, art.~101975, 2024.
+
+\bibitem{ref_bassler2022_esnn}
+D.~B{\"a}{\ss}ler, T.~Kortus, and G.~G{\"u}hring, ``Unsupervised anomaly detection in multivariate time series with online evolving spiking neural networks,'' \textit{Machine Learning}, vol.~111, no.~4, pp.~1377--1408, 2022.
+
+\bibitem{ref_elmetwally2024_i3d}
+A.~Elmetwally, R.~Eldeeb, and S.~Elmougy, ``Deep learning based anomaly detection in real-time video,'' \textit{Multimedia Tools and Applications}, vol.~84, pp.~9555--9571, 2025.
+
+\bibitem{ref_ye2024_krfe}
+Q.~Ye, Z.~Song, Y.~Zhao, and Y.~Zhang, ``Dual-channel autoencoder with key region feature enhancement for video anomalous event detection,'' \textit{Neural Processing Letters}, vol.~56, art.~186, 2024.
+
+\bibitem{ref_drewek2021_survey}
+A.~Drewek-Ossowicka, M.~Pietro{\l}aj, and J.~Rumi{\'n}ski, ``A survey of neural networks usage for intrusion detection systems,'' \textit{Journal of Ambient Intelligence and Humanized Computing}, vol.~12, no.~1, pp.~497--514, 2021.
+
+\bibitem{ref_naser2025_spinex}
+M.~Z.~Naser and A.~Z.~Naser, ``SPINEX-anomaly: similarity-based predictions with explainable neighbors exploration for anomaly and outlier detection,'' \textit{Journal of Big Data}, vol.~12, art.~77, 2025.
+
+\bibitem{ref_pimsarn2022_imbalance}
+C.~Pimsarn, T.~Boongoen, N.~Iam-On, N.~Naik, and L.~Yang, ``Strengthening intrusion detection system for adversarial attacks: improved handling of imbalance classification problem,'' \textit{Complex \& Intelligent Systems}, vol.~8, no.~6, pp.~4863--4880, 2022.
+
+\bibitem{ref_plesa2024_snp}
+M.-I.~Ple{\c{s}}a, M.~Gheorghe, F.~Ipate, and G.~Zhang, ``Applications of spiking neural P systems in cybersecurity,'' \textit{Journal of Membrane Computing}, vol.~6, no.~4, pp.~310--317, 2024.
+
+\bibitem{ref_anwar2022_scada}
+M.~Anwar, L.~Lundberg, and A.~Borg, ``Improving anomaly detection in SCADA network communication with attribute extension,'' \textit{Energy Informatics}, vol.~5, art.~69, 2022.
+
+\bibitem{ref_rahman2021_social}
+M.~S.~Rahman, S.~Halder, M.~A.~Uddin, and U.~K.~Acharjee, ``An efficient hybrid system for anomaly detection in social networks,'' \textit{Cybersecurity}, vol.~4, art.~10, 2021.
+
+\bibitem{ref_raman2021_ics}
+G.~Raman~M.~R., C.~M.~Ahmed, and A.~Mathur, ``Machine learning for intrusion detection in industrial control systems: challenges and lessons from experimental evaluation,'' \textit{Cybersecurity}, vol.~4, art.~27, 2021.
+
+\bibitem{ref_pinto2022_dca}
+R.~Pinto, G.~Gon{\c{c}}alves, J.~Delsing, and E.~Tovar, ``Enabling data-driven anomaly detection by design in cyber-physical production systems,'' \textit{Cybersecurity}, vol.~5, art.~9, 2022.
+
+\end{thebibliography}
+
+\end{document}

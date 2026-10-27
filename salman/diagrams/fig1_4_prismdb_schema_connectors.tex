@@ -1,0 +1,154 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usepackage{amsmath,amssymb}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shadows,shapes.geometric}
+
+% Color definitions
+\definecolor{lavenderDark}{RGB}{15, 44, 89}
+\definecolor{lavenderDeep}{RGB}{10, 28, 58}
+\definecolor{lavenderMedium}{RGB}{29, 78, 158}
+\definecolor{lavenderLight}{RGB}{240, 246, 255}
+\definecolor{lavenderBorder}{RGB}{180, 205, 237}
+\definecolor{prismTeal}{RGB}{13, 148, 136}
+\definecolor{prismMint}{RGB}{236, 253, 245}
+\definecolor{prismGold}{RGB}{217, 119, 6}
+\definecolor{prismDark}{RGB}{15, 23, 42}
+\definecolor{cInput}{RGB}{241, 245, 249}
+\definecolor{cPlanner}{RGB}{219, 234, 254}
+\definecolor{cReact}{RGB}{209, 250, 229}
+\definecolor{cTool}{RGB}{254, 243, 199}
+\definecolor{cSafety}{RGB}{254, 226, 226}
+\definecolor{cDeliverable}{RGB}{204, 251, 241}
+
+\begin{document}
+% Relational Entity & Storage Schema Connectors for Ear Disease Detection
+\begin{tikzpicture}[
+  x=1cm, y=1cm,
+  font=\sffamily,
+  tblcard/.style={
+    rectangle, rounded corners=4pt, draw=lavenderDark!75, line width=0.85pt, fill=white,
+    inner sep=5pt, text width=4.40cm, align=left,
+    drop shadow={shadow xshift=1pt, shadow yshift=-1pt, opacity=0.12}
+  },
+  fkarrow/.style={
+    -{Stealth[scale=0.85]}, line width=1.0pt, draw=lavenderDark!90
+  },
+  fklabel/.style={
+    font=\fontsize{6.2}{7.2}\selectfont\bfseries, fill=white, inner sep=1.5pt, text=lavenderDark
+  }
+]
+
+  % ================= COLUMN 1: DATASET & CONFIGURATION (x = -5.2) =================
+  
+  % Table 1: merged_otoscopic_dataset_store
+  \node[tblcard] (dataset) at (-5.2, 2.5) {%
+    \centerline{\color{lavenderDark}\faFolderOpen\ \textbf{\fontsize{8.0}{9.5}\selectfont merged\_otoscopic\_dataset}}\\[3pt]
+    \rule{\linewidth}{0.4pt}\\[3pt]
+    {\fontsize{6.8}{8.0}\selectfont
+    \textbf{\color{lavenderDark}[PK]} \texttt{image\_id}: \textit{string} (Indexed)\\
+    \textbf{\color{prismTeal}[FLD]} \texttt{class\_label}: \textit{AOM/CSOM/WAX/NORM/TS}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{split}: \textit{train / val / test (Curriculum)}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{clahe\_enhanced}: \textit{boolean (true)}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{tensor\_dims}: \textit{$(3, 224, 224)$ normalized}}
+  };
+
+  % Table 2: training_curriculum_store
+  \node[tblcard, below=0.70cm of dataset] (config) {%
+    \centerline{\color{lavenderDark}\faCogs\ \textbf{\fontsize{8.0}{9.5}\selectfont training\_curriculum\_store}}\\[3pt]
+    \rule{\linewidth}{0.4pt}\\[3pt]
+    {\fontsize{6.8}{8.0}\selectfont
+    \textbf{\color{lavenderDark}[PK]} \texttt{config\_id}: \textit{string} (UUID)\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{image\_size}: \textit{224} $\cdot$ \texttt{batch\_size}: \textit{32}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{mixup\_alpha}: \textit{0.2 (Beta distribution)}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{pacing\_rate}: \textit{adaptive curriculum}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{optimizer}: \textit{AdamW} ($\eta=10^{-4}$)\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{augmentations}: \textit{CLAHE, rot, flip, affine}}
+  };
+
+  % ================= COLUMN 2: MODEL CHECKPOINTS & EVALUATION (x = 0) =================
+  
+  % Table 3: comvit_model_store
+  \node[tblcard] (checkpoint) at (0, 2.5) {%
+    \centerline{\color{lavenderDark}\faDatabase\ \textbf{\fontsize{8.0}{9.5}\selectfont comvit\_model\_store}}\\[3pt]
+    \rule{\linewidth}{0.4pt}\\[3pt]
+    {\fontsize{6.8}{8.0}\selectfont
+    \textbf{\color{lavenderDark}[PK]} \texttt{checkpoint\_id}: \textit{timestamp}\\
+    \textbf{\color{prismTeal}[FK]} \texttt{config\_id}: \textit{curriculum ref}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{architecture}: \textit{CoMViT (Hybrid ViT)}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{target\_classes}: \textit{5 disease categories}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{weights\_path}: \textit{comvit\_ear\_best.pth}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{classes\_file}: \textit{disease\_labels.json}}
+  };
+
+  % Table 4: evaluation_telemetry_store
+  \node[tblcard, below=0.70cm of checkpoint] (eval) {%
+    \centerline{\color{lavenderDark}\faChartLine\ \textbf{\fontsize{8.0}{9.5}\selectfont evaluation\_telemetry\_store}}\\[3pt]
+    \rule{\linewidth}{0.4pt}\\[3pt]
+    {\fontsize{6.8}{8.0}\selectfont
+    \textbf{\color{lavenderDark}[PK]} \texttt{eval\_id}: \textit{UUID}\\
+    \textbf{\color{prismTeal}[FK]} \texttt{checkpoint\_id}: \textit{model reference}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{multi\_class\_acc}: \textit{test benchmark}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{macro\_f1}: \textit{harmonic mean}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{roc\_auc\_ovr}: \textit{one-vs-rest AUC}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{class\_metrics}: \textit{AOM, CSOM, Wax, Norm, TS}}
+  };
+
+  % ================= COLUMN 3: API CONTRACTS & CLIENT STATE (x = 5.2) =================
+  
+  % Table 5: api_prediction_schema
+  \node[tblcard] (prediction) at (5.2, 2.5) {%
+    \centerline{\color{lavenderDark}\faServer\ \textbf{\fontsize{8.0}{9.5}\selectfont api\_prediction\_schema}}\\[3pt]
+    \rule{\linewidth}{0.4pt}\\[3pt]
+    {\fontsize{6.8}{8.0}\selectfont
+    \textbf{\color{lavenderDark}[PK]} \texttt{prediction\_id}: \textit{UUID}\\
+    \textbf{\color{prismTeal}[FK]} \texttt{checkpoint\_id}: \textit{active CoMViT}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{success}: \textit{boolean (true)}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{predicted\_class}: \textit{5 classes}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{confidence}: \textit{float (0.0 .. 1.0)}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{probabilities}: \textit{5-class JSON map}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{processing\_time\_ms}: \textit{float ($\le 50$\,ms)}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{safety\_notice}: \textit{ENT decision support}}
+  };
+
+  % Table 6: client_ui_state_schema
+  \node[tblcard, below=0.70cm of prediction] (client) {%
+    \centerline{\color{lavenderDark}\faDesktop\ \textbf{\fontsize{8.0}{9.5}\selectfont client\_ui\_state\_schema}}\\[3pt]
+    \rule{\linewidth}{0.4pt}\\[3pt]
+    {\fontsize{6.8}{8.0}\selectfont
+    \textbf{\color{lavenderDark}[PK]} \texttt{session\_id}: \textit{UUID}\\
+    \textbf{\color{prismTeal}[FK]} \texttt{prediction\_id}: \textit{payload reference}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{otoscopy\_preview}: \textit{blob/base64}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{gradcam\_pp\_map}: \textit{PNG TM overlay}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{visual\_probabilities}: \textit{5-class bar chart}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{client\_platform}: \textit{Web / Mobile Otoscope}}
+  };
+
+  % ================= RELATIONSHIPS / FOREIGN KEY CONNECTORS =================
+
+  % 1. Config -> Checkpoint
+  \draw[fkarrow] (config.east) to[bend right=20] 
+    node[above=1pt, fklabel]{config\_id} (checkpoint.west);
+
+  % 2. Dataset -> Checkpoint (Data used to train)
+  \draw[fkarrow] (dataset.east) -- 
+    node[above=1pt, fklabel]{curriculum\_split} (checkpoint.west);
+
+  % 3. Checkpoint -> Evaluation
+  \draw[fkarrow] (checkpoint.south) -- 
+    node[right=2pt, fklabel]{checkpoint\_id} (eval.north);
+
+  % 4. Checkpoint -> API Prediction
+  \draw[fkarrow] (checkpoint.east) -- 
+    node[above=1pt, fklabel]{weights} (prediction.west);
+
+  % 5. API Prediction -> Client UI State
+  \draw[fkarrow] (prediction.south) -- 
+    node[right=2pt, fklabel]{prediction\_id} (client.north);
+
+  % 6. Eval metrics reference in Client UI
+  \draw[fkarrow, dashed] (eval.east) -- 
+    node[above=1pt, fklabel]{benchmarks} (client.west);
+
+\end{tikzpicture}
+\end{document}

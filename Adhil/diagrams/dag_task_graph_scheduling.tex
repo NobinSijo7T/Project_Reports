@@ -1,0 +1,168 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usepackage{amsmath,amssymb}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shadows,shapes.geometric}
+
+% Color definitions
+\definecolor{lavenderDark}{RGB}{15, 44, 89}
+\definecolor{lavenderDeep}{RGB}{10, 28, 58}
+\definecolor{lavenderMedium}{RGB}{29, 78, 158}
+\definecolor{lavenderLight}{RGB}{240, 246, 255}
+\definecolor{lavenderBorder}{RGB}{180, 205, 237}
+\definecolor{prismNavy}{RGB}{15, 44, 89}
+\definecolor{prismBlue}{RGB}{29, 78, 158}
+\definecolor{prismTeal}{RGB}{13, 148, 136}
+\definecolor{prismMint}{RGB}{236, 253, 245}
+\definecolor{prismGold}{RGB}{217, 119, 6}
+\definecolor{prismDark}{RGB}{15, 23, 42}
+\definecolor{prismSlate}{RGB}{100, 116, 139}
+\definecolor{cInput}{RGB}{241, 245, 249}
+\definecolor{cStem}{RGB}{224, 242, 254}
+\definecolor{cStage1}{RGB}{209, 250, 229}
+\definecolor{cStage2}{RGB}{254, 243, 199}
+\definecolor{cStage3}{RGB}{254, 226, 226}
+\definecolor{cStage4}{RGB}{207, 250, 254}
+
+\begin{document}
+% RAG Pipeline Component Dependencies and Execution DAG
+\begin{tikzpicture}[
+  x=1cm, y=1cm,
+  font=\sffamily,
+  dagstep/.style={
+    rectangle, rounded corners=3.5pt, minimum height=1.00cm,
+    text width=2.90cm, align=center, draw=lavenderDark!75, fill=lavenderLight!85,
+    line width=0.85pt, font=\fontsize{7.5}{8.8}\selectfont\bfseries,
+    drop shadow={shadow xshift=0.8pt, shadow yshift=-0.8pt, opacity=0.10}
+  },
+  dagarrow/.style={-{Stealth[length=4.0pt, width=3.0pt]}, line width=0.95pt, draw=prismTeal!95!black},
+  dagnode/.style={
+    rectangle, rounded corners=3.5pt, line width=0.75pt,
+    minimum height=1.15cm, text width=1.65cm, inner sep=2.5pt, align=center,
+    font=\fontsize{6.2}{7.3}\selectfont,
+    drop shadow={shadow xshift=0.6pt, shadow yshift=-0.6pt, opacity=0.08}
+  },
+  idxnode/.style={
+    cylinder, shape border rotate=90, aspect=0.25, line width=0.85pt,
+    draw=prismTeal!95!black, fill=prismMint, minimum height=1.30cm, text width=1.60cm, inner sep=2.0pt, align=center,
+    font=\fontsize{6.5}{7.5}\selectfont\bfseries,
+    drop shadow={shadow xshift=0.6pt, shadow yshift=-0.6pt, opacity=0.12}
+  },
+  loopconn/.style={-{Stealth[length=4.0pt, width=3.0pt]}, line width=0.85pt, draw=lavenderDark!80, dashed}
+]
+
+  % Row 1: 4-Stage Architectural Overview (Centers: -5.40, -1.80, 1.80, 5.40)
+  \node[dagstep] (s1) at (-5.40, 0) {1. Corpus Preprocessing\\[2pt]\normalfont\fontsize{6.5}{7.5}\selectfont PyMuPDF Extraction $\to$ Cleaning\\[1pt]900-word Chunks ($o=150$)};
+  \node[dagstep] (s2) at (-1.80, 0) {2. Vector Ingestion\\[2pt]\normalfont\fontsize{6.5}{7.5}\selectfont all-MiniLM-L6-v2 ($384$-d)\\[1pt]Pinecone Cosine Index};
+  \node[dagstep] (s3) at (1.80, 0) {3. Semantic Retrieval\\[2pt]\normalfont\fontsize{6.5}{7.5}\selectfont Query Embedding $\to$ Cosine ANN\\[1pt]Top-$k$ Statutory Passages};
+  \node[dagstep] (s4) at (5.40, 0) {4. Grounded Synthesis\\[2pt]\normalfont\fontsize{6.5}{7.5}\selectfont Gemini 2.5 Flash ($T=0.3$)\\[1pt]Citation Grounding \& Translation};
+
+  \draw[dagarrow] (s1) -- (s2);
+  \draw[dagarrow] (s2) -- (s3);
+  \draw[dagarrow] (s3) -- (s4);
+
+  % Separator line
+  \draw[draw=lavenderBorder, line width=0.6pt] (-8.0, -0.90) -- (8.0, -0.90);
+
+  % Section Header A
+  \node[anchor=west, font=\fontsize{6.8}{8.0}\selectfont\bfseries\color{lavenderDark}] at (-7.9, -1.30) {\faCogs\ Offline Corpus Ingestion Pipeline};
+
+  % ================= PIPELINE A: STATUTE INGESTION DAG (Row 2: y = -2.35) =================
+  % Centers at x = -7.00, -4.60, -2.20, +0.20, +2.60, +5.00
+  \node[dagnode, fill=cInput, draw=prismSlate!80] (pdf_in) at (-7.00, -2.35) {
+    \textbf{\faFilePdf\ PDF Corpus}\\[1.5pt]
+    {\fontsize{5.5}{6.5}\selectfont BNS, BNSS, BSA,\\[0.5pt]RTI, Consumer}
+  };
+
+  \node[dagnode, fill=cStem, draw=lavenderDark] (mupdf) at (-4.60, -2.35) {
+    \textbf{\faSearch\ PyMuPDF}\\[1.5pt]
+    {\fontsize{5.5}{6.5}\selectfont Stream extraction\\[0.5pt]\& page parsing}
+  };
+
+  \node[dagnode, fill=cStage1, draw=prismTeal] (clean) at (-2.20, -2.35) {
+    \textbf{\faBroom\ Text Cleaner}\\[1.5pt]
+    {\fontsize{5.5}{6.5}\selectfont Strip headers,\\[0.5pt]footers \& noise}
+  };
+
+  \node[dagnode, fill=cStage2, draw=prismGold!90] (chunk) at (0.20, -2.35) {
+    \textbf{\faCut\ Word Chunker}\\[1.5pt]
+    {\fontsize{5.5}{6.5}\selectfont $c=900, o=150$\\[0.5pt]min 40 words}
+  };
+
+  \node[dagnode, fill=cStage4, draw=prismBlue!90] (embed) at (2.60, -2.35) {
+    \textbf{\faBrain\ MiniLM-L6-v2}\\[1.5pt]
+    {\fontsize{5.5}{6.5}\selectfont 384-d dense vector\\[0.5pt]L2-normalized}
+  };
+
+  \node[dagnode, fill=cStage1, draw=lavenderMedium] (batch) at (5.00, -2.35) {
+    \textbf{\faBoxes\ Batch Loader}\\[1.5pt]
+    {\fontsize{5.5}{6.5}\selectfont Batch size: 100\\[0.5pt]Metadata injection}
+  };
+
+  % Ingestion forward edges with clear gaps
+  \draw[dagarrow] (pdf_in) -- (mupdf);
+  \draw[dagarrow] (mupdf) -- (clean);
+  \draw[dagarrow] (clean) -- (chunk);
+  \draw[dagarrow] (chunk) -- (embed);
+  \draw[dagarrow] (embed) -- (batch);
+
+  % ================= CENTRAL DATASTORE: PINECONE VECTOR INDEX (y = -3.85) =================
+  \node[idxnode] (pinecone) at (7.15, -3.85) {
+    \faDatabase\ \textbf{Pinecone}\\[1.5pt]
+    \normalfont{\fontsize{5.5}{6.5}\selectfont HNSW Index\\[0.5pt]Cosine Metric}
+  };
+
+  \draw[dagarrow] (batch.east) to[out=0, in=90] (pinecone.north);
+
+  % Section Header B
+  \node[anchor=west, font=\fontsize{6.8}{8.0}\selectfont\bfseries\color{lavenderDark}] at (-7.9, -4.35) {\faBolt\ Online Query Processing \& Grounded Synthesis};
+
+  % ================= PIPELINE B: QUERY & SYNTHESIS DAG (Row 3: y = -5.40) =================
+  \node[dagnode, fill=cInput, draw=prismSlate!80] (query_in) at (-7.00, -5.40) {
+    \textbf{\faUser\ User Query}\\[1.5pt]
+    {\fontsize{5.5}{6.5}\selectfont Text input /\\[0.5pt]Speech Audio}
+  };
+
+  \node[dagnode, fill=cStem, draw=lavenderDark] (lang_router) at (-4.60, -5.40) {
+    \textbf{\faLanguage\ Lang Router}\\[1.5pt]
+    {\fontsize{5.5}{6.5}\selectfont Unicode check\\[0.5pt]Malayalam $\to$ En}
+  };
+
+  \node[dagnode, fill=cStage4, draw=prismBlue!90] (q_embed) at (-2.20, -5.40) {
+    \textbf{\faBrain\ Query Embed}\\[1.5pt]
+    {\fontsize{5.5}{6.5}\selectfont MiniLM-L6-v2\\[0.5pt]384-d normalized}
+  };
+
+  \node[dagnode, fill=cStage2, draw=prismGold!90] (q_retrieve) at (0.20, -5.40) {
+    \textbf{\faSearchPlus\ Top-$k$ Retriever}\\[1.5pt]
+    {\fontsize{5.5}{6.5}\selectfont Cosine ANN\\[0.5pt]Top-$k$ ($k=5$)}
+  };
+
+  \node[dagnode, fill=cStage3, draw=prismNavy] (llm_gen) at (2.60, -5.40) {
+    \textbf{\faRobot\ Gemini 2.5 Flash}\\[1.5pt]
+    {\fontsize{5.5}{6.5}\selectfont Grounded LLM\\[0.5pt]Context prompt}
+  };
+
+  \node[dagnode, fill=cStage1, draw=prismTeal] (response_out) at (5.00, -5.40) {
+    \textbf{\faCheckCircle\ Final Delivery}\\[1.5pt]
+    {\fontsize{5.5}{6.5}\selectfont Citations + UI\\[0.5pt]$\approx 1.4$\,s latency}
+  };
+
+  % Query execution forward edges with clear gaps
+  \draw[dagarrow] (query_in) -- (lang_router);
+  \draw[dagarrow] (lang_router) -- (q_embed);
+  \draw[dagarrow] (q_embed) -- (q_retrieve);
+  \draw[dagarrow] (q_retrieve) -- (llm_gen);
+  \draw[dagarrow] (llm_gen) -- (response_out);
+
+  % Pinecone interaction edge
+  \draw[dagarrow, dashed, draw=prismTeal!95!black] (pinecone.west) to[out=180, in=60] 
+    node[above=1pt, font=\fontsize{5.6}{6.6}\selectfont\color{prismTeal!90!black}]{Passage vectors} (q_retrieve.north);
+
+  % User feedback / query refinement loop
+  \draw[loopconn] (response_out.south) to[out=270, in=270, looseness=0.42] 
+    node[below=2pt, font=\fontsize{6.2}{7.2}\selectfont\bfseries\color{lavenderDark}]{Iterative Refinement / Follow-up Inquiry} 
+    (query_in.south);
+
+\end{tikzpicture}
+\end{document}

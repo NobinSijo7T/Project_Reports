@@ -1,0 +1,23 @@
+%============================= abstract.tex================================
+\chapter*{Abstract}%
+\addcontentsline{toc}{chapter}{Abstract}%
+\vspace{-25pt}
+
+\begin{spacing}{1.2}
+\noindent The analysis of multivariate time-series data plays a significant role in understanding complex patterns and diagnosing events in power grid systems. However, the high dimensionality, temporal dependencies, and interrelationships among power grid signals make pattern exploration and interpretation challenging. Traditional artificial intelligence methods often face limitations in interpretability, computational efficiency, and scalability, making it difficult for domain experts to understand the underlying causes of detected events.
+
+\vspace{8pt}
+
+\noindent This project proposes \textbf{Explainable AI for Multivariate Time Series Pattern Exploration: Latent Space Visual Analytics With Temporal Fusion Transformer and Variational Autoencoders in Power Grid Event Diagnosis}. The framework utilizes the \textbf{Temporal Fusion Transformer (TFT)} to learn latent representations of power grid signals and compares its performance with \textbf{Variational Autoencoder (VAE)}-based models, including \textbf{1D-CNN VAE} and \textbf{VAE-LSTM}. The extracted latent vectors are projected into a two-dimensional space using dimensionality reduction techniques such as \textbf{Principal Component Analysis (PCA)}, \textbf{t-distributed Stochastic Neighbor Embedding (t-SNE)}, and \textbf{Uniform Manifold Approximation and Projection (UMAP)}. These visual representations enable the exploration of similarities, clusters, and relationships among different power grid events.
+
+\vspace{8pt}
+
+\noindent An interactive visual analytics dashboard is designed to support the interpretation of latent representations through a \textbf{2D latent space map}, a \textbf{hierarchical multi-label tree}, and a \textbf{latent vector comparison chart}. The framework incorporates clustering and validation techniques, including \textbf{DBSCAN}, internal validation metrics, \textbf{Human-in-the-Loop (HITL)} evaluation, and relative comparison of clustering results. These methods support the assessment of model performance, consistency, and interpretability.
+
+\vspace{8pt}
+
+\noindent The proposed framework aims to assist domain experts in identifying meaningful patterns, exploring relationships among power grid events, and understanding AI-generated representations. By combining deep learning models with interactive visual analytics, the project provides a systematic approach to explainable multivariate time-series analysis and supports improved power grid event diagnosis.
+\end{spacing}
+
+\thispagestyle{plain}
+%=======================================================================

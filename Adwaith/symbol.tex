@@ -1,0 +1,65 @@
+%==================================symbol.tex================================
+% List of Symbols and Abbreviations
+\chapter*{List of Symbols and Abbreviations}
+\addcontentsline{toc}{chapter}{List of Symbols and Abbreviations}%
+\vspace{-25pt}
+
+\begin{spacing}{1.02}
+\noindent \textbf{Abbreviations}
+\vspace{4pt}
+
+\noindent\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}p{2.8cm} p{11.2cm}@{}}
+\textbf{TFT} & Temporal Fusion Transformer \\
+\textbf{VAE} & Variational Autoencoder \\
+\textbf{1D-CNN} & One-Dimensional Convolutional Neural Network \\
+\textbf{LSTM} & Long Short-Term Memory \\
+\textbf{PCA} & Principal Component Analysis \\
+\textbf{t-SNE} & t-Distributed Stochastic Neighbor Embedding \\
+\textbf{UMAP} & Uniform Manifold Approximation and Projection \\
+\textbf{DBSCAN} & Density-Based Spatial Clustering of Applications with Noise \\
+\textbf{PMU} & Phasor Measurement Unit \\
+\textbf{SCADA} & Supervisory Control and Data Acquisition \\
+\textbf{WAMS} & Wide-Area Measurement Systems \\
+\textbf{MTS} & Multivariate Time Series \\
+\textbf{XAI} & Explainable Artificial Intelligence \\
+\textbf{HITL} & Human-in-the-Loop \\
+\textbf{VSN} & Variable Selection Network \\
+\textbf{GRN} & Gated Residual Network \\
+\textbf{ELBO} & Evidence Lower Bound \\
+\textbf{KL} & Kullback--Leibler (Divergence) \\
+\textbf{DFD} & Data Flow Diagram \\
+\textbf{SRS} & System Requirements Specification \\
+\textbf{UI/UX} & User Interface / User Experience \\
+\textbf{API} & Application Programming Interface \\
+\textbf{REST} & Representational State Transfer \\
+\textbf{JSON} & JavaScript Object Notation \\
+\end{tabular*}
+
+\vspace{6pt}
+\noindent \textbf{Mathematical Notations}
+\nopagebreak[4]
+\vspace{4pt}
+\nopagebreak[4]
+
+\noindent\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}p{2.8cm} p{11.2cm}@{}}
+$\mathbf{X} \in \mathbb{R}^{T \times D}$ & Input multivariate power grid time-series tensor ($T$ time steps, $D$ channels) \\
+$\mathbf{x}_t \in \mathbb{R}^D$ & Synchronized power grid signal feature vector at time step $t$ \\
+$\mathbf{z} \in \mathbb{R}^d$ & Learned latent representation vector ($d$-dimensional latent embedding) \\
+$\boldsymbol{\mu}, \boldsymbol{\sigma}^2$ & Mean vector and diagonal covariance of VAE latent Gaussian distribution \\
+$q_\phi(\mathbf{z}|\mathbf{X})$ & Variational approximate posterior distribution parameterized by $\phi$ \\
+$p_\theta(\mathbf{X}|\mathbf{z})$ & Generative likelihood decoder distribution parameterized by $\theta$ \\
+$\mathcal{D}_{\text{KL}}(q_\phi \parallel p)$ & Kullback--Leibler divergence between approximate posterior and prior $p(\mathbf{z})$ \\
+$\mathcal{L}_{\text{ELBO}}$ & Evidence Lower Bound objective for variational autoencoder optimization \\
+$\alpha_{i,j}$ & Multi-head self-attention weight linking temporal positions $i$ and $j$ \\
+$v_j^{(t)}$ & Normalized variable selection weight for signal channel $j$ at time step $t$ \\
+$\Phi(\mathbf{z}) \in \mathbb{R}^2$ & Dimensionality reduction projection mapping latent vector $\mathbf{z}$ into $\mathbb{R}^2$ \\
+$\epsilon$ & Maximum neighborhood radius distance parameter for DBSCAN clustering \\
+$\text{MinPts}$ & Minimum neighbor density threshold required to establish a core cluster \\
+$S_i$ & Silhouette coefficient measuring intra-cluster cohesion versus inter-cluster separation \\
+$DB$ & Davies--Bouldin index for clustering partition evaluation \\
+$CH$ & Calinski--Harabasz variance ratio criterion metric \\
+\end{tabular*}
+\end{spacing}
+
+\thispagestyle{plain}
+%=======================================================================

@@ -1,0 +1,944 @@
+{
+  "source_file": "projpaperprint.pdf",
+  "num_pages": 12,
+  "full_text": "Spiking Neural Network-Based Anomaly Detection\nand Tracking\nAmith Ghosh1, Aromal Pradeep2, Fazal Iqbal VV3, Sabarinath A4, Dr. Mohammed Siyad B5\n1,2,3,4,5Department of Computer Science and Engineering, TKM College of Engineering, Kollam, India 1amithachus007@gmail.com, 2aromalpradeep1107@gmail.com, 3fasaliqbal663@gmail.com, 4sabarijnv10@gmail.com 5mohammedsiyadb@tkmce.ac.in\nAbstract—Security and surveillance networks face critical challenges in various terms.There are lack of efficient end to end anomaly detection and multi camera tracking mod- ules.Traditional deep learning architecture often in this regard is not optimized in terms of power usage for anomaly detection frameworks and also tracking of people across various systems accordingly is not an integrated but a standalone system. This pa- per presents a hybrid framework that integrates a CNN-Spiking Neural Network (SNN) for anomaly detection with an event- triggered multi-camera person tracking module integrated. The anomaly detection module initially processes 16-frame clips using a MobilenetV3 backed backbone followed by SNN Parametric Leaky Integrate-and-Fire (PLIF) neurons trained with surrogate gradients.When the anomaly is detected , the system activates a tracking pipeline comprising YOLOv8, ByteTrack, and OSNet for person re-identification across multiple cameras. Experiments on the UCF-Crime dataset resulted that the detection module achieves 90.1% accuracy, 91.61% recall, and an AUC of 0.95 while consuming only 13.34 W on an NVIDIA T4 GPU— which is large energy reduction compared to conventional 3D CNNs making it suitable for large-scale, privacy-preserving surveillance deployments. The Re-ID subsystem (OSNet) yields a Rank- 1 accuracy of 94.02%, and mAP of 86.62% on the rearranged test set that is structured in such a way that is to reflect the expected ByteTrack tracklet output , where as on the same dataset without tracklet output structurisation the accuracy was below 40 which shows the importance of this framework method.\nIndex Terms—Spiking Neural Networks, Anomaly Detec- tion, Multi-Camera Tracking, Neuromorphic Computing, Event- Driven Processing,CNN\nI. INTRODUCTION\nA. Background\nIn the today’s world there is a rapid progress in use of cctv cameras from houses to institutions for monitoring and assessing security.When smart cities produce large petabytes of data the architecture and further advancements which enhances security or atleast give a boost to it; lags behind in the race. Most of the current surveillance systems rely on centralized cloud-based analysis, where high-resolution video streams have to be transmitted to remote servers. This approach introduces severe bottlenecks: such as excessive network bandwidth consumption,latency,and privacy risks due to persistent transmission of identifiable visual data.\nThese architectural challenges are further worsened by the computational inefficiency of conventional deep learning mod- els, which is never nearly compatible with edge deployment\nand often dissipating large amount of power,which is some- thing that cannot be compromised on a system intended to work 24*7. The architectures seen currently result in increased energy consumption and standalone systems which is not providing an end to end services.\nB. Motivation\nThis research is motivated by several practical limitations observed in current large-scale surveillance systems. First, monitoring CCTV footage becomes increasingly arduous and inefficient as the number of cameras grows, placing a signif- icant burden on human operators. Second, there is a growing need for power-efficient and scalable models inspired by biological vision systems. Third, most existing surveillance architectures operate as standalone systems, lacking a unified end-to-end framework that integrates anomaly detection and tracking across multiple camera views.\nTo address these challenges, we propose an end-to-end inte- grated anomaly detection framework based on a hybrid CNN– SNN architecture, complemented by re-identification (Re-ID) based tracking. In particular, Spiking Neural Networks (SNNs) offer a promising direction due to their event-driven and sparse computation paradigm, which significantly improves energy efficiency compared to conventional artificial neural networks (ANNs). This property makes SNNs well-suited for surveillance scenarios, where visual scenes often remain static for extended periods and only sparse temporal changes are of interest.\nFurthermore, recent advances in efficient convolutional ar- chitectures, such as MobileNetV3, enable lightweight spatial feature extraction, making the overall system more suitable for real-world deployment. By combining such efficient CNN backbones with temporally adaptive spiking neurons that model both fast and slow dynamics, the proposed system effectively captures temporal anomalies while maintaining computational efficiency.\nIn addition, advances in person re-identification (Re-ID) have enabled robust cross-camera identity matching, thereby overcoming tracking discontinuities between non-overlapping camera views. Integrating these components into a unified framework allows for scalable, energy-efficient, and intelligent surveillance systems capable of both anomaly detection and consistent multi-camera tracking.\n\n--- Page Break ---\n\nC. Contributions\nWe propose a unified CNN–SNN based anomaly detection model integrated with Re-ID for cross-camera tracking:\n• System A: A hybrid CNN–SNN anomaly detector that continuously monitors video streams by processing 16- frame clips. The model employs a lightweight Mo- bileNetV3 backbone for efficient spatial feature extrac- tion, followed by a feature reduction and spatial attention module. Temporal dynamics are modeled using a dual- timescale spiking neural network composed of paramet- ric Leaky Integrate-and-Fire (PLIF) neurons, capturing both fast and slow temporal variations. This is further enhanced with temporal attention and adaptive pooling for robust video-level anomaly prediction.\n• System B: A multi-camera tracker that activates upon confirmed anomaly detection, performing real-time per- son detection (YOLOv8n, two-tier confidence pool- ing), two-stage temporal association (ByteTrack), crop quality filtering with CLAHE preprocessing, cross- camera re-identification (OSNet-AIN [17]), Mahalanobis- filtered tracklet centralization, and metadata-driven spatio-temporal trajectory reconstruction. The key contributions are:\n• A novel energy-efficient hybrid MobileNetV3 + spiking neural network architecture that combines lightweight convolutional feature extraction with dual-timescale tem- poral spiking dynamics and attention mechanisms for improved anomaly detection.\n• Integration of spatial attention, temporal attention, and learnable temporal weighting to enhance both frame-level and video-level anomaly prediction.\n• A training strategy incorporating weighted focal loss to effectively handle class imbalance in real-world anomaly datasets such as UCF-Crime.\n• Comprehensive evaluation on the UCF-Crime dataset, including ablation studies and comparisons with state- of-the-art approaches.\nD. Organization\nThe remaining part of this paper is organized as follows: Section II reviews related works in anomaly detection, multi- camera tracking, and neuromorphic computing. Section III details the proposed methodology, including the hybrid CNN- SNN architecture and event-triggered tracking pipeline. Sec- tion IV describes the experimental setup, dataset, and imple- mentation details. Section V presents results and discussion, including ablation studies and comparative analysis. Section VI concludes the paper and outlines future research directions.\nII. RELATED WORK\nA. Video Anomaly Detection\nMany earlier versions of video anomaly detection models relied mostly on handcrafted features and rule-based sys- tems.Many methoods such as Background subtraction methods like Gaussian Mixture Models (GMM) and kernel density\nestimation formed the basis of motion-based anomaly detec- tion.Even though it was effective in controlled environments, these methods still struggled with dynamic backgrounds, illu- mination variations, and complex scene semantics.\nOptical flow-based ideas later emerged to capture motion patterns by estimating pixel-wise velocity fields. Even though it was capable of identifying abnormal motion, these methods were still computationally expensive and highly sensitive to noise. Sparse reconstruction techniques afterwards made anomaly detection as an outlier detection problem; however, they required extensive modeling of normal behavior and showcased very poor generalization across varied scenes.\nThe sudden spurt of deep learning however significantly transformed the field of video surveillance systems. Convolu- tional Neural Networks widely known as CNNs enabled robust feature learning for object detection and activity recognition. Two-stage detectors such as Faster R-CNN and single-stage detectors like YOLO provided high accuracy but demanded huge computational resources often least concerned on the power efficiency.\nReconstruction-based deep learning methods, which in- cludes autoencoders [1], Variational Autoencoders (VAEs), and Generative Adversarial Networks (GANs), became pop- ular for anomaly detection as later. Despite improved per- formance, these approaches process every frame exhaustively demanding higher spectra of computational efficiency, ir- respective of anomaly presence, leading to inefficiency in computational resource utilization.\nSultani et al. [2] put forward weakly-supervised multi- ple instance learning on the large-scale UCF-Crime dataset, achieving significant improvements. Three-dimensional CNNs and temporal networks addressed spatiotemporal modeling but introduced computational costs exceeding 100 GFLOPs per clip, which is devoid of efforts in the direction of power efficiency.\nB. Multi-Camera Tracking Systems\nPerson Re-Identification i.e Re-ID evolved from basic hand- crafted descriptors to the more complicated deep metric learn- ing approaches. Earliest deep Re-ID models formulated the task as a classification problem, while later methods that followed focused more on learning discriminative embeddings. Hermans et al. [3] put forth the capabilities of triplet loss for learning discriminative embeddings. Zheng et al. [12] gave comprehensive surveys of Re-ID techniques.\nUsual Multi-Target and Multi-Camera Tracking (MTMCT) mechanisms integrate actions such as detection, tracking, and Re-ID. YOLO variants [4] produce detection of subject to be tracked, while ByteTrack [5] high performance temporal association through motion prediction and IoU matching. OSNet [6] and its domain-adaptive variant OSNet-AIN [17] achieve state-of-the-art Re-ID performance through omni-scale feature learning, with OSNet-AIN additionally incorporating Aggregated Instance Normalization for improved robustness to cross-camera domain shift. However, all these systems assume continuous operation, which heeds unnecessary data resulting\n\n--- Page Break ---\n\nin unnecessary computation and degraded power effiicency factor in anomaly-sparse scenarios.\nC. Neuromorphic Computing in Vision\nSpiking Neural Networks (SNNs) represent a biologically motivated brain-inspired computing mechanisms where infor- mation is transmitted via discrete spikes rather than contin- uous ones which is prevalent in traditional ANNs(Artificial Neural Network).SNNs being activated only when have to be spiked,i.e when membrane potentials exceed defined thresh- olds hence reducing neural spikes to the values of 0s and 1s ,i.e discrete values . Primarily SNN research focused on simple datasets such as MNIST. Recent advancements in surrogate gradient learning [7] have enabled the training of deeper SNNs which would have otherwise relied on traditional ANN-SNN conversion methods involving larger time-steps and decreased accuracy . Kundu et al. [8] applied SNNs to temporal action recognition, but most applications remain limited to basic classification tasks,object detection tasks or relied on specialized event-based cameras.\nD. Research Gaps\nThe literature reveals several research gaps:\n• Computational Efficiency vs Accuracy: High-accuracy models require large computational resources.Existing systems fail to balance both aspects i.e accuracy and power efficiency.\n• Continuous vs Event-Driven Processing: Most tracking systems operate continuously, even though anomalies constitute very less in a normal CCTV footage. No prior work integrates anomaly detection as a gating mechanism for tracking activation.\n• Limited SNN Applications in Surveillance: Possibilities of SNN models has not been fully exploited in diverse fields and prevailing models do not address complex human behavior analysis in real-world surveillance. This work directly addresses these gaps through an inte- grated SNN based anomaly detection and tracking framework.\nIII. PROPOSED METHODOLOGY\nA. System Overview\nThe framework proposed in this work consists of two com- plementary system modules designed for seamless integration. System A unceasingly monitors video streams using a hybrid CNN-SNN anomaly detector. When an anomaly is detected by the module with confidence exceeding thresholdψθa, System A triggers System B,Upon anomaly confirmation, System A extracts and saves the cropped person image(s) from the flagged frames, together with their bounding-box coordinates and frame-level metadata, into a designated query folder on disk, which System B subsequently consumes as its structured input to initiate the tracking and re-identification pipeline.. This design ensures that computationally expensive tracking operations are executed only for frames with anomalies de- tected.\nB. System A: Hybrid CNN-SNN Anomaly Detector\n1) Architecture: The anomaly detector module processes fixed-length temporal clips of 16 consecutive frames resized to a resolution of 224×224. Figure 1 gives the overall archi- tecture.\nFig. 1: SNN-CNN Hybrid Anomaly Detection Architecture (System A)\nThe model consists of the following components:\n1) Spatial Backbone: A lightweight MobileNetV3-Large pretrained model is used for efficient spatial feature extraction. The network is truncated after the feature extraction stage, producing high-level feature maps with 960 channels. 2) Feature Reduction: A 1←× 1 convolution reduces the feature dimension from 960 to 256 channels, followed by BatchNorm and Hardswish activation. Adaptive av- erage pooling resizes the feature maps to 4×4, resulting in a 4096-dimensional feature vector per frame. 3) Spatial Attention: A lightweight attention mechanism emphasizes salient spatial regions. The attention map is\n\n--- Page Break ---\n\ncomputed as:\nαspatial =ψσ(Conv1×1(Hardswish(Conv1×1(F))))\nwhereψF denotes the reduced feature map. The attended features are obtained via element-wise multiplication. 4) Temporal Encoding: Each frame-level feature vector is projected into a 256-dimensional embedding using a two-layer MLP with BatchNorm, Hardswish activation, and dropout:\nzt =ψφ(W2(φ(W1xt)))\n5) Spiking Temporal Processor: Temporal dynamics are modeled using a dual-timescale spiking neural net- work composed of parametric Leaky Integrate-and-Fire (PLIF) neurons. Two parallel pathways are employed:\n• Fast pathway: captures rapid temporal variations with a small membrane time constant.\n• Slow pathway: captures long-term temporal depen- dencies with a larger time constant. For each time stepψt, spike outputs from both pathways are computed:\nSf(t) = PLIFfast(zt), Ss(t) = PLIFslow(zt)\nThese are adaptively fused using a learnable gating mechanism:\ngt =ψσ(Wg[Sf(t),ψSs(t)])\nht =ψgt←·ψSf(t) + (1←−gt)←·ψSs(t)\nwhereψht represents the final spiking representation. 6) Temporal Normalization: Group normalization is ap- plied across temporal features to stabilize training:\n ̃ht = GN(ht)\n7) Temporal Attention: A learnable attention mechanism assigns importance weights to each time step:\nβt = exp(Wa ̃ht) PT\nk=1 exp(Wa ̃hk)\n8) Temporal Pooling: The final video representation com- bines weighted temporal averaging and max pooling:\nhavg =\nT X\nt=1\nβt ̃ht\nhmax = max\nt ( ̃ht)\nhvideo = 0.7←·ψhavg + 0.3←·ψhmax\n9) Classification Heads: Separate classifiers are used for video-level and frame-level predictions:\nyvideo =ψWvhvideo +ψbv\nyt\nframe =ψWf ̃ht +ψbf\nThe anomaly confidence for each frame is obtained by applying a sigmoid activation to the frame-level logits, while video-level anomaly prediction is derived from aggregated temporal features.\n2) Loss Function: The model is trained using a combina- tion of video-level and frame-level focal losses to address class imbalance:\nL =←Lvideo +ψλLframe (1)\nwhereψλ = 0.1 balances the contribution of frame-level supervision.\n• Video-Level Weighted Focal Loss:\nLvideo =←−wt(1←−pt)γ log(pt) (2)\nwhereψwt is a class-dependent weight computed from the ratio of normal to anomalous samples, andψγ = 2.0.\n• Frame-Level Focal Loss:\nLframe =←−αt(1←−pt)γ log(pt) (3)\napplied only to anomalous samples, withψα = 0.25.\nUnlike conventional SNN formulations, no explicit spike regularization or temporal consistency loss is used. Instead, temporal coherence is implicitly learned through attention mechanisms and dual-timescale spiking dynamics.\nC. System B: Event-Triggered Multi-Camera Tracking\nFigure 2 illustrates the multi-camera tracking architecture. When an anomaly is detected, System B activates the following pipeline:\n1) Video Acquisition and Ingestion: The pipeline accepts one or more video files (MP4/AVI/MOV) via a single-file or batch-folder interface. Each video is opened using OpenCV’s VideoCapture, and its properties—frame rate, resolution, and total frame count—are stored in a video_info dictio- nary. This metadata propagates through all subsequent stages, anchoring every frame-level event to wall-clock time via:\ntframe =ψfid\nfps (4)\n2) Person Detection: Each decoded frame is processed by YOLOv8n [16] with a base confidence threshold of 0.25 and the class filter restricted to person (COCO class 0). Detection output for each candidateψi is:\nDi = (x1,ψy1,ψx2,ψy2,ψci) (5)\nwhere (x1,ψy1) and (x2,ψy2) define the bounding box corners, andψci is the confidence score. The resulting detections are explicitly partitioned into two pools prior to tracking associa- tion:\n• High-confidence pool:ψciψ⌢ 0.6\n• Low-confidence pool: 0.1ψ♯ψci←≤0.6\nThis two-tier partitioning is central to the ByteTrack associa- tion framework described below.\n\n--- Page Break ---\n\nFig. 2: Multi-Camera Person Tracking Architecture (System B)\n3) Temporal Association: Tracklet generation is performed using ByteTrack [5]. Each active trackψk maintains an 8- dimensional state vector:\nsk = (cx,ψcy,ψw,ψh,ψvcx,ψvcy,ψvw,ψvh) (6)\nrepresenting the bounding-box center, dimensions, and their respective velocities. A constant-velocity Kalman filter pre- dicts the next state, with process noise scaled proportionally to the box heightψh to maintain scale-adaptivity:\nˆsk,t+1 = F sk,t (7)\nwhere F is the state transition matrix of the constant-velocity model.\nAssociation proceeds in two stages. In Stage 1, all active and lost tracks are predicted forward, and a cost matrix is computed against the high-confidence detection pool using a score-fused IoU cost:\nCkj = 1←−IoU(ˆsk,ψDj)←×ψcj (8)\nThe Hungarian algorithm solves the assignment with threshold 1←−τm, whereψτm = 0.8 is the match threshold. In Stage 2, tracks unmatched in Stage 1 are re-matched against the low- confidence pool using pure IoU cost, recovering occluded or\nweakly detected persons. Unmatched high-confidence detec- tions surviving both stages initialize new tracks with mono- tonically increasing identifiers. Lost tracks are retained for up to 30 frames before permanent deletion.\n4) Crop Extraction and Quality Filtering: For each con- firmed track per frame, the bounding box is clamped to frame boundaries and the person crop is saved alongside per-frame metadata (frame index, timestamp, bounding box coordinates, and relative image path).\nPrior to feature extraction, each crop undergoes quality validation. A frame is accepted only if it satisfies all of the following criteria: minimum crop size←≥40←× 40 px, aspect ratio within [0.2, 2.0], Laplacian variance←≥30 (blur threshold), exactly one person detected at confidence←≥0.5. Frames failing one or more criteria enter a salvage procedure: blurry frames are sharpened; frames with invalid aspect ratios are padded to meet the proportion constraint; frames with low detection confidence undergo CLAHE-based contrast enhance- ment and are re-validated. Frames that remain non-conforming after salvage are discarded.\nBefore feature extraction, all retained crops are prepro- cessed with Contrast Limited Adaptive Histogram Equaliza- tion (CLAHE) applied to the luminance channel in LAB color space (clipLimit = 2.0, tileGridSize = 8×8), improving local\n\n--- Page Break ---\n\ncontrast under adverse lighting conditions.\n5) Re-Identification Feature Extraction: For each frames contain tracklet, a 512-dimensional feature embedding is ex- tracted using OSNet-AIN (osnet ain x1 0) [6], an omni-scale network with Normalization pre-trained on large-scale ReID benchmarks. The classifier head is excluded at inference. The network processes crops resized to 256←× 128 pixels:\nφi = OSNet-AIN(cropi)←∈R512 (9)\nEach frame-level feature vector is immediately L2-normalized:\nˆφi = φi ∥φi∥2\n, ∥ˆφi∥2 = 1 (10)\nprojecting all features onto the unit hypersphere so that cosine similarity reduces to a dot product.\n6) Tracklet Feature Centralization: Per-frame features for each tracklet are consolidated into a single robust identity vector. Let←⊓ˆφi⊒N\ni=1 denote the set of normalized frame features for a tracklet. An optional Mahalanobis-based outlier filtering step is applied whenψN is sufficient: frame features deviating beyond the [q, 1←−q] quantile of the Mahalanobis distance distribution (computed using the pseudo-inverse of the sample covariance) are discarded.\nc = 1\nN←′\nN←′ X\ni=1\nˆφi (11)\nwhereψN←′ is the number of frames retained after outlier removal. This aggregation approximates the identity center under the assumption that intra-identity features follow a mul- tivariate normal distribution, and improves robustness against occlusion, pose variation, and lighting changes.\n7) Query Extraction: The anomaly detection module (Sys- tem A) outputs a designated query folder containing cropped person images extracted from confirmed anomalous frames, each accompanied by its bounding-box coordinates, frame index, and timestamp metadata; this folder serves as the direct input to the query extraction stage, where crops undergo quality filtering, CLAHE preprocessing, OSNet-AIN feature extraction, and centralization to yield the query identity vector\nPerson crops flagged by the anomaly detection module are treated as query tracklets. They undergo the identical pipeline as gallery tracklets: quality filtering, CLAHE prepro- cessing, OSNet-AIN feature extraction, L2 normalization, and Mahalanobis-filtered centralization, yielding a query identity vector cq←∈R512.\n8) Cross-Camera Matching: Each query identity vector cq is compared against all gallery centralized vectors←⊓cg⊒ using cosine similarity:\nsim(cq, cg) = cq←· cg (12)\nA match is declared when:\nsim(cq, cg)←≥θs = 0.75 (13)\nUpon a confirmed match, the per-frame metadata of the matched gallery tracklet—including frame indices, times- tamps, and bounding box coordinates—is retrieved to re- construct the subject’s trajectory across the camera network, enabling precise spatio-temporal localization.\nD. Integration and Event-Driven Operation\nThe integrated workflow operates as follows:\nAlgorithm 1 Event-Driven Surveillance Pipeline\n1: Initialize System A (low-power monitoring mode) 2: while True do 3: Read frameψFt from camera; extract clip [Ft−15,ψ.ψ.ψ.ψ,ψFt] 4: Compute anomaly scoreψA(Ft) 5: ifψA(Ft)←≥θa then\n// System A saves flagged person crop(s) and per- frame metadata 6: Activate System B; recordψtframe =ψfid/fps (Equa- tion 4)// (bbox, frame index, timestamp) to query folder on disk 7: while anomaly persists do\n8: // Person Detection 9: Run YOLOv8n onψFt (conf = 0.25, class = person) 10: Partition detections into high-confidence pool (ciψ⌢ 0.6) and low-confidence pool (0.1ψ♯ψci←≤ 0.6) per Equation 5\n11: // Two-Stage ByteTrack Association 12: Predict all active/lost tracks forward via Kalman filter (Equation 7) 13: Stage 1: Assign tracks to high-confidence pool using score-fused cost matrixψCkj (Equation 8); solve via Hungarian algorithm\n14: Stage 2: Re-match unmatched tracks against low- confidence pool using IoU cost; initialize new tracks from surviving unmatched detections 15: Update track states (Equation 6); delete lost tracks exceeding 30-frame buffer\n16: // Crop Extraction and Quality Filtering 17: Extract and clamp person crops; save per-frame metadata (index, timestamp, bbox) 18: Validate each crop: size←≥40←× 40, aspect ratio←∈ [0.2, 2.0], Laplacian variance←≥30, single person at conf←≥0.5\n19: Apply salvage procedure to non-conforming crops; discard irrecoverable frames 20: Apply CLAHE preprocessing (LAB space) to all retained crops 21: // Feature Extraction and Centralization 22: Extractψφi = OSNet-AIN(cropi)←∈R512 and L2- normalize: ˆφi =ψφi/∥φi∥2 (Equations 9, 10) 23: Store per-frame normalized features and metadata 24: end while 25: // Tracklet Centralization (Gallery)\n26: Filter outlier frames via Mahalanobis distance; com- pute centralized vector cg (Equation 11)\n\n--- Page Break ---\n\n27: // Query Extraction\n28: Process anomaly-flagged crops through identical pipeline to obtain query vector cq 29: // Cross-Camera Matching 30: if camera handover detected then 31: Compute sim(cq, cg) = cq←· cg (Equation 12) 32: if sim(cq, cg)←≥θs then\n33: Retrieve matched gallery metadata; reconstruct spatio-temporal trajectory 34: end if 35: end if 36: else 37: Continue low-power monitoring\n38: end if 39: end while\nThis design reduces tracking-related computation by ap- proximately 94% compared to continuous processing while maintaining real-time situational awareness.\nIV. EXPERIMENTAL SETUP\nA. Dataset\nWe use the UCF-Crime dataset [2], containing 500 untrimmed surveillance videos spanning 14 classes (13 anomaly types + normal). Table I summarizes the dataset statistics.\nTABLE I: UCF-Crime Dataset Statistics\nProperty Value\nTotal Videos 500 Classes 14 (13 anomaly + normal) Total Duration ≈42 hours Average Video Duration 302.28 seconds Frame Rate 30 FPS Resolution 320×240 (65%), others Anomaly Types Assault, Burglary, Fighting, etc.\nThe dataset exhibits significant class imbalance, reflecting real-world surveillance conditions where normal activities vastly outnumber anomalous events.\nB. Preprocessing Pipeline\n1) Frame Extraction: Uniform sampling to extract 16- frame clips. For videos shorter than 16 frames, we pad with the last frame. 2) Resizing: All frames resized to 224×224 using bilinear interpolation with aspect-ratio padding. 3) Normalization: Using ImageNet statistics: mean = [0.485, 0.456, 0.406], std = [0.229, 0.224, 0.225]. 4) Data Augmentation:\n• Random horizontal flip (p=0.5)\n• Random rotation (±10◦)\n• Color jitter (brightness=0.2, contrast=0.2, satura- tion=0.2)\n• Random temporal reversal (p=0.5)\n• Random temporal cropping\nC. Train-Validation-Test Split\nWe employ stratified 5-fold cross-validation to address class imbalance:\n• Training: 70% (45,000 clips)\n• Validation: 15% (15,000 clips)\n• Testing: 15% (15,000 clips) The split preserves class distribution across all folds.\nD. Implementation Details\n1) Hardware Configuration:\n• Training: NVIDIA T4 GPU (16 GB VRAM), 16 GB RAM, Intel Xeon CPU\n• Edge Deployment: NVIDIA Jetson Nano (4 GB) and Jetson Orin (8 GB) 2) Software Environment:\n• Python 3.8, PyTorch 2.0, CUDA 11.8\n• Ultralytics YOLOv8, Torchreid (OSNet)\n• OpenCV 4.8, NumPy, Scikit-learn 3) Training Hyperparameters: System A (SNN Anomaly Detection):\n• Batch size: 8 (with drop last=True to avoid single-sample batches)\n• Optimizer: AdamW (lr=1e-4, weight decay=1e-5)\n• Learning rate schedule: Cosine annealing with warm restarts (T0=10, Tmult=2)\n• Epochs: 50 with early stopping (patience=10)\n• Focal loss:ψα = 0.25,ψγ = 2.0\n• Spike regularization weight:ψλ = 0.01\n• Temporal consistency weight:ψμ = 0.1 System B (Tracking Components):\n• YOLOv8n: base confidence threshold = 0.25; high- confidence poolψciψ⌢ 0.6, low-confidence pool 0.1ψ♯ ci←≤0.6; IoU threshold = 0.5\n• ByteTrack: track buffer = 30 frames, match threshold τm = 0.8; Stage 1 uses score-fused IoU cost; Stage 2 uses pure IoU cost\n• Crop quality filter: minimum size 40←× 40 px, aspect ratio←∈[0.2, 2.0], Laplacian variance←≥30, single-person detection confidence←≥0.5\n• OSNet-AIN (osnet_ain_x1_0): input size = 256←× 128, output embedding dimension = 512; classifier head excluded at inference\n• Tracklet centralization: Mahalanobis outlier filtering at quantileψq = 0.005; centralized vector computed as per- frame feature mean (Equation 11)\n• Re-ID matching threshold:ψθs = 0.75 (cosine similarity)\nE. Evaluation Metrics\nAnomaly Detection:\n• Accuracy: TψP +TψN TψP +TψN+FψP +FψN • Precision: TψP TψP +FψP • Recall: TψP TψP +FψN • F1-Score: 2←·ψPψrecision·Recall Pψrecision+Recall\n\n--- Page Break ---\n\n• AUC-ROC: Area Under Receiver Operating Characteris- tic curve\nTracking:\n• MOTA: Multi-Object Tracking Accuracy\n• ID Switch Rate: Number of identity switches per track\n• Re-ID Rank-1 Accuracy\n• mAP@0.5: mean Average Precision at IoU=0.5\nEfficiency:\n• FPS: Frames Per Second\n• Power consumption (W): measured via NVIDIA system management interface\n• Bandwidth reduction:ψbytesraw−bytesmetadata bytesraw × 100%\nV. RESULTS AND DISCUSSION\nA. Anomaly Detection Performance\nTable II presents the test results of the proposed hybrid CNN-SNN model.\nTABLE II: Anomaly Detection Test Results\nMetric Value\nAccuracy 0.894 Precision 0.902 Recall 0.9161 F1-Score 0.9003 AUC-ROC 0.9381 Optimal Thresholdψθa 0.521\nThe model achieves an F1-score of 0.9003 and recall of 0.9161, indicating that most anomalies are successfully detected. The AUC of 0.9381 demonstrates excellent discrim- inative ability. The confusion matrix on the test set (263 clips) is:\nTABLE III: Confusion Matrix (Test Set)\nPredicted Normal Anomaly\nActual Normal 106 14 Actual Anomaly 14 129\nFalse positives (17 cases) are primarily caused by:\n• Rapid but normal human motion patterns (60%)\n• Camera artifacts such as glare, shadows, or rain (25%)\n• Unusual yet non-anomalous activities (15%)\nFalse negatives (12 cases) arise from:\n• Subtle anomalies such as pickpocketing (40%)\n• Partial occlusions (35%)\n• Low-light conditions (25%)\nFig. 3: F1 Score and Recall vs Threshold:optimal threshold is selected where the F1 score is maximized, balancing precision and recall\nFig. 4: ROC curve:The high AUC value (0.954) indicates excellent ability of the model to distinguish between normal and anomalous videos.\nB. Tracking Performance\nThe Re-Identification model (OSNet-AIN) was evaluated on the DukeMTMC-reID dataset using pretrained weights. For evaluation, DukeMTMC-reID was rearranged to match the expected output format of ByteTrack-generated tracklets.\nTABLE IV: performance comparison on DukeMTMC\nModel mAP Rank-1 Rank-5 Rank-10\nOSNet-IBN(Market- 1501 weights, standard) 26.7% 48.5% 62.3% 67.4% OSNet-AIN x1.0 (Market- 1501 weights, standard) 30.5% 52.4% 66.1% 71.2% OSNet-AIN x1.0 (imagenet weights, ours) 47.04% 66.95% 82.62% 88.04% OSNet-AIN x1.0 (Market-1501 weights, ours) 86.62% 94.02% 96.86% 99.00%\n\n--- Page Break ---\n\nConfigurations of OSNet-AIN are compared to evaluate the contribution of the proposed pipeline in cross domain performance. The standard models like OSNet-AIN x1.0 (Market- 1501 weights, standard) achieves Rank-1 of 52.4% and mAP of 30.5%, reflecting the domain gap between Market- 1501 and DukeMTMC. Applying feature centralization on imagenet weights without fine tuning on dukeMTMC gives Rank-1 to 66.95% and mAP to 47.04% . The full pipeline—incorporating ByteTrack-based tracklet generation, crop tracklet based feature centralization—achieves Rank-1 of 94.02% and mAP of 86.62%, a 41.6 percentage-point improvement over the standard baseline, confirming that tracklet-level feature centralization is the dominant contributor to Re-ID performance.\nTABLE V: Impact of ByteTrack Tracking Quality on Re-ID Performance\nTracking Input to Re-ID Rank-1 mAP\nByteTrack (proposed) 94.02% 86.62% ByteTrack (degraded, -10%) 85.90% 77.89%\nThe degraded tracker causes Rank-1 to drop from 94.02% to 85.90% (−8.12 pp) and mAP from 86.62% to 77.89% (−8.73 pp), confirming that tracklet length and identity stabil- ity are essential for reliable feature centralization. ByteTrack is therefore a functional prerequisite, not an interchangeable component, within the proposed pipeline.the performance of Reid module purely depends on bytetrack genrated tracklet and the preprocessing\na) Why Simulated Degradation Instead of Direct Track- ing Evaluation: Standard Re-ID benchmarks such as DukeMTMC-reID and Market-1501 provide only cropped per- son images without temporal continuity, making it impossible to directly execute or evaluate multi-object tracking algo- rithms. To address this, we adopt a controlled simulation strategy that artificially degrades tracklet quality, isolating the effect of tracking errors on downstream Re-ID performance while keeping all other components fixed. Since ByteTrack has been extensively validated on MOT17, our focus is on quantifying how tracking quality influences feature centraliza- tion and cross-camera matching, rather than re-evaluating the tracker itself.\nC. Efficiency and Energy Savings\nTable IV summarizes the system efficiency metrics. Compared to a 3D CNN baseline (C3D: 42.7 W), our SNN reduces energy consumption by 87%. The event-driven activation reduces total tracking workload by 94% because anomalies occur in only approximately 6% of the video (based on UCF-Crime anomaly frequency). Network bandwidth is reduced by 96.5% because only feature vectors (512 floats) are transmitted instead of full frames.\nTABLE VI: System Efficiency Metrics\nMetric Value\nProcessing Speed 28 FPS (720p input) Power (SNN only) 3.1 W Power (Tracking active) 11.5 W Idle Power 0.8 W Memory Usage (peak) 4.2 GB Network Bandwidth Reduction 96.5%\nD. Ablation Study\nTo evaluate the contribution of each architectural com- ponent, a comprehensive set of ablation experiments was conducted. The study spans three axes: (i) the choice of temporal processor, (ii) the contribution of spatial and temporal attention modules, and (iii) the impact of the spatial feature extraction backbone. Table VII consolidates all results.\nFull SNN\nBiLSTM\nGRU\nTransformer\nNo Temp Att\nNo Spatial Att\nNo Attention\nResNet18\nCustom CNN\nSNN Only\n0\n0.2\n0.4\n0.6\n0.8\n1\nNormalized Value\nAcc.\nPower\nFig. 5: Normalized comparison of accuracy and power con- sumption.\nE. Cross-Dataset Generalisation\nTo evaluate generalisation beyond UCF-Crime, the proposed model (full architecture, unchanged) was tested on two addi- tional datasets.\nTABLE VIII: Proposed Model Performance Across Three Datasets\nDataset F1 AUC Acc. Notes\nUCF-Crime 0.9097 0.9557 0.9011 Train domain ShanghaiTech 0.833 0.986 0.933 Zero-shot UCSD Pedestrian 0.667 0.722 0.867 Grayscale\nOn ShanghaiTech Campus, the model achieves a high AUC of 0.986 without retraining, demonstrating strong cross-dataset generalisation. The dual-timescale PLIF SNN effectively cap- tures transferable temporal patterns rather than dataset-specific features. Minor discrepancies in F1 (0.833) are attributed to threshold sensitivity and the small test set (30 clips), rather than model limitations.\nPerformance on UCSD Pedestrian is lower (AUC 0.722, F1 0.667) due to dataset-specific challenges. The grayscale\n\n--- Page Break ---\n\nTABLE VII: Ablation Study: Accuracy and Efficiency Summary (UCF-Crime)\nConfiguration Accuracy F1 Precision Recall Power (W) Energy (mJ) Proposed (Full, SNN) 0.901 0.9097 0.9034 0.9161 ∼13.34 ∼307 Temporal Processor Variants SNN←→Bidirectional LSTM 0.920 0.927 0.918 0.937 77.84 686.31 SNN←→GRU 0.8973 0.909 0.877 0.944 13.85 141.86 SNN←→Transformer Encoder 0.8783 0.941 0.907 0.978 12.91 1,092,036 Attention Module Variants Remove Temporal Attention (SNN only) 0.8821 0.934 0.925 0.944 12.81 90.99 Remove Spatial Attention 0.8897 0.904 0.861 0.951 12.81 92.43 Remove Both Attention Modules 0.8631 0.881 0.837 0.930 13.52 157.09 Backbone Variants ResNet-18 + SNN 0.8631 0.878 0.850 0.909 16.80 — Custom CNN + SNN 0.8251 0.832 0.870 0.797 12.70 239.80 SNN Only (No CNN Backbone) 0.6274 0.715 0.612 0.860 11.45 40.30\ninput reduces compatibility with the ImageNet-pretrained Mo- bileNetV3 backbone, while anomalies (e.g., bicycles) are visu- ally subtle and closely resemble normal motion. Additionally, the small dataset size (15 clips) increases metric variability. Despite this, balanced errors (1 FP, 1 FN) indicate stable threshold calibration rather than systematic bias.\nOverall, the results highlight strong generalisation to sim- ilar surveillance domains, while performance degradation on UCSD suggests the need for domain adaptation, particularly for grayscale inputs.\nF. Comparison with Existing Methods\nTABLE IX: Anomaly Detection Comparison on UCF-Crime\nMethod F1 AUC Power (W) FPS\nProposed (MobileNetV3–SNN) 0.9097 0.9557 ∼13.34 28 3D-CNN Baseline 0.891 0.941 ∼42.7 17 Convolutional Autoencoder 0.834 0.897 ∼8.3 33 SVM + HOG 0.724 0.783 ∼2.1 48\nThe proposed model achieves the highest F1 and AUC while operating at 16 FPS, maintaining real-time throughput. The 3D-CNN baseline approaches comparable accuracy (F1 = 0.891) but at←∼42.7 W — more than three times the power of the proposed system. The convolutional autoencoder achieves lower power (8.3 W) but at a substantial accuracy cost (F1 = 0.834, AUC = 0.897). The SVM + HOG baseline, while computationally cheap (2.1 W), is far below the accuracy threshold for practical deployment (F1 = 0.724). The proposed system occupies a unique region of the accuracy–power space: near state-of-the-art accuracy with edge-compatible power consumption.\nG. Qualitative Analysis\nFigure 3 shows sample frames with detected anomalies and overlaid attention maps. The model correctly localizes anomalous regions (e.g., fights, burglaries) while ignoring background activity.\nH. Discussion\n1) Strengths:\n• Energy Efficiency: 87% reduction compared to CNN- based models enables long-term edge deployment.\nFig. 6: Qualitative Examples of Anomaly Detection\n• Event-Driven Processing: Computational resources ac- tivated only upon confirmed anomalies, saving 94% of tracking computation.\n• Privacy Preservation: Local processing with feature- only data transmission ensures personally identifiable information never leaves the edge device.\n• Scalability: Supports deployment across large-scale dis- tributed camera networks with minimal infrastructure costs.\n• Real-Time Operation: Sustains 28 FPS on edge hard- ware, meeting real-time surveillance requirements.\n2) Limitations:\n• Dataset Bias: Limited viewpoint and environmental di- versity in UCF-Crime may affect generalization.\n• SNN Training Complexity: Surrogate gradients intro- duce approximation errors, requiring careful hyperparam- eter tuning.\n• Absence of Person-Level Localized Anomaly Annota- tions: The UCF-Crime dataset provides only video- or frame-level anomaly labels, with no person-level bound- ing box annotations identifying which individual is re- sponsible for the detected anomaly. Consequently, the system can determine that an anomalous event occurs within a scene but cannot directly attribute it to a specific tracked person during training. This limits supervised optimization of the end-to-end pipeline at the person level, and the re-identification and tracking components are evaluated independently rather than in a jointly su- pervised anomaly-to-person localization framework.\n\n--- Page Break ---\n\n(a) Anomaly-triggered tracking\n(b) Query images\n(c) Single-camera tracking\n(d) Cross-camera Re-ID\nFig. 7: End-to-end tracking pipeline: (a) anomaly-triggered activation, (b) query extraction, (c) single-camera tracking, and (d) cross-camera re-identification.\n• Lighting Sensitivity: Reduced detection accuracy under extreme low-light conditions (below 10 lux).\n• Occlusion Handling: Dense crowd scenarios increase tracking and re-identification errors.\nVI. CONCLUSION AND FUTURE WORK\nA. Summary\nWe propose a neuromorphic edge intelligence framework that combines a hybrid CNN-SNN anomaly detection module with event-driven multi-camera tracking. Our system achieves an accuracy of 88.97% and a recall of 91.61% on the UCF-Crime dataset with a power consumption of 3.1 W, reflecting an 87% reduction in energy compared to traditional 3D CNN methods. The tracking pipeline employs two-stage ByteTrack association with OSNet-AIN-based re-identification [17], achieving a Rank-1 accuracy of 94.02% and mAP of 86.62% on the rearranged ReID test set. Mahalanobis-filtered tracklet centralization further improves cross-camera identity matching robustness. The event-based system achieves a 94% reduction in tracking computations and a 96.5% reduction in bandwidth, allowing for real-time execution on edge devices at 28 frames per second.\nB. Key Outcomes\n• Validation of SNN efficiency for complex surveillance tasks.\n• Demonstration of event-driven tracking with 94% com- putation savings.\n• Real-time performance at 28 FPS on edge devices.\n• Scalable distributed architecture for camera networks.\n• Privacy-preserving local analytics with metadata-only transmission.\n• Robust cross-camera re-identification via OSNet-AIN with Mahalanobis-filtered tracklet centralization, achiev- ing Rank-1 accuracy of 94.02% and mAP of 86.62%.\nC. Future Research Directions\n• Dataset Expansion: Extend to larger, multi-country surveillance datasets (e.g., ShanghaiTech, CUHK Av- enue) for improved generalization.\n• Transformer-SNN Hybrids: Integrate temporal trans- formers with SNN layers for better long-range depen- dency modeling.\n• Hardware Acceleration: Deploy on FPGA and ASIC neuromorphic platforms for further energy savings.\n• Multimodal Fusion: Incorporate audio and thermal sen- sors for robust detection under adverse conditions.\n\n--- Page Break ---\n\n• Online Adaptive Learning: Implement continual learn- ing to adapt to evolving anomaly patterns without forget- ting.\n• Federated Learning: Enable privacy-preserving collab- orative training across camera networks.\n• Explainable AI: Develop interpretability techniques for anomaly decisions to build operator trust.\n• Hardware-Software Co-Design: Optimize the archi- tecture jointly with hardware constraints for maximum efficiency.\n• Person-Level Anomaly Localization: Develop or curate surveillance datasets with person-level bounding box an- notations tied to anomaly labels, enabling jointly super- vised optimization of the detection and tracking pipeline at the individual level rather than at the video or frame level.\nREFERENCES\n[1] M. Hasan, J. Choi, J. Neumann, A. K. Roy-Chowdhury, and L. S. Davis,\n“Learning temporal regularity in video sequences,” in Proc. IEEE Conf. Computer Vision and Pattern Recognition (CVPR), 2016, pp. 733–742. [2] W. Sultani, C. Chen, and M. Shah, “Real-world anomaly detection in\nsurveillance videos,” in Proc. IEEE Conf. Computer Vision and Pattern Recognition (CVPR), 2018, pp. 6479–6488. [3] A. Hermans, L. Beyer, and B. Leibe, “In defense of the triplet loss for\nperson re-identification,” arXiv preprint arXiv:1703.07737, 2017. [4] J. Redmon and A. Farhadi, “YOLOv3: An incremental improvement,”\narXiv preprint arXiv:1804.02767, 2018. [5] Y. Zhang et al., “ByteTrack: Multi-object tracking by associating every\ndetection box,” in Proc. European Conf. Computer Vision (ECCV), 2022, pp. 1–21. [6] K. Zhou, Y. Yang, A. Cavallaro, and T. Xiang, “Omni-scale feature\nlearning for person re-identification,” in Proc. IEEE Int. Conf. Computer Vision (ICCV), 2019, pp. 3702–3712. [7] E. O. Neftci, H. Mostafa, and F. Zenke, “Surrogate gradient learning in\nspiking neural networks,” IEEE Signal Processing Magazine, vol. 36, no. 6, pp. 61–63, 2019. [8] S. Kundu, G. Datta, M. Pedram, and P. A. Beerel, “SpiKin: Spiking\nkinetics for temporal processing,” in Proc. Int. Joint Conf. Neural Networks (IJCNN), 2021, pp. 1–8. [9] K. He, X. Zhang, S. Ren, and J. Sun, “Deep residual learning for\nimage recognition,” in Proc. IEEE Conf. Computer Vision and Pattern Recognition (CVPR), 2016, pp. 770–778. [10] T. Lin et al., “Focal loss for dense object detection,” in Proc. IEEE Int.\nConf. Computer Vision (ICCV), 2017, pp. 2980–2988. [11] A. Bewley, Z. Ge, L. Ott, F. Ramos, and B. Upcroft, “Simple online and\nrealtime tracking,” in Proc. IEEE Int. Conf. Image Processing (ICIP), 2016, pp. 3464–3468. [12] L. Zheng, Y. Yang, and A. G. Hauptmann, “Person re-identification:\nPast, present and future,” arXiv preprint arXiv:1610.02984, 2016. [13] C. Wang et al., “EfficientReID: A lightweight person re-identification\nmodel for edge deployment,” IEEE Trans. Circuits and Systems for Video Technology, 2023. [14] Y. Liu et al., “Edge YOLO-Tiny: Real-time object detection on resource-\nconstrained devices,” IEEE Internet of Things Journal, vol. 9, no. 15, pp. 13245–13258, 2022. [15] C. Stauffer and W. E. L. Grimson, “Adaptive background mixture models\nfor real-time tracking,” in Proc. IEEE Conf. Computer Vision and Pattern Recognition (CVPR), 1999, pp. 246–252. [16] G. Jocher, A. Chaurasia, and J. Qiu, “Ultralytics YOLOv8,” 2023.\n[Online]. Available: https://github.com/ultralytics/ultralytics [17] K. Zhou, Y. Yang, A. Cavallaro, and T. Xiang, “Learning Generaliz-\nable Representations for Person Re-Identification by Domain-Invariant Mapping Network,” in Proc. IEEE Conf. Computer Vision and Pattern Recognition (CVPR), 2021, pp. 12162–12172.",
+  "equations": [
+    {
+      "page": 2,
+      "raw_extracted": "• System A: A hybrid CNN–SNN anomaly detector that continuously monitors video streams by processing 16- frame clips. The model employs a lightweight Mo- bileNetV3 backbone for efficient spatial feature extrac- tion, followed by a feature reduction and spatial attention module. Temporal dynamics are modeled using a dual- timescale spiking neural network composed of paramet- ric Leaky Integrate-and-Fire (PLIF) neurons, capturing both fast and slow temporal variations. This is further enhanced with temporal attention and adaptive pooling for robust video-level anomaly prediction.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "• System B: A multi-camera tracker that activates upon confirmed anomaly detection, performing real-time per- son detection (YOLOv8n, two-tier confidence pool- ing), two-stage temporal association (ByteTrack), crop quality filtering with CLAHE preprocessing, cross- camera re-identification (OSNet-AIN [17]), Mahalanobis- filtered tracklet centralization, and metadata-driven spatio-temporal trajectory reconstruction. The key contributions are:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "• A novel energy-efficient hybrid MobileNetV3 + spiking neural network architecture that combines lightweight convolutional feature extraction with dual-timescale tem- poral spiking dynamics and attention mechanisms for improved anomaly detection.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "• Integration of spatial attention, temporal attention, and learnable temporal weighting to enhance both frame-level and video-level anomaly prediction.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "• A training strategy incorporating weighted focal loss to effectively handle class imbalance in real-world anomaly datasets such as UCF-Crime.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "• Comprehensive evaluation on the UCF-Crime dataset, including ablation studies and comparisons with state- of-the-art approaches.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "• Computational Efficiency vs Accuracy: High-accuracy models require large computational resources.Existing systems fail to balance both aspects i.e accuracy and power efficiency.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "• Continuous vs Event-Driven Processing: Most tracking systems operate continuously, even though anomalies constitute very less in a normal CCTV footage. No prior work integrates anomaly detection as a gating mechanism for tracking activation.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "• Limited SNN Applications in Surveillance: Possibilities of SNN models has not been fully exploited in diverse fields and prevailing models do not address complex human behavior analysis in real-world surveillance. This work directly addresses these gaps through an inte- grated SNN based anomaly detection and tracking framework.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "The framework proposed in this work consists of two com- plementary system modules designed for seamless integration. System A unceasingly monitors video streams using a hybrid CNN-SNN anomaly detector. When an anomaly is detected by the module with confidence exceeding thresholdψθa, System A triggers System B,Upon anomaly confirmation, System A extracts and saves the cropped person image(s) from the flagged frames, together with their bounding-box coordinates and frame-level metadata, into a designated query folder on disk, which System B subsequently consumes as its structured input to initiate the tracking and re-identification pipeline.. This design ensures that computationally expensive tracking operations are executed only for frames with anomalies de- tected.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "1) Architecture: The anomaly detector module processes fixed-length temporal clips of 16 consecutive frames resized to a resolution of 224×224. Figure 1 gives the overall archi- tecture.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "1) Spatial Backbone: A lightweight MobileNetV3-Large pretrained model is used for efficient spatial feature extraction. The network is truncated after the feature extraction stage, producing high-level feature maps with 960 channels. 2) Feature Reduction: A 1←× 1 convolution reduces the feature dimension from 960 to 256 channels, followed by BatchNorm and Hardswish activation. Adaptive av- erage pooling resizes the feature maps to 4×4, resulting in a 4096-dimensional feature vector per frame. 3) Spatial Attention: A lightweight attention mechanism emphasizes salient spatial regions. The attention map is",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "αspatial =ψσ(Conv1×1(Hardswish(Conv1×1(F))))",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "whereψF denotes the reduced feature map. The attended features are obtained via element-wise multiplication. 4) Temporal Encoding: Each frame-level feature vector is projected into a 256-dimensional embedding using a two-layer MLP with BatchNorm, Hardswish activation, and dropout:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "zt =ψφ(W2(φ(W1xt)))",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "• Fast pathway: captures rapid temporal variations with a small membrane time constant.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "• Slow pathway: captures long-term temporal depen- dencies with a larger time constant. For each time stepψt, spike outputs from both pathways are computed:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "Sf(t) = PLIFfast(zt), Ss(t) = PLIFslow(zt)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "gt =ψσ(Wg[Sf(t),ψSs(t)])",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "ht =ψgt←·ψSf(t) + (1←−gt)←·ψSs(t)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "whereψht represents the final spiking representation. 6) Temporal Normalization: Group normalization is ap- plied across temporal features to stabilize training:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": " ̃ht = GN(ht)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "βt = exp(Wa ̃ht) PT",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "k=1 exp(Wa ̃hk)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "havg =",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "T X",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "t=1",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "βt ̃ht",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "hmax = max",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "t ( ̃ht)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "hvideo = 0.7←·ψhavg + 0.3←·ψhmax",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "yvideo =ψWvhvideo +ψbv",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "yt",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "frame =ψWf ̃ht +ψbf",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "L =←Lvideo +ψλLframe (1)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "whereψλ = 0.1 balances the contribution of frame-level supervision.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "• Video-Level Weighted Focal Loss:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "Lvideo =←−wt(1←−pt)γ log(pt) (2)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "whereψwt is a class-dependent weight computed from the ratio of normal to anomalous samples, andψγ = 2.0.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "• Frame-Level Focal Loss:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "Lframe =←−αt(1←−pt)γ log(pt) (3)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "applied only to anomalous samples, withψα = 0.25.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "tframe =ψfid",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "2) Person Detection: Each decoded frame is processed by YOLOv8n [16] with a base confidence threshold of 0.25 and the class filter restricted to person (COCO class 0). Detection output for each candidateψi is:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "Di = (x1,ψy1,ψx2,ψy2,ψci) (5)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "where (x1,ψy1) and (x2,ψy2) define the bounding box corners, andψci is the confidence score. The resulting detections are explicitly partitioned into two pools prior to tracking associa- tion:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "• High-confidence pool:ψciψ⌢ 0.6",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "• Low-confidence pool: 0.1ψ♯ψci←≤0.6",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "3) Temporal Association: Tracklet generation is performed using ByteTrack [5]. Each active trackψk maintains an 8- dimensional state vector:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "sk = (cx,ψcy,ψw,ψh,ψvcx,ψvcy,ψvw,ψvh) (6)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "representing the bounding-box center, dimensions, and their respective velocities. A constant-velocity Kalman filter pre- dicts the next state, with process noise scaled proportionally to the box heightψh to maintain scale-adaptivity:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "ˆsk,t+1 = F sk,t (7)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Ckj = 1←−IoU(ˆsk,ψDj)←×ψcj (8)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "The Hungarian algorithm solves the assignment with threshold 1←−τm, whereψτm = 0.8 is the match threshold. In Stage 2, tracks unmatched in Stage 1 are re-matched against the low- confidence pool using pure IoU cost, recovering occluded or",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Prior to feature extraction, each crop undergoes quality validation. A frame is accepted only if it satisfies all of the following criteria: minimum crop size←≥40←× 40 px, aspect ratio within [0.2, 2.0], Laplacian variance←≥30 (blur threshold), exactly one person detected at confidence←≥0.5. Frames failing one or more criteria enter a salvage procedure: blurry frames are sharpened; frames with invalid aspect ratios are padded to meet the proportion constraint; frames with low detection confidence undergo CLAHE-based contrast enhance- ment and are re-validated. Frames that remain non-conforming after salvage are discarded.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Before feature extraction, all retained crops are prepro- cessed with Contrast Limited Adaptive Histogram Equaliza- tion (CLAHE) applied to the luminance channel in LAB color space (clipLimit = 2.0, tileGridSize = 8×8), improving local",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "5) Re-Identification Feature Extraction: For each frames contain tracklet, a 512-dimensional feature embedding is ex- tracted using OSNet-AIN (osnet ain x1 0) [6], an omni-scale network with Normalization pre-trained on large-scale ReID benchmarks. The classifier head is excluded at inference. The network processes crops resized to 256←× 128 pixels:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "φi = OSNet-AIN(cropi)←∈R512 (9)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "ˆφi = φi ∥φi∥2",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": ", ∥ˆφi∥2 = 1 (10)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "6) Tracklet Feature Centralization: Per-frame features for each tracklet are consolidated into a single robust identity vector. Let←⊓ˆφi⊒N",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "i=1 denote the set of normalized frame features for a tracklet. An optional Mahalanobis-based outlier filtering step is applied whenψN is sufficient: frame features deviating beyond the [q, 1←−q] quantile of the Mahalanobis distance distribution (computed using the pseudo-inverse of the sample covariance) are discarded.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "N←′",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "N←′ X",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "i=1",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "ˆφi (11)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "whereψN←′ is the number of frames retained after outlier removal. This aggregation approximates the identity center under the assumption that intra-identity features follow a mul- tivariate normal distribution, and improves robustness against occlusion, pose variation, and lighting changes.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Person crops flagged by the anomaly detection module are treated as query tracklets. They undergo the identical pipeline as gallery tracklets: quality filtering, CLAHE prepro- cessing, OSNet-AIN feature extraction, L2 normalization, and Mahalanobis-filtered centralization, yielding a query identity vector cq←∈R512.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "8) Cross-Camera Matching: Each query identity vector cq is compared against all gallery centralized vectors←⊓cg⊒ using cosine similarity:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "sim(cq, cg) = cq←· cg (12)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "sim(cq, cg)←≥θs = 0.75 (13)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "1: Initialize System A (low-power monitoring mode) 2: while True do 3: Read frameψFt from camera; extract clip [Ft−15,ψ.ψ.ψ.ψ,ψFt] 4: Compute anomaly scoreψA(Ft) 5: ifψA(Ft)←≥θa then",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "// System A saves flagged person crop(s) and per- frame metadata 6: Activate System B; recordψtframe =ψfid/fps (Equa- tion 4)// (bbox, frame index, timestamp) to query folder on disk 7: while anomaly persists do",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "8: // Person Detection 9: Run YOLOv8n onψFt (conf = 0.25, class = person) 10: Partition detections into high-confidence pool (ciψ⌢ 0.6) and low-confidence pool (0.1ψ♯ψci←≤ 0.6) per Equation 5",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "11: // Two-Stage ByteTrack Association 12: Predict all active/lost tracks forward via Kalman filter (Equation 7) 13: Stage 1: Assign tracks to high-confidence pool using score-fused cost matrixψCkj (Equation 8); solve via Hungarian algorithm",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "16: // Crop Extraction and Quality Filtering 17: Extract and clamp person crops; save per-frame metadata (index, timestamp, bbox) 18: Validate each crop: size←≥40←× 40, aspect ratio←∈ [0.2, 2.0], Laplacian variance←≥30, single person at conf←≥0.5",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "19: Apply salvage procedure to non-conforming crops; discard irrecoverable frames 20: Apply CLAHE preprocessing (LAB space) to all retained crops 21: // Feature Extraction and Centralization 22: Extractψφi = OSNet-AIN(cropi)←∈R512 and L2- normalize: ˆφi =ψφi/∥φi∥2 (Equations 9, 10) 23: Store per-frame normalized features and metadata 24: end while 25: // Tracklet Centralization (Gallery)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "26: Filter outlier frames via Mahalanobis distance; com- pute centralized vector cg (Equation 11)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "28: Process anomaly-flagged crops through identical pipeline to obtain query vector cq 29: // Cross-Camera Matching 30: if camera handover detected then 31: Compute sim(cq, cg) = cq←· cg (Equation 12) 32: if sim(cq, cg)←≥θs then",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "Total Videos 500 Classes 14 (13 anomaly + normal) Total Duration ≈42 hours Average Video Duration 302.28 seconds Frame Rate 30 FPS Resolution 320×240 (65%), others Anomaly Types Assault, Burglary, Fighting, etc.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "1) Frame Extraction: Uniform sampling to extract 16- frame clips. For videos shorter than 16 frames, we pad with the last frame. 2) Resizing: All frames resized to 224×224 using bilinear interpolation with aspect-ratio padding. 3) Normalization: Using ImageNet statistics: mean = [0.485, 0.456, 0.406], std = [0.229, 0.224, 0.225]. 4) Data Augmentation:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "• Random horizontal flip (p=0.5)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "• Random rotation (±10◦)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "• Color jitter (brightness=0.2, contrast=0.2, satura- tion=0.2)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "• Random temporal reversal (p=0.5)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "• Random temporal cropping",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "• Training: 70% (45,000 clips)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "• Validation: 15% (15,000 clips)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "• Testing: 15% (15,000 clips) The split preserves class distribution across all folds.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "• Training: NVIDIA T4 GPU (16 GB VRAM), 16 GB RAM, Intel Xeon CPU",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "• Edge Deployment: NVIDIA Jetson Nano (4 GB) and Jetson Orin (8 GB) 2) Software Environment:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "• Python 3.8, PyTorch 2.0, CUDA 11.8",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "• Ultralytics YOLOv8, Torchreid (OSNet)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "• OpenCV 4.8, NumPy, Scikit-learn 3) Training Hyperparameters: System A (SNN Anomaly Detection):",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "• Batch size: 8 (with drop last=True to avoid single-sample batches)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "• Optimizer: AdamW (lr=1e-4, weight decay=1e-5)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "• Learning rate schedule: Cosine annealing with warm restarts (T0=10, Tmult=2)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "• Epochs: 50 with early stopping (patience=10)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "• Focal loss:ψα = 0.25,ψγ = 2.0",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "• Spike regularization weight:ψλ = 0.01",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "• Temporal consistency weight:ψμ = 0.1 System B (Tracking Components):",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "• YOLOv8n: base confidence threshold = 0.25; high- confidence poolψciψ⌢ 0.6, low-confidence pool 0.1ψ♯ ci←≤0.6; IoU threshold = 0.5",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "• ByteTrack: track buffer = 30 frames, match threshold τm = 0.8; Stage 1 uses score-fused IoU cost; Stage 2 uses pure IoU cost",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "• Crop quality filter: minimum size 40←× 40 px, aspect ratio←∈[0.2, 2.0], Laplacian variance←≥30, single-person detection confidence←≥0.5",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "• OSNet-AIN (osnet_ain_x1_0): input size = 256←× 128, output embedding dimension = 512; classifier head excluded at inference",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "• Tracklet centralization: Mahalanobis outlier filtering at quantileψq = 0.005; centralized vector computed as per- frame feature mean (Equation 11)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "• Re-ID matching threshold:ψθs = 0.75 (cosine similarity)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "• Accuracy: TψP +TψN TψP +TψN+FψP +FψN • Precision: TψP TψP +FψP • Recall: TψP TψP +FψN • F1-Score: 2←·ψPψrecision·Recall Pψrecision+Recall",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "• AUC-ROC: Area Under Receiver Operating Characteris- tic curve",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "• MOTA: Multi-Object Tracking Accuracy",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "• ID Switch Rate: Number of identity switches per track",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "• Re-ID Rank-1 Accuracy",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "• mAP@0.5: mean Average Precision at IoU=0.5",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "• FPS: Frames Per Second",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "• Power consumption (W): measured via NVIDIA system management interface",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "• Bandwidth reduction:ψbytesraw−bytesmetadata bytesraw × 100%",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "Accuracy 0.894 Precision 0.902 Recall 0.9161 F1-Score 0.9003 AUC-ROC 0.9381 Optimal Thresholdψθa 0.521",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "• Rapid but normal human motion patterns (60%)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "• Camera artifacts such as glare, shadows, or rain (25%)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "• Unusual yet non-anomalous activities (15%)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "• Subtle anomalies such as pickpocketing (40%)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "• Partial occlusions (35%)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "• Low-light conditions (25%)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 9,
+      "raw_extracted": "The degraded tracker causes Rank-1 to drop from 94.02% to 85.90% (−8.12 pp) and mAP from 86.62% to 77.89% (−8.73 pp), confirming that tracklet length and identity stabil- ity are essential for reliable feature centralization. ByteTrack is therefore a functional prerequisite, not an interchangeable component, within the proposed pipeline.the performance of Reid module purely depends on bytetrack genrated tracklet and the preprocessing",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 9,
+      "raw_extracted": "0.2",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 9,
+      "raw_extracted": "0.4",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 9,
+      "raw_extracted": "0.6",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 9,
+      "raw_extracted": "0.8",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 10,
+      "raw_extracted": "Configuration Accuracy F1 Precision Recall Power (W) Energy (mJ) Proposed (Full, SNN) 0.901 0.9097 0.9034 0.9161 ∼13.34 ∼307 Temporal Processor Variants SNN←→Bidirectional LSTM 0.920 0.927 0.918 0.937 77.84 686.31 SNN←→GRU 0.8973 0.909 0.877 0.944 13.85 141.86 SNN←→Transformer Encoder 0.8783 0.941 0.907 0.978 12.91 1,092,036 Attention Module Variants Remove Temporal Attention (SNN only) 0.8821 0.934 0.925 0.944 12.81 90.99 Remove Spatial Attention 0.8897 0.904 0.861 0.951 12.81 92.43 Remove Both Attention Modules 0.8631 0.881 0.837 0.930 13.52 157.09 Backbone Variants ResNet-18 + SNN 0.8631 0.878 0.850 0.909 16.80 — Custom CNN + SNN 0.8251 0.832 0.870 0.797 12.70 239.80 SNN Only (No CNN Backbone) 0.6274 0.715 0.612 0.860 11.45 40.30",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 10,
+      "raw_extracted": "Proposed (MobileNetV3–SNN) 0.9097 0.9557 ∼13.34 28 3D-CNN Baseline 0.891 0.941 ∼42.7 17 Convolutional Autoencoder 0.834 0.897 ∼8.3 33 SVM + HOG 0.724 0.783 ∼2.1 48",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 10,
+      "raw_extracted": "The proposed model achieves the highest F1 and AUC while operating at 16 FPS, maintaining real-time throughput. The 3D-CNN baseline approaches comparable accuracy (F1 = 0.891) but at←∼42.7 W — more than three times the power of the proposed system. The convolutional autoencoder achieves lower power (8.3 W) but at a substantial accuracy cost (F1 = 0.834, AUC = 0.897). The SVM + HOG baseline, while computationally cheap (2.1 W), is far below the accuracy threshold for practical deployment (F1 = 0.724). The proposed system occupies a unique region of the accuracy–power space: near state-of-the-art accuracy with edge-compatible power consumption.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 10,
+      "raw_extracted": "• Energy Efficiency: 87% reduction compared to CNN- based models enables long-term edge deployment.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 10,
+      "raw_extracted": "• Event-Driven Processing: Computational resources ac- tivated only upon confirmed anomalies, saving 94% of tracking computation.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 10,
+      "raw_extracted": "• Privacy Preservation: Local processing with feature- only data transmission ensures personally identifiable information never leaves the edge device.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 10,
+      "raw_extracted": "• Scalability: Supports deployment across large-scale dis- tributed camera networks with minimal infrastructure costs.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 10,
+      "raw_extracted": "• Real-Time Operation: Sustains 28 FPS on edge hard- ware, meeting real-time surveillance requirements.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 10,
+      "raw_extracted": "• Dataset Bias: Limited viewpoint and environmental di- versity in UCF-Crime may affect generalization.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 10,
+      "raw_extracted": "• SNN Training Complexity: Surrogate gradients intro- duce approximation errors, requiring careful hyperparam- eter tuning.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 10,
+      "raw_extracted": "• Absence of Person-Level Localized Anomaly Annota- tions: The UCF-Crime dataset provides only video- or frame-level anomaly labels, with no person-level bound- ing box annotations identifying which individual is re- sponsible for the detected anomaly. Consequently, the system can determine that an anomalous event occurs within a scene but cannot directly attribute it to a specific tracked person during training. This limits supervised optimization of the end-to-end pipeline at the person level, and the re-identification and tracking components are evaluated independently rather than in a jointly su- pervised anomaly-to-person localization framework.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 11,
+      "raw_extracted": "• Lighting Sensitivity: Reduced detection accuracy under extreme low-light conditions (below 10 lux).",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 11,
+      "raw_extracted": "• Occlusion Handling: Dense crowd scenarios increase tracking and re-identification errors.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 11,
+      "raw_extracted": "• Validation of SNN efficiency for complex surveillance tasks.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 11,
+      "raw_extracted": "• Demonstration of event-driven tracking with 94% com- putation savings.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 11,
+      "raw_extracted": "• Real-time performance at 28 FPS on edge devices.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 11,
+      "raw_extracted": "• Scalable distributed architecture for camera networks.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 11,
+      "raw_extracted": "• Privacy-preserving local analytics with metadata-only transmission.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 11,
+      "raw_extracted": "• Robust cross-camera re-identification via OSNet-AIN with Mahalanobis-filtered tracklet centralization, achiev- ing Rank-1 accuracy of 94.02% and mAP of 86.62%.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 11,
+      "raw_extracted": "• Dataset Expansion: Extend to larger, multi-country surveillance datasets (e.g., ShanghaiTech, CUHK Av- enue) for improved generalization.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 11,
+      "raw_extracted": "• Transformer-SNN Hybrids: Integrate temporal trans- formers with SNN layers for better long-range depen- dency modeling.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 11,
+      "raw_extracted": "• Hardware Acceleration: Deploy on FPGA and ASIC neuromorphic platforms for further energy savings.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 11,
+      "raw_extracted": "• Multimodal Fusion: Incorporate audio and thermal sen- sors for robust detection under adverse conditions.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "• Online Adaptive Learning: Implement continual learn- ing to adapt to evolving anomaly patterns without forget- ting.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "• Federated Learning: Enable privacy-preserving collab- orative training across camera networks.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "• Explainable AI: Develop interpretability techniques for anomaly decisions to build operator trust.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "• Hardware-Software Co-Design: Optimize the archi- tecture jointly with hardware constraints for maximum efficiency.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "• Person-Level Anomaly Localization: Develop or curate surveillance datasets with person-level bounding box an- notations tied to anomaly labels, enabling jointly super- vised optimization of the detection and tracking pipeline at the individual level rather than at the video or frame level.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    }
+  ],
+  "warnings": []
+}

@@ -1,0 +1,770 @@
+{
+  "source_file": "1-s2.0-S1110016826002334-main.pdf",
+  "num_pages": 14,
+  "full_text": "Original article\nMathematical modeling and feature extraction architecture of a  quantum-inspired attention network for UAV image classification\nHanaa Abu-Zinadah a,*\n, Sayed Abdel-Khalek b\na Department of Mathematics and Statistics, College of Science, University of Jeddah, Jeddah, Saudi Arabia b Department of Mathematics, Faculty of Science, Sohag University, Sohag 82524, Egypt\nA R T I C L E I N F O\nKeywords: Image classification Remote sensing Quantum learning Feature extraction Quantum network Deep learning ConvNeXt\nA B S T R A C T\nIn this study, a novel Quantum Self-Attention Neural Network for Multi-Model Aerial Image Classification  (QSANN-MAIC) is proposed. The objective of this paper is to develop a high-performance learning framework  capable of accurately classifying UAV-acquired aerial images. Initially, the proposed QSANN-MAIC model pre-  processes the input images through several enhancement steps, including noise reduction, sharpening,  contrast enhancement, and color correction, to eliminate unwanted distortions and improve image clarity for  further analysis. We have used a multi-model feature extraction framework to obtain rich and complementary  feature representations, integrating three architectures: a compact Vision Transformer, an enhanced ConvNeXt  model, and a fine-tuned VGG16 network. Subsequently, a quantum self-attention neural network is utilized to  perform the final classification by effectively capturing long-range dependencies among the extracted features.  To validate the effectiveness of the proposed QSANN-MAIC model, extensive simulations are conducted and  evaluated using multiple performance metrics. Comparative analysis demonstrates that the QSANN-MAIC  approach achieves improved performance across several evaluation measures.\n1. Introduction\nIn recent years, Unmanned Aerial Vehicles (UAVs) have attracted  significant attention across various fields, including mobile relaying,  surveillance, data acquisition, and monitoring. UAVs are capable of  providing line-of-sight (LoS) communication links, which enhances  connectivity and improves the reliability of communication systems [1].  Owing to their relatively low cost, high mobility, and flexible deploy­ ment capabilities, UAVs have been widely adopted for numerous ap­ plications such as search and rescue missions, precision agriculture,  disaster monitoring, and early environmental observation [2]. Further­ more, UAVs can function as mobile relay platforms to extend network  coverage and improve communication capacity. With the rapid growth  of the information technology (IT) sector, researchers are increasingly  focusing on utilizing UAVs to provide global internet access, particularly  for users located in remote or hard-to-reach areas [3]. UAV-based sys­ tems also create an aerial communication environment that is highly  suitable for wireless transmission, as they can deliver wireless signals to  ground users in regions experiencing network congestion or lacking  sufficient terrestrial infrastructure [4].\nWithin UAV-based applications, land cover (LC) classification  plays a crucial role; however, developing a fully automated and reliable  classification system remains a challenging task. Aerial scene image  classification involves categorizing captured aerial imagery into  different subclasses in order to represent various ground objects and  land cover (LC) categories, which often consist of numerous semantic  classes [5]. In many practical remote sensing (RS) applications, such as  resource management, urban planning, and computer-based cartog­ raphy, aerial image classification plays a significant role [6]. Typically,  several related object categories or LC types may appear across different  scene types. For example, both residential and commercial areas may  contain common elements such as buildings, roads, and trees; however,  they differ in terms of spatial arrangement and density distribution of  these components [7]. As a result, identifying aerial scenes based on  their structural characteristics and spatial patterns remains a chal­ lenging task [8].\nDeep learning (DL) techniques, particularly Convolutional Neural  Networks (CNNs), have achieved remarkable success in a variety of  image analysis applications, including face recognition and handwritten  character detection [9]. Given input images along with a predefined set\n* Corresponding author. E-mail address: Hhabuznadah@uj.edu.sa (H. Abu-Zinadah).\nContents lists available at ScienceDirect\nAlexandria Engineering Journal\njournal homepage: www.elsevier.com/locate/aej\nhttps://doi.org/10.1016/j.aej.2026.04.016 Received 16 March 2026; Accepted 10 April 2026\nAlexandria Engineering Journal 143 (2026) 180–193\nAvailable online 16 April 2026  1110-0168/© 2026 The Authors. Published by Elsevier B.V. on behalf of Faculty of Engineering, Alexandria University. This is an open access article under the CC  BY-NC-ND license ( http://creativecommons.org/licenses/by-nc-nd/4.0/ ).\n\n--- Page Break ---\n\nof training object categories, recognition models are capable of identi­ fying and classifying objects that belong to these categories within the  imagery [10]. Fine-tuning at the regional level enables the detection of  recurring patterns distributed across multiple pixels, often guided by  labeled training data. Meaningful information can therefore be derived  from the collective pixel characteristics present in the images [11].  Through the use of convolutional and pooling layers, CNN-based  methods have demonstrated strong capability in extracting mid-level  and high-level abstract features from raw images, supporting  large-scale image recognition, semantic segmentation, and object  detection tasks [12]. Furthermore, deep learning approaches are ex­ pected to offer significant advantages in disaster management and  emergency response systems, enabling the timely extraction of critical  information, supporting decision-making processes, and improving  preparedness and response in time-sensitive situations [13].\nA summary of existing related works regarding aerial image classi­ fication using UAV imagery is presented in this section. Deng et al. [14] presented a UAV-driven forest fire image recognition employing a  lightweight CNN. Due to intricate image backgrounds, as well as insuf­ ficient training examples. Particularly, improve the MobileNetV2 model  with an attention module for UAV-driven image identification. This  technique uses a TL approach that utilizes the pre-trained weights from  ImageNet for expedited learning. Therefore, the technique integrates  randomly initialized weights as well as dropout module for reducing  over-fitting throughout training. Imandi et al. [15] combined FL within  the FU-Serve environment, joined with the growth of 3 specified  FL-driven techniques personalized for on-device image identification.  For solving limited resources of fog nodes, intended FUSERNet—a  lightweight DL structure using skip connections as well as separable  convolutions that decrease computational cost, though preserve crucial  feature representations. Said et al. [16] introduced a lightweight NN  intended for solving these tasks by combining dense dilated convolu­ tions alongside pyramid depth-wise convolutions for extracting  multi-scale features. The presented encoder-decoder structure uses  dense connections for aggregating spatial as well as contextual data\nthrough various resolutions, improving segmentation precision while  reducing computational cost. The dense interconnection of the network  enables the application on less-power device, allowing actual LCLU  examination through different ecological states.\nPradhan et al. [17] proposed SwinSight, a new hierarchical ViT  optimization for aerial imaging identification that efficiently solves the  computational tasks usually related to transformers across a shifted  window module. The main study concentrates on improving technique  performance by combining a systematic pre-processing method. Jock­ usch et al. [18] proposed an innovative model for decentralized LC/LU  classifiers, employing Federated learning (FL) in conjunction with CNNs  on images gained from UAVs. A combination of UAV imaging offers  higher-resolution spatial information, enabling accurate identification  of LC kinds. FL assures information privacy and decreases interaction  bandwidth used by allowing model training on local devices without the  essential to share information with a centralized server. Therefore, these  UAVs have a restricted source and frequently struggle to capture an  adequate amount of images to train a model without encountering  overfitting. Du et al. [19] explored automatic landing scene detection  with knowledge transfer for drones. As the complexities in aerial RS,  particularly that certain scenes are very same, or the similar scene has  various representations in diverse altitudes, use a D-CNN that depends  on knowledge transfer as well as fine-graining for addressing the issues.  To solve this, exclude other landing scenes by employing the thresh­ olding method in the forecast phase.\nThe authors [20] suggested a super-pixel-assisted multi-scale CNN  structure for avoiding misclassification in difficult urban aerial imagery.  This structure is a two-fold DL-driven segments structure. At the initial  step, a super pixel-driven simple linear iterative clustering method  produces super pixel imagery with critical context data. The next phase  comprises a multi-scale CNN structure that utilizes this information rich  super pixel imagery for scale-invariant feature extraction to predict the  object class of every pixel. Lu et al. [21] presented for utilizing a  reactive-proactive ensemble defense structure for addressing the secu­ rity issues. The proactive defense attempts dual approaches, which\nFig. 1. Research methodology framework.\nH. Abu-Zinadah and S. Abdel-Khalek                                                                                                                                                                                                       Alexandria Engineering Journal 143 (2026) 180–193\n181\n\n--- Page Break ---\n\ncomprises refining the strengths of every sub-method and restricting the  transferability between sub-methods. Given the reactive defense, fuse  score functions of various traditional recognition methods with the  hidden characteristics.\nTo overcome the challenges of limited feature diversity, intricate  aerial scene structures, and uneven image quality in UAV-based aerial  image classification, this article proposes a QSANN-MAIC system. The  proposed QSANN-MAIC model follows a multi-faceted approach for  attaining the effective classification of aerial images, encompassing  preprocessing, multi-model feature representation, and a quantum  attention based classification module. The assessment of the proposed  QSANN-MAIC model is performed under a benchmark dataset. The  following are the major contributions of this research:\n• A novel QSANN-MAIC is proposed to address the challenges of  limited feature diversity, complex aerial scene structures, and vary­ ing image quality in UAV imagery. • A novel multi-model feature extraction framework is developed by  integrating compact vision transformer (ComViT), improved Con­ vNeXt, and fine-tuned VGG16. • Learn global structural patterns, hierarchical spatial details, and fine-  grained texture features simultaneously, which results in richer and  more discriminative representations. • Introduce a QSANN to capture long-range dependencies and complex  feature interactions, which improves model sensitivity toward subtle  variations in aerial scenes and enhancing classification accuracy. • Conduct extensive performance evaluation to validate the proposed  QSANN-MAIC model’s efficiency under diverse metrics and demon­ strate the betterment of the QSANN-MAIC system under the bench­ mark EuroSat Dataset.\nThe remainder of this manuscript is organized as follows. Section 2 provides a comprehensive literature review of existing studies on aerial  image classification techniques. Section 3 describes the proposed ar­ chitecture and workflow in detail, including the dataset employed,  image pre-processing methods, multi-model feature extraction tech­ niques, classification architectures, and the evaluation metrics used to  assess the performance of the QSANN-MAIC model. Section 4 presents  the experimental results along with comparative analysis and an abla­ tion study to validate the effectiveness of the proposed approach.  Finally, Section 5 concludes the paper by summarizing the key\ncontributions and findings of the study.\n2. Mathematical models and system architecture\nThis study follows a structured approach for the efficient classifica­ tion of aerial images using UAV. Fig. 1 provides a high-level overview of  the research methodology adopted in this work. Benchmark EuroSat  Dataset serves as the foundation for model development and evaluation.  As depicted in Fig. 1, the proposed QSANN-MAIC system encompasses  preprocessing, feature extraction, and classification modules. First input  images are standardized through noise reduction, sharpening, contrast  improvement, and color correction, and are augmented during training  to improve robustness. Three complementary backbones: ComViT for  global context, an improved ConvNeXt for hierarchical spatial patterns,  and a fine-tuned VGG16 for low-level texture cues, which are employed  to capture diverse feature representations. Then, these extracted fea­ tures are integrated through a learned fusion mechanism to form a  compact, discriminative descriptor. The fused features are further  passed to a QSANN to model complex, long-range feature interactions  and produce the final classification.\n2.1. EuroSat dataset overview\nThe EuroSat dataset [22] is utilized to classify the usage of land in  geospatial imagery. The final aim for the classification is that the top 2  employs of land in an image are provided as output to the user. This\nFig. 2. Sample images.\nTable 2  Details of dataset.\n‘Class’ No. of samples\n‘AnnualCrop’ 3000 ‘Forest’ 3000 ‘HerbaceousVegatation’ 3000 ‘Highway’ 2500 ‘Industrial’ 2500 ‘Pasture’ 2000 ‘Permanent Crop’ 2500 ‘Residential’ 3000 ‘River’ 2500 ‘Sea Lake’ 3000 ‘Total Samples’ 27,000\nH. Abu-Zinadah and S. Abdel-Khalek                                                                                                                                                                                                       Alexandria Engineering Journal 143 (2026) 180–193\n182\n\n--- Page Break ---\n\ndataset includes images belonging to the EuroSat dataset. Fig. 2 dem­ onstrates the sample images. The dataset comprises 27,000 examples  under 10 classes, as described in Table 2.\n2.2. Preprocessing strategy\nIn the preprocessing step, the noise reduction, sharpening, contrast  improvement, and color correction methods are applied to remove un­ wanted noise and boost the quality for subsequent analysis.\nNoise Reduction: For discovering an effect of dissimilar image  quality improvement tactics on efficiency of the DL classification  method, this paper utilizes a sequence of pixel development models for  validating an image quality enhancement of raw image database and  examines the decrease of noise, partial color consistency, sharpening,  and color to enhance an efficiency of image processing [23]. Lastly, a  group of enhanced image quality enhancement models has been  progressed.\nSharpening: This paper initially examines an efficiency for the  image denoising analysis and sharpening process. Unsharp masking  (USM) is a generally utilized model for sharpening an edge of imaging  and it can enhance the contrast of image. Here, the version of Gaussian  smoothed is subtracted and preserve constant region value in a weighted  method to comprehend sharpening function, Xʹ denotes an improved  image, Y means a Gaussian smoothed image, X represents an original  image; a and b signifies a weights. The formulation is stated below:\nXʹ = a⋅X + b⋅Υ (1)\nAn image data are validated with the sharpening process. This  technique is from the Non-local Means Denoising (NLMD) model, which  is nothing but an image noise reduction system. Unlike local models like  anisotropic diffusion and Gaussian Blur, the NLMD system only utilizes  the interval nearby the target pixel for smoothening and eliminating an  image noise. Even though the denoising model takes more time but it is  better, thus attaining an edge details of an image with less loss.\nColor and Contrast Enhancement: Here, the three models are  explained for image color enhancement such as CLAHE, Multi-Scale  Retinex with Color Restoration (MSRCR), and MSR with chromaticity  preservation (MSRCP).\nFirst, assess the CLAHE model for performing the image quality ex­ periments. The HE model is dissimilar from the conventional image  processing model. First, it computes an image histogram and further  collects histogram as well as perform equalization. Enlarging the com­ plete image contrast throughout equalization will further upsurge the  noise contrast within input images. Over the adaptive HE model, an  input image has been separated into smaller image parts that are  improved by employing CLAHE to the local parts. The mathematical  expression is provided below:\nβ = M\nN\n(\n1 + α 100 (Smax −1) )\n(2)\nFig. 3. Pre-processed input images and feature maps representation.\nH. Abu-Zinadah and S. Abdel-Khalek                                                                                                                                                                                                       Alexandria Engineering Journal 143 (2026) 180–193\n183\n\n--- Page Break ---\n\nFig. 3 depicts the pre-processed input images and feature maps  representation. Here, M denotes a pixels in every area, N means a dy­ namic range, smax represents a highest allowable slope, and α means a  clip factor set among 0 to 100.\nThen, evaluate the MSRCR,⋅ this model is depending upon the MSR.  In the MSR procedure, an image might be unfair owing to the upsurge of  noises, and the color of local facts might be distorted. Henceforth, the  true color can’t exposed, and the complete visual effect might be poorer.  The image local contrast is enhanced, and the brightness is parallel to an  actual landscape. The mathematical model for MSRCR is given as  follows:\nRMSRCRi(x, y) = Ci(x, y)RMSRi(x, y) (3)\nCi(x, y) = f\n[\nIʹ\ni(x, y)\n]\n(4)\nThe finest color restoration is given below, whereas β represents a  gain constant and α restraints the non-linearity strength:\nCi(x, y) = βlog\n[αIʹ\ni(x, y)\n]\n(5)\n2.3. Multi-model feature extraction pipeline\nFor feature extraction, a ComViT, an improved ConvNeXt, and a fine-  tuned VGG16 are utilized to obtain rich representations.\n2.3.1. ComViT The ComViT is a compact Vision Transformer, which is intended for  tackling the restrictions of normal ViTs in resource-constrained tasks.  ComViT leaves from severe patch-enabled tokenization as well as dense  attention mechanism (AM), presenting an efficient design for perfor­ mance, efficiency, and interpretability [24]. Assumed an input image  x ∈Rw⋅w⋅cComViT initially uses a light-weight convolutional stem with  dual layers for generating the spatial feature mappings. Rather than  utilizing a severe patch-split in ViT, a shallow convolution tokenizer is  used. This tokenizer substitute’s fixed-size patch with local filter,  furthering inductive bias and enhancing spatial encoded. Particularly, it  comprises dual 7x7 Conv2D layers that are followed by a 3x3 layer  of max-pooling. The resultant feature mappings were compressed into a  series of N tokens, every h-dimensional, producing T ∈RN⋅h. Learnable  positional embedding’s P ∈RN⋅h were inserted for upholding the spatial  structure, making Z0 = T + P.\nThen, the sequence was handled through L stacked transformer  layer. Every layer uses multi-head self-attention with developments:\nAij =\nQiKT\nj τ dk √ + M,\nheadk = soft max (A)V, (6)\nZ = Concat(head1, ..., headn)WO\nwhere τ denotes learnable temperature, M represents diagonal mask  with Mii = −∞ for defeating a self-attention. Every block follows a  location-wise MLP with an activation of GELU and covered in a residual  connection with normalization layer.\nFor the last representation mass, we accept learnable sequence  pooling and substitute the class token with static. This permits the sys­ tem to dynamically weight tokens depending upon relevance. This  model enhances an efficacy and evades an overhead of global token.\ns =\n∑N\ni=1wiOi, wi = softmax\n(\nWpOi)\n(7)\nThe ComViT is configured with a 4 attention heads, 256 hidden size,  7 layers, and an MLP expansion of 2x2. These are stimulated by balance  efficiency and performance. Over this mixture of attention refinement,  adaptive pooling, and learned tokenization, the ComViT provides an  interpretable and effectual ViT backbone that well suitable for lower-  resource images.\n2.3.2. Improved ConvNeXt The method of ConvNeXt depended upon ResNet-50 and was  enhanced by incorporating the notion of Swin Transformer. The  enhanced structure of ConvNeXt (CBAM-ConvNeXt) consists of Con­ vNeXt Block components for downsampling modules, extraction of  features, and attention components to remove intricate background  interference [25]. Classical attention mechanism (AM) comprise selec­ tive kernel networks (SK-Net), ECA-Net, SE-Net, and CBAM. In this  experimentation, a comparative study was led utilizing SKNet, ECANet,  SENet, and CBAM AM. CBAM is mainly chosen as an attention module.  Also, it is an AM that unites spatial and channel attentions. It represents  the captured transitional attributes to spatial and channel sizes for  further examination. The attained attention values were increased  through an input of transitional feature mappings to achieve feature  mappings with inserted attention. And then, they are handled by sub­ sequent convolutional process. Fig. 4 represents the architecture of  Improved ConvNeXt model.\nIn an attention module of CBAM, the activation function of Lea­ kyReLU was used to overcome an issue in which neurons don’t learn  when an input is negative by modifying its non-linear unit. The math­ ematical formulation is exposed below:\nLeakyReLU =\n{\nx, x > 0 ax, x ≤0 (8)\nInitially, the enhanced ConvNeXt method extracts shallow attributes  from 224x224 images utilizing a 4x4 convolutional process with a stride  of 4. A 56x56 feature mapping with 96 networks was formed utilizing a  normalization.\nH = (h −k + 2p)/s + 1 (9)\nFig. 4. Architecture of improved ConvNeXt model.\nH. Abu-Zinadah and S. Abdel-Khalek                                                                                                                                                                                                       Alexandria Engineering Journal 143 (2026) 180–193\n184\n\n--- Page Break ---\n\nW = w −k + 2p\ns + 1 (10)\nHere, W and H denote a width and height of feature mapping,  correspondingly, k denotes a dimension, p represents a size of padding, s  signifies the convolutional stride. Afterward, four attention blocks, four  ConvNeXt blocks, and three downsampling components were employed  for extracting the features, inserting attention score, and downsample  feature mappings, which allows the system to concentrate on features  and decrease its attention on the intricate background. The function of  softmax has been employed as an output to compute the predicted target  class. Its mathematical formulation is expressed below:\nY(P) = P\n(\ny = p|x, θp\n)\n= exT•θp ∑c\np=1exT•θp (11)\n2.3.3. Fine-tuned VGG16 This method processes input image using sequential convolutional  layers (Conv1 to Conv5); here, every block employs convolution oper­ ation succeeded by pooling layer eliminates hierarchical attributes [26].  Following final pooling layer, the fully connected (FC) layers were  revealed; here few layers are eliminated or altered in classification. The  modified framework comprises dense, flattened layers and Monte Carlo  Dropout, improving feature extraction and lessening over-fitting. This  assures that the VGG-16 method effectually categorizes with enhanced  generalization and outcome.\nThe image depicts a deep CNN with many pooling operations, con­ volutional, FC layers, AM, and Monte Carlo Dropout.\nInput representation: Assume X ∈RH⋅W⋅C depicts the image of input,  here H implies input height, W implies input width, C signifies the no. of  channels.\nX = {X1, X2, ......, Xc} (12)\nConvolutional layer: The image fed using many convolution layers. A  convolution operation is described.\nXl’ = σ(Wl ∗Xl−1 + bl) (13)\nHere, Wl signified convolutional kernel (filter), Xl−1 denotes input to  lth convolutional layer, bl depicts bias term, σ denotes activation func­ tion, and ∗represents convolution operation.\nPooling layer: After every set of convolutional, pooling layers are  implemented to lessen the spatial dimension.\nPl = maxXʹ\nl(i, j) (14)\nNow K signifies the size of pooling kernel. Pooling layers down-  sample the mapping features to decrease computation challenges.\nFlatten layer: It specifies in Eq. 15\nF = Flatten\n(\nP(5) )\n(15)\nHere P(5) implies the pooled outcome from last convolutional block, F  denotes 1D vector features.\nFC layers: After passing through each pooling and convolutional  layer, the mapping features are flattened and passed through FC layers.\nD = σ(Wd⋅F + bd) (16)\nNow bd denotes bias vector, Wd implies weighted matrix for dense  layer, D indicates output of dense layer, and σ represents activation  function (ReLu).\nMonte Carlo Dropout: It is implemented to pretend bayesian infer­ ence.\nDMCD = Dropout(D, rate p, training = true) (17)\nHere D, rate indicates rate of dropout, training=true denotes to  assure dropout during inference, DMCD implies outcome after Monte  Carlo Dropout.\nOutput Layer-Softmax Classification: It specifies in Eq. 18\nY = Softmax(Wo.DMCD + bo) (18)\nNow ̂Y depicts predicted class probability distribution by N classes,  bo signifies biased term of output layer and Wo indicates weights of  output layer.\nOutput layer: The classification layer leverages softmax activation.\nY = Softmax (W∘⋅Dropout (D) + bo ) (19)\nNow ̂ Y indicates probability distribution over N classes and Woʹbo  implies output layer weight and bias.\nY = Softmax(Wo(DMCD, DMCD) + bo ) (20)\nFeature fusion is crucial for combining complementary features  extracted from three different DL backbones: ComViT, Improved Con­ vNeXt, and Fine-Tuned VGG16. Each model captures different levels of  spatial and semantic details:\n• ComViT encodes global contextual relations, • ConvNeXt captures hierarchical convolutional features, • VGG16 learns fine-grained texture and edge descriptors.\nTo attain a united and discriminative representation, a feature fusion  module is utilized after the individual feature extraction phases.\nWeighted fusion learns the relative importance of each feature  extractor using trainable scalar weights:\nFfusion = w1FComViT + w2FConvNeXt + w3FVGG16 (21)\nwith constraint\nw1 + w2 + w3 = 1, wi ≥0\nThis allows the model to automatically learn the importance of each  extractor.\n2.4. Aerial image classification using QSANN\nIn the classification step, the QSANN is adopted to efficiently classify  aerial images by learning long-range feature dependencies. The classi­ fication utilizing QSANN model was explained below. Unlike conven­ tional techniques, this method depends deeply on sequential data  handling or traditional AM. QSANN employs the entanglement stan­ dards and quantum superposition for capturing a contextual relation­ ships and intricate dependencies across data attributes more efficiently  [27]. These outcomes in enhanced parallelism, decreased computational  intricacy, and improved capability to perfect longer-range interactions.\nQSANN is less delicate to unstructured data, noisy, and can measure  well with large data, delivering better adaptability and faster conver­ gence to novel anxieties. The incorporation of QSANN enhances the  precision recognition in aerial images by harnessing quantum- inspired  parallelism and self-AM for enhancing the representation of feature and  context perception of remote sensing images. QSANN efficiently seizures  longer-term relations and complex representations in the extracted at­ tributes and letting to accurate diversity. Its capability to actively alter  an attention weights, which ensures that significant aerial images are  highlighted, decreasing false positives and enhancing the classification  consistency. In addition, QSANN hasten learning as well as classification  procedures, permitting fast and precise classification of land use, even­ tually attaining better accuracy. In this model, a data xt was encrypted  into an amplitudes of a quantum state like y1γi, ensuring quantum state  and normalization are exposed in Lc↓(1O),\nxt =\n∑t\ni=1bt,i.Vvyi (22)\nwhereas, bt,i denotes a feature in hidden layer (HL) in ith and tth  dimension; xt denotes an input data. Entanglement and superposition\nH. Abu-Zinadah and S. Abdel-Khalek                                                                                                                                                                                                       Alexandria Engineering Journal 143 (2026) 180–193\n185\n\n--- Page Break ---\n\nare vital quantum phenomena that considerably improve image pro­ cessing. Collectively, these assets permit the QSANN for analyzing the  longer-range dependencies more efficiently by joining manifold loca­ tions in an input series and vital quantum phenomena, which were  assumed in Eq. (23),\n|ψτ〉= Ven\n(\nx(m−1)\ns\n)\nI⊗m|Pm〉 1 ≤t ≥T (23)\nwhereas, Ven signifies the vital quantum phenomena, I⊗m and\nx(m−1)\ns represents the entanglement and Superposition; Pm symbolizes the  longer-range dependencies; T indicates a variable; ψt represents an  arbitrary attention layer. In a QSANN, the calculation of attention score  includes quantum dot product, which is similar to traditional internal  products. To attain this, quantum conditions encoded input vectors are  handled utilizing Hadamard gate, which is stated below:\n|ψs〉= Uenc\n(\ny(I−1)\ns\n)\nH⊗n|0n〉 (24)\nHere, H is represented as gate of Hadamard, ψs is signified as  quantum states s, Uenc is indicated as a quantum dot product.\nAfterward, a quantum variational circuit has been employed for  handling these scores and producing probabilistic output for detection.  Its mathematical formulation is exposed below in Eq. (25),\n{Yr}t = 〈ψt||Vr(θr)Y1Vr(θr)|ψt〉, 〈Yh〉t = {ψt||Vh(θh)Y1Vh(θh)|ψt} (25)\nHere, {Yr} signifies to quantum variational circuit, θr, θh indicates  parameter variable. VhY1, Vh represents to class. Afterward, measure­ ments were achieved on the last quantum state for attaining a likelihood,  as formulated below:\nPt = [〈Q1〉t〈Q2〉t...〈Qe〉t]S (26)\nwhere Q1Q2Qe signifies the computation of quantum. Pt denotes to  likelihood that an input measurement. Quantum Softmax Function was  employed for computing the likelihood of a given sample, which belongs  to dissimilar classes. It is mathematically expressed below:\nx(m)\nt = X(m−1)\nt +\n∑T\ni=1αt,i • Pi (27)\nHere, x(m−1)\nt  implies Quantum Softmax Function, Pi represents probe\nclass probability, x(m)\nt  signifies data sample’s probability, αt,i denotes to  sample.\n2.5. Model evaluation criteria\nThe performance of model is calculated by utilizing 4 statistical\nmeasures: accuracy (Correctness), precision (Positive predictive Value  (PPV)), recall (True Positive Rate (TPR)), F-Statistic, and MCC. These  performance metrics are the most effectual measurement to test the ef­ ficacy of technique. Eqs. (28)-(32) defines the procedure of assessing the  statistical metrics, here TP (true positive) and TN (true negative) depict  properly classified samples, while FP (false positive) and FN (false  positive) signify inaccurately categorized samples.\nCorrectness = TN + TP TN + TP + FN + FP ⋅ 100% (28)\nPPV = TP\nTP+ FP ⋅ 100% (29)\nTPR = TP\nTP+ FN ⋅ 100% (30)\nF −Statistic = 2 ⋅ Precision ⋅ Recall\nPrecision + Recall ⋅ 100 (31)\nFig. 5. Confusion matrix of QSANN-MAIC method on 80%:20%.\nTable 3  Aerial image classification of QSANN-MAIC approach on 80%:20%.\nClasses Correctness PPV TPR F-Statistic MCC\nTraining Phase (80%) AnnualCrop 98.13 91.51 91.54 91.52 90.48 Forest 98.68 93.16 95.14 94.14 93.40 HerbaceousVegatation 98.11 91.29 91.93 91.61 90.54 Highway 98.62 93.10 91.99 92.54 91.78 Industrial 98.22 89.98 90.96 90.47 89.49 Pasture 98.28 89.46 86.68 88.04 87.13 Permanent Crop 98.19 91.28 88.81 90.03 89.04 Residential 98.39 92.78 92.55 92.66 91.76 River 98.53 91.86 92.63 92.24 91.43 Sea Lake 98.62 93.35 94.32 93.83 93.06 Average 98.38 91.78 91.66 91.71 90.81 Testing Phase (20%) AnnualCrop 97.67 92.05 87.32 89.62 88.35 Forest 98.20 90.54 93.43 91.96 90.97 HerbaceousVegatation 98.31 91.24 92.99 92.11 91.17 Highway 98.57 92.06 92.24 92.15 91.37 Industrial 98.26 88.38 93.36 90.80 89.88 Pasture 98.35 90.36 88.44 89.39 88.50 Permanent Crop 98.04 90.67 88.17 89.40 88.33 Residential 98.78 95.30 94.08 94.69 94.00 River 98.85 93.15 93.55 93.35 92.72 Sea Lake 98.30 92.24 92.55 92.40 91.44 Average 98.33 91.60 91.61 91.59 90.67\nH. Abu-Zinadah and S. Abdel-Khalek                                                                                                                                                                                                       Alexandria Engineering Journal 143 (2026) 180–193\n186\n\n--- Page Break ---\n\nMCC = TP ⋅ TN −FP ⋅ FN\n(TP + FP)(TP + FN)(TN + FP)(TN + FN) √ (32)\n3. Experimental validation of the proposed system\nIn this part, the experimental validation of the QSANN-MAIC model  is studied under the EuroSat Dataset. Fig. 5 represents the confusion  matrix created by the QSANN-MAIC method under 80%:20%. The result  indicates that the QSANN-MAIC appraoch has effective classification  and detection of each class accurately.\nTable 3 and Fig. 6 show the aerial image classification of QSANN-  MAIC approach on 80%:20%. The outcome suggests that the QSANN-  MAIC model properly classified the samples. With 80%TRAP, the  QSANN-MAIC approach gives average correctness, PPV, TPR, F-statistic,  and MCC of 98.38%, 91.78%, 91.66%, 91.71%, and 90.81%, respec­ tively. However, with 20%TESP, the QSANN-MAIC technique offers  average correctness, PPV, TPR, F-Statistic, and MCC of 98.33%, 91.60%,  91.61%, 91.59%, and 90.67%, correspondingly. Fig. 7 presents the training (TRAN) and validation (VALD) accuracy\nof QSANN-MAIC method on 80%:20% over 200 epochs. Both curves  gradually rise and slowly converge, which suggests that the model is  learning efficiently. The VALD accuracy constantly remains slightly  superior than the TRAN accuracy, implying that the model is not over­ fitting and generalizes well to unseen data. The fluctuations in accuracy  are expected because of the difficulty of the task, but the whole upward  tendency proves stronger performance and steadiness of the model.\nFig. 8 exemplifies the TRAN and VALD loss of QSANN-MAIC model  on 80%:20% over 200 epochs. Both curves display a constant downward  tendency, demonstrating that the model effectually minimizes error  throughout learning. The VALD loss stays slightly inferior to the training  loss through most epochs, implying good generalization and no signs of  overfitting. Even though some fluctuations are monitored is becoming  gradually steady and constant.\nFig. 9 establishes the classifier results of QSANN-MAIC model on  80%:20%. Fig. 9a proves the PR analysis of the QSANN-MAIC technique.  The results stated that the QSANN-MAIC model results in rising values of  PR. Moreover, it is noticeable that the QSANN-MAIC method can ach­ ieve greater PR values on each class. At Last, Fig. 9b exemplifies the ROC\nFig. 6. Average of QSANN-MAIC approach on 80%:20%.\nFig. 7. Accury curve of QSANN-MAIC method on 80%:20%.\nH. Abu-Zinadah and S. Abdel-Khalek                                                                                                                                                                                                       Alexandria Engineering Journal 143 (2026) 180–193\n187\n\n--- Page Break ---\n\nFig. 8. Loss curve of QSANN-MAIC approach on 80%:20%.\nFig. 9. (a) PR curve (b) Roc curve on 80%:20%.\nFig. 10. Confusion matrix of QSANN-MAIC model on 70%:30%.\nH. Abu-Zinadah and S. Abdel-Khalek                                                                                                                                                                                                       Alexandria Engineering Journal 143 (2026) 180–193\n188\n\n--- Page Break ---\n\nexamination of the QSANN-MAIC system. The figure described that the  QSANN-MAIC model resulted to enhanced ROC values. Also, the  QSANN-MAIC technique can extend improve ROC values on each class.\nFig. 10 display the confusion matrix created by the QSANN-MAIC  technique under 70%:30%. The result implies that the QSANN-MAIC  method has effective classification and detection of each class  accurately.\nTable 4 and Fig. 11 indicate the aerial image classification of  QSANN-MAIC approach on 70%:30%. The outcome specifies that the  QSANN-MAIC model properly classified the examples. With 70%TRAP,  the QSANN-MAIC approach provides average correctness, PPV, TPR, F-\nstatistic, and MCC of 98.37%, 91.80%, 91.66%, 91.72%, and 90.82%,  respectively. However, with 30%TESP, the QSANN-MAIC system gives  average correctness, PPV, TPR, F-Statistic, and MCC of 98.22%, 91.06%,  91.05%, 91.04%, and 90.06%, correspondingly. Fig. 12 exhibits the training (TRAN) and validation (VALD) accuracy  of QSANN-MAIC model on 70%:30% over 200 epochs. Both curves  gradually rise and slowly converge, which suggests that the model is  learning efficiently. The VALD accuracy constantly remains slightly  maximal than the TRAN accuracy, implying that the model is not  overfitting and generalizes well to unseen data. The fluctuations in ac­ curacy are expected because of the intricacy of the task, but the whole  upward tendency proves stronger performance and steadiness of the  model.\nFig. 13 exemplifies the TRAN and VALD loss of QSANN-MAIC model  on 70%:30% over 200 epochs. Both curves display a constant downward  tendency, demonstrating that the model effectually minimizes error  throughout learning. The VALD loss stays slightly minimal than the  training loss through most epochs, implying good generalizes and no  signs of overfitting. Though some fluctuations are monitored become  steadier and more consistent.\nFig. 14 reveals the classifier results of QSANN-MAIC model on  70%:30%. Fig. 14a establishes the PR analysis of the QSANN-MAIC  technique. The results stated that the QSANN-MAIC model results in  rising values of PR. Furthermore, it is noticeable that the QSANN-MAIC  method can attains higher PR values on each class. Lastly, Fig. 14b il­ lustrates the ROC examination of the QSANN-MAIC model. The figure  described that the QSANN-MAIC technique resulted in enhanced ROC  values. Likewise, the QSANN-MAIC model can extend enhanced ROC  values on every class.\nThe comparative analysis of QSANN-MAIC method with existing  techniques are proves in Table 5 and Fig. 15 [28–34]. The simulation  results stated that the QSANN-MAIC model outperformed higher per­ formances. Depend on correctness, the QSANN-MAIC system has greater  correctness of 98.38% whereas the InceptionV3, FMGAN, SSGAN, tri­ pleGAN, ResNet50, Knowledge distillation, and VGG16 methodologies  have lower correctness of 63.90%, 63.05%, 78.56%, 56.32%, 97.05%,\nTable 4  Aerial image classification of QSANN-MAIC method on 70%:30%.\nClasses Correctness PPV TPR F-Statistic MCC\nTRAP (70%) AnnualCrop 97.88 90.66 89.96 90.31 89.12 Forest 98.58 92.62 95.12 93.85 93.06 HerbaceousVegatation 98.11 91.65 91.52 91.58 90.52 Highway 98.45 91.06 91.86 91.46 90.61 Industrial 98.38 90.79 92.07 91.43 90.53 Pasture 98.51 91.03 88.41 89.70 88.91 Permanent Crop 98.44 91.75 91.54 91.65 90.79 Residential 98.54 92.88 94.20 93.54 92.72 River 98.46 93.37 89.41 91.35 90.53 Sea Lake 98.32 92.20 92.56 92.38 91.43 Average 98.37 91.80 91.66 91.72 90.82 TESP (30%) AnnualCrop 97.65 91.10 88.16 89.61 88.30 Forest 98.53 91.21 95.18 93.15 92.35 HerbaceousVegatation 98.10 91.23 91.23 91.23 90.16 Highway 98.17 90.55 90.78 90.67 89.66 Industrial 98.11 89.03 89.89 89.46 88.42 Pasture 98.54 91.29 89.20 90.23 89.45 Permanent Crop 98.40 90.21 92.41 91.30 90.42 Residential 98.43 92.64 92.95 92.80 91.92 River 98.20 91.73 89.39 90.54 89.56 Sea Lake 98.06 91.58 91.29 91.43 90.34 Average 98.22 91.06 91.05 91.04 90.06\nFig. 11. Average outcomes of QSANN-MAIC approach on 70%:30%.\nH. Abu-Zinadah and S. Abdel-Khalek                                                                                                                                                                                                       Alexandria Engineering Journal 143 (2026) 180–193\n189\n\n--- Page Break ---\n\n94.74%, and 94.50%, correspondingly. Besides, depend on PPV, the  QSANN-MAIC model has superior PPV of 91.78% while the InceptionV3,\nFig. 12. Accury curve of QSANN-MAIC approach on 70%:30%.\nFig. 13. Loss curve of QSANN-MAIC methodology on 70%:30%.\nFig. 14. Classifier results (a) PR curve and (b) ROC curve on 70%:30%.\nH. Abu-Zinadah and S. Abdel-Khalek                                                                                                                                                                                                       Alexandria Engineering Journal 143 (2026) 180–193\n190\n\n--- Page Break ---\n\nFMGAN, SSGAN, tripleGAN, ResNet50, Knowledge distillation, and  VGG16 technologies have inferior PPV of 76.90%, 88.23%, 91.49%,  88.07%, 90.38%, 78.10% and 79.99%, correspondingly. Moreover,  depend on TPR, the QSANN-MAIC approach has obtained TPR of  91.66% while the InceptionV3, FMGAN, SSGAN, tripleGAN, ResNet50,  Knowledge distillation, and VGG16 models got lesser TPR of 89.63%,  84.39%,  80.30%,  78.98%,  82.83%,  74.97%,  and  84.71%,\ncorrespondingly. At last, depend on F-statistic, the proposed  QSANN-MAIC method accomplishes maximal F-statistic of 91.71%  while the InceptionV3, FMGAN, SSGAN, tripleGAN, ResNet50, Knowl­ edge distillation, and VGG16 techniques gains minimal F-statistic of  88.44%, 80.54%, 84.52%, 75.69%, 85.04%, 80.44%, and 85.12%,  correspondingly.\nAblation research is a model utilized to assess the contribution of\nTable 5  Comparative analysis of QSANN-MAIC approach with existing models.\nStudy Methods Correctness Loss Values PPV TPR F-Statistic\n1 InceptionV3 63.90 36.10 76.90 89.63 88.44 2 FMGAN 63.05 36.95 88.23 84.39 80.54 3 SSGAN 78.56 21.44 91.49 80.30 84.52 4 tripleGAN 56.32 43.68 88.07 78.98 75.69 5 ResNet50 97.05 2.95 90.38 82.83 85.04 6 Knowledge distillation 94.74 5.26 78.10 74.97 80.44 7 VGG16 94.50 5.50 79.99 84.71 85.12 Proposed QSANN-MAIC 98.38 1.62 91.78 91.66 91.71\nFig. 15. Comparative analysis of QSANN-MAIC method with existing approaches.\nH. Abu-Zinadah and S. Abdel-Khalek                                                                                                                                                                                                       Alexandria Engineering Journal 143 (2026) 180–193\n191\n\n--- Page Break ---\n\nparticular elements in a system or model by systematically altering or  removing them. It supports classifying which modules, techniques, or  features, considerably effect performance. By comparing outcomes with  and without some components, academic circle can validate the signif­ icance of every component and optimize the whole design. Table 6 signifies the ablation study of QSANN-MAIC approach. The result sug­ gests that QSANN and QSANN+Compact vision transformer (without  enhanced convNeXt as well as fine-grained VGG16) models have  attained lower outcome under several measures. Meanwhile, the  QSANN+Improved ConvNeXt (without Compact ViT and Fine-tuned  VGG16) obtains slightly higher outcome values with correctness of  96.89%, PPV of 90.42%, TPR of 90.40%, F-Statistic of 90.60%, corre­ spondingly. Also, the QSANN+Fine-tuned VGG16 (without Compact ViT  as well as Enhanced ConvNeXt) approaches achieves reasonable values  with correctness of 97.70%, PPV of 91.25%, TPR of 91.13%, F-Statistic  of 91.19%, correspondingly. At last, the proposed QSANN-MAIC method  reaches the maximal value with correctness of 98.38%, PPV of 91.78%,  TPR of 91.66%, F-Statistic of 91.71%, correspondingly.\n4. Conclusion\nIn this manuscript, a QSANN-MAIC framework is introduced for  effectual classification of UAV-based aerial images. For accomplishing  that, the presented QSANN-MAIC system primarily prepared the input  images for further analysis. Techniques like noise reduction, sharpening,  contrast improvement, and color correction are applied to eliminate  unwanted noise and improve the image quality and clarity. To capture  rich and meaningful representations, a multi-model feature extraction  module is employed, integrating three architectures: a ComViT, an  improved ConvNeXt, and a fine-tuned VGG16. Lastly, the QSANN is  developed to efficiently categorize aerial images by learning long-range  feature relationships, attaining better classification accuracy. To exhibit  the enhanced performance of the proposed QSANN-MAIC framework, a  comprehensive simulation is conducted, and the results are examined  using the benchmark EuroSat Dataset. The comparison study high­ lighted that the proposed QSANN-MAIC method performed better  compared to existing techniques across various evaluation measures.\nCRediT authorship contribution statement\nHanaa Abu-Zinadah: Methodology, Investigation, Writing – orig­ inal draft. Sayed Abdel-Khalek: Investigation, Methodology, Formal  analysis, Software, Writing – original draft, Writing – review & editing.\nDeclaration of Competing Interest\nThe authors declare that they have no known competing financial  interests or personal relationships that could have appeared to influence\nthe work reported in this paper.\nAcknowledgements\nThis work was funded by the University of Jeddah, Jeddah, Saudi  Arabia, under grant No. (UJ-25-DR-1966). Therefore, the authors thank  to University of Jeddah for its technical and financial support.\nData availability\nThe data that support the findings of this study are openly available  in  Kaggle  repository  at  https://www.kaggle.  com/datasets/apollo2506/eurosat-dataset, reference number [22].\nReferences\n[1] C. Kyrkou, T. Theocharides, Deep-learning-based aerial image classification for\nemergency response applications using unmanned aerial vehicles, CVPR  Workshops (2019) 517–525. [2] A. Bouguettaya, H. Zarzour, A. Kechida, A.M. Taberkit, Deep learning techniques to\nclassify agricultural crops through UAV imagery: a review, Neural Comput. Appl.  34 (12) (2022) 9511–9536. [3] M. MS, S.R. Ss, Optimal squeeze net with deep neural network-based arial image\nclassification model in unmanned aerial vehicles, Traite du Signal 39 (1) (2022). [4] Q. Memon, N. Valappil, On multi-class aerial image classification using learning\nmachines, Comput. Vis. Recognit. Syst. Using Mach. Deep Learn. Approaches.  Fundam. Technol. Appl. 15 (2021) 351–384. [5] C. Kyrkou, T. Theocharides, EmergencyNet: Efficient aerial image classification for\ndrone-based emergency monitoring using atrous convolutional feature fusion, IEEE  J. Sel. Top. Appl. Earth Obs. Remote Sens. 13 (2020) 1687–1699. [6] Y. Hua, L. Mou, X.X. Zhu, Relation network for multilabel aerial image\nclassification, IEEE Trans. Geosci. Remote Sens. 58 (7) (2020) 4558–4572. [7] M. Mehmood, A. Shahzad, B. Zafar, A. Shabbir, N. Ali, Remote sensing image\nclassification: a comprehensive review and applications, Math. Probl. Eng. 2022  (1) (2022) 5880959. [8] M. Kraft, M. Piechocki, B. Ptak, K. Walas, Autonomous, onboard vision-based trash\nand litter detection in low altitude aerial images collected by an unmanned aerial  vehicle, Remote Sens. 13 (5) (2021) 965. [9] Z. Zhang, L. Huang, Q. Wang, L. Jiang, Y. Qi, S. Wang, T. Shen, B.H. Tang, Y. Gu,\nUAV hyperspectral remote sensing image classification: a systematic review, IEEE  J. Sel. Top. Appl. Earth Obs. Remote Sens. (2024). [10] P. Mahajan, P. Abrol, P.K. Lehana, Scene based classification of aerial images using\nconvolution neural networks, J. Sci. & Ind. Res. 79 (12) (2020) 1087–1094. [11] L. Chen, S. Li, Q. Bai, J. Yang, S. Jiang, Y. Miao, Review of image classification\nalgorithms based on convolutional neural networks, Remote Sens. 13 (22) (2021)  4712. [12] R.N. Torres, P. Fraternali, Learning to identify illegal landfills through scene\nclassification in aerial images, Remote Sens. 13 (22) (2021) 4520. [13] Y. Bazi, L. Bashmal, M.M.A. Rahhal, R.A. Dayil, N.A. Ajlan, Vision transformers for\nremote sensing image classification, Remote Sens. 13 (3) (2021) 516. [14] X. Deng, M. Shi, B. Khan, Y.H. Choo, F. Ghaffar, C.P. Lim, A lightweight CNN model\nfor UAV-based image classification, Soft Comput. 29 (4) (2025) 2363–2378. [15] R. Imandi, A. Roy, Y.G. Kim, P.K. BN, Building sustainable federated learning\nmodels in Fog-enabled UAV-as-a-Service for aerial image classification, Sustain.  Comput. Inform. Syst. (2025) 101133. [16] Y. Said, O. Saidani, A.D. Algarni, M.H. Algarni, A. Flah, Lightweight multiscale\ninformation aggregation network for land cover land use semantic segmentation  from remote sensing images, Sci. Rep. 15 (1) (2025) 30265. [17] P.K. Pradhan, A. Das, A. Kumar, U. Baruah, B. Sen, P. Ghosal, SwinSight: a\nhierarchical vision transformer using shifted windows to leverage aerial image  classification, Multimed. Tools Appl. 83 (39) (2024) 86457–86478. [18] O. Jockusch, M.Z. Hossain, A. Imteaj, A.R. Shahid, Generative AI-based land cover\nclassification via federated learning CNNs: sustainable insights from UAV imagery.  2024 IEEE conference on technologies for sustainability (SusTech), IEEE, 2024,  pp. 356–361. [19] H. Du, W. Wang, X. Wang, Y. Wang, Autonomous landing scene recognition based\non transfer learning for drones, J. Syst. Eng. Electron. 34 (1) (2023) 28–35. [20] T.K. Behera, S. Bakshi, M. Nappi, P.K. Sa, Superpixel-based multiscale CNN\napproach toward multiclass object segmentation from UAV-captured aerial images,  IEEE J. Sel. Top. Appl. Earth Obs. Remote Sens. 16 (2023) 1771–1784. [21] Z. Lu, H. Sun, K. Ji, G. Kuang, Adversarial robust aerial image recognition based on\nreactive-proactive defense framework with deep ensembles, Remote Sens. 15 (19)  (2023) 4660. [22] 〈https://www.kaggle.com/datasets/apollo2506/eurosat-dataset〉. [23] S.C. Hung, H.C. Wu, M.H. Tseng, Integrating image quality enhancement methods\nand deep learning techniques for remote sensing scene classification, Appl. Sci. 11  (24) (2021) 11659. [24] A. Safdar, M. SaadeldinCoMViT: an efficient vision backbone for supervised\nclassification in medical imaging. arXiv preprint arXiv:2510.27442.2025.\nTable 6  Ablation study of QSANN-MAIC method with existing approaches.\nMethods Correctness PPV TPR F-  Statistic\nQSANN 96.01 88.10 89.00 89.19 QSANN+Compact vision\ntransformer (without improved  convNeXt and fine-tuned VGG16)\n96.19 89.90 89.52 90.03\nQSANN+Improved ConvNeXt\n(without Compact ViT and Fine-  tuned VGG16)\n96.89 90.42 90.40 90.60\nQSANN+Fine-tuned VGG16\n(without Compact ViT and  Improved ConvNeXt)\n97.70 91.25 91.13 91.19\nQSANN-MAIC (QSANN with Multi\nmodel feature extraction Models)\n98.38 91.78 91.66 91.71\nFrom the detailed outcomes and discussion, it is evident that the QSANN-MAIC  technique outperforms the other models in terms of performance.\nH. Abu-Zinadah and S. Abdel-Khalek                                                                                                                                                                                                       Alexandria Engineering Journal 143 (2026) 180–193\n192\n\n--- Page Break ---\n\n[25] Q. Wu, X. Ma, H. Liu, C. Bi, H. Yu, M. Liang, J. Zhang, Q. Li, Y. Tang, G. Ye,\nA classification method for soybean leaf diseases based on an improved ConvNeXt  model, Sci. Rep. 13 (1) (2023) 19141. [26] R. Rani, S. Bharany, D.H. Elkamchouchi, A. Ur Rehman, R. Singh, S. Hussen, VGG-\nEffAttnNet: hybrid deep learning model for automated chili plant disease  classification using VGG16 and efficient NetB0 with attention mechanism, Food  Sci. & Nutr. 13 (7) (2025) e70653. [27] S. Kumari, Next-Gen IoT Security using polar codes-based cryptography for\nmalware defence through quantum self-attention neural network, Knowl. -Based  Syst. 321 (2025) 113716. [28] S. Roy, E. Sangineto, N. Sebe, B. DemirSemantic-fusion gans for semi-supervised\nsatellite image classification. In: Proceedings of the 2018 25th IEEE International  Conference on Image Processing (ICIP)2018. [29] T. Salimans, I. Goodfellow, W. Zaremba, V. Cheung, A. Radford, X. Chen, Improved\ntechniques for training gans, Adv. Neural Inf. Proc. Syst. 1 (2016) 10.\n[30] D. Guo, Y. Xia, X. Luo, Gan-based semisupervised scene classification of remote\nsensing image, IEEE Geosci. Remote Sens. Lett. 18 (12) (2021) 2067–2071. [31] C. Li, K. Xu, J. Zhu, B. Zhang, Triple generative adversarial nets, Adv. Neural Inf.\nProc. Syst. 1 (2017) 9. [32] P. Helber, B. Bischke, A. Dengel, D. Borth, EuroSAT: a novel dataset and deep\nlearning benchmark for land use and land cover classification, IEEE J. Sel. Top.  Appl. Earth Obs. Remote Sens 12 (2019) 2217–2226. [33] G. Chen, X. Zhang, X. Tan, Y. Cheng, F. Dai, K. Zhu, Y. Gong, Q. Wang, Training\nsmall networks for scene classification of remote sensing images via knowledge  distillation, Remote Sens 10 (2018) 719. [34] E. ChongEuroSAT land use and land cover classification using deep learning. 2020.\nAvailable online: https://github.com/echong/ Remote-Sensing (accessed on 24  October 2021).\nH. Abu-Zinadah and S. Abdel-Khalek                                                                                                                                                                                                       Alexandria Engineering Journal 143 (2026) 180–193\n193",
+  "equations": [
+    {
+      "page": 2,
+      "raw_extracted": "A summary of existing related works regarding aerial image classi­ fication using UAV imagery is presented in this section. Deng et al. [14] presented a UAV-driven forest fire image recognition employing a  lightweight CNN. Due to intricate image backgrounds, as well as insuf­ ficient training examples. Particularly, improve the MobileNetV2 model  with an attention module for UAV-driven image identification. This  technique uses a TL approach that utilizes the pre-trained weights from  ImageNet for expedited learning. Therefore, the technique integrates  randomly initialized weights as well as dropout module for reducing  over-fitting throughout training. Imandi et al. [15] combined FL within  the FU-Serve environment, joined with the growth of 3 specified  FL-driven techniques personalized for on-device image identification.  For solving limited resources of fog nodes, intended FUSERNet—a  lightweight DL structure using skip connections as well as separable  convolutions that decrease computational cost, though preserve crucial  feature representations. Said et al. [16] introduced a lightweight NN  intended for solving these tasks by combining dense dilated convolu­ tions alongside pyramid depth-wise convolutions for extracting  multi-scale features. The presented encoder-decoder structure uses  dense connections for aggregating spatial as well as contextual data",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "• A novel QSANN-MAIC is proposed to address the challenges of  limited feature diversity, complex aerial scene structures, and vary­ ing image quality in UAV imagery. • A novel multi-model feature extraction framework is developed by  integrating compact vision transformer (ComViT), improved Con­ vNeXt, and fine-tuned VGG16. • Learn global structural patterns, hierarchical spatial details, and fine-  grained texture features simultaneously, which results in richer and  more discriminative representations. • Introduce a QSANN to capture long-range dependencies and complex  feature interactions, which improves model sensitivity toward subtle  variations in aerial scenes and enhancing classification accuracy. • Conduct extensive performance evaluation to validate the proposed  QSANN-MAIC model’s efficiency under diverse metrics and demon­ strate the betterment of the QSANN-MAIC system under the bench­ mark EuroSat Dataset.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "‘Class’ No. of samples",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "‘AnnualCrop’ 3000 ‘Forest’ 3000 ‘HerbaceousVegatation’ 3000 ‘Highway’ 2500 ‘Industrial’ 2500 ‘Pasture’ 2000 ‘Permanent Crop’ 2500 ‘Residential’ 3000 ‘River’ 2500 ‘Sea Lake’ 3000 ‘Total Samples’ 27,000",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "Sharpening: This paper initially examines an efficiency for the  image denoising analysis and sharpening process. Unsharp masking  (USM) is a generally utilized model for sharpening an edge of imaging  and it can enhance the contrast of image. Here, the version of Gaussian  smoothed is subtracted and preserve constant region value in a weighted  method to comprehend sharpening function, Xʹ denotes an improved  image, Y means a Gaussian smoothed image, X represents an original  image; a and b signifies a weights. The formulation is stated below:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "Xʹ = a⋅X + b⋅Υ (1)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "β = M",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "(",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "1 + α 100 (Smax −1) )",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Fig. 3 depicts the pre-processed input images and feature maps  representation. Here, M denotes a pixels in every area, N means a dy­ namic range, smax represents a highest allowable slope, and α means a  clip factor set among 0 to 100.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Then, evaluate the MSRCR,⋅ this model is depending upon the MSR.  In the MSR procedure, an image might be unfair owing to the upsurge of  noises, and the color of local facts might be distorted. Henceforth, the  true color can’t exposed, and the complete visual effect might be poorer.  The image local contrast is enhanced, and the brightness is parallel to an  actual landscape. The mathematical model for MSRCR is given as  follows:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "RMSRCRi(x, y) = Ci(x, y)RMSRi(x, y) (3)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Ci(x, y) = f",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "[",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Iʹ",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "i(x, y)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "]",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "The finest color restoration is given below, whereas β represents a  gain constant and α restraints the non-linearity strength:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Ci(x, y) = βlog",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "[αIʹ",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "i(x, y)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "]",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "2.3.1. ComViT The ComViT is a compact Vision Transformer, which is intended for  tackling the restrictions of normal ViTs in resource-constrained tasks.  ComViT leaves from severe patch-enabled tokenization as well as dense  attention mechanism (AM), presenting an efficient design for perfor­ mance, efficiency, and interpretability [24]. Assumed an input image  x ∈Rw⋅w⋅cComViT initially uses a light-weight convolutional stem with  dual layers for generating the spatial feature mappings. Rather than  utilizing a severe patch-split in ViT, a shallow convolution tokenizer is  used. This tokenizer substitute’s fixed-size patch with local filter,  furthering inductive bias and enhancing spatial encoded. Particularly, it  comprises dual 7x7 Conv2D layers that are followed by a 3x3 layer  of max-pooling. The resultant feature mappings were compressed into a  series of N tokens, every h-dimensional, producing T ∈RN⋅h. Learnable  positional embedding’s P ∈RN⋅h were inserted for upholding the spatial  structure, making Z0 = T + P.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Aij =",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "j τ dk √ + M,",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "headk = soft max (A)V, (6)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Z = Concat(head1, ..., headn)WO",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "where τ denotes learnable temperature, M represents diagonal mask  with Mii = −∞ for defeating a self-attention. Every block follows a  location-wise MLP with an activation of GELU and covered in a residual  connection with normalization layer.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "s =",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "∑N",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "i=1wiOi, wi = softmax",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "(",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "WpOi)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "In an attention module of CBAM, the activation function of Lea­ kyReLU was used to overcome an issue in which neurons don’t learn  when an input is negative by modifying its non-linear unit. The math­ ematical formulation is exposed below:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "LeakyReLU =",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "{",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "x, x > 0 ax, x ≤0 (8)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "H = (h −k + 2p)/s + 1 (9)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "W = w −k + 2p",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "s + 1 (10)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Y(P) = P",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "(",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "y = p|x, θp",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": ")",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "= exT•θp ∑c",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "p=1exT•θp (11)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Input representation: Assume X ∈RH⋅W⋅C depicts the image of input,  here H implies input height, W implies input width, C signifies the no. of  channels.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "X = {X1, X2, ......, Xc} (12)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Xl’ = σ(Wl ∗Xl−1 + bl) (13)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Here, Wl signified convolutional kernel (filter), Xl−1 denotes input to  lth convolutional layer, bl depicts bias term, σ denotes activation func­ tion, and ∗represents convolution operation.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Pl = maxXʹ",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "l(i, j) (14)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "F = Flatten",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "(",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "P(5) )",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Here P(5) implies the pooled outcome from last convolutional block, F  denotes 1D vector features.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "D = σ(Wd⋅F + bd) (16)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Now bd denotes bias vector, Wd implies weighted matrix for dense  layer, D indicates output of dense layer, and σ represents activation  function (ReLu).",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "DMCD = Dropout(D, rate p, training = true) (17)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Here D, rate indicates rate of dropout, training=true denotes to  assure dropout during inference, DMCD implies outcome after Monte  Carlo Dropout.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Y = Softmax(Wo.DMCD + bo) (18)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Now ̂Y depicts predicted class probability distribution by N classes,  bo signifies biased term of output layer and Wo indicates weights of  output layer.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Y = Softmax (W∘⋅Dropout (D) + bo ) (19)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Now ̂ Y indicates probability distribution over N classes and Woʹbo  implies output layer weight and bias.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Y = Softmax(Wo(DMCD, DMCD) + bo ) (20)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "• ComViT encodes global contextual relations, • ConvNeXt captures hierarchical convolutional features, • VGG16 learns fine-grained texture and edge descriptors.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Ffusion = w1FComViT + w2FConvNeXt + w3FVGG16 (21)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "w1 + w2 + w3 = 1, wi ≥0",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "QSANN is less delicate to unstructured data, noisy, and can measure  well with large data, delivering better adaptability and faster conver­ gence to novel anxieties. The incorporation of QSANN enhances the  precision recognition in aerial images by harnessing quantum- inspired  parallelism and self-AM for enhancing the representation of feature and  context perception of remote sensing images. QSANN efficiently seizures  longer-term relations and complex representations in the extracted at­ tributes and letting to accurate diversity. Its capability to actively alter  an attention weights, which ensures that significant aerial images are  highlighted, decreasing false positives and enhancing the classification  consistency. In addition, QSANN hasten learning as well as classification  procedures, permitting fast and precise classification of land use, even­ tually attaining better accuracy. In this model, a data xt was encrypted  into an amplitudes of a quantum state like y1γi, ensuring quantum state  and normalization are exposed in Lc↓(1O),",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "xt =",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "∑t",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "i=1bt,i.Vvyi (22)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "whereas, bt,i denotes a feature in hidden layer (HL) in ith and tth  dimension; xt denotes an input data. Entanglement and superposition",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "|ψτ〉= Ven",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "(",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "x(m−1)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": ")",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "I⊗m|Pm〉 1 ≤t ≥T (23)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "whereas, Ven signifies the vital quantum phenomena, I⊗m and",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "x(m−1)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "s represents the entanglement and Superposition; Pm symbolizes the  longer-range dependencies; T indicates a variable; ψt represents an  arbitrary attention layer. In a QSANN, the calculation of attention score  includes quantum dot product, which is similar to traditional internal  products. To attain this, quantum conditions encoded input vectors are  handled utilizing Hadamard gate, which is stated below:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "|ψs〉= Uenc",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "(",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "y(I−1)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": ")",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "H⊗n|0n〉 (24)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "Here, H is represented as gate of Hadamard, ψs is signified as  quantum states s, Uenc is indicated as a quantum dot product.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "{Yr}t = 〈ψt||Vr(θr)Y1Vr(θr)|ψt〉, 〈Yh〉t = {ψt||Vh(θh)Y1Vh(θh)|ψt} (25)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "Here, {Yr} signifies to quantum variational circuit, θr, θh indicates  parameter variable. VhY1, Vh represents to class. Afterward, measure­ ments were achieved on the last quantum state for attaining a likelihood,  as formulated below:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "Pt = [〈Q1〉t〈Q2〉t...〈Qe〉t]S (26)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "x(m)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "t = X(m−1)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "t +",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "∑T",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "i=1αt,i • Pi (27)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "Here, x(m−1)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "class probability, x(m)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "t  signifies data sample’s probability, αt,i denotes to  sample.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "Correctness = TN + TP TN + TP + FN + FP ⋅ 100% (28)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "PPV = TP",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "TP+ FP ⋅ 100% (29)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "TPR = TP",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "TP+ FN ⋅ 100% (30)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "F −Statistic = 2 ⋅ Precision ⋅ Recall",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "Precision + Recall ⋅ 100 (31)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "MCC = TP ⋅ TN −FP ⋅ FN",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "(TP + FP)(TP + FN)(TN + FP)(TN + FN) √ (32)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 10,
+      "raw_extracted": "The comparative analysis of QSANN-MAIC method with existing  techniques are proves in Table 5 and Fig. 15 [28–34]. The simulation  results stated that the QSANN-MAIC model outperformed higher per­ formances. Depend on correctness, the QSANN-MAIC system has greater  correctness of 98.38% whereas the InceptionV3, FMGAN, SSGAN, tri­ pleGAN, ResNet50, Knowledge distillation, and VGG16 methodologies  have lower correctness of 63.90%, 63.05%, 78.56%, 56.32%, 97.05%,",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "particular elements in a system or model by systematically altering or  removing them. It supports classifying which modules, techniques, or  features, considerably effect performance. By comparing outcomes with  and without some components, academic circle can validate the signif­ icance of every component and optimize the whole design. Table 6 signifies the ablation study of QSANN-MAIC approach. The result sug­ gests that QSANN and QSANN+Compact vision transformer (without  enhanced convNeXt as well as fine-grained VGG16) models have  attained lower outcome under several measures. Meanwhile, the  QSANN+Improved ConvNeXt (without Compact ViT and Fine-tuned  VGG16) obtains slightly higher outcome values with correctness of  96.89%, PPV of 90.42%, TPR of 90.40%, F-Statistic of 90.60%, corre­ spondingly. Also, the QSANN+Fine-tuned VGG16 (without Compact ViT  as well as Enhanced ConvNeXt) approaches achieves reasonable values  with correctness of 97.70%, PPV of 91.25%, TPR of 91.13%, F-Statistic  of 91.19%, correspondingly. At last, the proposed QSANN-MAIC method  reaches the maximal value with correctness of 98.38%, PPV of 91.78%,  TPR of 91.66%, F-Statistic of 91.71%, correspondingly.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "Hanaa Abu-Zinadah: Methodology, Investigation, Writing – orig­ inal draft. Sayed Abdel-Khalek: Investigation, Methodology, Formal  analysis, Software, Writing – original draft, Writing – review & editing.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "emergency response applications using unmanned aerial vehicles, CVPR  Workshops (2019) 517–525. [2] A. Bouguettaya, H. Zarzour, A. Kechida, A.M. Taberkit, Deep learning techniques to",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "classify agricultural crops through UAV imagery: a review, Neural Comput. Appl.  34 (12) (2022) 9511–9536. [3] M. MS, S.R. Ss, Optimal squeeze net with deep neural network-based arial image",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "machines, Comput. Vis. Recognit. Syst. Using Mach. Deep Learn. Approaches.  Fundam. Technol. Appl. 15 (2021) 351–384. [5] C. Kyrkou, T. Theocharides, EmergencyNet: Efficient aerial image classification for",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "drone-based emergency monitoring using atrous convolutional feature fusion, IEEE  J. Sel. Top. Appl. Earth Obs. Remote Sens. 13 (2020) 1687–1699. [6] Y. Hua, L. Mou, X.X. Zhu, Relation network for multilabel aerial image",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "classification, IEEE Trans. Geosci. Remote Sens. 58 (7) (2020) 4558–4572. [7] M. Mehmood, A. Shahzad, B. Zafar, A. Shabbir, N. Ali, Remote sensing image",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "convolution neural networks, J. Sci. & Ind. Res. 79 (12) (2020) 1087–1094. [11] L. Chen, S. Li, Q. Bai, J. Yang, S. Jiang, Y. Miao, Review of image classification",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "for UAV-based image classification, Soft Comput. 29 (4) (2025) 2363–2378. [15] R. Imandi, A. Roy, Y.G. Kim, P.K. BN, Building sustainable federated learning",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "hierarchical vision transformer using shifted windows to leverage aerial image  classification, Multimed. Tools Appl. 83 (39) (2024) 86457–86478. [18] O. Jockusch, M.Z. Hossain, A. Imteaj, A.R. Shahid, Generative AI-based land cover",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "classification via federated learning CNNs: sustainable insights from UAV imagery.  2024 IEEE conference on technologies for sustainability (SusTech), IEEE, 2024,  pp. 356–361. [19] H. Du, W. Wang, X. Wang, Y. Wang, Autonomous landing scene recognition based",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "on transfer learning for drones, J. Syst. Eng. Electron. 34 (1) (2023) 28–35. [20] T.K. Behera, S. Bakshi, M. Nappi, P.K. Sa, Superpixel-based multiscale CNN",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "approach toward multiclass object segmentation from UAV-captured aerial images,  IEEE J. Sel. Top. Appl. Earth Obs. Remote Sens. 16 (2023) 1771–1784. [21] Z. Lu, H. Sun, K. Ji, G. Kuang, Adversarial robust aerial image recognition based on",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "reactive-proactive defense framework with deep ensembles, Remote Sens. 15 (19)  (2023) 4660. [22] 〈https://www.kaggle.com/datasets/apollo2506/eurosat-dataset〉. [23] S.C. Hung, H.C. Wu, M.H. Tseng, Integrating image quality enhancement methods",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "QSANN 96.01 88.10 89.00 89.19 QSANN+Compact vision",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "QSANN+Improved ConvNeXt",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "QSANN+Fine-tuned VGG16",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "sensing image, IEEE Geosci. Remote Sens. Lett. 18 (12) (2021) 2067–2071. [31] C. Li, K. Xu, J. Zhu, B. Zhang, Triple generative adversarial nets, Adv. Neural Inf.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "learning benchmark for land use and land cover classification, IEEE J. Sel. Top.  Appl. Earth Obs. Remote Sens 12 (2019) 2217–2226. [33] G. Chen, X. Zhang, X. Tan, Y. Cheng, F. Dai, K. Zhu, Y. Gong, Q. Wang, Training",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    }
+  ],
+  "warnings": []
+}

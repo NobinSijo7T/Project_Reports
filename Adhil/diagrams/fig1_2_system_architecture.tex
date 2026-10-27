@@ -1,0 +1,178 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usepackage{amsmath,amssymb}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shadows,shapes.geometric}
+
+% Color definitions
+\definecolor{lavenderDark}{RGB}{15, 44, 89}
+\definecolor{lavenderDeep}{RGB}{10, 28, 58}
+\definecolor{lavenderMedium}{RGB}{29, 78, 158}
+\definecolor{lavenderLight}{RGB}{240, 246, 255}
+\definecolor{lavenderBorder}{RGB}{180, 205, 237}
+\definecolor{lavenderAccent}{RGB}{2, 132, 199}
+\definecolor{prismNavy}{RGB}{15, 44, 89}
+\definecolor{prismBlue}{RGB}{29, 78, 158}
+\definecolor{prismTeal}{RGB}{13, 148, 136}
+\definecolor{prismMint}{RGB}{236, 253, 245}
+\definecolor{prismGold}{RGB}{217, 119, 6}
+\definecolor{prismDark}{RGB}{15, 23, 42}
+\definecolor{prismLight}{RGB}{248, 250, 252}
+\definecolor{prismIndigo}{RGB}{30, 58, 138}
+\definecolor{prismSlate}{RGB}{100, 116, 139}
+\definecolor{statusFail}{RGB}{220, 38, 38}
+\definecolor{cInput}{RGB}{241, 245, 249}
+\definecolor{cStem}{RGB}{224, 242, 254}
+\definecolor{cStage1}{RGB}{209, 250, 229}
+\definecolor{cStage2}{RGB}{254, 243, 199}
+\definecolor{cStage3}{RGB}{254, 226, 226}
+\definecolor{cStage4}{RGB}{207, 250, 254}
+\definecolor{cHead}{RGB}{219, 234, 254}
+\definecolor{cOutput}{RGB}{255, 228, 230}
+
+\begin{document}
+% Complete Multi-Tier Architecture Map for CiviQ Legal RAG System
+\begin{tikzpicture}[
+  x=1cm, y=1cm,
+  every node/.style={align=center},
+  group/.style={draw=lavenderMedium!70, dashed, line width=0.85pt,
+    fill=lavenderLight!25, rounded corners=8pt},
+  grouptitle/.style={fill=lavenderDark, text=white, font=\fontsize{7.5}{9.0}\selectfont\bfseries,
+    rounded corners=3pt, inner xsep=6pt, inner ysep=3.0pt},
+  colbox/.style={rectangle, rounded corners=4pt, line width=0.75pt,
+    minimum height=1.15cm, inner ysep=3.0pt, inner xsep=4.5pt,
+    font=\fontsize{6.6}{7.8}\selectfont\bfseries},
+  arrow/.style={
+    -{Stealth[scale=0.85]}, line width=0.85pt, draw=lavenderDark!90
+  }
+]
+
+  %============================================================================
+  % COLUMN 1: PRESENTATION & CLIENT INTERFACE TIER
+  %============================================================================
+  \node[group, minimum width=3.60cm, minimum height=10.60cm] (g1) at (2.00, 5.80) {};
+  \node[grouptitle, anchor=west] at (0.25, 11.10) {1. Client Presentation Tier};
+
+  \node[colbox, text width=3.30cm, fill=cInput, draw=prismSlate!70] (g1_user) at (2.00, 9.80) {%
+    {\color{prismDark}\faUser\ \textbf{Citizen / Legal Researcher}}\\[2.0pt]
+    {\fontsize{6.0}{7.0}\selectfont\normalfont Natural Language Query Ingestion\\[1pt]Typed Text / Web Speech Voice Audio}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStem, draw=prismIndigo!70] (g1_web) at (2.00, 7.30) {%
+    {\color{prismIndigo}\faDesktop\ \textbf{React 19 + Vite 8 Web App}}\\[2.0pt]
+    {\fontsize{6.0}{7.0}\selectfont\normalfont Tailwind CSS 4 $\cdot$ Markdown Parser\\[1pt]Real-time Speech Recognition $\cdot$ PDF Upload}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStage4, draw=prismBlue!80] (g1_ctrl) at (2.00, 4.80) {%
+    {\color{lavenderDark}\faSlidersH\ \textbf{Interactive Query Controls}}\\[2.0pt]
+    {\fontsize{6.0}{7.0}\selectfont\normalfont Language Mode (\texttt{auto}, \texttt{en}, \texttt{ml})\\[1pt]Retrieval Depth Slider ($k=1\dots 10$)}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStage1, draw=prismTeal!70] (g1_disclaimer) at (2.00, 2.30) {%
+    {\color{prismTeal!90!black}\faBalanceScale\ \textbf{Legal Safety Boundary}}\\[2.0pt]
+    {\fontsize{6.0}{7.0}\selectfont\normalfont Statutory Information Disclaimer\\[1pt]Strict Non-Legal Advice Notice}%
+  };
+
+  \draw[arrow] (g1_user) -- (g1_web);
+  \draw[arrow] (g1_web) -- (g1_ctrl);
+  \draw[arrow] (g1_ctrl) -- (g1_disclaimer);
+
+  %============================================================================
+  % COLUMN 2: API GATEWAY & ORCHESTRATION TIER
+  %============================================================================
+  \node[group, minimum width=3.60cm, minimum height=10.60cm] (g2) at (6.10, 5.80) {};
+  \node[grouptitle, anchor=west] at (4.35, 11.10) {2. API Gateway \& Validation};
+
+  \node[colbox, text width=3.30cm, fill=cStage2!60, draw=prismGold!80] (g2_fastapi) at (6.10, 9.80) {%
+    {\color{prismGold!90!black}\faServer\ \textbf{FastAPI REST Service}}\\[2.0pt]
+    {\fontsize{6.0}{7.0}\selectfont\normalfont Asynchronous ASGI (Uvicorn)\\[1pt]\texttt{/ask} $\cdot$ \texttt{/analyze-document} $\cdot$ \texttt{/api/health}}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cInput, draw=prismSlate!70] (g2_validate) at (6.10, 7.30) {%
+    {\color{prismDark}\faCheckCircle\ \textbf{Payload Audit \& Validation}}\\[2.0pt]
+    {\fontsize{6.0}{7.0}\selectfont\normalfont MIME Verification: \texttt{application/pdf}\\[1pt]Max Payload: $\le 50$\,MB $\cdot$ Pydantic Schema}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStage1, draw=prismTeal!80] (g2_lang) at (6.10, 4.80) {%
+    {\color{prismTeal!90!black}\faLanguage\ \textbf{Language Detection Router}}\\[2.0pt]
+    {\fontsize{6.0}{7.0}\selectfont\normalfont Unicode Codepoint Scanner\\[1pt]Malayalam Range \texttt{U+0D00}--\texttt{U+0D7F}}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStage3!60, draw=statusFail!70] (g2_error) at (6.10, 2.30) {%
+    {\color{statusFail}\faExclamationTriangle\ \textbf{Fault Resilience Engine}}\\[2.0pt]
+    {\fontsize{6.0}{7.0}\selectfont\normalfont 400 Empty Query $\cdot$ 413 File Size\\[1pt]415 Format $\cdot$ 503 LLM Retry with Backoff}%
+  };
+
+  \draw[arrow] (g2_fastapi) -- (g2_validate);
+  \draw[arrow] (g2_validate) -- (g2_lang);
+  \draw[arrow] (g2_validate) -- (g2_error);
+
+  %============================================================================
+  % COLUMN 3: RAG PROCESSING & GENERATION TIER
+  %============================================================================
+  \node[group, minimum width=4.10cm, minimum height=10.60cm] (g3) at (10.45, 5.80) {};
+  \node[grouptitle, anchor=west] at (8.45, 11.10) {3. RAG Processing \& Generation};
+
+  \node[colbox, text width=3.80cm, fill=cStem!70, draw=lavenderDark!80] (g3_chunk) at (10.45, 9.80) {%
+    {\color{lavenderDark}\faFilePdf\ \textbf{PyMuPDF Ingestion \& Chunking}}\\[2.0pt]
+    {\fontsize{6.0}{7.0}\selectfont\normalfont Page-by-Page Extraction $\cdot$ Regex Cleaning\\[1pt]Overlapping Word Chunks ($900/150$, $\min=40$)}%
+  };
+
+  \node[colbox, text width=3.80cm, fill=cHead, draw=lavenderMedium!90] (g3_embed) at (10.45, 7.30) {%
+    {\color{lavenderDeep}\faBrain\ \textbf{Sentence Transformers Embedder}}\\[2.0pt]
+    {\fontsize{6.0}{7.0}\selectfont\normalfont \texttt{all-MiniLM-L6-v2} (384 Dimensions)\\[1pt]Unit L2 Normalization for Cosine Scoring}%
+  };
+
+  \node[colbox, text width=3.80cm, fill=cStage2!70, draw=prismGold!90] (g3_retriever) at (10.45, 4.80) {%
+    {\color{prismGold!90!black}\faSearch\ \textbf{Top-K Semantic Retriever}}\\[2.0pt]
+    {\fontsize{6.0}{7.0}\selectfont\normalfont Cosine ANN Search over Pinecone Index\\[1pt]Passage Ranking $\cdot$ Metadata Attribution}%
+  };
+
+  \node[colbox, text width=3.80cm, fill=cOutput, draw=prismBlue!70] (g3_gemini) at (10.45, 2.30) {%
+    {\color{prismNavy}\faRobot\ \textbf{Google Gemini 2.5 Flash}}\\[2.0pt]
+    {\fontsize{6.0}{7.0}\selectfont\normalfont Grounded Evidence Synthesis $\cdot$ Act Citations\\[1pt]Bidirectional Malayalam $\leftrightarrow$ English Translation}%
+  };
+
+  \draw[arrow] (g3_chunk) -- (g3_embed);
+  \draw[arrow] (g3_embed) -- (g3_retriever);
+  \draw[arrow] (g3_retriever) -- (g3_gemini);
+
+  %============================================================================
+  % COLUMN 4: STORAGE & EXTERNAL KNOWLEDGE TIER
+  %============================================================================
+  \node[group, minimum width=3.60cm, minimum height=10.60cm] (g4) at (14.80, 5.80) {};
+  \node[grouptitle, anchor=west] at (13.05, 11.10) {4. Storage \& Knowledge Tier};
+
+  \node[colbox, text width=3.30cm, fill=cInput, draw=prismSlate!70] (g4_pinecone) at (14.80, 9.80) {%
+    {\color{prismDark}\faDatabase\ \textbf{Pinecone Vector Store}}\\[2.0pt]
+    {\fontsize{6.0}{7.0}\selectfont\normalfont Managed Cloud Index (384-dim HNSW)\\[1pt]Batch Vector Upserts (100 chunks/batch)}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStage1, draw=prismTeal!80] (g4_corpus) at (14.80, 7.30) {%
+    {\color{prismTeal!90!black}\faBook\ \textbf{Indian Statutory Corpus}}\\[2.0pt]
+    {\fontsize{6.0}{7.0}\selectfont\normalfont BNS, BNSS, BSA, RTI Act, CPA 2019,\\[1pt]Indian Contract Act, Constitution of India}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStem, draw=lavenderDark!70] (g4_telemetry) at (14.80, 4.80) {%
+    {\color{lavenderDark}\faChartLine\ \textbf{Query Telemetry \& Logs}}\\[2.0pt]
+    {\fontsize{6.0}{7.0}\selectfont\normalfont Query History $\cdot$ Detected Language\\[1pt]Passage Relevance $\cdot$ Latency Records}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStage4, draw=prismBlue!70] (g4_cache) at (14.80, 2.30) {%
+    {\color{prismNavy}\faFileContract\ \textbf{Ephemeral Upload Cache}}\\[2.0pt]
+    {\fontsize{6.0}{7.0}\selectfont\normalfont Session-scoped In-memory PDF Store\\[1pt]Document QA \& Summaries (Non-indexed)}%
+  };
+
+  \draw[arrow] (g4_pinecone) -- (g4_telemetry);
+  \draw[arrow] (g4_corpus) -- (g4_pinecone);
+
+  %============================================================================
+  % INTER-COLUMN CONNECTIONS
+  %============================================================================
+  \draw[arrow, line width=1.1pt] (g1_web.east) -- (g2_fastapi.west);
+  \draw[arrow, line width=1.1pt] (g2_lang.east) to[bend left=10] (g3_embed.west);
+  \draw[arrow, line width=1.1pt] (g3_retriever.east) -- (g4_pinecone.west);
+  \draw[arrow, line width=1.1pt, dashed] (g3_gemini.west) to[bend left=20] (g1_web.east);
+
+\end{tikzpicture}
+\end{document}

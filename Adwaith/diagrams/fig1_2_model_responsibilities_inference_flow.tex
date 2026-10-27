@@ -1,0 +1,122 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usepackage{amsmath,amssymb}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shadows,shapes.geometric}
+
+% Color definitions
+\definecolor{lavenderDark}{RGB}{15, 44, 89}
+\definecolor{lavenderDeep}{RGB}{10, 28, 58}
+\definecolor{lavenderMedium}{RGB}{29, 78, 158}
+\definecolor{lavenderLight}{RGB}{240, 246, 255}
+\definecolor{lavenderBorder}{RGB}{180, 205, 237}
+\definecolor{prismNavy}{RGB}{15, 44, 89}
+\definecolor{prismBlue}{RGB}{29, 78, 158}
+\definecolor{prismTeal}{RGB}{13, 148, 136}
+\definecolor{prismGold}{RGB}{217, 119, 6}
+\definecolor{prismDark}{RGB}{15, 23, 42}
+\definecolor{cInput}{RGB}{241, 245, 249}
+\definecolor{cStem}{RGB}{224, 242, 254}
+\definecolor{cStage1}{RGB}{209, 250, 229}
+\definecolor{cStage2}{RGB}{254, 243, 199}
+\definecolor{cStage4}{RGB}{207, 250, 254}
+\definecolor{cHead}{RGB}{219, 234, 254}
+
+\begin{document}
+% Model Responsibilities & Staged Execution Flow for Power Grid Event Diagnosis
+\begin{tikzpicture}[
+    x=1cm, y=1cm, font=\sffamily,
+    modelrow/.style={rectangle, rounded corners=3.5pt, draw=lavenderDark!45,
+      line width=0.65pt, inner sep=4.5pt},
+    arrow/.style={-{Stealth[scale=0.8]}, line width=0.9pt, draw=lavenderDark!85}
+]
+
+  % Stage 1: Grid Telemetry Ingestion (y = 0.0)
+  \node[modelrow, fill=cInput!70, text width=2.40cm, align=center, minimum height=1.15cm] (m1l) at (-5.85, 0.0)
+    {{\fontsize{8.5}{10.2}\selectfont\color{lavenderDark}\faBolt\ \textbf{1. Ingestion}}\\[2pt]
+     {\fontsize{7.5}{9.0}\selectfont\texttt{pmu\_streamer}}};
+  \node[modelrow, fill=lavenderLight!85, text width=7.40cm, align=left, minimum height=1.15cm] (m1p) at (-0.55, 0.0)
+    {\fontsize{7.6}{9.0}\selectfont \textbf{Stream Validation} $\rightarrow$ Check sync timestamps \& sampling rate ($30\text{--}60$\,Hz)\\[2pt]Verify multi-bus voltage, current, and frequency telemetry completeness};
+  \node[modelrow, fill=lavenderLight!85, text width=4.10cm, align=left, minimum height=1.15cm] (m1r) at (5.60, 0.0)
+    {\fontsize{7.6}{9.0}\selectfont \textbf{Sanitized Stream}\\[2pt]{\fontsize{6.8}{8.0}\selectfont Filters telemetry desync}};
+
+  % Stage 2: Temporal Preprocessing (y = -1.55)
+  \node[modelrow, fill=cStage1!65, text width=2.40cm, align=center, minimum height=1.15cm] (m2l) at (-5.85, -1.55)
+    {{\fontsize{8.5}{10.2}\selectfont\color{lavenderDark}\faSlidersH\ \textbf{2. Transform}}\\[2pt]
+     {\fontsize{7.5}{9.0}\selectfont\texttt{window\_normalizer}}};
+  \node[modelrow, fill=lavenderLight!85, text width=7.40cm, align=left, minimum height=1.15cm] (m2p) at (-0.55, -1.55)
+    {\fontsize{7.6}{9.0}\selectfont \textbf{Z-Score Normalization} $\rightarrow$ Scale channels: $\mathbf{x}_{\text{norm}} = (\mathbf{x} - \boldsymbol{\mu}) / \boldsymbol{\sigma}$\\[2pt]Sliding window framing to temporal tensor dimensions $(T \times D)$};
+  \node[modelrow, fill=lavenderLight!85, text width=4.10cm, align=left, minimum height=1.15cm] (m2r) at (5.60, -1.55)
+    {\fontsize{7.6}{9.0}\selectfont \textbf{Framed Grid Tensor}\\[2pt]{\fontsize{6.8}{8.0}\selectfont Tensor $(B, T=128, D)$}};
+
+  % Stage 3: Variable Selection (y = -3.10)
+  \node[modelrow, fill=cStage4!65, text width=2.40cm, align=center, minimum height=1.15cm] (m3l) at (-5.85, -3.10)
+    {{\fontsize{8.5}{10.2}\selectfont\color{lavenderDark}\faFilter\ \textbf{3. Var Selection}}\\[2pt]
+     {\fontsize{7.5}{9.0}\selectfont\texttt{tft\_vsn.py}}};
+  \node[modelrow, fill=lavenderLight!85, text width=7.40cm, align=left, minimum height=1.15cm] (m3p) at (-0.55, -3.10)
+    {\fontsize{7.6}{9.0}\selectfont \textbf{Feature Gating} $\rightarrow$ Variable Selection Network assigns weights $v_j^{(t)}$\\[2pt]Isolates dominant grid signals (e.g. line current jump vs frequency swing)};
+  \node[modelrow, fill=lavenderLight!85, text width=4.10cm, align=left, minimum height=1.15cm] (m3r) at (5.60, -3.10)
+    {\fontsize{7.6}{9.0}\selectfont \textbf{Weighted Signals}\\[2pt]{\fontsize{6.8}{8.0}\selectfont Salient channel features}};
+
+  % Stage 4: Latent Learning (y = -4.65)
+  \node[modelrow, fill=cStem!75, text width=2.40cm, align=center, minimum height=1.15cm] (m4l) at (-5.85, -4.65)
+    {{\fontsize{8.5}{10.2}\selectfont\color{lavenderDark}\faBrain\ \textbf{4. Latent Learn}}\\[2pt]
+     {\fontsize{7.5}{9.0}\selectfont\texttt{tft\_vae\_engine}}};
+  \node[modelrow, fill=lavenderLight!85, text width=7.40cm, align=left, minimum height=1.15cm] (m4p) at (-0.55, -4.65)
+    {\fontsize{7.6}{9.0}\selectfont \textbf{Temporal Attention / VAE Encoding} $\rightarrow$ Multi-Head Self-Attention\\[2pt]Extracts bottleneck latent representations $\mathbf{z} \in \mathbb{R}^d$ ($d=128$)};
+  \node[modelrow, fill=lavenderLight!85, text width=4.10cm, align=left, minimum height=1.15cm] (m4r) at (5.60, -4.65)
+    {\fontsize{7.6}{9.0}\selectfont \textbf{Latent Vectors $\mathbf{z}$}\\[2pt]{\fontsize{6.8}{8.0}\selectfont TFT vs 1D-CNN vs LSTM}};
+
+  % Stage 5: Manifold Projection (y = -6.20)
+  \node[modelrow, fill=cStage2!70, text width=2.40cm, align=center, minimum height=1.15cm] (m5l) at (-5.85, -6.20)
+    {{\fontsize{8.5}{10.2}\selectfont\color{lavenderDark}\faCompress\ \textbf{5. Projection}}\\[2pt]
+     {\fontsize{7.5}{9.0}\selectfont\texttt{projection\_engine}}};
+  \node[modelrow, fill=lavenderLight!85, text width=7.40cm, align=left, minimum height=1.15cm] (m5p) at (-0.55, -6.20)
+    {\fontsize{7.6}{9.0}\selectfont \textbf{2D Dimensionality Reduction} $\rightarrow$ Non-linear manifold embedding\\[2pt]Applies UMAP / t-SNE / PCA to map $\mathbf{z} \in \mathbb{R}^d \to \mathbf{p} \in \mathbb{R}^2$};
+  \node[modelrow, fill=lavenderLight!85, text width=4.10cm, align=left, minimum height=1.15cm] (m5r) at (5.60, -6.20)
+    {\fontsize{7.6}{9.0}\selectfont \textbf{2D Coordinates}\\[2pt]{\fontsize{6.8}{8.0}\selectfont Preserves event topology}};
+
+  % Stage 6: Dashboard & DBSCAN (y = -7.75)
+  \node[modelrow, fill=cHead!75, text width=2.40cm, align=center, minimum height=1.15cm] (m6l) at (-5.85, -7.75)
+    {{\fontsize{8.5}{10.2}\selectfont\color{lavenderDark}\faChartArea\ \textbf{6. Dashboard}}\\[2pt]
+     {\fontsize{7.5}{9.0}\selectfont\texttt{visual\_analytics}}};
+  \node[modelrow, fill=lavenderLight!85, text width=7.40cm, align=left, minimum height=1.15cm] (m6p) at (-0.55, -7.75)
+    {\fontsize{7.6}{9.0}\selectfont \textbf{Visual Diagnostics \& HITL} $\rightarrow$ DBSCAN density partition ($\epsilon, \text{MinPts}$)\\[2pt]Renders 2D Latent Map, Multi-Label Tree, and Latent Comparison Chart};
+  \node[modelrow, fill=lavenderLight!85, text width=4.10cm, align=left, minimum height=1.15cm] (m6r) at (5.60, -7.75)
+    {\fontsize{7.6}{9.0}\selectfont \textbf{Diagnosis \& Feedback}\\[2pt]{\fontsize{6.8}{8.0}\selectfont Expert root-cause audit}};
+
+  % Vertical Connections
+  \draw[arrow] (m1l) -- (m2l);
+  \draw[arrow] (m2l) -- (m3l);
+  \draw[arrow] (m3l) -- (m4l);
+  \draw[arrow] (m4l) -- (m5l);
+  \draw[arrow] (m5l) -- (m6l);
+
+  \draw[arrow] (m1p) -- (m2p);
+  \draw[arrow] (m2p) -- (m3p);
+  \draw[arrow] (m3p) -- (m4p);
+  \draw[arrow] (m4p) -- (m5p);
+  \draw[arrow] (m5p) -- (m6p);
+
+  \draw[arrow] (m1r) -- (m2r);
+  \draw[arrow] (m2r) -- (m3r);
+  \draw[arrow] (m3r) -- (m4r);
+  \draw[arrow] (m4r) -- (m5r);
+  \draw[arrow] (m5r) -- (m6r);
+
+  % Horizontal Flow within rows
+  \draw[arrow] (m1l) -- (m1p);
+  \draw[arrow] (m1p) -- (m1r);
+  \draw[arrow] (m2l) -- (m2p);
+  \draw[arrow] (m2p) -- (m2r);
+  \draw[arrow] (m3l) -- (m3p);
+  \draw[arrow] (m3p) -- (m3r);
+  \draw[arrow] (m4l) -- (m4p);
+  \draw[arrow] (m4p) -- (m4r);
+  \draw[arrow] (m5l) -- (m5p);
+  \draw[arrow] (m5p) -- (m5r);
+  \draw[arrow] (m6l) -- (m6p);
+  \draw[arrow] (m6p) -- (m6r);
+
+\end{tikzpicture}
+\end{document}

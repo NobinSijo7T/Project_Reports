@@ -1,0 +1,68 @@
+%==================================symbol.tex================================
+% List of Symbols and Abbreviations
+\chapter*{List of Symbols and Abbreviations}
+\addcontentsline{toc}{chapter}{List of Symbols and Abbreviations}%
+\vspace{-25pt}
+
+\begin{spacing}{1.02}
+\noindent \textbf{Abbreviations}
+\vspace{4pt}
+
+\noindent\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}p{2.8cm} p{11.2cm}@{}}
+\textbf{SNN} & Spiking Neural Network \\
+\textbf{CNN} & Convolutional Neural Network \\
+\textbf{ANN} & Artificial Neural Network \\
+\textbf{PLIF} & Parametric Leaky Integrate-and-Fire \\
+\textbf{LIF} & Leaky Integrate-and-Fire \\
+\textbf{BPTT} & Backpropagation Through Time \\
+\textbf{YOLO} & You Only Look Once \\
+\textbf{MOT} & Multi-Object Tracking \\
+\textbf{Re-ID} & Person Re-Identification \\
+\textbf{MTMCT} & Multi-Target Multi-Camera Tracking \\
+\textbf{IoU} & Intersection over Union \\
+\textbf{CLAHE} & Contrast Limited Adaptive Histogram Equalization \\
+\textbf{OSNet} & Omni-Scale Network \\
+\textbf{AIN} & Attentive Instance Normalization \\
+\textbf{AUC-ROC} & Area Under Receiver Operating Characteristic Curve \\
+\textbf{FPS} & Frames Per Second \\
+\textbf{GPU} & Graphics Processing Unit \\
+\textbf{GMM} & Gaussian Mixture Model \\
+\textbf{GFLOPs} & Giga Floating-Point Operations per Second \\
+\textbf{DFD} & Data Flow Diagram \\
+\textbf{SRS} & System Requirements Specification \\
+\textbf{mAP} & Mean Average Precision \\
+\end{tabular*}
+
+\vspace{6pt}
+\noindent \textbf{Mathematical Notations}
+\nopagebreak[4]
+\vspace{4pt}
+\nopagebreak[4]
+
+\noindent\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}p{2.8cm} p{11.2cm}@{}}
+$V[t]$ & Membrane potential of the spiking neuron at discrete time step $t$ \\
+$\tau$ & Membrane potential decay time constant in PLIF neuron dynamics \\
+$V_{\text{th}}$ & Fixed firing threshold potential for action potential emission \\
+$\Theta(\cdot)$ & Heaviside unit step function generating discrete spike activity \\
+$S[t]$ & Binary spike emission state at time $t$ ($S[t] \in \{0, 1\}$) \\
+$\sigma'(x)$ & Continuous surrogate gradient derivative used during backpropagation \\
+$z_t$ & Projected 256-dimensional spatial feature vector at frame step $t$ \\
+$S_f(t), S_s(t)$ & Discrete spike trains generated from fast and slow temporal pathways \\
+$g_t$ & Learnable adaptive gating coefficient fusing dual-timescale pathways \\
+$h_t$ & Fused temporal spiking feature representation at time step $t$ \\
+$\alpha_t$ & Normalized temporal attention weight allocated to frame step $t$ \\
+$h_{\text{video}}$ & Final unified temporal feature representation for video clip \\
+$\theta_a$ & Operational decision threshold for anomaly triggering ($\theta_a = 0.521$) \\
+$\theta_s$ & Cosine similarity threshold for cross-camera Re-ID match ($\theta_s = 0.75$) \\
+$\mathbf{c}_q$ & Centralized 512-dimensional query person identity vector \\
+$\mathbf{c}_g$ & Centralized 512-dimensional gallery tracklet identity vector \\
+$\text{sim}(\mathbf{c}_q, \mathbf{c}_g)$ & Cosine similarity score between query and gallery identity embeddings \\
+$N^*$ & Number of valid candidate frames retained after Mahalanobis outlier filtering \\
+$D_i$ & Person detection candidate tuple $(x_1, y_1, x_2, y_2, c_i)$ with bounding box and score \\
+$\mathcal{L}_{\text{video}}$ & Class-weighted focal loss evaluated on video-level anomaly classification \\
+$\mathcal{L}_{\text{frame}}$ & Frame-level focal loss supervising temporal anomaly predictions \\
+\end{tabular*}
+\end{spacing}
+
+\thispagestyle{plain}
+%=======================================================================

@@ -1,0 +1,19 @@
+%============================= abstract.tex================================
+\chapter*{Abstract}%
+\addcontentsline{toc}{chapter}{Abstract}%
+\vspace{-25pt}
+
+\begin{spacing}{1.22}
+\noindent Automatic diagnosis of ear diseases using otoscopic images is essential for improving early detection and accessibility to healthcare; however, existing methods suffer from limited datasets, poor generalization, lack of explainability, and high computational cost. In this work, a robust deep learning framework is proposed for multi-class ear disease detection using a merged dataset of otoscopic and eardrum images across five classes: \textbf{Acute Otitis Media (AOM)}, \textbf{Chronic Suppurative Otitis Media (CSOM)}, \textbf{Earwax}, \textbf{Normal}, and \textbf{Tympanosclerosis}.
+
+\vspace{8pt}
+
+\noindent Preprocessing techniques including \textbf{Contrast Limited Adaptive Histogram Equalization (CLAHE)}, resizing to $224 \times 224$, and channel normalization are applied to enhance image quality, local contrast, and morphological consistency. To enhance model generalization against clinical domain shift, \textbf{online data augmentation}, \textbf{controlled MixUp augmentation}, and \textbf{adaptive curriculum learning} are incorporated during training. The proposed framework utilizes \textbf{CoMViT}, an efficient Vision Transformer architecture designed to extract both local convolutional features and global self-attention contextual dependencies from medical images for multi-class ear disease classification.
+
+\vspace{8pt}
+
+\noindent The model is trained specifically on otoscopic images to learn disease-related visual patterns and is comprehensively evaluated using standard classification metrics including accuracy, precision, recall, macro F1-score, and ROC-AUC. Furthermore, \textbf{Grad-CAM++} is employed to provide high-resolution visual explanations of the model's predictions and to rigorously assess whether the network focuses on clinically relevant regions of the tympanic membrane. The proposed framework delivers an accurate, efficient, and interpretable paradigm for automated ear disease detection, establishing a solid foundation for real-time clinical decision support and mobile-based healthcare screening systems.
+\end{spacing}
+
+\thispagestyle{plain}
+%=======================================================================

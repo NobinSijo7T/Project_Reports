@@ -1,0 +1,175 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usepackage{adjustbox}
+\usepackage{amsmath,amssymb}
+\usepackage{fontawesome5}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shadows,shapes.geometric}
+
+% Lavender & Diagnostic Color Palette
+\definecolor{lavenderDark}{RGB}{15, 44, 89}
+\definecolor{lavenderDeep}{RGB}{10, 28, 58}
+\definecolor{lavenderMedium}{RGB}{29, 78, 158}
+\definecolor{lavenderLight}{RGB}{240, 246, 255}
+\definecolor{lavenderBorder}{RGB}{180, 205, 237}
+\definecolor{lavenderAccent}{RGB}{2, 132, 199}
+\definecolor{prismNavy}{RGB}{15, 44, 89}
+\definecolor{prismBlue}{RGB}{29, 78, 158}
+\definecolor{prismTeal}{RGB}{13, 148, 136}
+\definecolor{prismMint}{RGB}{236, 253, 245}
+\definecolor{prismGold}{RGB}{217, 119, 6}
+\definecolor{prismDark}{RGB}{15, 23, 42}
+\definecolor{prismLight}{RGB}{248, 250, 252}
+\definecolor{cInput}{RGB}{241, 245, 249}
+\definecolor{cStem}{RGB}{224, 242, 254}
+\definecolor{cStage1}{RGB}{209, 250, 229}
+\definecolor{cStage2}{RGB}{254, 243, 199}
+\definecolor{cStage3}{RGB}{254, 226, 226}
+\definecolor{cStage4}{RGB}{207, 250, 254}
+\definecolor{cHead}{RGB}{219, 234, 254}
+\definecolor{cOutput}{RGB}{255, 228, 230}
+
+\begin{document}
+\begin{tikzpicture}[
+  >=Latex,
+  stagebox/.style={
+    draw=lavenderDark!85,
+    rounded corners=7pt,
+    minimum height=5.60cm,
+    text width=2.72cm,
+    align=center,
+    inner sep=5pt,
+    line width=1.1pt,
+    fill=white,
+    drop shadow={shadow xshift=1.5pt, shadow yshift=-1.8pt, opacity=0.16}
+  },
+  pipearrow/.style={
+    ->,
+    draw=lavenderDark,
+    line width=1.8pt,
+    arrows={-Latex[length=3.2mm, width=2.4mm]}
+  }
+]
+
+  % Stage 1: Ingestion
+  \node[stagebox, fill=cInput!65] (ingest) {
+    \vspace{3pt}
+    {\fontsize{16}{18}\selectfont\textcolor{lavenderDark}{\faBolt}}\\[4pt]
+    {\fontsize{10.5}{12.5}\selectfont\textbf{1. Signal Ingestion}}\\[2pt]
+    {\fontsize{7.2}{8.5}\selectfont\textcolor{prismTeal}{\textbf{[PMU / SCADA Streams]}}}\\[5pt]
+    \rule{2.4cm}{0.6pt}\\[6pt]
+    \begin{minipage}{2.55cm}
+      \fontsize{8.2}{10.2}\selectfont
+      $\bullet$ Multi-bus telemetry\\
+      $\bullet$ Voltage \& Current\\
+      $\bullet$ Frequency \& Angles\\
+      $\bullet$ Active / Reactive P/Q\\
+      $\bullet$ High-rate sync streams\\
+      $\bullet$ Temporal windowing
+    \end{minipage}
+    \vspace{4pt}
+  };
+
+  % Stage 2: Preprocessing
+  \node[stagebox, fill=cStage1!60, right=0.22cm of ingest] (preprocess) {
+    \vspace{3pt}
+    {\fontsize{16}{18}\selectfont\textcolor{prismTeal}{\faSlidersH}}\\[4pt]
+    {\fontsize{10.5}{12.5}\selectfont\textbf{2. Preprocessing}}\\[2pt]
+    {\fontsize{7.2}{8.5}\selectfont\textcolor{prismTeal}{\textbf{[Normalization \& Prep]}}}\\[5pt]
+    \rule{2.4cm}{0.6pt}\\[6pt]
+    \begin{minipage}{2.55cm}
+      \fontsize{8.2}{10.2}\selectfont
+      $\bullet$ Missing data impute\\
+      $\bullet$ Timestamp alignment\\
+      $\bullet$ Z-score scale ($\mu, \sigma$)\\
+      $\bullet$ Sliding window slicing\\
+      $\bullet$ Outlier suppression\\
+      $\bullet$ Batch tensor framing
+    \end{minipage}
+    \vspace{4pt}
+  };
+
+  % Stage 3: Latent Representation Learning
+  \node[stagebox, fill=cStem!70, right=0.22cm of preprocess] (feature) {
+    \vspace{3pt}
+    {\fontsize{16}{18}\selectfont\textcolor{prismBlue}{\faBrain}}\\[4pt]
+    {\fontsize{10.5}{12.5}\selectfont\textbf{3. Latent Learning}}\\[2pt]
+    {\fontsize{7.2}{8.5}\selectfont\textcolor{prismTeal}{\textbf{[TFT \& VAE Baselines]}}}\\[5pt]
+    \rule{2.4cm}{0.6pt}\\[6pt]
+    \begin{minipage}{2.55cm}
+      \fontsize{8.2}{10.2}\selectfont
+      $\bullet$ \textbf{TFT} Self-Attention\\
+      $\bullet$ Var Selection Net\\
+      $\bullet$ \textbf{1D-CNN VAE} Baseline\\
+      $\bullet$ \textbf{VAE-LSTM} Temporal\\
+      $\bullet$ Latent vector $\mathbf{z}\in\mathbb{R}^d$\\
+      $\bullet$ Bottleneck encoder
+    \end{minipage}
+    \vspace{4pt}
+  };
+
+  % Stage 4: Dimensionality Reduction
+  \node[stagebox, fill=cStage2!65, right=0.22cm of feature] (explain) {
+    \vspace{3pt}
+    {\fontsize{16}{18}\selectfont\textcolor{prismGold!90!black}{\faCompress}}\\[4pt]
+    {\fontsize{10.5}{12.5}\selectfont\textbf{4. 2D Projection}}\\[2pt]
+    {\fontsize{7.2}{8.5}\selectfont\textcolor{prismGold!90!black}{\textbf{[Manifold Embedding]}}}\\[5pt]
+    \rule{2.4cm}{0.6pt}\\[6pt]
+    \begin{minipage}{2.55cm}
+      \fontsize{8.2}{10.2}\selectfont
+      $\bullet$ \textbf{UMAP} fuzzy sets\\
+      $\bullet$ \textbf{t-SNE} divergence\\
+      $\bullet$ \textbf{PCA} linear variance\\
+      $\bullet$ 2D manifold $\Phi(\mathbf{z})$\\
+      $\bullet$ Preserves neighbors\\
+      $\bullet$ Event topology map
+    \end{minipage}
+    \vspace{4pt}
+  };
+
+  % Stage 5: Density Clustering
+  \node[stagebox, fill=cHead!65, right=0.22cm of explain] (classify) {
+    \vspace{3pt}
+    {\fontsize{16}{18}\selectfont\textcolor{lavenderMedium}{\faProjectDiagram}}\\[4pt]
+    {\fontsize{10.5}{12.5}\selectfont\textbf{5. Clustering}}\\[2pt]
+    {\fontsize{7.2}{8.5}\selectfont\textcolor{lavenderMedium}{\textbf{[DBSCAN \& Metrics]}}}\\[5pt]
+    \rule{2.4cm}{0.6pt}\\[6pt]
+    \begin{minipage}{2.55cm}
+      \fontsize{8.2}{10.2}\selectfont
+      $\bullet$ \textbf{DBSCAN} density ($\epsilon$)\\
+      $\bullet$ Noise filtering\\
+      $\bullet$ Silhouette metric\\
+      $\bullet$ Davies-Bouldin ($DB$)\\
+      $\bullet$ Calinski-Harabasz\\
+      $\bullet$ Relative validation
+    \end{minipage}
+    \vspace{4pt}
+  };
+
+  % Stage 6: Visual Analytics Dashboard
+  \node[stagebox, fill=cOutput!70, right=0.22cm of classify] (delivery) {
+    \vspace{3pt}
+    {\fontsize{16}{18}\selectfont\textcolor{lavenderDark}{\faChartArea}}\\[4pt]
+    {\fontsize{10.5}{12.5}\selectfont\textbf{6. Visual Analytics}}\\[2pt]
+    {\fontsize{7.2}{8.5}\selectfont\textcolor{lavenderDark}{\textbf{[Dashboard \& HITL]}}}\\[5pt]
+    \rule{2.4cm}{0.6pt}\\[6pt]
+    \begin{minipage}{2.55cm}
+      \fontsize{8.2}{10.2}\selectfont
+      $\bullet$ 2D Latent Map\\
+      $\bullet$ Multi-label tree\\
+      $\bullet$ Vector comparison\\
+      $\bullet$ Human-in-the-Loop\\
+      $\bullet$ Expert audit feedback\\
+      $\bullet$ Event diagnosis
+    \end{minipage}
+    \vspace{4pt}
+  };
+
+  % Connecting arrows
+  \draw[pipearrow] (ingest) -- (preprocess);
+  \draw[pipearrow] (preprocess) -- (feature);
+  \draw[pipearrow] (feature) -- (explain);
+  \draw[pipearrow] (explain) -- (classify);
+  \draw[pipearrow] (classify) -- (delivery);
+
+\end{tikzpicture}
+\end{document}

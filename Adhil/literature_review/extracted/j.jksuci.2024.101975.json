@@ -1,0 +1,728 @@
+{
+  "source_file": "j.jksuci.2024.101975.pdf",
+  "num_pages": 14,
+  "full_text": "Journal of King Saud University - Computer and Information Sciences 36 (2024) 101975\nAvailable online 17 February 2024 1319-1578/© 2024 The Author(s). Published by Elsevier B.V. on behalf of King Saud University. This is an open access article under the CC BY license (http://creativecommons.org/licenses/by/4.0/).\nA novel method for effective intrusion detection based on convolutional  speaking neural networks\nYing Xie a, Hong Chen b,*\na Department of Computer Engineering, Shanxi Polytechnic College, Taiyuan 030006, China  b College of Engineering and Management, Pingxiang University, Pingxiang 337055, China\nA R T I C L E I N F O\nKeywords:  Artificial intelligence  Spiking neural network  CNN  Intrusion detection  Cyber attacks  Deep learning\nA B S T R A C T\nThese days, most people can’t imagine their life without their networks. People rely more and more on networks  as new technologies like 5G and the Internet of Things proliferate, and networks are becoming larger and more  complicated by the day. Consequently, the enormous networked society is under increasing danger from cyber  attacks, which are also growing in number, sophistication, and variety. Users’ private data can end up in the  wrong hands. Data communicated via a network might be compromised in some way. It is also possible to target  the computer infrastructure that is linked to the network. Thus, NIDS is crucial in ensuring that contemporary  society’s network communication environment is secure and dependable. This work proposes a detection model  that is both lightweight and effective. This model is able to keep its high detection accuracy by combining the  benefits of SNN and CNN with logical algorithm design. On top of that, it can bring attention to clear strengths in  relation to computing efficiency and power usage. The suggested model was tested against a number of state-of-  the-art models using an extensive and integrated set of benchmarks. With a 23 % improvement in detection  accuracy (AD), a 19 % improvement in delay, and a 28 % improvement in consumption energy, the suggested  technique outperformed the Spiking DFR + MLP and Spike-DHS methods in the simulations.\n1. Introduction\nOne of the most important components of keeping computer systems  and information networks secure is intrusion detection (Bul’ajoul et al.,  2018; Zarzoor et al., 2023). The need for innovative and effective so­ lutions in the area of security intrusion detection and prevention is  growing as a result of the advancement of information and communi­ cation technology (Ahmad et al., 2023; Laghrissi et al., 2021; Lightbody  et al., 2022). One of the most cutting-edge and effective approaches in  this area for intrusion detection is the application of convolutional  neural networks (Fomin et al., 2023; Sattari et al., 2021).\nBecause of their bio-inspired design, Speaking Neural Networks  (SNNs) have significant theoretical implications (Yu et al., 2021).  Compared to traditional deep neural networks, they behave more like  biological neurons (DNNs). Similar to real neurons, neurons communi­ cate by spike waveforms and function asynchronously, that is, produc­ ing output spikes before all input neurons have spiked (Yamazaki et al.,  2022). The key reason SNNs are practically promising is that they have a  tremendous potential to achieve high energy efficiency, which is crucial\nfor big and deep neural network applications that are used in mobile and  Internet of Things applications (Zhou et al., 2021; Shen et al., 2022). For  high-speed applications, the asynchronous working principle may lead  to minimal latency, which is appealing (Qi et al., 2022). Convolutional  neural networks have shown to be an effective tool for intrusion  detection in systems and networks because they can extract significant  features from input data and are especially well-suited for processing  images and real-world data (Zhang et al., 2023; Cao et al., 2021).\nOver the past ten years, artificial neural networks (ANNs) have  developed enormously, from multi-layer perceptrons (MLPs) in the first  generation to deep neural networks (DNNs) in the second. Despite this  significant progress, ANNs are still inferior to biological neural networks  in terms of energy efficiency and online learning (Sun et al., 2020).  Power consumption of traditional deep learning models has been the  target of numerous attempts to minimize it. In order to find more  compact networks with comparable performance but fewer parameters  and less complexity than the original network, many different strategies  have been devised. These methods consist of knowledge distillation (Sun  et al., 2019), quantization (Sun et al., 2018), and pruning (Qu et al.,\nPeer review under responsibility of King Saud University.\n* Corresponding author.  E-mail addresses: xying6312@sina.com (Y. Xie), stjung@163.com (H. Chen).\nHOSTED BY Contents lists available at ScienceDirect\nJournal of King Saud University - Computer and\nInformation Sciences\njournal homepage: www.sciencedirect.com\nhttps://doi.org/10.1016/j.jksuci.2024.101975  Received 15 September 2023; Received in revised form 8 February 2024; Accepted 14 February 2024\n\n--- Page Break ---\n\nJournal of King Saud University - Computer and Information Sciences 36 (2024) 101975\n2\n2022). But none of these fixes the underlying issue rather, they merely  patch over the original.\nDespite having a neural network foundation, artificial neural net­ works (ANNs) and deep neural networks (DNNs) are fundamentally  different from biological neural networks in terms of their architecture,  neural computations, and learning principles (Li et al., 2023). The most  appropriate model for the biological neuron is the one that is utilized in  SNNs; this model is closest to the biological neuron mechanism (Li et al.,  2023). In order to facilitate event-driven calculations, the SNN uses the  pulse neurons to collect the input to the membrane voltage. Once the  threshold is achieved, the pulse is then released. Higher levels of energy  efficiency can be achieved by SNNs because of the sparse nature of pulse  events and the event-driven computing method used to process them  (Zhang et al., 2021). SNNs can handle sparsity present in biological  systems and are very compatible with temporal coding since they share  functional traits with biological neural networks (Liu et al., 2023; Zhou  et al., 2022a,b).\nResearchers are actively investigating potential utilization patterns  for SNNs, despite the fact that they are not as common as DNNs in  application settings at this time (Zheng et al., 2023). SNNs are already as  accurate as DNNs in certain tasks (Zhang et al., 2023), and they usually  need a lot less energy to run.\nIn recent years, the use of deep learning (DL) techniques has  attracted considerable attention in the field of intrusion detection due to  their potential to detect complex patterns from large amounts of  network data. However, traditional DL models, such as convolutional  neural networks (CNN) and recurrent neural networks (RNN), are often  resource intensive and may not be suitable for environments with  limited computational resources and energy constraints. To address  these challenges, this paper proposes an innovative approach that uses  Convolutional Spiking Neural Networks (CSNN) for intrusion detection.  Unlike traditional DL models, CSNNs offer inherent advantages,  including distributed computing and temporal dynamics, which make  them suitable for real-time processing and resource-constrained envi­ ronments. While existing research has explored the potential of SNNs in  various applications, including pattern recognition and signal process­ ing, their application in intrusion detection remains relatively unknown.  By combining the strengths of SNN and CNN, the proposed model aims  to provide a lightweight yet effective solution for intrusion detection,  capable of being efficient even in environments with limited computing  resources and energy resources.\nThe motivation for choosing CSNN over traditional methods lies in  its ability to mimic the performance of biological neural networks and  improve accuracy and efficiency in intrusion detection, which enables  event-driven computing. By using convolutional neural networks, which  are suitable for extracting important features from complex data, the  main goal of this research is to improve the level of security in systems  and networks through the development and improvement of an intru­ sion detection model using convolutional neural networks, as well as  increasing the ability Detecting intrusive patterns in data. The main  contribution of the authors in this research is as follows:\n• The data-triggered spike information is encoded using a time-value  technique. Complex spike trigger patterns can be mapped to a  uniquely determined value by employing this encoding. Without  making the model data transfer procedure more difficult, informa­ tion can be given to the processing processes in a more compre­ hensive way.   • A loss function that fits the suggested model is customized. It can  offer supervision to make sure the model approximates the correct  result in multiple dimensions, ranging from measures like the accu­ racy of the present classification to the ranking of the correct clas­ sification in the inferred results.   • A brand-new intrusion detection model architecture is put out and  put into practice, based on convolutional and spiking networks. Ex­ periments show that the model can continue to secure the target\ndevice under difficult circumstances and can adapt more effectively  to contexts with limited resources.\nThis paper’s remaining sections are arranged as follows. Section 2  offers a synopsis of the relevant material. Section 3 outlines the solution  we have in mind. Section 4 examines and assesses the performance of  the models that were adopted. The experiment results are compiled in  Section 5, along with workable ideas for further study directions.\n2. Related work\nSpiking neural networks (SNNs) have advanced significantly in terms  of efficiency and performance over the last few years, but their devel­ opment is still trailing behind that of traditional artificial neural net­ works (ANNs) due to their peculiar working pattern, which makes it  challenging to train high-performance SNNs with low latency (Wu et al.,  2020).  Spiking Neural Networks uses computationally efficient, biologically  realistic models of neurons to bridge the gap between neuroscience and  machine learning. Spiking neural networks are extremely adaptive to  time coding and are able to capture the scatter observed in biology due  to their functional resemblance to the biological neural network. Re­ searchers have provided a thorough analysis of biological neuron hy­ potheses in (Guo et al., 2023). Additionally, they have evaluated several  spike-based neuron models that have been researched in the field of  neuroscience. After that, they discussed the spiking neural network  applications that are now being used in the fields of robotics and com­ puter vision. Finally, they evaluated the spiking neuron frameworks that  have been developed to facilitate the implementation of spiking neural  networks.\nNeural networks (SNN) have garnered increasing attention in the  past few years for categorization applications. Spiking neural networks  (SNNs) are a family of neural networks that, in contrast to typical neural  networks, mimic the dynamics of biological neurons, where data is  represented as spikes or action potentials. Driven by these benefits,  scientists have suggested a method in (Xu et al., 2023) to use SNN to  identify a Wi-Fi frame and show that SNN is feasible for Wi-Fi detection.  Pre-processing to convert the gathered signals and SNN to identify Wi-Fi  frames make up this method. The usefulness of spiking neural networks  (SNN) for classifying N-BaIoT data sets is investigated in study (Zhao  et al., 2023). The spatiotemporal feature extraction capability of con­ volutional SNNs has been utilized in (Liu et al., 2023). Shallow con­ volutional SNN outperforms spatio-temporal feature extraction  techniques like C3D, ConvLstm, and Conv and Cascade LSTM, according  to the analysis that was collected. Furthermore, a novel deep architec­ ture is showcased to address practical categorization and activity  recognition assignments. Our suggested hybrid training approach is  used to train this model. In the publication (Mi et al., 2022), it was  suggested to identify intrusions using a fusion method of multi-  convolutional neural networks (multi-CNN). The feature data are split  into four sections after the correlation, and based on the one-  dimensional feature data, these sections are then transformed into  grayscale graphs. The authors (Lyu et al., 2023) presented two deep  learning-based models for classifying binary and multi-ticlass network  threats. They employ a convolutional neural network architecture to  create our models. Their models surpass comparable models in the  literature in terms of accuracy and recall, according to the results of their  studies. The study (Xuemin et al., 2023) proposes a CNN intrusion  detection algorithm based on attention.\nWhen object detection techniques are utilized in real-time systems,  the accuracy of deep learning is decreased since it takes longer for  detected signals from IoT devices to reach the application layer. In order  to address these problems, a model-view-controller (MVC) architecture  together with a client-to-client file transfer protocol (C2CFTP) that uti­ lizes a Binarized Speaking Neural Network (BS4NN) are suggested as a  way to construct an Internet of Things smart home appliance control\nY. Xie and H. Chen\n\n--- Page Break ---\n\nJournal of King Saud University - Computer and Information Sciences 36 (2024) 101975\n3\nsystem (Chen et al., 2022; Liao et al., 2022; Ding et al., 2021). The  Client-to-Client Model Viewing (C2CMVC) architecture-based object  identification algorithm in this smart home automation system allows  customers to remotely monitor their houses. This Internet of Things  (IoT) sensor device uses the bottom layer of a laptop or personal com­ puter (PC) to gather data from the device when a camera is connected to  it.\nFurthermore, CNNs are frequently used with other models, including  (Zhang et al., 2023; Liu et al., 2023; Wang et al., 2023; Cao et al., 2020),  in order to extract additional features from the da-taset. The drawback  of these models is that they are far more complex, which makes them  unsuitable for effective, real-time data processing. The majority of  recent SNN model research has been in computer vision applications,  such as image classification (Zhao et al., n.d.; Chen and Gao, 2023; Liu  et al., 2022; Qiao et al., 2023) and object recognition (Lu and Osorio,  2018; Liu et al., 2023; Wang et al., 2023). Intrusion detection has  received less attention. Therefore, it is crucial for future researchers to  adopt SNNs for intrusion detection.\nThe non-leaky integrate neurons fire (NLIF) model was utilized in the  SNN to choose the best input samples in order to decrease latency and  device power consumption. They take into consideration a general class  of single-spike temporal-coded integrand-fire neurons in order to study  the input–output expressions of both leaky and nonleaky neurons (Li  et al., 2022; Zhao et al., 2023; Cao et al., 2023). For research to be useful,  it must be integrated into industrial processes. Even though several  studies have demonstrated the efficiency of SNNs (Tang et al., 2023;  Chen et al., 2022; Wu et al., 2023), much work remains to be done to  fully capitalize on this efficient performance. By contrast, artificial  neural networks come at a tremendous expense in terms of processing  power, memory performance, and energy consumption (Cao et al.,  2024).  With weights implemented in RRAM, the authors suggest a hybrid  SNN-CNN network to improve TSR’s computing and storage efficiency  (Xie et al., 2022). The SNN-CNN hybrid network achieves comparable  accuracy with 81.55 % less power consumption and 69.21 % less  weighted parameters when compared to the latest CNN techniques. With  the Differentiation on Spike Representation (DSR) approach, low latency  and high performance similar to ANNs can be attained (Huang et al.,  2024). The study demonstrates that DSR can deliver low latency state-of-  the-art SNN performance on both static and neuromorphic datasets. An  ultra-low-power radio frequency fingerprinting identification (RFFI)  system is constructed using SNNs (Yue et al., 2023). 64 % less power is  used by the SNN-based RFFI system than by ANNs with similar accuracy.  It is suggested that quick and memory-efficient training of Activation  Consistently Coupled ANN-SNNs (AC2AS) is possible (Zhao et al., 2022).  By examining the variations between analog neurons and spiking neu­ rons, an adaptive threshold method has been developed to improve the  balance between the weight and threshold of SNNs (Xue et al., 2023).  This technique obtained state-of-the-art results on CIFAR100 and out­ performed most of the recently suggested SNNs in terms of accuracy,  accuracy loss, and network latency on CIFAR10. A Dynamic Threshold  Integrate and Fire (DTIF) model is suggested to be used, which takes use  of the differences in biological neurons’ thresholds to boost spike ac­ tivity (Cao et al., 2022). At every simulation time step, the threshold is  dynamically changed to increase spike activity and decrease latency.  The results of these investigations also shed light on potential design  approaches for energy-efficient models (Zhao et al., n.d.; Liu et al., 2022;  Chen et al., 2022).\nWhile previous studies have explored the use of neural networks,  including CNNs, in intrusion detection, there is a gap in research  regarding the efficiency and adaptability of these models in resource-  constrained environments. This gap motivates our research on Con­ volutional Speaking Neural Networks (CSNN) as a potential solution to  the challenges faced by traditional DL models in intrusion detection.  Using the strengths of convolutional neural networks and SPEC, our  proposed approach aims to address these limitations while providing a\nlightweight and efficient intrusion detection solution capable of per­ forming effectively in challenging real-world scenarios. By including a  more complete literature review, this paper provides a stronger foun­ dation for the proposed CSNN approach and emphasizes its novelty in  addressing challenges in intrusion detection.\n3. Proposed scheme\nThis research presents a novel intrusion detection model that utilizes  convolutional spiking neural networks, which are both lightweight and  efficient. In order to optimize processing performance, it is necessary to  leverage the advantages of both spiking neural networks and convolu­ tional neural networks when developing the processing framework. The  model’s complexity has been minimized to ensure that the final version  can reliably and efficiently perform its intended function, even in  resource-constrained contexts. The overall design of the model was  achieved by striking a compromise between the requirement for  simplicity and efficiency, and the requirement for accuracy.\n3.1. Data pre-processing\nThe data samples utilized in the studies were derived from CSE-CIC-  IDS2018 (Zhang et al., 2022) and CIC-DDoS2019 (Zhao et al., n.d.)  datasets, respectively. Fig. 1 illustrates the procedure for constructing  the experimental samples. Due to the limitations of both software and  hardware in handling all exceptional cases, it is necessary to generate a  few erroneous field values. In order to address this issue, data entries  that include erroneous field values are eliminated from the dataset.  Subsequently, eliminate fields that are not pertinent to the particular  categorization, such as source port, source IP address, date, etc. To  accomplish a greater decrease in computational expenses and intricacy,\nFig. 1. Preparation of data.\nY. Xie and H. Chen\n\n--- Page Break ---\n\nJournal of King Saud University - Computer and Information Sciences 36 (2024) 101975\n4\nthe SelectKBest approach in the Sklearn library was utilized to filter out  64 features. Subsequently, it is important to formulate suitable coding  guidelines  by a  meticulous examination  of  each  individual  characteristic.\nEach feature field that undergoes information extraction will be  allocated 16 bits of space to store the results. Every characteristic is  depicted as a binary matrix arranged in a 4 ⋅ 4 format. A total of 64  features are chosen, organized in an 8 ⋅ 8 arrangement, and will be  depicted by a 32 ⋅ 32 matrix.\nCertain fields have a lower number of instances where values are  directly encoded using one-hot coding. For fields with integer discrete  values within a moderate range, the values are encoded in binary. For  fields with discrete values that span a wide range, the values are first  sorted in ascending order, and then the original value is replaced with its  corresponding sorted number. This can be understood as the process of  converting these values and harmonizing their discrepancies. Subse­ quently, an examination of outliers is conducted on these fields, which  encompass a broad spectrum of discrete and continuous values. The  outliers are substituted with the closest normal values. Subsequently,  each of these fields will be proportionally adjusted to a range of values  between 0 and 100. Subsequently, the scaled values were transformed  into a one-hot encoded representation. Put simply, when the value  crosses a specific threshold, the binary digit that corresponds to that  threshold switches to 1, while all other digits remain as zeros.\nFollowing these procedures, the network traffic data will be trans­ formed into a binary matrix consisting of entries that are either 0 or 1. It  involves performing a spike computation procedure on textual infor­ mation to obtain their associated spikes. In order to enable organized  storage and easy visual examination, the values in each matrix elements  will be consistently scaled by a factor of 255. Subsequently, each matrix  will be transformed into a greyscale image. For the tests, we utilized two  datasets: CSE-CIC-IDS2018 and CIC-DDoS2019. The former consisted of  6 different data kinds, while the latter contained 10 data types. To\nensure clarity and optimize efficiency, 5000 samples of each kind will be  chosen for following experiments in the same order as they occur in the  dataset.\n3.2. Detection model\nFig. 2 displays an illustrative design of the convolutional spiking  neural network suggested, featuring two convolutional spiking layers.  To improve the desired recognition task, it is important to optimize the  architectural aspects of a network, such as the number of layers and  receptive field sizes, as well as the learning parameters.\nThe convolutional spiking layer serves as the central functional layer  of the model, encompassing both convolutional processing and spike  triggering (Zhao et al., n.d.). Equation (1) demonstrates the rationale  behind the convolution computation.\nx = ρ(L ⋅ y + a) (1)\nIn this context, y represents the input values, namely a subset of the  matrix. L refers to the convolution kernel. The symbol ⋅ indicates the  process of multiplying corresponding components of two matrices and  summing up the results. The variable a represents bias and can be  assigned a value of 0 if it is not needed. ρ is the activation function used  in the aforementioned calculation, such as sigmoid, however it can also  be a null operation. The internal potential of the ith neuron is updated at  each time step according to the following procedure:\nWj(p) = Wj(p −1) + x (2)\nThe terms Wj(p) and Wj(p −1) represent the internal potentials of the  ith neuron at time t and time p −1, respectively. A spike is produced  when the value of Wj surpasses its threshold, wthr, and Wj is subsequently  reset.\nWj(p) = Wj(p) −wthr)*βandCj(p) = 1, ifWj(p) > wthr (3)\nFig. 2.\nY. Xie and H. Chen\n\n--- Page Break ---\n\nJournal of King Saud University - Computer and Information Sciences 36 (2024) 101975\n5\nHere, the attenuation factor is shown by β ∈(1, 0). In other words,  upon triggering a spike, the potential of Vi is reset to a value equal to the  product of the exceeded portion of the spike threshold and β. Cj(p) de­ notes the ith neuron’s spike triggering at time t (Wu et al., 2022; Jiang  and Li, 2022). By default, it is set to 0, however a value of 1 indicates  that it is triggered.\nFig. 2 shows a sample convolutional spiking neural network archi­ tecture. (a) A summary of the functional layers in the model and their  arrangement; (b) An explanation of the computational process for the  convolutional spiking layer. The example shows the spiking patterns  displayed by the neurons during computation; (c) shows the convolution  kernel size of 3*3, the step size of 1, the spiking threshold of 1.2, and the  time window of 3. The data that is being processed can be categorized  using these patterns.\nThe signal from the final convolutional spiking layer will be encoded  using the “time-value” method, where spikes that occur earlier will be  assigned a higher value than spikes that occur later. The precise regu­ lations are provided in Algorithm 1.\nAlgorithm 1. (For the last convolutional spiking layer, time-value encoding)\nInput: Quantity of values → m  Output: a set of values that are utilized to encode time values\n1 m←numberbiggerthanzero  2 list_m ← []  3 Nt←1  4 for j ← 1 to n do:  5 list_m.append(Nt)  6 Nt←2*Nt  7 end for  8 list_m. reverse()  9 list_reslut ← []  10 for item in list_m do:  11 list_reslut.append(item / sum(list_m))  12 end for  13 return list_reslut\nThe following equation illustrates the basic reasoning behind the  calculations:\n⎧ ⎪ ⎨\n⎪ ⎩\nNt = 2*Nt+1, ifnt = max(p), Nnt = 1\nSt = Nt ∑\niNi\n(4)\nIt is evident that the final instance of Nnt is the smallest, and its value  corresponds to unit 1. The value of the forward instant is equal to twice  that of the succeeding moment. The value that can be attained by  creating a spike at instant t is known as St. In other words, it shows the  percentage of Nt in the entire amount of Ni. It is evident that ∑St is  convergent and remains constant as the time frame varies.\nFor the suggested model, a loss function is also created for improved  training. Algorithm 2 demonstrates its primary reasoning.\nAlgorithm 2. (loss function created with the suggested model in mind)\nInput: The number of classes, expressed as an integer bigger than zero → m_class\nResults of the model’s forecast →predict ∈Rbatch size⋅m class\nAccurate classification of the specimens →target ∈Rbatch size⋅m class\nOutput: Value of loss between actual classification and model prediction\n1 # To predict and target, multiply the elements in their appropriate positions to  find the greatest value for each row.  2 cor, ←predict.mul(target).max(1) 3 # Find the classification probability value that the model prediction belongs  to.  4 pre, ←predict.max(1) 5 # Obtain the prediction’s ranking for the accurate classification.  6 val,idx←target.max(1) 7 val←val.half() 8 ids←val.clone() 9 for i in range(len(idx)) do:  10 val[j]←predict[j, idx[j]]\n(continued on next column)\n(continued)\n11 ids[j]←predict[j].gt(val[j]).float().sum() 12 end for  13 β←pre −cor  14 α←1 −cor  15 return mean(m class*β + (ids + 1)*α)\nThe final loss value is mostly governed by two components, β and α,  as the procedure above illustrates. The β factor represents the discrep­ ancy between the type that the model predicts and the actual type (Jiang  and Li, 2022). As more categories tend to provide lower values, β is  scaled up by multiplying it by the number of classes, m_class. The  α-indicator’s job is to push the likelihood of accurate categorization in  the direction of its highest value. The model prediction results’ ranking  of the right classification is also considered. Since the ranking begins at  0, the addition of 1 to ids makes sense. There is still opportunity for  optimization even if the ranking is currently 0 (i.e., first place), provided  that the probability value has not achieved its maximum value. The  following method is used to modify the learning rate during model  training:\n⎧ ⎪ ⎨\n⎪ ⎩\nπ1 = 0.0001\nπp = 0.6*π1\n(\n1 + cos ( p\npmax\nμ\n) )\n, 2 ≤p ≤pmax\n(5)\nThe initial learning rate that the model sets during the first training  period is denoted by π1. p is the number of training rounds that are  currently in use, and pmax is the total number of epochs that the model  must be trained for. For a total of 60 training rounds, the learning rate  for each round in the Proposed method as well as the Spiking DFR + MLP  method is shown in Fig. 3.\n3.3. Evaluation metrics\nEach model in the studies was assessed in multiple aspects, with the  following serving as the primary evaluation criteria:\n• Detection accuracy, which gauges the fundamental competence of a  model.   • The quantity of parameters and computation needed to describe a  model’s complexity.   • The number of samples processed in a second, which indicates the  execution speed.   • The average power consumption per 20,000 samples is used to  calculate energy consumption.\nThese metrics provide a more complete view of the model’s overall\nFig. 3. Schedule of learning rates.\nY. Xie and H. Chen\n\n--- Page Break ---\n\nJournal of King Saud University - Computer and Information Sciences 36 (2024) 101975\n6\nperformance in terms of accuracy, energy consumption, and the use of  computational resources, among other factors.\nSince detection accuracy (AD), latency, and energy consumption are  the performance parameters taken into consideration in this research to  validate the suggested approach, these three metrics were computed  using (6) to (10) correspondingly (Li et al., 2024). Additionally, energy  Rx displays the energy needed to receive data (k) with distance (d) from  other nodes, whereas energy Tx illustrates the power needed for data  transmission (k) with distance (d) from one node to another node in  equations (8) to (10).\nAccuracy of Detection = TN + TP TN + TP + FN + FP (6)\nEnergyusage = firstenergy −(energysy + energypy) (8)\nEnergysy[b, l] =\n{\nl.elec + l.εampb2, b < b0 l.elec + l.εampb4, b > b0 (9)\nEnergypy(l) = l.elec + l.epa (10)\n4. Evaluation and simulation\nThe experiments included the following comparative models for  evaluation:\nBy combining various bio-features in various neuronal activities,  GLIF (Chen et al., 2022) is a unified spiking neuron that broadens the  representation space of spiking neurons. The gate parameters in GLIF  that control the percentage of fused bio-features can be learned during  training. This approach can produce constantly changing spiking neu­ rons that are more heterogeneous and adaptable by incorporating all  learnable membrane-related factors.\n• SNN (Cao et al., 2023): Spiking Neural Network.   • Spiking DFR + MLP (Xie et al., 2022): Delayed Feedback Reservoir + Multi Layer Perceptron.   • ResNet18-GLIF (Chen et al., 2022): GLIF neurons are used by  ResNet18.   • Spike-DHS (Tang et al., 2023): This computation is spike-based and  done at both the layer and cell levels.   • MLP (Cao et al., 2024): Multi Layer Perceptron optimized.\n• STDS (Wu et al., 2023): Pruning speed can be adjusted for various  stages of SNN weights by using distinct functions to characterize the  rising threshold of state transition. Dynamic pruning approaches are  used to construct an algorithm by nonlinearly analyzing spine size  and SNN weights.   • Spikformer (Li et al., 2024): A unique algorithmic framework for  Spiking Self-Attention (SSA) is devised, utilizing the biological fea­ tures of SNNs and their capacity for self-attention.   • CNN (Liu et al., 2022): Convolutional neural network model  optimized.\nTable 1 presents the metrics for efficiency. Here, “energy consump­ tion” refers to the model’s electrical energy usage following 20,000  sample processing. The rate at which the model analyzes experimental\nsamples is quantified by samples/s. The model’s complexity is mostly  indicated by the number of parameters. The quantity of floating-point  computing needed by the model is indicated by floating-point opera­ tions. The size of the model represents how much space it will take up  after training is finished. The model’s storage and runtime space foot­ print is directly impacted by this measure. The following is the experi­ mental configuration used to collect this data.\n• Operating system: Linux-23.10.1 + -x64-with-glibc3.32.   • CPU: Intel(R) Xeon(R) @ 2.50 GHz, 7 Core(s), 150.00 W.   • RAM: 64 GB, 12.67 W.\nThe experimental results demonstrate the significant advantages of  the suggested model. After processing 20,000 samples, the model’s  power usage is documented in the first measure. Since energy shows an  equipment’s long-term viability, energy consumption is especially sig­ nificant for equipment that has a limited supply of energy (e.g., devices  employing mobile power or batteries). The trial results clearly show that  the suggested model can cut energy use by at least 51 % when compared  to the other models and by as much as 92 % when compared to the  energy-consuming model. It is evident that the model suggested in the  research can have reduced energy use for the same power supply. This  will offer more robust protection and allow the host equipment to  function for an extended amount of time.\nThe model’s efficiency in processing samples is indicated by the  Samples/s indicator, which primarily shows the model’s response time.  More samples processed in a second suggest a faster reaction time and  the capacity to promptly give risk assessment. The model presented in  this research is at least thirty times faster than previous models, as the  results above demonstrate. Compared to most models, it is even faster by  over a thousand times. The experimental results demonstrate the\nTable 1  Efficiency metrics.\nModel  Energy Consumption (kWh ⋅ 10−3)  Samples/s  Parameters  floating-point operationss  Model Size (MB)\nSNN   278.06241  7  45,028,336  5,072,892,152   181.17  Spiking DFR + MLP   369.12313  5  12,175,241  7,248,941,536   45.88  ResNet18-GLIF   374.16121  5  12,346,374  7,349,455,542   46.52  Spike-DHS   632.76442  7  15,777,154  15,287,675,214   191.89  MLP   20.56745  75  373,125  2,576,111,412   2.3  STDS   583.25002  4  46,713,732  41,272,046,742   151.91  Spikformer   180.32860  10  8,330,047  3,623,420,142   38.56  CNN   9.19191  265  18,189,484  489,492,721   69.79  Proposed Model   4.75247  8980  8456  314,802   0.04291\nLatency = Thequantityofreceiveddatapacketsintheintendedpeak ∑Theamountoftimeneededtosendthedatapackettothetargetthatisspiked (7)\nY. Xie and H. Chen\n\n--- Page Break ---\n\nJournal of King Saud University - Computer and Information Sciences 36 (2024) 101975\n7\nextraordinary advantage of the proposed approach once more.\nAn important indicator of the model’s complexity is the number of  parameters in the model. Given that the majority of the parameters must  be trained in order for them to fit the target dataset. Thus, this metric can  be used to primarily reflect the model’s training-process costs, including  computational resources and time. The suggested model still has a big  edge in this area. This indicates that training and validation can be  finished by the model more quickly. This feature, which enables de­ signers to test their concepts and receive feedback more quickly, is  particularly crucial during the model creation stage.\nThe primary focus of floating-point operations is the amount of  computation the model did while processing the sample. It accurately  depicts how many computing units the related model used to process the  samples. The model’s impact on the device’s initial functioning will  decrease with the number of compute units it occupies. In devices with  limited CPU resources, installing additional applications may cause the  original functionality to occasionally stop working. Therefore, in order  to preserve the original function’s good functioning, it is vital to mini­ mize this signal as much as feasible. The total amount of computation  needed by the model to handle a single sample is displayed in Table 1.  The suggested model still has a significant advantage in this regard. In  contrast to alternative models, it can be decreased by over 99.27 %.\nRegarding the model size indicator, the suggested model also offers a  clear benefit. The space needed to be occupied in the storage media once  the model has been trained is shown in the above table. A target device  must have the capacity to store, load, and execute the model in order for  it to offer protection. The relevant model’s need for storage resources  decreases with decreasing metric values. The suggested model is more  than thirty times larger than other models with even the smallest vol­ ume. This feature may help the suggested model better support devices  with low storage.\nPerformance advantage was used to provide a score to each of the  measures in Table 1. First place receives 6 points, and each place down  the rankings results in a deduction of 0.6 points, with 1 point going to  the lowest place. In Fig. 4, each model’s score for each metric is then  displayed.\nIt is evident that the model presented in this study performs better  than the other models across the board. This gives an excellent\nindication of the model’s exceptional efficaciousness. It also demon­ strates the model’s great potential for use, even with devices with little  resources.\nNaturally, concentrating solely on efficiency indicators is insuffi­ cient; efficiency comparisons among them must be grounded in an  equivalent degree of accuracy. Table 2 shows how accurate these models  are at classifying data across multiple datasets.\n4.1. Attack detection analysis\nWithin this section, we conduct a comparative analysis of the sug­ gested method against two analogous approaches, namely Spiking DFR  + MLP and Spiking-DHS, in order to discern potential attacks. The data  utilized exhibit an imbalance. Consequently, the distribution of at-risk  and non-comparable samples is not equivalent. Within our dataset, 22  % of the samples exhibit a level of danger, while the remaining 78 % do  not. Performance criteria are used to assess the precision and F1 score.  The results presented in Figs. 5 and 6 demonstrate that the suggested  strategy, which combines spiking neurons with Spiking DFR + MLP,  outperforms both Spiking DFR + MLP and Spiking-DHS in terms of  performance, as measured by both assessment criteria. It is evident that  when the magnitude of the attack, denoted as A, grows, there is a cor­ responding improvement in performance. The suggested method is  capable of emulating Recurrent Neural Networks (RNNs) and effectively  capturing the spatio-temporal correlation among smart grid meters. The\nFig. 4. An overview of metrics for efficiency.\nTable 2  Accurate classification.\nModel  CSE-CIC- IDS2018 Based  CIC-DDoS2019 Based\nSNN   98.83   99.86  Spiking DFR + MLP   98.81   99.94  ResNet18-GLIF   98.78   99.85  SpikeDHS   98.79   99.90  MLP   98.78   99.87  STDS   98.92   99.82  Spikformer   98.68   99.71  CNN   98.93   99.92  Our Model   99.93   99.92\nY. Xie and H. Chen\n\n--- Page Break ---\n\nJournal of King Saud University - Computer and Information Sciences 36 (2024) 101975\n8\nDFR + MLP combination is employed as the readout layer in spiking.  The simulations employ MATPOWER to create data, with 22 % of the  whole data being affected by the dynamic assault specified in (3). The  DFR node chosen is a nonlinear LIF neuron, which serves as a model for  spiking neurons. The decoded information needs to be transformed into  a current that can be utilized by the LIF neuron. Equation (5) is utilized  to transform the encoded input into a continuous flow. The present  electric current is subsequently administered to the LIF neuron, resulting  in the generation of a comparable sequence of electrical impulses. The  spike trains are temporally delayed and subsequently transformed into a  stream that can be appended to the appropriate stream of the subsequent  input. This procedure is iterated until all samples have been processed  and the spike train matching to each input sample has been produced.  These spike trains comprise many spikes, each occurring at a distinct  moment.\nThe occurrence frequency of these spikes is utilized as a character­ istic to train the readout layer. The readout layer in this article is Spiking  DFR + MLP. The Spiking DFR + MLP model takes as input the temporal  occurrence of spikes and produces an output of either 0 or 1, based on  the classification of the data. The output of the Spiking DFR + MLP is 1  when the data is spiked, and 0 otherwise. Once the training process is  finished, a set of data that has not been previously encountered by DFR  Spiking is employed for testing purposes.\nThere are 20,000 samples used for training and 20,000 samples  utilized for testing. Among these, 22 % are classified as at risk and 78 %  are classified as illegal. The presence of disparate proportions between  at-risk and non-at-risk samples results in an imbalanced dataset. The  identical dataset is also employed to train Spiking DFR + MLP and  Spiking -DHS. The performance of three approaches, namely the\nsuggested method, Spiking DFR + MLP, and Spiking-DHS, is depicted in  Figs. 10 and 11.\nThe performance is evaluated based on the number of meters at risk  and the size of the attack. As the attack magnitude grows, there is an  improvement in performance for both performance measures. The pro­ posed strategy attains optimal performance. Both the Spiking DFR + MLP and Spiking-DHS methods have very poor performance rates when  dealing with small-scale attacks. Nevertheless, the suggested method  exhibits much enhanced accuracy in detecting attacks, even for minus­ cule attack magnitudes. The simulation findings demonstrate that the  combination of Spiking-DHS, the proposed model, and Spiking DFR + MLP on a single platform leads to an average attack detection accuracy  of 95.2 % across various assault magnitudes and the number of mea­ surements at risk. When exclusively employing Spiking-DHS, the  average accuracy is 78.32 %. This demonstrates that the proposed  method can enhance the average accuracy by around 18 %. The  enhancement of the suggested approach is particularly notable when  considering the F1 measurement. The mean F1 score achieved by  merging the suggested approach, Spiking-DHS, and Spiking DFR + MLP  is 79 %. However, the F1 score is just 26 % when exclusively relying on  Spiking-DHS for dynamic attack detection. The findings demonstrate  that the method introduced in this study has the capability to enhance  the F1 measurement by around 54 %.\nNevertheless, the performance rates of Spiking-DHS are significantly  diminished when the attack size is minimal, as demonstrated in Figs. 10  and 11. Specifically, the F1 benchmarks indicate that both Spiking DFR  + MLP and Spiking-DHS fail to identify attacks when the dynamic attack  magnitude is extremely low. The primary factor is that both spiking DFR  + MLP and spiking-DHS models lack the ability to accurately represent\nFig. 5. Detection accuracy for three distinct attack methods and attack magnitudes (A = 0.1,1,-10).\nY. Xie and H. Chen\n\n--- Page Break ---\n\nJournal of King Saud University - Computer and Information Sciences 36 (2024) 101975\n9\nthe spatio-temporal correlation of data and the mapping of data to  higher dimensional space, respectively. Nevertheless, owing to its re­ petitive arrangement, the suggested approach is capable of capturing the  spatial and temporal correlation in the data, while also transforming the  data into a higher-dimensional space by operating at the edge of chaos.\nFig. 7 illustrates the performance of the suggested technique as the  delay value is altered. Setting the delay value to 40 ms significantly  improves the performance in terms of accuracy and F1. Nevertheless, the  most subpar performance is attained when the delay is configured at 10\nms. The selection of suitable delay values is necessary to ensure that the  suggested launcher model operates at the critical point between order  and chaos.\n4.2. Databases for detecting intrusions in networks\na CSE-CIC-IDS2018 Dataset\nIt is a joint project between the Communications Security\nFig. 6. F1 of attack detection for three distinct approaches and attack sizes, where A = 0.1,1,10.\nFig. 7. Consequences of various delay settings on performance when A = 1.\nY. Xie and H. Chen\n\n--- Page Break ---\n\nJournal of King Saud University - Computer and Information Sciences 36 (2024) 101975\n10\nEstablishment (CSE) and the Canadian Cyber Security Institute (CIC).  Anomaly detection has been the main focus of many researchers due to  its potential in detecting new attacks. However, its adoption for real-  world applications has been hampered by system complexity, as these  systems require a significant amount of testing, evaluation, and tuning  before deployment.\nThe final dataset contains several different attack scenarios where  simulated attacks fall into one of these categories: Brute-force, Heart­ bleed, Botnet, DoS, DDoS, Web Attacks, and Intrusion. The attack  infrastructure includes 50 machines and the victim organization has 5  departments and includes 420 machines and 30 servers. The dataset  includes network traffic and system logs of each device, along with 80  features extracted from traffic captured using CICFlowMeter-V3. In  particular, one of the main problems in the CSE Cup99 dataset is the  large amount of duplicate packets. Researchers in (Li et al., 2023)  analyzed the training and testing datasets of CSE and found that  approximately 78 % and 75 % of network packets are duplicates. This  huge amount of duplicate examples in the training set influences ma­ chine learning methods to be biased towards regular examples and thus  avoid learning irregular examples which are usually more damaging.  The CSE-CIC-IDS2018 dataset was constructed to solve these problems  by removing duplicate records. The CSE-CIC train dataset contains  126,250 records and the test dataset contains 23,524 records. There are  23 educational penetration attacks and 40 features.  Table 3 shows the total number of data records and the number of  data records successfully classified for each class for the CSE-CIC-  IDS2018 dataset. The classification confusion matrix, represented as  the number of data records tested, is displayed in Fig. 8.\nIn this paper, we used the CSE-CIC Train+, CSE-CIC Test+, and CSE-  CIC Test21 datasets from the CSE-CIC-IDS2018 dataset. The CSE-CIC  Train + dataset contains 126,250 samples, which includes 59,628  samples of attack traffic and 66,622 samples of normal traffic. The CSE-  CIC Test + collection contains a total of 23,524 samples. As a subset of  the CSE-CIC Test + suite, the CSE-CIC Test21 suite contains a total of  11,630 samples. Cross-validation was performed on the CSE-CIC Train  + suite in our experiments. We also considered validation using a simple  holdover (training test) approach applied to the CSE-CIC Test + and  CSE-CIC Test-21 sets. Fig. 9 shows the results for each class in the CSE-  CIC-IDS2018 dataset in terms of classification.\nb CIC-DDoS2019 Dataset\nOne kind of network security concern is the Distributed Denial of  Service (DDoS) attack, which attempts to flood specific networks with an  excessive amount of malicious traffic. A real-time detector with minimal  processing overhead remains a significant challenge, despite the fact  that numerous statistical algorithms have been developed to identify  DDoS attacks. However, well-designed datasets are crucial for testing  new detection algorithms and methods.\nNumerous contemporary reflected DDoS assaults are included in this  dataset, including PortMap, NetBIOS, LDAP, MSSQL, UDP, UDP-Lag,  SYN, NTP, DNS, and SNMP. We put the suggested method through its  paces with five different attacks: DDoS, DNS, SNMP, UDP, and  WebDDoS.\nIn order to conduct a fair comparison with the results mentioned in  (Li et al., 2023), we first used the “original” dataset with 47 features,  which was retrieved from the source code (Trik et al., 2023), for the  DDoS dataset (CIC-DDoS2019), which had a total of 3750 samples. This  was followed by trials on this number of attacks. Table 4 shows the total  number of data records and the number of data records successfully  classified for each class for the CIC-DDoS2019 dataset. The classification  confusion matrix, represented as the number of data records tested, is  displayed in Fig. 10.\nFig. 11 shows the results for each class in the CIC-DDoS2019 dataset  in terms of classification. Due to the low DDoS traffic volume and the  fact that WebDDoS was only deployed on the test day, it would be  impossible to assess the suggested model using this data.\nThe CNN structure and SNN models utilized in the studies were all  recently published in reputable journals. The experiment’s accuracy  results show that the traditional CNN still performs marginally better  than the majority of SNN models. It demonstrates that SNNs cannot yet  fully replace CNNs in terms of accuracy in the current research phase.  Furthermore, in the performance criteria that make SNNs so desirable,  some SNN models fall short of CNNs. Simultaneously, the model put out  in this research can attain an accuracy level comparable to these cutting-  edge models. Furthermore, it performs significantly better than com­ parable models in terms of efficiency metrics, demonstrating the  model’s exceptional overall practical capabilities.\nThe categorization findings for the two data sets in this study are  displayed in Tables 5 and 6, which provide a more thorough comparison  of the suggested method with other previously conducted research. Four  criteria were employed in this study to assess recall, F1, precision, and  classification accuracy:\nThe evaluation criteria for the CSE-CIC-IDS2018 dataset are cate­ gorized in Table 5. The table makes it clear that the suggested model  performs better than every result reported in (Tan et al., 2023) and has a  classification accuracy of 0.9685. Above all, the suggested model per­ formed better than any other model including every DNN-based model.  Using this dataset, our CSNN obtained an accuracy of 0.9731. This  demonstrated that CSNNs can rival DNNs. It also demonstrated how  effective data pretreatment might boost performance even more.\nWe have categorized the CIC-DDoS2019 dataset’s evaluation criteria  in Table 6. In this table, it is clearly shown that the proposed model  outperforms all the findings mentioned in (Liu et al., 2022) with a  classification accuracy of 0.9685. This table’s classification results  demonstrate that CSNN outperformed other approaches in the field for  all four classification accuracy criteria: F1, precision, recall, and\nTable 3  Results of classification for each class in the CSE-CIC-IDS2018 dataset. 22,241  data records were correctly classified overall. 21,517 is the total number of data  records. 96.14 % is the classification accuracy.\nAttack Model  Estimated  F1 score  Correct  Total\nNormal  9433   96.02  9248  9606  DNS  7407   99.36  7309  7368  SNMP  2254   97.28  2247  2319  UDP  2792   91.06  2536  2648  Heartbleed  172   83.51  152  201\nFig. 8. Classification confusion matrix expressed as the number of data records  for the CSE-CIC-IDS2018 dataset.\nY. Xie and H. Chen\n\n--- Page Break ---\n\nJournal of King Saud University - Computer and Information Sciences 36 (2024) 101975\n11\naccuracy. As a result, CSNN achieved an accuracy threshold of 0.9788  for the CIC-DDoS2019 dataset. It has been discovered that it performs  better than the current approaches for the other F1, Precision, and recall  criteria, which are, respectively, 0.9890, 0.9858, and 0.9876. These  outcomes demonstrated once more that CSNNs can rival DNNs.\n4.3. Complexity analysis\nThis section provides a comparison between the difficulty of the  suggested strategy and alternative methods. The computational diffi­ culty of detecting dynamic attacks using DFR is determined by the  computation required for the reservoirs and the updating of the readout  layer weights. Only the readout layer weights require training in the  spiking DFR technique. Nevertheless, in Recurrent Neural Networks  (RNNs), it is necessary to train the weights of all neurons across many  layers. Training all layers of Recurrent Neural Networks (RNNs) signif­ icantly increases their computational complexity compared to archi­ tectures based on Reservoir Computing (RC). Complexity can be  measured by the total number of floating point operations (FLOP). The  study in reference (Lyu et al., 2023; Nanjappan et al., 2024) demon­ strates that the computational complexity of learning systems based on  RC (Recurrent Neural Networks) is directly proportional to the time  required for training. Hence, this section presents the training duration  of the suggested method and compares it to the training durations of  Spiking DFR + MLP and Spiking -DHS. Table 7 displays the training  durations for the Proposed Method, Spiking DFR + MLP, and Spiking  -DHS. Comparisons are drawn regarding the training time of these three  algorithms, which also serves as an indication of their computational  complexity.\nAccording to the data presented in Table 7, the Spiking-DHS method  has the greatest computational complexity. The Proposed Method and  SPIKING DFR + MLP algorithms are ranked as the second and third most  computationally complex, respectively. The method is composed of  three blocks: spike-to-stream, reservoir, and Spiking DFR + MLP as the  readout layer. These blocks increase the computational complexity of  our technique compared to a spiking DFR + MLP. Nevertheless, this  extra burden is inconsequential, as demonstrated in Table 7.\n4.4. Discussion\nWhile the proposed CSNN approach shows promising results in  intrusion detection, several challenges and trade-offs must be consid­ ered for its real-world application. One of the major challenges is the  possible susceptibility to new or hostile attacks that have not been  encountered during training. Because CSNNs rely on learning patterns  from historical data, they may struggle to identify emerging threats that  deviate significantly from known patterns. Furthermore, as the  complexity of the CSNN model increases to accommodate a wider range\nFig. 9. Results for each class in the CSE-CIC-IDS2018 dataset in terms of classification.\nTable 4  Results of each class’s classification in the CIC-DDoS2019 dataset. 21,567 data  records were correctly classified. 22,641 is the total number of data records.  98.21 % is the classification accuracy.\nAttack Model  Estimated  F1 score  Correct  Total\nNormal  7332   98.51  7332  7362  DNS  2306   98.63  2306  2321  SNMP  2641   96.71  2769  2653  UDP  206   97.32  201  201  WebDDos  9637   98.23  9540  9604\nFig. 10. Classification confusion matrix expressed as the number of data re­ cords for the CIC-DDoS2019 dataset.\nY. Xie and H. Chen\n\n--- Page Break ---\n\nJournal of King Saud University - Computer and Information Sciences 36 (2024) 101975\n12\nof patterns, there may be trade-offs in terms of computational resources  and efficiency. It is important to balance model complexity with  detection accuracy, as overly complex models may require very high  computational  resources,  especially  in  resource-constrained  environments.\nThe ability of the CSNN approach to generalize to unseen data and  maintain performance in different architectures or network configura­ tions is essential for its practical application. Robustness against noisy or  incomplete data is also important, as real-world network traffic can be  highly variable. While the CSNN model may show high accuracy on  benchmark datasets, its performance in diverse and dynamic network  environments needs to be fully evaluated. Ensuring robustness and  generalization requires continuous monitoring and adaptation of the  model to evolving threats and network conditions.\nDespite its promising performance, the CSNN approach has inherent  limitations that warrant further research. One limitation is the need for  large and diverse training datasets that may not always be readily  available, especially for emerging or rare attack scenarios. In addition,  the computational complexity of CSNNs may pose challenges for real-  time deployment, especially in resource-constrained environments.  Future research should focus on addressing these limitations by inves­ tigating techniques to improve model robustness, reduce computational  complexity, and increase detection capabilities for specific types of at­ tacks. In addition, evaluating the CSNN approach in diverse network  environments and conducting long-term monitoring to assess its effec­ tiveness in identifying evolving threats is crucial for its continued  development and adoption.\nAs in this section, we have made evaluations for the proposed solu­ tion in comparison with existing studies, it is important to provide a  comprehensive analysis of their strengths and weaknesses for the CSNN  approach with other advanced models. While the CSNN approach may  offer advantages such as improved efficiency and scalability, it is  important to recognize its limitations and areas where other models may  outperform it. A thorough comparative analysis can help researchers  and practitioners understand the trade-offs involved in choosing an  intrusion detection method and identify areas for future research and  improvement.\n5. Conclusions\nThe contribution of this research is very diverse. In the first step, we  have introduced a lightweight yet effective intrusion detection model  that takes advantage of the unique capabilities of CSNN to handle real-  time processing and resource-constrained environments. By encoding  the spike information using a time value technique and customizing a  loss function tailored to the CSNN architecture, we have enhanced the\nFig. 11. Results for each class in the CIC-DDoS2019 dataset in terms of classification.\nTable 5  CSNN and traditional model classification outcomes are compared using the cse-  cic-ids2018 dataset.\nModel  Accuracy  F1  Precision  Recall\nSNN   0.6084   0.6901   0.8840   0.5520  Spiking DFR + MLP   0.8324   0.8825   0.9120   0.8924  ResNet18-GLIF   0.7536   0.8714   0.9305   0.6945  Spike-DHS   0.7909   0.8212   0.9635   0.6350  MLP   0.6984   0.7926   0.9524   0.6015  STDS   0.8121   0.7852   0.9118   0.5886  Spikformer   0.8202   0.7732   0.8984   0.7927  CNN   0.9014   0.9203   0.9015   0.9261  Proposed Model   0.9685   0.9672   0.9731   0.9788\nTable 6  CSNN and traditional model classification results are compared using the cic-  ddos2019 dataset.\nModel  Accuracy  F1  Precision  Recall\nSNN   0.9112   0.7760   0.7600   0.9117  Spiking DFR + MLP   0.9554   0.9362   0.9402   0.6475  ResNet18-GLIF   0.9123   0.9120   0.9023   0.9165  Spike-DHS   0.9342   0.9117   0.9010   0.9330  MLP   0.9471   0.9363   0.9415   0.9442  STDS   0.9287   0.6425   0.9272   0.9520  Spikformer   0.9368   0.9524   0.9350   0.9482  CNN   0.9378   0.9291   0.9087   0.9005  Proposed Model   0.9876   0.9890   0.9858   0.9876\nTable 7  Analysis of Computational Complexity.\nAlgorithm  Training Time\nProposed Method  17.24 s  Spiking DFR + MLP  4.3 s  Spiking-DHS  91 s\nY. Xie and H. Chen\n\n--- Page Break ---\n\nJournal of King Saud University - Computer and Information Sciences 36 (2024) 101975\n13\nmodel’s ability to detect intrusive patterns in the data while minimizing  the computational overhead. The proposed model performs more effi­ ciently than the current solutions, although its classification accuracy is  slightly lower than the most accurate model. In most cases, deep con­ volutional neural networks outperform spiking neural network models  in terms of parameters such as energy consumption, execution effi­ ciency, and classification accuracy. The spiking neural network models  used in this paper are based on the challenges of recent research results,  and as seen in the attack detection accuracy, energy consumption, and  delay tests, the obtained results have performed much better than  similar recent methods. So that the detection accuracy (AD) has  improved by 23 %, delay by 19 % and energy consumption by 28 %.\nFurthermore, our extensive experimental evaluations, performed on  benchmark datasets such as CSE-CIC-IDS2018 and CIC-DDoS2019, have  demonstrated the superior performance of the CSNN approach  compared to existing models. Notably, our method achieved significant  improvements in detection accuracy, energy consumption, and scal­ ability, highlighting its potential for practical deployment in diverse  network environments. Looking ahead, several avenues for future  research and development emerge. First, addressing the inherent limi­ tations of CSNNs, such as their susceptibility to adversarial attacks and  the need for large training datasets, remains a priority. Future studies  should focus on increasing the robustness and generalization capabil­ ities of CSNN through advanced training techniques and data augmen­ tation strategies. Furthermore, the scalability of the CSNN approach  requires further investigation, especially in the context of large-scale  network deployment. Exploring distributed architectures and optimi­ zation techniques to improve scalability and real-time performance is  essential for widespread adoption in enterprise-level networks.  Furthermore, the integration of CSNN with emerging technologies such  as edge computing and blockchain promises to enhance network secu­ rity and privacy. Using the decentralized nature of blockchain and edge  computing paradigm, CSNN-based intrusion detection systems can  enhance threat detection and mitigation capabilities while maintaining  data privacy and integrity. In summary, the proposed CSNN method  represents a significant advance in the field of intrusion detection, of­ fering a strong combination of accuracy, efficiency, and scalability. As  we continue to refine and expand this approach, we envision a future in  which CSNN-based intrusion detection systems play a central role in  protecting our interconnected, data-driven world from evolving cyber  threats.\nAt the end of this article, you can ask the researchers these questions  for future work:\n• Can the amount of training data be increased and the model made  more robust to greater data variability by using data augmentation  techniques such as rotation, resizing, and additional noise?   • By using pre-trained neural networks on different data (such as  ImageNet), is it possible to take advantage of the information  extracted in the early stages of training and require a large amount of  training data?\nReferences\nAhmad, S., Mehfuz, S., Beg, J., 2023. An efficient and secure key management with the\nextended convolutional neural network for intrusion detection in cloud storage.  Concurr. Comput.: Pract. Exp. 35 (23), e7806.  Bul’ajoul, W.; James, A.; Shaikh, S. A new architecture for network intrusion detection\nand prevention. IEEE Access 2018, 7, pp. 18558–18573.  Chen Cao, Jianhua Wang, Devin Kwok, Zilong Zhang, Feifei Cui, Da Zhao, Mulin Jun Li,\nQuan Zou. webTWAS: a resource for disease candidate susceptibility genes identified  by transcriptome-wide association study. Nucleic Acids Research.2022, 50(D1):  D1123-D1130.  Yumeng Cao, Ning Xu, Huanqing Wang, Xudong Zhao, A. Ahamed. Neural Networks-\nBased Adaptive Tracking Control for Full-State Constrained Switched Nonlinear  Systems With Periodic Disturbances and Actuator Saturation, International Journal  of Systems Science, 54(14): 2689-2704, 2023.  Cao, Y., Niu, B., Wang, H., Zhao, X., 2024. Event-based adaptive resilient control for\nnetworked nonlinear systems against unknown deception attacks and actuator\nsaturation. International Journal of Robust and Nonlinear Control. https://doi.org/  10.1002/rnc.7231.  Cao, K., Wang, B., Ding, H., Lv, L., Dong, R., Cheng, T., Gong, F., 2021. Improving\nphysical layer security of uplink NOMA via energy harvesting jammers. IEEE Trans.  Inf. Forensics Secur. 16, 786–799. https://doi.org/10.1109/TIFS.2020.3023277.  Cao, B., Zhao, J., Gu, Y., Fan, S., Yang, P., 2020. Security-aware industrial wireless sensor\nnetwork deployment optimization. IEEE Trans. Ind. Inf. 16 (8), 5309–5316. https://  doi.org/10.1109/TII.2019.2961340.  Chen, Z., & Gao, L. (2023, 2023-01-01). CURSOR: Configuration Update Synthesis Using\nOrder Rules. Paper presented at the IEEE INFOCOM 2023 - IEEE Conference on  Computer Communications. doi: 10.1109/INFOCOM53939.2023.10228930.  Chen, Y., Yu, Z., Fang, W., Ma, Z., Huang, T. and Tian, Y., 2022, June. State transition of\ndendritic spines improves learning of sparse spiking neural networks. In  International Conference on Machine Learning (pp. 3701-3715). PMLR.  Chen, B., Hu, J., Zhao, Y., Ghosh, B.K., 2022. Finite-time velocity-free rendezvous control\nof multiple AUV systems with intermittent communication. IEEE Trans. Syst. Man  Cybernet.: Syst. 52 (10), 6618–6629. https://doi.org/10.1109/  TSMC.2022.3148295.  Chen, Y., Mai, Y., Feng, R., Xiao, J., 2022. An adaptive threshold mechanism for accurate\nand efficient deep spiking convolutional neural networks. Neurocomputing 469,  189–197.  Ding, Y., Zhang, W., Zhou, X., Liao, Q., Luo, Q., Ni, L.M., 2021. FraudTrip: Taxi\nfraudulent trip detection from corresponding trajectories. IEEE Internet Things J. 8  (16), 12505–12517. https://doi.org/10.1109/JIOT.2020.3019398.  Fomin, I., Korsakov, A., Ivanova, V., & Bakhshiev, A. (2023, October). Investigation of a\nSpike Segment Neuron in the Offline Multi-Object Tracking Task with Embeddings  Constructed by a Convolutional Network. In International Conference on  Neuroinformatics (pp. 346-354). Cham: Springer Nature Switzerland.  Guo, R., Liu, H., Liu, D., 2023. When deep learning-based soft sensors encounter\nreliability challenges: A practical knowledge-guided adversarial attack and its  defense. IEEE Trans. Ind. Inf. https://doi.org/10.1109/TII.2023.3297663.  Huang, S., Zong, G., Zhao, N., Zhao, X., Ahmad, A.M., 2024. Performance recovery-based\nfuzzy robust control of networked nonlinear systems against actuator fault: A  deferred actuator-switching method. Fuzzy Sets and Systems 480, 108858.  Jiang, Y., Li, X., 2022. Broadband cancellation method in an adaptive co-site interference\ncancellation system. Int. J. Electron. 109 (5), 854–874. https://doi.org/10.1080/  00207217.2021.1941295.  Laghrissi, F., Douzi, S., Douzi, K., Hssina, B., 2021. IDS-attention: an efficient algorithm\nfor intrusion detection systems using attention mechanism. J. Big Data 8, 1–21.  Li, C., Dong, M., Xin, X., Li, J., Chen, X., Ota, K., 2023. Efficient privacy-preserving in\nIoMT with blockchain and lightweight secret sharing. IEEE Internet Things J.  https://doi.org/10.1109/JIOT.2023.3296595.  Li, H., Huang, Q., Huang, J., Susilo, W., 2023. Public-key authenticated encryption with\nkeyword search supporting constant trapdoor generation and fast search. IEEE  Trans. Inf. Forensics Secur. 18, 396–410. https://doi.org/10.1109/  TIFS.2022.3224308.  Li, K., Ji, L., Yang, S., Li, H., Liao, X., 2022. Couple-group consensus of cooperative-\ncompetitive heterogeneous multiagent systems: A fully distributed event-triggered  and pinning control method. IEEE Trans. Cybern. 52 (6), 4907–4915. https://doi.  org/10.1109/TCYB.2020.3024551.  Li, D., Ortegas, K.D., White, M., 2023. Exploring the computational effects of advanced\ndeep neural networks on logical and activity learning for enhanced thinking skills.  Systems 11 (7), 319. https://doi.org/10.3390/systems11070319.  Li, Y., Wang, H., Trik, M., 2024. Design and simulation of a new current mirror circuit\nwith low power consumption and high performance and output impedance. Analog  Integr. Circ. Sig. Process 1–13.  Liao, Q., Chai, H., Han, H., Zhang, X., Wang, X., Xia, W., Ding, Y., 2022. An integrated\nmulti-task model for fake news detection. IEEE Trans. Knowl. Data Eng. 34 (11),  5154–5165. https://doi.org/10.1109/TKDE.2021.3054993.  Lightbody, D., Ngo, D. M., Temko, A., Murphy, C., & Popovici, E. (2022, June). Host-\nbased intrusion detection system for IOT using convolutional neural networks.  In 2022 33rd Irish Signals and Systems Conference (ISSC) (pp. 1-7). IEEE.  Liu, D., Cao, Z., Jiang, H., Zhou, S., Xiao, Z., Zeng, F., 2022. Concurrent low-power\nlistening: A new design paradigm for duty-cycling communication. ACM Trans. Sen.  Netw. 19 (1) https://doi.org/10.1145/3517013.  Liu, J., Fan, C., Peng, Y., Du, J., Wang, Z., Chu, C., 2023. Emergent leader-follower\nrelationship in networked multiagent systems. Sci. China Inf. Sci. 66 (12), 229201  https://doi.org/10.1007/s11432-022-3741-3.  Liu, Y., Li, G., Lin, L., 2023. Cross-modal causal relational reasoning for event-level visual\nquestion answering. IEEE Trans. Pattern Anal. Mach. Intell. 45 (10), 11624–11641.  https://doi.org/10.1109/TPAMI.2023.3284038.  Liu, Z., Wen, C., Su, Z., Liu, S., Sun, J., Kong, W., Yang, Z., 2023. Emotion-semantic-\naware dual contrastive learning for epistemic emotion identification of learner-  generated reviews in MOOCs. IEEE Trans. Neural Networks Learn. Syst. https://doi.  org/10.1109/TNNLS.2023.3294636.  Liu, Z., Qian, P., Yang, J., Liu, L., Xu, X., He, Q., Zhang, X., 2023. Rethinking smart\ncontract fuzzing: Fuzzing with invocation ordering and important branch revisiting.  IEEE Trans. Inf. Forensics Secur. 18, 1237–1251. https://doi.org/10.1109/  TIFS.2023.3237370.  Liu, X., Zhao, J., Li, J., Cao, B., Lv, Z., 2022. Federated neural architecture search for\nmedical data security. IEEE Trans. Ind. Inf. 18 (8), 5628–5636. https://doi.org/  10.1109/TII.2022.3144016.  Lu, J., Osorio, C., 2018. A probabilistic traffic-theoretic network loading model suitable\nfor large-scale network analysis. Transp. Sci. 52 (6), 1509–1530. https://doi.org/  10.1287/trsc.2017.0804.\nY. Xie and H. Chen\n\n--- Page Break ---\n\nJournal of King Saud University - Computer and Information Sciences 36 (2024) 101975\n14\nLyu, T., Xu, H., Zhang, L., Han, Z., 2023. Source selection and resource allocation in\nwireless powered relay networks: An adaptive dynamic programming based  approach. IEEE Internet Things J. https://doi.org/10.1109/JIOT.2023.3321673.  Mi, C., Huang, S., Zhang, Y., Zhang, Z., Postolache, O., 2022. Design and implementation\nof 3-D measurement method for container handling target. J. Mar. Sci. Eng. 10 (12),  1961. https://doi.org/10.3390/jmse10121961.  Nanjappan, M., Pradeep, K., Natesan, G., Samydurai, A., Premalatha, G., 2024. DeepLG\nSecNet: utilizing deep LSTM and GRU with secure network for enhanced intrusion  detection in IoT environments. Clust. Comput. 1–13.  Qi, M., Cui, S., Chang, X., Xu, Y., Meng, H., Wang, Y., Arif, M., 2022. Multi-region\nnonuniform brightness correction algorithm based on L-channel gamma transform.  Secur. Commun. Netw. 2022 https://doi.org/10.1155/2022/2675950.  Qiao, F., Li, Z., Kong, Y., 2023. A privacy-aware and incremental defense method against\nGAN-based poisoning attack. IEEE Trans. Comput. Social Syst. https://doi.org/  10.1109/TCSS.2023.3263241.  Qu, Z., Liu, X., Zheng, M., 2022. Temporal-spatial quantum graph convolutional neural\nnetwork based on Schr ̈odinger approach for traffic congestion prediction. IEEE  Trans. Intell. Transp. Syst. https://doi.org/10.1109/TITS.2022.3203791.  Sattari, M.A., Roshani, G.H., Hanus, R., Nazemi, E., 2021. Applicability of time-domain\nfeature extraction methods and artificial intelligence in two-phase flow meters based  on gamma-ray absorption technique. Measurement 168, 108474.  Shen, X., Jiang, H., Liu, D., Yang, K., Deng, F., Lui, J.C.S., Luo, J., 2022. PupilRec:\nLeveraging pupil morphology for recommending on smartphones. IEEE Internet  Things J. 9 (17), 15538–15553. https://doi.org/10.1109/JIOT.2022.3181607.  Sun, G., Li, Y., Liao, D., Chang, V., 2018. Service function chain orchestration across\nmultiple domains: A full mesh aggregation approach. IEEE Trans. Netw. Serv.  Manag. 15 (3), 1175–1191. https://doi.org/10.1109/TNSM.2018.2861717.  Sun, G., Zhu, G., Liao, D., Yu, H., Du, X., Guizani, M., 2019. Cost-efficient service\nfunction chain orchestration for low-latency applications in NFV networks. IEEE  Syst. J. 13 (4), 3877–3888. https://doi.org/10.1109/JSYST.2018.2879883.  Sun, G., Xu, Z., Yu, H., Chen, X., Chang, V., Vasilakos, A.V., 2020. Low-latency and\nresource-efficient service function chaining orchestration in network function  virtualization. IEEE Internet Things J. 7 (7), 5760–5772. https://doi.org/10.1109/  JIOT.2019.2937110.  Tan, J., Jin, H., Hu, H., Hu, R., Zhang, H., Zhang, H., 2023. WF-MTD: Evolutionary\ndecision method for moving target defense based on Wright-Fisher process. IEEE  Trans. Dependable Secure Comput. 20 (6), 4719–4732. https://doi.org/10.1109/  TDSC.2022.3232537.  Tang, J., Lai, J.H., Xie, X., Yang, L., Zheng, W.S., 2023. AC2AS: Activation consistency\ncoupled ANN-SNN framework for fast and memory-efficient SNN training. Pattern  Recogn., 109826  Trik, M., Akhavan, H., Bidgoli, A.M., Molk, A.M.N.G., Vashani, H., Mozaffari, S.P., 2023.\nA new adaptive selection strategy for reducing latency in networks on chip.  Integration 89, 9–24.  Wang, Z., Jin, Z., Yang, Z., Zhao, W., Trik, M., 2023. Increasing efficiency for routing in\ninternet of things using binary gray wolf optimization and fuzzy logic. J. King Saud  Univ.-Comput. Inform. Sci. 35 (9), 101732.  Wang, G., Wu, J., Trik, M., 2023. A novel approach to reduce video traffic based on\nunderstanding user demand and D2D communication in 5G networks. IETE J. Res.  1–17.  Wu, Z., Cao, J., Wang, Y., Wang, Y., Zhang, L., Wu, J., 2020. hPSD: A hybrid PU-learning-\nbased spammer detection model for product reviews. IEEE Trans. Cybern. 50 (4),  1595–1606. https://doi.org/10.1109/TCYB.2018.2877161.  Wu, H., Jin, S., Yue, W., 2022. Pricing policy for a dynamic spectrum allocation scheme\nwith batch requests and impatient packets in cognitive radio networks. J. Syst. Sci.  Syst. Eng. 31 (2), 133–149. https://doi.org/10.1007/s11518-022-5521-0.  Wu, X., Zhao, Y., Song, Y., Jiang, Y., Bai, Y., Li, X., Zhou, Y., Yang, X., Hao, Q., 2023.\nDynamic threshold integrate and fire neuron model for low latency spiking neural  networks. Neurocomputing 544, 126247.  Xie, H., Jiang, X., Hu, X., Wu, Z., Wang, G., Xie, K., 2022. High-efficiency and low-energy\nship recognition strategy based on spiking neural network in SAR images. Front.  Neurorob. 16, 970832.  Xu, H., Han, S., Li, X., Han, Z., 2023. Anomaly traffic detection based on communication-\nefficient federated learning in space-air-ground integration network. IEEE Trans.  Wirel. Commun. https://doi.org/10.1109/TWC.2023.3270179.  Boyuan Xue, Qian Yang, Yushi Jin, Qian Zhu, Jiaqi Lan, Yishan Lin, Jisui Tan, Lanhua\nLiu, Tao Zhang, Evans M. Nkhalambayausi Chirwa; Xiaohong Zhou, Genotoxicity\nassessment of haloacetaldehyde disinfection byproducts via a simplified yeast-based  toxicogenomics assay. Environmental Science & Technology, 2023, 57, 16823-  16833. https://doi.org/10.1021/acs.est.3c04956.  Xuemin, Z., Ying, R., Zenggang, X., Haitao, D., Fang, X., Yuan, L., 2023. Resource-\nconstrained and socially selfish-based incentive algorithm for socially aware  networks. J. Signal Process. Syst. https://doi.org/10.1007/s11265-023-01896-2.  Yamazaki, K., Vo-Ho, V.K., Bulsara, D., Le, N., 2022. Spiking neural networks and their\napplications: A review. Brain Sci. 12, 863.  Yu, J., Lu, L., Chen, Y., Zhu, Y., Kong, L., 2021. An indirect eavesdropping attack of\nkeystrokes on touch screen through acoustic sensing. IEEE Trans. Mob. Comput. 20  (2), 337–351. https://doi.org/10.1109/TMC.2019.2947468.  Yue, S., Niu, B., Wang, H., Zhang, L., Ahmad, A.M., 2023. Hierarchical sliding mode-\nbased adaptive fuzzy control for uncertain switched under-actuated nonlinear  systems with input saturation and dead-zone. Robot. Intell. Automation 43 (5),  523–536. https://doi.org/10.1108/RIA-04-2023-0056.  Zarzoor, A.R., Al-Jamali, N.A.S., Qader, D.A.A., 2023. Intrusion detection method for\ninternet of things based on the spiking neural network and decision tree method. Int.  J. Electric. Comput. Eng. 13 (2), 2278.  Zhang, H., Luo, G., Li, J., & Wang, F. Y (2021). C2FDA: Coarse-to-Fine Domain\nAdaptation for Traffic Object Detection. IEEE Transactions on Intelligent  Transportation Systems, 23(8), 12633-12647. doi: 10.1109/TITS.2021.3115823.  Zhang, K., Zhou, Y., Zhang, S., Wang, H., & Qourbani, A. (2023). Towards deploying SFC\nwith parallelized VNFs under resource demand uncertainty in mobile edge  computing. Journal of King Saud University-Computer and Information Sciences,  101619.  Zhang, R., Li, L., Zhang, Q., Zhang, J., Xu, L., Zhang, B., Wang, B., 2023. Differential\nfeature awareness network within antagonistic learning for infrared-visible object  detection. IEEE Trans. Circuits Syst. Video Technol. https://doi.org/10.1109/  TCSVT.2023.3289142.  Zhang, J., Liu, Y., Li, Z., Lu, Y., 2023. Forecast-assisted service function chain dynamic\ndeployment for SDN/NFV-enabled cloud management systems. IEEE Syst. J. https://  doi.org/10.1109/JSYST.2023.3263865.  Zhang, H., Zou, Q., Ying, J.u., Song, C., Chen, D., 2022. Distance-based support vector\nmachine to predict DNA N6-methyladine modification. Curr. Bioinform. 17 (5),  473–482.  Heng Zhao, Guangdeng Zong, Huanqing Wang, Xudong Zhao, Ning Xu. Zero-Sum Game-\nBased Hierarchical Sliding-Mode Fault-Tolerant Tracking Control for Interconnected  Nonlinear Systems via Adaptive Critic Design. IEEE Transactions on Automation  Science and Engineering, https://doi.org/10.1109/TASE.2023.3317902.  Yanwei Zhao , Hongjing Liang , Guangdeng Zong , Huanqing Wang. Event-Based\nDistributed Finite-Horizon H∞Consensus Control for Constrained Nonlinear  Multiagent Systems, IEEE Systems Journal, DOI: 10.1109/JSYST.2023.3318525.  Heng Zhao, Guangdeng Zong, Xudong Zhao, Huanqing Wang, Ning Xu, Ning Zhao,\nHierarchical Sliding-Mode Surface-Based Adaptive Critic Tracking Control for  Nonlinear Multiplayer Zero-Sum Games via Generalized Fuzzy Hyperbolic Models,  IEEE Transactions on Fuzzy Systems. DOI: 10.1109/TFUZZ.2023.3273566.  Zhao, K., Jia, Z., Jia, F., Shao, H., 2023. Multi-scale integrated deep self-attention\nnetwork for predicting remaining useful life of aero-engine. Eng. Appl. Artif. Intel.  120, 105860 https://doi.org/10.1016/j.engappai.2023.105860.  Zhao, J., Sun, M., Pan, Z., et al., 2022. Effects of pore connectivity and water saturation\non matrix permeability of deep gas shale. Adv. Geo-Energy Res. 6 (1), 54–68.  Zhao, H., Wang, H., Ning, X.u., Zhao, X., Sharaf, S., 2023. Fuzzy approximation-based\noptimal consensus control for nonlinear multiagent systems via adaptive dynamic  programming. Neurocomputing 533, 126529.  Zheng, W., Gong, G., Tian, J., Lu, S., Wang, R., Yin, Z., Yin, L., 2023. Design of a modified\ntransformer architecture based on relative position coding. Int. J. Comput. Intell.  Syst. 16 (1), 168. https://doi.org/10.1007/s44196-023-00345-z.  Zhou, G., Deng, R., Zhou, X., Long, S., Li, W., Lin, G., Li, X., 2021. Gaussian inflection\npoint selection for lidar hidden echo signal decomposition. IEEE Geosci. Remote  Sens. Lett. 1–5 https://doi.org/10.1109/LGRS.2021.3107438.  Zhou, G., Xu, C., Zhang, H., Zhou, X., Zhao, D., Wu, G., Zhang, L., 2022a. PMT gain self-\nadjustment system for high-accuracy echo signal detection. Int. J. Remote Sens. 43  (19–24), 7213–7235. https://doi.org/10.1080/01431161.2022.2155089.  Zhou, G., Zhao, D., Zhou, X., Xu, C., Liu, Z., Wu, G., Zou, L., 2022b. An RF amplifier\ncircuit for enhancement of echo signal detection in bathymetric LiDAR. IEEE Sens. J.  22 (21), 20612–20625. https://doi.org/10.1109/JSEN.2022.3206763.\nY. Xie and H. Chen",
+  "equations": [
+    {
+      "page": 1,
+      "raw_extracted": "These days, most people can’t imagine their life without their networks. People rely more and more on networks  as new technologies like 5G and the Internet of Things proliferate, and networks are becoming larger and more  complicated by the day. Consequently, the enormous networked society is under increasing danger from cyber  attacks, which are also growing in number, sophistication, and variety. Users’ private data can end up in the  wrong hands. Data communicated via a network might be compromised in some way. It is also possible to target  the computer infrastructure that is linked to the network. Thus, NIDS is crucial in ensuring that contemporary  society’s network communication environment is secure and dependable. This work proposes a detection model  that is both lightweight and effective. This model is able to keep its high detection accuracy by combining the  benefits of SNN and CNN with logical algorithm design. On top of that, it can bring attention to clear strengths in  relation to computing efficiency and power usage. The suggested model was tested against a number of state-of-  the-art models using an extensive and integrated set of benchmarks. With a 23 % improvement in detection  accuracy (AD), a 19 % improvement in delay, and a 28 % improvement in consumption energy, the suggested  technique outperformed the Spiking DFR + MLP and Spike-DHS methods in the simulations.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 1,
+      "raw_extracted": "One of the most important components of keeping computer systems  and information networks secure is intrusion detection (Bul’ajoul et al.,  2018; Zarzoor et al., 2023). The need for innovative and effective so­ lutions in the area of security intrusion detection and prevention is  growing as a result of the advancement of information and communi­ cation technology (Ahmad et al., 2023; Laghrissi et al., 2021; Lightbody  et al., 2022). One of the most cutting-edge and effective approaches in  this area for intrusion detection is the application of convolutional  neural networks (Fomin et al., 2023; Sattari et al., 2021).",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "• The data-triggered spike information is encoded using a time-value  technique. Complex spike trigger patterns can be mapped to a  uniquely determined value by employing this encoding. Without  making the model data transfer procedure more difficult, informa­ tion can be given to the processing processes in a more compre­ hensive way.   • A loss function that fits the suggested model is customized. It can  offer supervision to make sure the model approximates the correct  result in multiple dimensions, ranging from measures like the accu­ racy of the present classification to the ranking of the correct clas­ sification in the inferred results.   • A brand-new intrusion detection model architecture is put out and  put into practice, based on convolutional and spiking networks. Ex­ periments show that the model can continue to secure the target",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 2,
+      "raw_extracted": "This paper’s remaining sections are arranged as follows. Section 2  offers a synopsis of the relevant material. Section 3 outlines the solution  we have in mind. Section 4 examines and assesses the performance of  the models that were adopted. The experiment results are compiled in  Section 5, along with workable ideas for further study directions.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "The non-leaky integrate neurons fire (NLIF) model was utilized in the  SNN to choose the best input samples in order to decrease latency and  device power consumption. They take into consideration a general class  of single-spike temporal-coded integrand-fire neurons in order to study  the input–output expressions of both leaky and nonleaky neurons (Li  et al., 2022; Zhao et al., 2023; Cao et al., 2023). For research to be useful,  it must be integrated into industrial processes. Even though several  studies have demonstrated the efficiency of SNNs (Tang et al., 2023;  Chen et al., 2022; Wu et al., 2023), much work remains to be done to  fully capitalize on this efficient performance. By contrast, artificial  neural networks come at a tremendous expense in terms of processing  power, memory performance, and energy consumption (Cao et al.,  2024).  With weights implemented in RRAM, the authors suggest a hybrid  SNN-CNN network to improve TSR’s computing and storage efficiency  (Xie et al., 2022). The SNN-CNN hybrid network achieves comparable  accuracy with 81.55 % less power consumption and 69.21 % less  weighted parameters when compared to the latest CNN techniques. With  the Differentiation on Spike Representation (DSR) approach, low latency  and high performance similar to ANNs can be attained (Huang et al.,  2024). The study demonstrates that DSR can deliver low latency state-of-  the-art SNN performance on both static and neuromorphic datasets. An  ultra-low-power radio frequency fingerprinting identification (RFFI)  system is constructed using SNNs (Yue et al., 2023). 64 % less power is  used by the SNN-based RFFI system than by ANNs with similar accuracy.  It is suggested that quick and memory-efficient training of Activation  Consistently Coupled ANN-SNNs (AC2AS) is possible (Zhao et al., 2022).  By examining the variations between analog neurons and spiking neu­ rons, an adaptive threshold method has been developed to improve the  balance between the weight and threshold of SNNs (Xue et al., 2023).  This technique obtained state-of-the-art results on CIFAR100 and out­ performed most of the recently suggested SNNs in terms of accuracy,  accuracy loss, and network latency on CIFAR10. A Dynamic Threshold  Integrate and Fire (DTIF) model is suggested to be used, which takes use  of the differences in biological neurons’ thresholds to boost spike ac­ tivity (Cao et al., 2022). At every simulation time step, the threshold is  dynamically changed to increase spike activity and decrease latency.  The results of these investigations also shed light on potential design  approaches for energy-efficient models (Zhao et al., n.d.; Liu et al., 2022;  Chen et al., 2022).",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 3,
+      "raw_extracted": "This research presents a novel intrusion detection model that utilizes  convolutional spiking neural networks, which are both lightweight and  efficient. In order to optimize processing performance, it is necessary to  leverage the advantages of both spiking neural networks and convolu­ tional neural networks when developing the processing framework. The  model’s complexity has been minimized to ensure that the final version  can reliably and efficiently perform its intended function, even in  resource-constrained contexts. The overall design of the model was  achieved by striking a compromise between the requirement for  simplicity and efficiency, and the requirement for accuracy.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "Each feature field that undergoes information extraction will be  allocated 16 bits of space to store the results. Every characteristic is  depicted as a binary matrix arranged in a 4 ⋅ 4 format. A total of 64  features are chosen, organized in an 8 ⋅ 8 arrangement, and will be  depicted by a 32 ⋅ 32 matrix.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "x = ρ(L ⋅ y + a) (1)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "In this context, y represents the input values, namely a subset of the  matrix. L refers to the convolution kernel. The symbol ⋅ indicates the  process of multiplying corresponding components of two matrices and  summing up the results. The variable a represents bias and can be  assigned a value of 0 if it is not needed. ρ is the activation function used  in the aforementioned calculation, such as sigmoid, however it can also  be a null operation. The internal potential of the ith neuron is updated at  each time step according to the following procedure:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "Wj(p) = Wj(p −1) + x (2)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "The terms Wj(p) and Wj(p −1) represent the internal potentials of the  ith neuron at time t and time p −1, respectively. A spike is produced  when the value of Wj surpasses its threshold, wthr, and Wj is subsequently  reset.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 4,
+      "raw_extracted": "Wj(p) = Wj(p) −wthr)*βandCj(p) = 1, ifWj(p) > wthr (3)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Here, the attenuation factor is shown by β ∈(1, 0). In other words,  upon triggering a spike, the potential of Vi is reset to a value equal to the  product of the exceeded portion of the spike threshold and β. Cj(p) de­ notes the ith neuron’s spike triggering at time t (Wu et al., 2022; Jiang  and Li, 2022). By default, it is set to 0, however a value of 1 indicates  that it is triggered.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "The signal from the final convolutional spiking layer will be encoded  using the “time-value” method, where spikes that occur earlier will be  assigned a higher value than spikes that occur later. The precise regu­ lations are provided in Algorithm 1.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Input: Quantity of values → m  Output: a set of values that are utilized to encode time values",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "1 m←numberbiggerthanzero  2 list_m ← []  3 Nt←1  4 for j ← 1 to n do:  5 list_m.append(Nt)  6 Nt←2*Nt  7 end for  8 list_m. reverse()  9 list_reslut ← []  10 for item in list_m do:  11 list_reslut.append(item / sum(list_m))  12 end for  13 return list_reslut",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "⎧ ⎪ ⎨",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "⎪ ⎩",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Nt = 2*Nt+1, ifnt = max(p), Nnt = 1",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "St = Nt ∑",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "iNi",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "It is evident that the final instance of Nnt is the smallest, and its value  corresponds to unit 1. The value of the forward instant is equal to twice  that of the succeeding moment. The value that can be attained by  creating a spike at instant t is known as St. In other words, it shows the  percentage of Nt in the entire amount of Ni. It is evident that ∑St is  convergent and remains constant as the time frame varies.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Input: The number of classes, expressed as an integer bigger than zero → m_class",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Results of the model’s forecast →predict ∈Rbatch size⋅m class",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Accurate classification of the specimens →target ∈Rbatch size⋅m class",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "1 # To predict and target, multiply the elements in their appropriate positions to  find the greatest value for each row.  2 cor, ←predict.mul(target).max(1) 3 # Find the classification probability value that the model prediction belongs  to.  4 pre, ←predict.max(1) 5 # Obtain the prediction’s ranking for the accurate classification.  6 val,idx←target.max(1) 7 val←val.half() 8 ids←val.clone() 9 for i in range(len(idx)) do:  10 val[j]←predict[j, idx[j]]",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "11 ids[j]←predict[j].gt(val[j]).float().sum() 12 end for  13 β←pre −cor  14 α←1 −cor  15 return mean(m class*β + (ids + 1)*α)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "The final loss value is mostly governed by two components, β and α,  as the procedure above illustrates. The β factor represents the discrep­ ancy between the type that the model predicts and the actual type (Jiang  and Li, 2022). As more categories tend to provide lower values, β is  scaled up by multiplying it by the number of classes, m_class. The  α-indicator’s job is to push the likelihood of accurate categorization in  the direction of its highest value. The model prediction results’ ranking  of the right classification is also considered. Since the ranking begins at  0, the addition of 1 to ids makes sense. There is still opportunity for  optimization even if the ranking is currently 0 (i.e., first place), provided  that the probability value has not achieved its maximum value. The  following method is used to modify the learning rate during model  training:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "⎧ ⎪ ⎨",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "⎪ ⎩",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "π1 = 0.0001",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "πp = 0.6*π1",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "(",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "1 + cos ( p",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "pmax",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "μ",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": ") )",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": ", 2 ≤p ≤pmax",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "The initial learning rate that the model sets during the first training  period is denoted by π1. p is the number of training rounds that are  currently in use, and pmax is the total number of epochs that the model  must be trained for. For a total of 60 training rounds, the learning rate  for each round in the Proposed method as well as the Spiking DFR + MLP  method is shown in Fig. 3.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "• Detection accuracy, which gauges the fundamental competence of a  model.   • The quantity of parameters and computation needed to describe a  model’s complexity.   • The number of samples processed in a second, which indicates the  execution speed.   • The average power consumption per 20,000 samples is used to  calculate energy consumption.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "These metrics provide a more complete view of the model’s overall",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Accuracy of Detection = TN + TP TN + TP + FN + FP (6)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Energyusage = firstenergy −(energysy + energypy) (8)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Energysy[b, l] =",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "{",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "l.elec + l.εampb2, b < b0 l.elec + l.εampb4, b > b0 (9)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Energypy(l) = l.elec + l.epa (10)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "• SNN (Cao et al., 2023): Spiking Neural Network.   • Spiking DFR + MLP (Xie et al., 2022): Delayed Feedback Reservoir + Multi Layer Perceptron.   • ResNet18-GLIF (Chen et al., 2022): GLIF neurons are used by  ResNet18.   • Spike-DHS (Tang et al., 2023): This computation is spike-based and  done at both the layer and cell levels.   • MLP (Cao et al., 2024): Multi Layer Perceptron optimized.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "• STDS (Wu et al., 2023): Pruning speed can be adjusted for various  stages of SNN weights by using distinct functions to characterize the  rising threshold of state transition. Dynamic pruning approaches are  used to construct an algorithm by nonlinearly analyzing spine size  and SNN weights.   • Spikformer (Li et al., 2024): A unique algorithmic framework for  Spiking Self-Attention (SSA) is devised, utilizing the biological fea­ tures of SNNs and their capacity for self-attention.   • CNN (Liu et al., 2022): Convolutional neural network model  optimized.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Table 1 presents the metrics for efficiency. Here, “energy consump­ tion” refers to the model’s electrical energy usage following 20,000  sample processing. The rate at which the model analyzes experimental",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "samples is quantified by samples/s. The model’s complexity is mostly  indicated by the number of parameters. The quantity of floating-point  computing needed by the model is indicated by floating-point opera­ tions. The size of the model represents how much space it will take up  after training is finished. The model’s storage and runtime space foot­ print is directly impacted by this measure. The following is the experi­ mental configuration used to collect this data.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "• Operating system: Linux-23.10.1 + -x64-with-glibc3.32.   • CPU: Intel(R) Xeon(R) @ 2.50 GHz, 7 Core(s), 150.00 W.   • RAM: 64 GB, 12.67 W.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "The experimental results demonstrate the significant advantages of  the suggested model. After processing 20,000 samples, the model’s  power usage is documented in the first measure. Since energy shows an  equipment’s long-term viability, energy consumption is especially sig­ nificant for equipment that has a limited supply of energy (e.g., devices  employing mobile power or batteries). The trial results clearly show that  the suggested model can cut energy use by at least 51 % when compared  to the other models and by as much as 92 % when compared to the  energy-consuming model. It is evident that the model suggested in the  research can have reduced energy use for the same power supply. This  will offer more robust protection and allow the host equipment to  function for an extended amount of time.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "The model’s efficiency in processing samples is indicated by the  Samples/s indicator, which primarily shows the model’s response time.  More samples processed in a second suggest a faster reaction time and  the capacity to promptly give risk assessment. The model presented in  this research is at least thirty times faster than previous models, as the  results above demonstrate. Compared to most models, it is even faster by  over a thousand times. The experimental results demonstrate the",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Model  Energy Consumption (kWh ⋅ 10−3)  Samples/s  Parameters  floating-point operationss  Model Size (MB)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "SNN   278.06241  7  45,028,336  5,072,892,152   181.17  Spiking DFR + MLP   369.12313  5  12,175,241  7,248,941,536   45.88  ResNet18-GLIF   374.16121  5  12,346,374  7,349,455,542   46.52  Spike-DHS   632.76442  7  15,777,154  15,287,675,214   191.89  MLP   20.56745  75  373,125  2,576,111,412   2.3  STDS   583.25002  4  46,713,732  41,272,046,742   151.91  Spikformer   180.32860  10  8,330,047  3,623,420,142   38.56  CNN   9.19191  265  18,189,484  489,492,721   69.79  Proposed Model   4.75247  8980  8456  314,802   0.04291",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Latency = Thequantityofreceiveddatapacketsintheintendedpeak ∑Theamountoftimeneededtosendthedatapackettothetargetthatisspiked (7)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "An important indicator of the model’s complexity is the number of  parameters in the model. Given that the majority of the parameters must  be trained in order for them to fit the target dataset. Thus, this metric can  be used to primarily reflect the model’s training-process costs, including  computational resources and time. The suggested model still has a big  edge in this area. This indicates that training and validation can be  finished by the model more quickly. This feature, which enables de­ signers to test their concepts and receive feedback more quickly, is  particularly crucial during the model creation stage.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "The primary focus of floating-point operations is the amount of  computation the model did while processing the sample. It accurately  depicts how many computing units the related model used to process the  samples. The model’s impact on the device’s initial functioning will  decrease with the number of compute units it occupies. In devices with  limited CPU resources, installing additional applications may cause the  original functionality to occasionally stop working. Therefore, in order  to preserve the original function’s good functioning, it is vital to mini­ mize this signal as much as feasible. The total amount of computation  needed by the model to handle a single sample is displayed in Table 1.  The suggested model still has a significant advantage in this regard. In  contrast to alternative models, it can be decreased by over 99.27 %.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "Regarding the model size indicator, the suggested model also offers a  clear benefit. The space needed to be occupied in the storage media once  the model has been trained is shown in the above table. A target device  must have the capacity to store, load, and execute the model in order for  it to offer protection. The relevant model’s need for storage resources  decreases with decreasing metric values. The suggested model is more  than thirty times larger than other models with even the smallest vol­ ume. This feature may help the suggested model better support devices  with low storage.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "Performance advantage was used to provide a score to each of the  measures in Table 1. First place receives 6 points, and each place down  the rankings results in a deduction of 0.6 points, with 1 point going to  the lowest place. In Fig. 4, each model’s score for each metric is then  displayed.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "indication of the model’s exceptional efficaciousness. It also demon­ strates the model’s great potential for use, even with devices with little  resources.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "Within this section, we conduct a comparative analysis of the sug­ gested method against two analogous approaches, namely Spiking DFR  + MLP and Spiking-DHS, in order to discern potential attacks. The data  utilized exhibit an imbalance. Consequently, the distribution of at-risk  and non-comparable samples is not equivalent. Within our dataset, 22  % of the samples exhibit a level of danger, while the remaining 78 % do  not. Performance criteria are used to assess the precision and F1 score.  The results presented in Figs. 5 and 6 demonstrate that the suggested  strategy, which combines spiking neurons with Spiking DFR + MLP,  outperforms both Spiking DFR + MLP and Spiking-DHS in terms of  performance, as measured by both assessment criteria. It is evident that  when the magnitude of the attack, denoted as A, grows, there is a cor­ responding improvement in performance. The suggested method is  capable of emulating Recurrent Neural Networks (RNNs) and effectively  capturing the spatio-temporal correlation among smart grid meters. The",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "SNN   98.83   99.86  Spiking DFR + MLP   98.81   99.94  ResNet18-GLIF   98.78   99.85  SpikeDHS   98.79   99.90  MLP   98.78   99.87  STDS   98.92   99.82  Spikformer   98.68   99.71  CNN   98.93   99.92  Our Model   99.93   99.92",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "DFR + MLP combination is employed as the readout layer in spiking.  The simulations employ MATPOWER to create data, with 22 % of the  whole data being affected by the dynamic assault specified in (3). The  DFR node chosen is a nonlinear LIF neuron, which serves as a model for  spiking neurons. The decoded information needs to be transformed into  a current that can be utilized by the LIF neuron. Equation (5) is utilized  to transform the encoded input into a continuous flow. The present  electric current is subsequently administered to the LIF neuron, resulting  in the generation of a comparable sequence of electrical impulses. The  spike trains are temporally delayed and subsequently transformed into a  stream that can be appended to the appropriate stream of the subsequent  input. This procedure is iterated until all samples have been processed  and the spike train matching to each input sample has been produced.  These spike trains comprise many spikes, each occurring at a distinct  moment.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "The occurrence frequency of these spikes is utilized as a character­ istic to train the readout layer. The readout layer in this article is Spiking  DFR + MLP. The Spiking DFR + MLP model takes as input the temporal  occurrence of spikes and produces an output of either 0 or 1, based on  the classification of the data. The output of the Spiking DFR + MLP is 1  when the data is spiked, and 0 otherwise. Once the training process is  finished, a set of data that has not been previously encountered by DFR  Spiking is employed for testing purposes.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "There are 20,000 samples used for training and 20,000 samples  utilized for testing. Among these, 22 % are classified as at risk and 78 %  are classified as illegal. The presence of disparate proportions between  at-risk and non-at-risk samples results in an imbalanced dataset. The  identical dataset is also employed to train Spiking DFR + MLP and  Spiking -DHS. The performance of three approaches, namely the",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "suggested method, Spiking DFR + MLP, and Spiking-DHS, is depicted in  Figs. 10 and 11.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "The performance is evaluated based on the number of meters at risk  and the size of the attack. As the attack magnitude grows, there is an  improvement in performance for both performance measures. The pro­ posed strategy attains optimal performance. Both the Spiking DFR + MLP and Spiking-DHS methods have very poor performance rates when  dealing with small-scale attacks. Nevertheless, the suggested method  exhibits much enhanced accuracy in detecting attacks, even for minus­ cule attack magnitudes. The simulation findings demonstrate that the  combination of Spiking-DHS, the proposed model, and Spiking DFR + MLP on a single platform leads to an average attack detection accuracy  of 95.2 % across various assault magnitudes and the number of mea­ surements at risk. When exclusively employing Spiking-DHS, the  average accuracy is 78.32 %. This demonstrates that the proposed  method can enhance the average accuracy by around 18 %. The  enhancement of the suggested approach is particularly notable when  considering the F1 measurement. The mean F1 score achieved by  merging the suggested approach, Spiking-DHS, and Spiking DFR + MLP  is 79 %. However, the F1 score is just 26 % when exclusively relying on  Spiking-DHS for dynamic attack detection. The findings demonstrate  that the method introduced in this study has the capability to enhance  the F1 measurement by around 54 %.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "Nevertheless, the performance rates of Spiking-DHS are significantly  diminished when the attack size is minimal, as demonstrated in Figs. 10  and 11. Specifically, the F1 benchmarks indicate that both Spiking DFR  + MLP and Spiking-DHS fail to identify attacks when the dynamic attack  magnitude is extremely low. The primary factor is that both spiking DFR  + MLP and spiking-DHS models lack the ability to accurately represent",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "Fig. 5. Detection accuracy for three distinct attack methods and attack magnitudes (A = 0.1,1,-10).",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 9,
+      "raw_extracted": "Fig. 6. F1 of attack detection for three distinct approaches and attack sizes, where A = 0.1,1,10.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 9,
+      "raw_extracted": "Fig. 7. Consequences of various delay settings on performance when A = 1.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 10,
+      "raw_extracted": "In this paper, we used the CSE-CIC Train+, CSE-CIC Test+, and CSE-  CIC Test21 datasets from the CSE-CIC-IDS2018 dataset. The CSE-CIC  Train + dataset contains 126,250 samples, which includes 59,628  samples of attack traffic and 66,622 samples of normal traffic. The CSE-  CIC Test + collection contains a total of 23,524 samples. As a subset of  the CSE-CIC Test + suite, the CSE-CIC Test21 suite contains a total of  11,630 samples. Cross-validation was performed on the CSE-CIC Train  + suite in our experiments. We also considered validation using a simple  holdover (training test) approach applied to the CSE-CIC Test + and  CSE-CIC Test-21 sets. Fig. 9 shows the results for each class in the CSE-  CIC-IDS2018 dataset in terms of classification.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 10,
+      "raw_extracted": "In order to conduct a fair comparison with the results mentioned in  (Li et al., 2023), we first used the “original” dataset with 47 features,  which was retrieved from the source code (Trik et al., 2023), for the  DDoS dataset (CIC-DDoS2019), which had a total of 3750 samples. This  was followed by trials on this number of attacks. Table 4 shows the total  number of data records and the number of data records successfully  classified for each class for the CIC-DDoS2019 dataset. The classification  confusion matrix, represented as the number of data records tested, is  displayed in Fig. 10.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 10,
+      "raw_extracted": "The CNN structure and SNN models utilized in the studies were all  recently published in reputable journals. The experiment’s accuracy  results show that the traditional CNN still performs marginally better  than the majority of SNN models. It demonstrates that SNNs cannot yet  fully replace CNNs in terms of accuracy in the current research phase.  Furthermore, in the performance criteria that make SNNs so desirable,  some SNN models fall short of CNNs. Simultaneously, the model put out  in this research can attain an accuracy level comparable to these cutting-  edge models. Furthermore, it performs significantly better than com­ parable models in terms of efficiency metrics, demonstrating the  model’s exceptional overall practical capabilities.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 10,
+      "raw_extracted": "We have categorized the CIC-DDoS2019 dataset’s evaluation criteria  in Table 6. In this table, it is clearly shown that the proposed model  outperforms all the findings mentioned in (Liu et al., 2022) with a  classification accuracy of 0.9685. This table’s classification results  demonstrate that CSNN outperformed other approaches in the field for  all four classification accuracy criteria: F1, precision, recall, and",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 11,
+      "raw_extracted": "This section provides a comparison between the difficulty of the  suggested strategy and alternative methods. The computational diffi­ culty of detecting dynamic attacks using DFR is determined by the  computation required for the reservoirs and the updating of the readout  layer weights. Only the readout layer weights require training in the  spiking DFR technique. Nevertheless, in Recurrent Neural Networks  (RNNs), it is necessary to train the weights of all neurons across many  layers. Training all layers of Recurrent Neural Networks (RNNs) signif­ icantly increases their computational complexity compared to archi­ tectures based on Reservoir Computing (RC). Complexity can be  measured by the total number of floating point operations (FLOP). The  study in reference (Lyu et al., 2023; Nanjappan et al., 2024) demon­ strates that the computational complexity of learning systems based on  RC (Recurrent Neural Networks) is directly proportional to the time  required for training. Hence, this section presents the training duration  of the suggested method and compares it to the training durations of  Spiking DFR + MLP and Spiking -DHS. Table 7 displays the training  durations for the Proposed Method, Spiking DFR + MLP, and Spiking  -DHS. Comparisons are drawn regarding the training time of these three  algorithms, which also serves as an indication of their computational  complexity.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 11,
+      "raw_extracted": "According to the data presented in Table 7, the Spiking-DHS method  has the greatest computational complexity. The Proposed Method and  SPIKING DFR + MLP algorithms are ranked as the second and third most  computationally complex, respectively. The method is composed of  three blocks: spike-to-stream, reservoir, and Spiking DFR + MLP as the  readout layer. These blocks increase the computational complexity of  our technique compared to a spiking DFR + MLP. Nevertheless, this  extra burden is inconsequential, as demonstrated in Table 7.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 11,
+      "raw_extracted": "Table 4  Results of each class’s classification in the CIC-DDoS2019 dataset. 21,567 data  records were correctly classified. 22,641 is the total number of data records.  98.21 % is the classification accuracy.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "SNN   0.6084   0.6901   0.8840   0.5520  Spiking DFR + MLP   0.8324   0.8825   0.9120   0.8924  ResNet18-GLIF   0.7536   0.8714   0.9305   0.6945  Spike-DHS   0.7909   0.8212   0.9635   0.6350  MLP   0.6984   0.7926   0.9524   0.6015  STDS   0.8121   0.7852   0.9118   0.5886  Spikformer   0.8202   0.7732   0.8984   0.7927  CNN   0.9014   0.9203   0.9015   0.9261  Proposed Model   0.9685   0.9672   0.9731   0.9788",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "SNN   0.9112   0.7760   0.7600   0.9117  Spiking DFR + MLP   0.9554   0.9362   0.9402   0.6475  ResNet18-GLIF   0.9123   0.9120   0.9023   0.9165  Spike-DHS   0.9342   0.9117   0.9010   0.9330  MLP   0.9471   0.9363   0.9415   0.9442  STDS   0.9287   0.6425   0.9272   0.9520  Spikformer   0.9368   0.9524   0.9350   0.9482  CNN   0.9378   0.9291   0.9087   0.9005  Proposed Model   0.9876   0.9890   0.9858   0.9876",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "Proposed Method  17.24 s  Spiking DFR + MLP  4.3 s  Spiking-DHS  91 s",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "model’s ability to detect intrusive patterns in the data while minimizing  the computational overhead. The proposed model performs more effi­ ciently than the current solutions, although its classification accuracy is  slightly lower than the most accurate model. In most cases, deep con­ volutional neural networks outperform spiking neural network models  in terms of parameters such as energy consumption, execution effi­ ciency, and classification accuracy. The spiking neural network models  used in this paper are based on the challenges of recent research results,  and as seen in the attack detection accuracy, energy consumption, and  delay tests, the obtained results have performed much better than  similar recent methods. So that the detection accuracy (AD) has  improved by 23 %, delay by 19 % and energy consumption by 28 %.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "• Can the amount of training data be increased and the model made  more robust to greater data variability by using data augmentation  techniques such as rotation, resizing, and additional noise?   • By using pre-trained neural networks on different data (such as  ImageNet), is it possible to take advantage of the information  extracted in the early stages of training and require a large amount of  training data?",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "extended convolutional neural network for intrusion detection in cloud storage.  Concurr. Comput.: Pract. Exp. 35 (23), e7806.  Bul’ajoul, W.; James, A.; Shaikh, S. A new architecture for network intrusion detection",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "and prevention. IEEE Access 2018, 7, pp. 18558–18573.  Chen Cao, Jianhua Wang, Devin Kwok, Zilong Zhang, Feifei Cui, Da Zhao, Mulin Jun Li,",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "physical layer security of uplink NOMA via energy harvesting jammers. IEEE Trans.  Inf. Forensics Secur. 16, 786–799. https://doi.org/10.1109/TIFS.2020.3023277.  Cao, B., Zhao, J., Gu, Y., Fan, S., Yang, P., 2020. Security-aware industrial wireless sensor",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "network deployment optimization. IEEE Trans. Ind. Inf. 16 (8), 5309–5316. https://  doi.org/10.1109/TII.2019.2961340.  Chen, Z., & Gao, L. (2023, 2023-01-01). CURSOR: Configuration Update Synthesis Using",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "of multiple AUV systems with intermittent communication. IEEE Trans. Syst. Man  Cybernet.: Syst. 52 (10), 6618–6629. https://doi.org/10.1109/  TSMC.2022.3148295.  Chen, Y., Mai, Y., Feng, R., Xiao, J., 2022. An adaptive threshold mechanism for accurate",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "and efficient deep spiking convolutional neural networks. Neurocomputing 469,  189–197.  Ding, Y., Zhang, W., Zhou, X., Liao, Q., Luo, Q., Ni, L.M., 2021. FraudTrip: Taxi",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "fraudulent trip detection from corresponding trajectories. IEEE Internet Things J. 8  (16), 12505–12517. https://doi.org/10.1109/JIOT.2020.3019398.  Fomin, I., Korsakov, A., Ivanova, V., & Bakhshiev, A. (2023, October). Investigation of a",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "cancellation system. Int. J. Electron. 109 (5), 854–874. https://doi.org/10.1080/  00207217.2021.1941295.  Laghrissi, F., Douzi, S., Douzi, K., Hssina, B., 2021. IDS-attention: an efficient algorithm",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "for intrusion detection systems using attention mechanism. J. Big Data 8, 1–21.  Li, C., Dong, M., Xin, X., Li, J., Chen, X., Ota, K., 2023. Efficient privacy-preserving in",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "keyword search supporting constant trapdoor generation and fast search. IEEE  Trans. Inf. Forensics Secur. 18, 396–410. https://doi.org/10.1109/  TIFS.2022.3224308.  Li, K., Ji, L., Yang, S., Li, H., Liao, X., 2022. Couple-group consensus of cooperative-",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "competitive heterogeneous multiagent systems: A fully distributed event-triggered  and pinning control method. IEEE Trans. Cybern. 52 (6), 4907–4915. https://doi.  org/10.1109/TCYB.2020.3024551.  Li, D., Ortegas, K.D., White, M., 2023. Exploring the computational effects of advanced",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "with low power consumption and high performance and output impedance. Analog  Integr. Circ. Sig. Process 1–13.  Liao, Q., Chai, H., Han, H., Zhang, X., Wang, X., Xia, W., Ding, Y., 2022. An integrated",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "multi-task model for fake news detection. IEEE Trans. Knowl. Data Eng. 34 (11),  5154–5165. https://doi.org/10.1109/TKDE.2021.3054993.  Lightbody, D., Ngo, D. M., Temko, A., Murphy, C., & Popovici, E. (2022, June). Host-",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "question answering. IEEE Trans. Pattern Anal. Mach. Intell. 45 (10), 11624–11641.  https://doi.org/10.1109/TPAMI.2023.3284038.  Liu, Z., Wen, C., Su, Z., Liu, S., Sun, J., Kong, W., Yang, Z., 2023. Emotion-semantic-",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "contract fuzzing: Fuzzing with invocation ordering and important branch revisiting.  IEEE Trans. Inf. Forensics Secur. 18, 1237–1251. https://doi.org/10.1109/  TIFS.2023.3237370.  Liu, X., Zhao, J., Li, J., Cao, B., Lv, Z., 2022. Federated neural architecture search for",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "medical data security. IEEE Trans. Ind. Inf. 18 (8), 5628–5636. https://doi.org/  10.1109/TII.2022.3144016.  Lu, J., Osorio, C., 2018. A probabilistic traffic-theoretic network loading model suitable",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "for large-scale network analysis. Transp. Sci. 52 (6), 1509–1530. https://doi.org/  10.1287/trsc.2017.0804.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "SecNet: utilizing deep LSTM and GRU with secure network for enhanced intrusion  detection in IoT environments. Clust. Comput. 1–13.  Qi, M., Cui, S., Chang, X., Xu, Y., Meng, H., Wang, Y., Arif, M., 2022. Multi-region",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "Leveraging pupil morphology for recommending on smartphones. IEEE Internet  Things J. 9 (17), 15538–15553. https://doi.org/10.1109/JIOT.2022.3181607.  Sun, G., Li, Y., Liao, D., Chang, V., 2018. Service function chain orchestration across",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "multiple domains: A full mesh aggregation approach. IEEE Trans. Netw. Serv.  Manag. 15 (3), 1175–1191. https://doi.org/10.1109/TNSM.2018.2861717.  Sun, G., Zhu, G., Liao, D., Yu, H., Du, X., Guizani, M., 2019. Cost-efficient service",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "function chain orchestration for low-latency applications in NFV networks. IEEE  Syst. J. 13 (4), 3877–3888. https://doi.org/10.1109/JSYST.2018.2879883.  Sun, G., Xu, Z., Yu, H., Chen, X., Chang, V., Vasilakos, A.V., 2020. Low-latency and",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "resource-efficient service function chaining orchestration in network function  virtualization. IEEE Internet Things J. 7 (7), 5760–5772. https://doi.org/10.1109/  JIOT.2019.2937110.  Tan, J., Jin, H., Hu, H., Hu, R., Zhang, H., Zhang, H., 2023. WF-MTD: Evolutionary",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "decision method for moving target defense based on Wright-Fisher process. IEEE  Trans. Dependable Secure Comput. 20 (6), 4719–4732. https://doi.org/10.1109/  TDSC.2022.3232537.  Tang, J., Lai, J.H., Xie, X., Yang, L., Zheng, W.S., 2023. AC2AS: Activation consistency",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "A new adaptive selection strategy for reducing latency in networks on chip.  Integration 89, 9–24.  Wang, Z., Jin, Z., Yang, Z., Zhao, W., Trik, M., 2023. Increasing efficiency for routing in",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "understanding user demand and D2D communication in 5G networks. IETE J. Res.  1–17.  Wu, Z., Cao, J., Wang, Y., Wang, Y., Zhang, L., Wu, J., 2020. hPSD: A hybrid PU-learning-",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "based spammer detection model for product reviews. IEEE Trans. Cybern. 50 (4),  1595–1606. https://doi.org/10.1109/TCYB.2018.2877161.  Wu, H., Jin, S., Yue, W., 2022. Pricing policy for a dynamic spectrum allocation scheme",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "with batch requests and impatient packets in cognitive radio networks. J. Syst. Sci.  Syst. Eng. 31 (2), 133–149. https://doi.org/10.1007/s11518-022-5521-0.  Wu, X., Zhao, Y., Song, Y., Jiang, Y., Bai, Y., Li, X., Zhou, Y., Yang, X., Hao, Q., 2023.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "keystrokes on touch screen through acoustic sensing. IEEE Trans. Mob. Comput. 20  (2), 337–351. https://doi.org/10.1109/TMC.2019.2947468.  Yue, S., Niu, B., Wang, H., Zhang, L., Ahmad, A.M., 2023. Hierarchical sliding mode-",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "based adaptive fuzzy control for uncertain switched under-actuated nonlinear  systems with input saturation and dead-zone. Robot. Intell. Automation 43 (5),  523–536. https://doi.org/10.1108/RIA-04-2023-0056.  Zarzoor, A.R., Al-Jamali, N.A.S., Qader, D.A.A., 2023. Intrusion detection method for",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "machine to predict DNA N6-methyladine modification. Curr. Bioinform. 17 (5),  473–482.  Heng Zhao, Guangdeng Zong, Huanqing Wang, Xudong Zhao, Ning Xu. Zero-Sum Game-",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "Distributed Finite-Horizon H∞Consensus Control for Constrained Nonlinear  Multiagent Systems, IEEE Systems Journal, DOI: 10.1109/JSYST.2023.3318525.  Heng Zhao, Guangdeng Zong, Xudong Zhao, Huanqing Wang, Ning Xu, Ning Zhao,",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "on matrix permeability of deep gas shale. Adv. Geo-Energy Res. 6 (1), 54–68.  Zhao, H., Wang, H., Ning, X.u., Zhao, X., Sharaf, S., 2023. Fuzzy approximation-based",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "point selection for lidar hidden echo signal decomposition. IEEE Geosci. Remote  Sens. Lett. 1–5 https://doi.org/10.1109/LGRS.2021.3107438.  Zhou, G., Xu, C., Zhang, H., Zhou, X., Zhao, D., Wu, G., Zhang, L., 2022a. PMT gain self-",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "adjustment system for high-accuracy echo signal detection. Int. J. Remote Sens. 43  (19–24), 7213–7235. https://doi.org/10.1080/01431161.2022.2155089.  Zhou, G., Zhao, D., Zhou, X., Xu, C., Liu, Z., Wu, G., Zou, L., 2022b. An RF amplifier",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "circuit for enhancement of echo signal detection in bathymetric LiDAR. IEEE Sens. J.  22 (21), 20612–20625. https://doi.org/10.1109/JSEN.2022.3206763.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    }
+  ],
+  "warnings": []
+}

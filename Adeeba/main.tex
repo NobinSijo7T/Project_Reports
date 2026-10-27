@@ -144,6 +144,17 @@
 \include{coverpage}
 \include{vision_mission}
 \include{certificate1}
+\ifdefined\studentAdeeba
+  \input{certificate_adeeba}
+\else\ifdefined\studentAvani
+  \input{certificate_avani}
+\else\ifdefined\studentThara
+  \input{certificate_thara}
+\else
+  \input{certificate_adeeba}
+  \input{certificate_avani}
+  \input{certificate_thara}
+\fi\fi\fi
 \include{declaration}
 \hypersetup{pageanchor=true}
 
@@ -228,7 +239,8 @@ This project report encompasses the complete architectural design, mathematical 
     \item \textbf{Chapter 6 (Design and Methodology):} Analyzes Solidity smart contract implementation, modifiers, staged transaction verification, React/Web3.js front-end integration, MetaMask ECDSA signing, and consensus model trade-offs.
     \item \textbf{Chapter 7 (Preliminary Analysis):} Conducts comparative evaluations across blockchain platforms (Ethereum, Hyperledger, Polygon), consensus mechanisms (PoW, PoS, PoA), EVM gas expenditures, and smart contract vulnerability mitigation.
     \item \textbf{Chapter 8 (Feasibility Study):} Evaluates technical, operational, and economic feasibility dimensions, accompanied by the complete project milestone Gantt chart.
-    \item \textbf{Chapter 9 (Conclusion and Future Scope):} Summarizes major technical milestones, discusses remaining real-world constraints (e.g., key custody, ballot privacy), and charts prospective research trajectories including Zero-Knowledge Proofs and Layer-2 scaling.
+    \item \textbf{Chapter 9 (Results and Discussion):} Documents the empirical implementation, deployment testing, administrative management workflows, voter authentication guards, atomic double-voting mitigation enforcement, and real-time auditable election outcome tallying with full interface screenshots.
+    \item \textbf{Chapter 10 (Conclusion and Future Scope):} Summarizes major technical milestones, discusses remaining real-world constraints (e.g., key custody, ballot privacy), and charts prospective research trajectories including Zero-Knowledge Proofs and Layer-2 scaling.
 \end{itemize}
 
 %==============================================================================
@@ -351,6 +363,7 @@ In conventional electoral administration, ensuring that every registered voter $
 \textit{To design and implement a decentralized, transparent, and auditable electronic voting architecture that provably prevents duplicate voting ($\text{Double-Voting}$) and unauthorized candidate insertion at the smart contract level, while providing cryptographically non-repudiable voter authentication, real-time result compilation, and deterministic transaction processing without exposing voters to gas cost volatility.}
 \end{quote}
 
+\clearpage
 \section{Threat Model and Attack Vectors}
 The proposed system is designed against the following realistic adversarial threats:
 \begin{itemize}
@@ -383,7 +396,7 @@ where $H(B_{i-1}) \in \{0, 1\}^{256}$ represents the cryptographic hash of the i
 
 Any retroactive attempt to alter a transaction $tx_k \in Tx_j$ in a historical block $B_j$ ($j < i$) produces an altered hash $H'(B_j) \neq H(B_j)$. Because $H(B_j)$ is embedded within block $B_{j+1}$, this modification breaks the cryptographic link for all subsequent blocks $B_{j+1}, \dots, B_i$, causing immediate rejection by all network validator nodes.
 
-\enlargethispage{2\baselineskip}
+\clearpage
 \subsection{Atomic Double-Voting Mitigation Predicate}
 Let $\mathcal{V} \subset \mathbb{Z}_{2^{160}}$ represent the universal set of all 20-byte Ethereum wallet addresses, and let $\mathcal{C} = \{1, 2, \dots, K\}$ represent the set of certified candidate identifiers. The smart contract maintains two internal state mapping functions:
 \begin{align}
@@ -463,6 +476,7 @@ The functional requirements are categorized across three operational modules: Ad
     \item \textbf{NFR-05: Cross-Browser Accessibility:} The web client shall operate seamlessly across all major Web3-compatible browsers, including Google Chrome, Mozilla Firefox, Brave, and Microsoft Edge.
 \end{itemize}
 
+\clearpage
 \section{Hardware and Software Specifications}
 Table~\ref{tab:specs} outlines the operational hardware and software environments utilized for system development, testbed deployment, and client execution.
 
@@ -471,11 +485,10 @@ Table~\ref{tab:specs} outlines the operational hardware and software environment
 \caption{System Hardware and Software Technical Specifications}
 \label{tab:specs}
 \begingroup
-\setstretch{1.15}
-\fontsize{9.0}{11.5}\selectfont
-\renewcommand{\arraystretch}{1.20}
-\setlength{\tabcolsep}{5pt}
-\begin{tabularx}{\textwidth}{>{\RaggedRight\bfseries}p{3.6cm} >{\RaggedRight}p{4.4cm} >{\RaggedRight\arraybackslash}X}
+\fontsize{8.5pt}{10.5pt}\selectfont
+\renewcommand{\arraystretch}{1.08}
+\setlength{\tabcolsep}{4.5pt}
+\begin{tabularx}{\textwidth}{>{\RaggedRight\bfseries}p{3.5cm} >{\RaggedRight}p{4.2cm} >{\RaggedRight\arraybackslash}X}
 \toprule
 \textbf{Category} & \textbf{Component / Tool} & \textbf{Specification / Version} \\
 \midrule
@@ -530,6 +543,7 @@ The system architecture is structured across four decoupled, modular tiers: Clie
 
 The Client Presentation Tier provides distinct portals for the election administrator (\texttt{admin.html}) and voters (\texttt{voting.html}). Voters authenticate via MetaMask, which manages private key storage and signs transactions locally. The Web3 Middleware Tier translates client actions into JSON-RPC calls sent to the Ethereum network. The Smart Contract Logic Tier executes the compiled Solidity bytecode on the EVM, enforcing role-based access control and atomic double-voting mitigation. Finally, the Blockchain Ledger Tier seals verified transactions into chronologically chained blocks via Proof-of-Authority consensus.
 
+\clearpage
 \section{Proposed Operational Methodology Pipeline}
 The complete election lifecycle is organized into five sequential phases, as illustrated in Figure~\ref{fig:methods_pipeline}.
 
@@ -548,6 +562,7 @@ The complete election lifecycle is organized into five sequential phases, as ill
     \item \textbf{Stage 5 (Consensus Sealing \& Live Audit Compilation):} Validator nodes seal the transaction into a block via SHA-256 hash chaining, emit the \texttt{VoteCast} event, and update the live audit tally.
 \end{itemize}
 
+\clearpage
 \section{Voter Registration and Whitelisting Workflow}
 Figure~\ref{fig:voter_workflow} illustrates the step-by-step handshake between the administrator, voter, MetaMask wallet, and the smart contract during the pre-voting whitelisting and authentication phases.
 
@@ -579,253 +594,37 @@ Figure~\ref{fig:sys_flowchart} depicts the complete operational flowchart of the
 \end{figure}
 
 \section{Algorithm}
-The complete operational mechanics of the blockchain-based electronic voting system and its double-voting mitigation engine are formalized through the end-to-end procedural steps detailed below:
+The operational lifecycle of the decentralized electronic voting system and its atomic double-voting mitigation mechanism are executed through the following structured twelve-stage algorithmic procedure:
 
-\newenvironment{algsubsteps}{%
-  \begin{list}{}{%
-    \setlength{\leftmargin}{5.2em}%
-    \setlength{\itemindent}{-3.0em}%
-    \setlength{\labelwidth}{2.6em}%
-    \setlength{\labelsep}{0.4em}%
-    \setlength{\listparindent}{0pt}%
-    \setlength{\parsep}{1pt}%
-    \setlength{\itemsep}{3pt}%
-    \setlength{\topsep}{2pt}%
-    \setlength{\partopsep}{0pt}%
-  }%
-}{\end{list}}
+\begin{enumerate}
+\renewcommand{\labelenumi}{\textbf{Step \arabic{enumi}:}}
+    \item \textbf{System Initialization and Contract Deployment:} The election administrator compiles the Solidity smart contract (\texttt{Voting.sol}) and broadcasts the deployment transaction to the Ethereum network via an authenticated JSON-RPC provider. The constructor atomically binds administrative ownership to the deployer's address (\texttt{msg.sender}) and initializes the election state.
+    
+    \item \textbf{Candidate Nomination:} The administrator registers certified candidates using \texttt{addCandidate(name, party)}. The smart contract enforces the \texttt{onlyOwner} modifier, assigns a sequential candidate ID, and records the candidate on-chain with an initial vote count of zero.
+    
+    \item \textbf{Voter Whitelisting:} The administrator authorizes eligible voters by registering their 42-character Ethereum public addresses via \texttt{registerVoter(address)}. The contract confirms that the caller is the administrator and that the address has not already been registered, then sets \texttt{voters[v].isRegistered = true} and initializes \texttt{voters[v].hasVoted = false} in persistent storage.
+    
+    \item \textbf{Client Connection and Wallet Handshake:} The voter accesses the web application through a Web3-enabled browser. Upon initiating login, the front end requests account access via MetaMask (\texttt{eth\_requestAccounts}), establishing a secure connection and retrieving the active wallet address.
+    
+    \item \textbf{Eligibility Verification:} The client executes a gas-free view call querying the voter's on-chain status. Unregistered addresses are denied access with an authorization alert, accounts that have already voted are blocked from entering the booth, and eligible unvoted accounts proceed to the ballot interface.
+    
+    \item \textbf{Dynamic Ballot Presentation:} The client queries the contract for all declared candidates and dynamically renders the certified ballot options, including candidate names, affiliations, and IDs.
+    
+    \item \textbf{Ballot Selection and Transaction Assembly:} The voter selects their chosen candidate $c$. The front end encodes the function payload \texttt{vote(c)}, estimates the required execution gas, and prepares the transaction parameters.
+    
+    \item \textbf{Cryptographic Transaction Signing:} The transaction payload is transmitted to MetaMask for client confirmation. The voter cryptographically signs the transaction digest using their private key via ECDSA without exposing sensitive credentials, and the signed raw transaction is broadcast to the network.
+    
+    \item \textbf{Smart Contract Execution and Double-Voting Mitigation:} Upon receiving the transaction, the EVM verifies voter registration (\texttt{voters[v].isRegistered == true}), validates candidate boundaries, and enforces the atomic double-voting barrier: \texttt{require(!voters[v].hasVoted)}. If valid, the contract atomically sets \texttt{voters[v].hasVoted = true}, increments the candidate's vote count, and emits a \texttt{VoteCast} event within the same atomic transaction. Any subsequent attempt from the same address is immediately reverted by the EVM with zero state mutation.
+    
+    \item \textbf{Consensus and Block Commitment:} Designated Proof-of-Authority validator nodes package verified ballot transactions into a candidate block $B_i$, append the block to the distributed ledger, and achieve deterministic finality.
+    
+    \item \textbf{Real-Time Confirmation Notification:} The front-end captures the emitted on-chain event via WebSocket/RPC, updating the interface to confirm that the ballot is permanently recorded and displaying the cryptographic transaction hash.
+    
+    \item \textbf{Auditability and Election Tabulation:} Following the conclusion of voting, public clients audit the final election outcome directly from the immutable ledger state through gas-free view calls, guaranteeing transparent, tamper-proof result tabulation.
+\end{enumerate}
 
-\vspace{0.6em}
-\noindent\textbf{Step 1: System Initialization and Contract Deployment}
 
-\vspace{0.2em}
-\noindent\textbf{1.1} Compile and deploy smart contract bytecode:
-\begin{algsubsteps}
-    \item[\textbf{1.1.1}] Administrator compiles Solidity smart contract bytecode using the compiler \texttt{solc} (version $\ge 0.8.20$).
-    \item[\textbf{1.1.2}] Administrator deploys contract deployment transaction to the Ethereum network via the authenticated JSON-RPC endpoint.
-\end{algsubsteps}
-
-\noindent\textbf{1.2} Execute atomic constructor initialization:
-\begin{equation}
-\text{admin} \leftarrow \text{msg.sender}, \quad \text{candidatesCount} \leftarrow 0, \quad \text{electionOpen} \leftarrow \text{true}
-\end{equation}
-\begin{algsubsteps}
-    \item[\textbf{1.2.1}] Contract constructor binds administrative ownership to deployer wallet address and initializes zeroed ballot state.
-    \item[\textbf{1.2.2}] Contract emits \texttt{ElectionInitialized(admin, block.timestamp)} event log to the blockchain ledger.
-\end{algsubsteps}
-
-\vspace{0.6em}
-\noindent\textbf{Step 2: Candidate Nomination and Registration}
-
-\vspace{0.2em}
-\noindent\textbf{2.1} Submit candidate nomination and evaluate administrative authority:
-\begin{algsubsteps}
-    \item[\textbf{2.1.1}] Administrator invokes $\text{addCandidate}(\text{name})$ passing the certified candidate moniker string.
-    \item[\textbf{2.1.2}] Contract evaluates caller authorization modifier barrier: $\mathbf{assert}(\text{msg.sender} == \text{admin})$.
-\end{algsubsteps}
-
-\noindent\textbf{2.2} Persist candidate state struct to on-chain storage:
-\begin{equation}
-\begin{split}
-\text{candidatesCount} &\leftarrow \text{candidatesCount} + 1 \\
-\text{candidates}[\text{candidatesCount}] &\leftarrow \text{Candidate}(\text{candidatesCount}, \text{name}, 0)
-\end{split}
-\end{equation}
-\begin{algsubsteps}
-    \item[\textbf{2.2.1}] Candidate record is appended to the persistent mapping with initialized zero vote tally.
-    \item[\textbf{2.2.2}] Contract emits on-chain event: \texttt{CandidateAdded(candidatesCount, name)}.
-\end{algsubsteps}
-
-\vspace{0.6em}
-\noindent\textbf{Step 3: Voter Whitelisting and Address Certification}
-
-\vspace{0.2em}
-\noindent\textbf{3.1} Ingest verified identity credentials:
-\begin{algsubsteps}
-    \item[\textbf{3.1.1}] Administrator ingests eligible citizen's verified 20-byte Ethereum wallet address $v \in \mathcal{V}$.
-    \item[\textbf{3.1.2}] Administrator initiates whitelisting transaction via $\text{registerVoter}(v)$.
-\end{algsubsteps}
-
-\noindent\textbf{3.2} Evaluate access barrier and instantiate voter struct:
-\begin{equation}
-\text{voters}[v] \leftarrow \text{Voter}(v, \text{isRegistered} = \text{true}, \text{hasVoted} = \text{false}, \text{candidateId} = 0)
-\end{equation}
-\begin{algsubsteps}
-    \item[\textbf{3.2.1}] Contract enforces access restriction: $\mathbf{assert}(\text{msg.sender} == \text{admin})$.
-    \item[\textbf{3.2.2}] Contract verifies unwhitelisted state invariant: $\mathbf{assert}(\text{voters}[v].\text{isRegistered} == \text{false})$.
-    \item[\textbf{3.2.3}] Contract records voter struct and emits audit receipt: \texttt{VoterRegistered(v, block.timestamp)}.
-\end{algsubsteps}
-
-\vspace{0.6em}
-\noindent\textbf{Step 4: Client Initialization and Wallet Handshake}
-
-\vspace{0.2em}
-\noindent\textbf{4.1} Discover injected Ethereum provider:
-\begin{algsubsteps}
-    \item[\textbf{4.1.1}] Voter navigates to web portal (\texttt{voting.html}) using a Web3-compatible browser.
-    \item[\textbf{4.1.2}] Client script validates provider injection: $\mathbf{assert}(\text{window.ethereum} \neq \text{null})$.
-\end{algsubsteps}
-
-\noindent\textbf{4.2} Perform asynchronous account authorization handshake:
-\begin{algsubsteps}
-    \item[\textbf{4.2.1}] Voter triggers interface connection routine; client initiates RPC procedure \texttt{eth\_requestAccounts}.
-    \item[\textbf{4.2.2}] MetaMask prompts voter for access consent and returns active account address $v = \text{accounts}[0]$.
-\end{algsubsteps}
-
-\vspace{0.6em}
-\noindent\textbf{Step 5: Client-Side Eligibility Verification}
-
-\vspace{0.2em}
-\noindent\textbf{5.1} Query on-chain voter registration state:
-\begin{algsubsteps}
-    \item[\textbf{5.1.1}] Front end instantiates Web3 contract wrapper using deployed contract address and JSON ABI.
-    \item[\textbf{5.1.2}] Front end executes read-only query call:
-    \begin{equation}
-    \text{voterRecord} \leftarrow \text{contract.methods.voters}(v).\text{call}()
-    \end{equation}
-\end{algsubsteps}
-
-\noindent\textbf{5.2} Enforce client gatekeeping logic:
-\begin{algsubsteps}
-    \item[\textbf{5.2.1}] If $\text{voterRecord.isRegistered} == \text{false}$, UI displays ``Access Denied: Unregistered Voter''.
-    \item[\textbf{5.2.2}] If $\text{voterRecord.hasVoted} == \text{true}$, UI displays ``Ballot Already Cast: Double Voting Prohibited''.
-    \item[\textbf{5.2.3}] If $\text{voterRecord.isRegistered} == \text{true} \land \text{voterRecord.hasVoted} == \text{false}$, UI unlocks certified candidate ballot selection view.
-\end{algsubsteps}
-
-\vspace{0.6em}
-\noindent\textbf{Step 6: Dynamic Candidate Presentation}
-
-\vspace{0.2em}
-\noindent\textbf{6.1} Fetch candidate records from contract:
-\begin{algsubsteps}
-    \item[\textbf{6.1.1}] Front end queries candidate registry size: $\text{candidatesCount} \leftarrow \text{contract.methods.candidatesCount}().\text{call}()$.
-    \item[\textbf{6.1.2}] For each candidate identifier $c \in [1, \text{candidatesCount}]$, front end queries candidate record:
-    \begin{equation}
-    \text{candidate}[c] \leftarrow \text{contract.methods.candidates}(c).\text{call}()
-    \end{equation}
-\end{algsubsteps}
-
-\noindent\textbf{6.2} Dynamically render interactive ballot portal:
-\begin{algsubsteps}
-    \item[\textbf{6.2.1}] Front end dynamically renders candidate radio button list containing names, IDs, and candidate badges.
-\end{algsubsteps}
-
-\vspace{0.6em}
-\noindent\textbf{Step 7: Ballot Selection and Transaction Serialization}
-
-\vspace{0.2em}
-\noindent\textbf{7.1} Serialize ABI-encoded vote call:
-\begin{algsubsteps}
-    \item[\textbf{7.1.1}] Voter selects desired candidate identifier $c \in \mathcal{C}$ and confirms ballot submission.
-    \item[\textbf{7.1.2}] Web3.js serializes function call payload: $\text{data} \leftarrow \text{encodeABI}(\text{vote}(c))$.
-\end{algsubsteps}
-
-\noindent\textbf{7.2} Estimate transaction computational gas:
-\begin{equation}
-G_{\text{limit}} \leftarrow \text{contract.methods.vote}(c).\text{estimateGas}(\{\text{from}: v\})
-\end{equation}
-\begin{algsubsteps}
-    \item[\textbf{7.2.1}] Gas parameters are assembled into transaction payload alongside active network gas price.
-\end{algsubsteps}
-
-\vspace{0.6em}
-\noindent\textbf{Step 8: Asymmetric ECDSA Transaction Signing}
-
-\vspace{0.2em}
-\noindent\textbf{8.1} Compute Keccak-256 transaction digest:
-\begin{equation}
-h_{\text{tx}} \leftarrow \text{Keccak-256}(\text{nonce} \parallel G_{\text{price}} \parallel G_{\text{limit}} \parallel \text{to} \parallel \text{value} \parallel \text{data})
-\end{equation}
-\begin{algsubsteps}
-    \item[\textbf{8.1.1}] Front end transmits unsigned transaction parameters to MetaMask wallet via JSON-RPC.
-\end{algsubsteps}
-
-\noindent\textbf{8.2} Sign transaction and broadcast to peer network:
-\begin{equation}
-\sigma = (r, s, v) \leftarrow \text{ECDSA-Sign}(h_{\text{tx}}, K_{\text{priv}})
-\end{equation}
-\begin{algsubsteps}
-    \item[\textbf{8.2.1}] Voter reviews gas estimate and clicks ``Confirm'' in wallet modal.
-    \item[\textbf{8.2.2}] MetaMask generates elliptic curve signature $\sigma$ using voter's private key $K_{\text{priv}}$ without exposing private keys.
-    \item[\textbf{8.2.3}] Client broadcasts signed raw transaction via RPC procedure \texttt{eth\_sendRawTransaction}.
-\end{algsubsteps}
-
-\vspace{0.6em}
-\noindent\textbf{Step 9: Smart Contract Execution and Atomic Double-Voting Mitigation}
-
-\vspace{0.2em}
-\noindent\textbf{9.1} Recover sender address and enforce cryptographic guard conditions:
-\begin{algsubsteps}
-    \item[\textbf{9.1.1}] EVM recovers public address: $v \leftarrow \text{ecrecover}(h_{\text{tx}}, v, r, s)$.
-    \item[\textbf{9.1.2}] Contract enforces whitelist guard: $\mathbf{require}(\text{voters}[v].\text{isRegistered} == \text{true}, \text{``Voter is not registered''})$.
-    \item[\textbf{9.1.3}] Contract enforces atomic double-voting barrier: $\mathbf{require}(\text{voters}[v].\text{hasVoted} == \text{false})$.
-    \item[\textbf{9.1.4}] Contract enforces candidate boundary check: $\mathbf{require}(c \ge 1 \land c \le \text{candidatesCount}, \text{``Invalid candidate selected''})$.
-\end{algsubsteps}
-
-\noindent\textbf{9.2} Execute atomic on-chain state mutation:
-\begin{equation}
-\begin{split}
-\text{voters}[v].\text{hasVoted} &\leftarrow \text{true}, \quad \text{voters}[v].\text{votedCandidateId} \leftarrow c \\
-\text{candidates}[c].\text{voteCount} &\leftarrow \text{candidates}[c].\text{voteCount} + 1
-\end{split}
-\end{equation}
-\begin{algsubsteps}
-    \item[\textbf{9.2.1}] Double-voting status flag is set atomically in the same transaction execution context.
-    \item[\textbf{9.2.2}] Contract emits event log: $\text{emit VoteCast}(v, c, \text{block.timestamp})$.
-\end{algsubsteps}
-
-\vspace{0.6em}
-\noindent\textbf{Step 10: Consensus, Block Sealing, and Ledger Commitment}
-
-\vspace{0.2em}
-\noindent\textbf{10.1} Mempool queuing and candidate block packaging:
-\begin{algsubsteps}
-    \item[\textbf{10.1.1}] Transaction enters validator mempool and is packaged into block candidate $B_i$.
-    \item[\textbf{10.1.2}] Designated Proof-of-Authority validator signs block header with designated validator private key.
-\end{algsubsteps}
-
-\noindent\textbf{10.2} Compute cryptographic hash chaining and broadcast block:
-\begin{equation}
-H(B_i) \leftarrow \text{SHA-256}(H(B_{i-1}) \parallel T_i \parallel Tx_i \parallel n_i)
-\end{equation}
-\begin{algsubsteps}
-    \item[\textbf{10.2.1}] Cryptographic block hash is computed and linked to prior block hash $H(B_{i-1})$.
-    \item[\textbf{10.2.2}] Block $B_i$ is distributed across P2P validator network; ledger state root is permanently committed.
-\end{algsubsteps}
-
-\vspace{0.6em}
-\noindent\textbf{Step 11: Real-Time Event Propagation and UI Notification}
-
-\vspace{0.2em}
-\noindent\textbf{11.1} Capture WebSocket event notifications:
-\begin{algsubsteps}
-    \item[\textbf{11.1.1}] Web3.js WebSocket provider captures emitted \texttt{VoteCast} event log.
-    \item[\textbf{11.1.2}] Front end parses event receipt: verifies transaction hash and confirmation block number.
-\end{algsubsteps}
-
-\noindent\textbf{11.2} Update user interface state:
-\begin{algsubsteps}
-    \item[\textbf{11.2.1}] UI dynamically updates to confirm successful ballot casting and renders immutable cryptographic transaction receipt.
-\end{algsubsteps}
-
-\vspace{0.6em}
-\noindent\textbf{Step 12: Polling Closure and Certified Result Tabulation}
-
-\vspace{0.2em}
-\noindent\textbf{12.1} Conclude election session:
-\begin{algsubsteps}
-    \item[\textbf{12.1.1}] When polling window closes, administrator invokes $\text{closeElection}()$ on the smart contract.
-\end{algsubsteps}
-
-\noindent\textbf{12.2} Tabulate certified verifiable results:
-\begin{equation}
-N(c) = \text{candidates}[c].\text{voteCount}, \quad \forall c \in [1, \text{candidatesCount}]
-\end{equation}
-\begin{algsubsteps}
-    \item[\textbf{12.2.1}] Final tallies are computed directly from the immutable chain state.
-    \item[\textbf{12.2.2}] Certified results are displayed on the public audit dashboard; mathematical invariant $\sum N(c) \le |\mathcal{V}|$ holds.
-\end{algsubsteps}
-
+\clearpage
 \section{Block Structure and Cryptographic Chaining}
 Figure~\ref{fig:block_structure} details the internal architecture of blocks within the blockchain ledger, demonstrating how block headers, cryptographic timestamps $T_i$, nonces $n_i$, and transaction sets $Tx_i$ are chained via SHA-256 hashing.
 
@@ -1063,6 +862,7 @@ Selecting an optimal blockchain framework requires evaluating throughput, smart 
 \end{tabularx}
 \end{table}
 
+\clearpage
 \section{Consensus Models Comparison}
 Table~\ref{tab:consensus_comp} evaluates consensus models across critical electoral criteria.
 
@@ -1106,6 +906,7 @@ In Ethereum-based networks, every computational opcode consumes a deterministic 
 
 On a public network with a gas price of 25 Gwei and ETH at \$2,500, a single vote costing 44,180 gas would incur approximately \$2.76 in transaction fees. In a national election with tens of millions of voters, public gas costs would be financially prohibitive. This empirical finding reinforces our design decision to deploy on a consortium Proof-of-Authority network where $G_{\text{price}}$ is fixed to zero, eliminating all transaction fees for voters.
 
+\clearpage
 \section{Security Vulnerability Analysis}
 The smart contract was evaluated against common smart contract vulnerabilities:
 \begin{itemize}
@@ -1130,6 +931,7 @@ The technical feasibility of the proposed system is validated by the maturity of
     \item \textbf{Hardware Requirements:} Node validator clients (e.g., Geth, Besu) operate efficiently on standard off-the-shelf workstation hardware, requiring no specialized mining rigs or graphics processing units (GPUs).
 \end{itemize}
 
+\clearpage
 \section{Operational Feasibility}
 From an operational perspective, the system simplifies election logistics:
 \begin{itemize}
@@ -1146,6 +948,7 @@ Traditional national elections incur billions of dollars in expenditures for bal
     \item \textbf{Zero-Gas Economics:} By deploying on a private PoA network, ongoing transaction gas costs are zero.
 \end{itemize}
 
+\clearpage
 \section{Project Implementation Timeline}
 Figure~\ref{fig:gantt_chart} presents the project implementation Gantt chart spanning the academic year from July 2026 to March 2027.
 
@@ -1159,7 +962,274 @@ Figure~\ref{fig:gantt_chart} presents the project implementation Gantt chart spa
 The project progressed through eleven structured milestones: problem scoping and threat modeling (Jul--Aug '26), literature survey (Aug--Sep '26), requirement analysis (Sep--Oct '26), system architecture design (Oct--Nov '26), Solidity contract development (Nov--Dec '26), double-voting mitigation implementation (Dec '26--Jan '27), React/Web3 front-end engineering (Jan--Feb '27), MetaMask integration (Jan--Feb '27), private PoA testnet deployment (Feb--Mar '27), security testing and comparative analysis (Feb--Mar '27), and final documentation and thesis compilation (Mar '27).
 
 %==============================================================================
-% CHAPTER 9: CONCLUSION AND FUTURE SCOPE
+% CHAPTER 9: RESULTS AND DISCUSSION
+%==============================================================================
+\chapter{Results and Discussion}
+
+This chapter presents the empirical results, user interface execution flows, and functional validation of the implemented \textbf{Block Chain Based Electronic Voting System}. The prototype was deployed and evaluated on a local Ethereum blockchain testbed, assessing administrator operations, candidate nominations, voter authorization workflows, security access barriers, ballot casting with atomic double-voting mitigation, and real-time auditable election outcome tallying.
+
+\section{Experimental Setup and System Overview}
+The experimental evaluation of the voting decentralized application (Voting DApp) was conducted in an isolated development and testing environment. The core components of the experimental setup are detailed below:
+\begin{itemize}
+    \item \textbf{Blockchain Execution Network:} A local Ethereum Virtual Machine (EVM) instance simulated via Ganache running on \texttt{localhost:8545} with Chain ID \texttt{1337}. The network provides zero-latency deterministic block generation, an allocated block gas limit of 6,721,975 units, and pre-funded cryptographic accounts.
+    \item \textbf{Smart Contract Deployment:} The core Solidity contract (\texttt{Voting.sol}) was compiled with the \texttt{solc} v0.8.20 compiler utilizing the default EVM bytecode optimizer (200 optimization runs). The contract was deployed to the Ganache ledger at the deterministic contract address \texttt{0x1cAb5e9185001FA6f5dc624e9a3560e7ec59DBE4}.
+    \item \textbf{Client-Side Front End:} Developed using React.js 18, HTML5, and CSS3, served through the Vite development server running on \texttt{http://localhost:5174}. The client interfaces with the Ethereum network using Web3.js and Ethers.js providers.
+    \item \textbf{Cryptographic Wallet Provider:} MetaMask browser extension (v12.x) operating within a Chromium browser. MetaMask manages local private keys, performs client-side ECDSA signature generation, and prompts users for transaction confirmation.
+    \item \textbf{Role-Based Test Accounts:} Three distinct account categories were established:
+    \begin{itemize}
+        \item \emph{Administrator Account:} {\footnotesize \texttt{0x5ef955b7633f6555101d6a5100a66b120c69b2ea}} (Contract Owner).
+        \item \emph{Eligible Voter Accounts:} Three pre-funded accounts designated as eligible voters:
+        \begin{enumerate}[i.]
+            \item Voter 1: {\footnotesize \texttt{0x4Cc2712A3Ecac2cb054A5a07e1f802fd671010bD}}
+            \item Voter 2: {\footnotesize \texttt{0x24bfe1B5C50dA84d9330b99e3962ECA6677B0218}}
+            \item Voter 3: {\footnotesize \texttt{0x882B9df9dAc1b841c5108E3005115AE19da7a6db}}
+        \end{enumerate}
+        \item \emph{Unauthorized Accounts:} Independent arbitrary accounts used to validate negative access control tests and rejection barriers.
+    \end{itemize}
+\end{itemize}
+
+Figure~\ref{fig:res_homepage} illustrates the system landing page and client authentication gateway.
+
+\begin{figure}[H]
+\centering
+\adjustbox{max width=0.88\linewidth, center}{\includegraphics{results/Home_page.jpeg}}
+\caption{Landing page and client authentication gateway of the decentralized electronic voting application.}
+\label{fig:res_homepage}
+\end{figure}
+
+The landing page welcomes users to the decentralized voting portal, detailing the IEEE research protocol foundation and smart contract security enforcement. The top navigation bar displays the current network status (\texttt{Ganache Localhost (1337)}), the connected wallet address, and the assigned cryptographic role (\texttt{Admin}). The central interface presents two primary operational gateways: ``Voter Login \& Authenticate'' and ``Administrator Portal''. In addition, feature summary cards highlight the three cornerstones of the system: atomic double-voting mitigation, role-based access control, and the immutable blockchain ledger.
+
+\section{Election Administration and Setup Workflow}
+The election lifecycle begins with administrative configuration. The contract deployer possesses exclusive administrative privileges enforced through Solidity's \texttt{onlyOwner} modifier.
+
+Figure~\ref{fig:res_admin_dashboard} depicts the initial state of the Election Administration Dashboard upon connecting with the verified administrator account.
+
+\begin{figure}[H]
+\centering
+\adjustbox{max width=0.88\linewidth, center}{\includegraphics{results/admin_dashboard.jpeg}}
+\caption{Election administration dashboard displaying verified contract ownership, on-chain metrics, and management portals.}
+\label{fig:res_admin_dashboard}
+\end{figure}
+
+Upon verifying that the active MetaMask account matches the contract owner address (\texttt{0x5ef9...b2ea}), the dashboard displays an ``Administrator Wallet Verified'' confirmation badge. Four real-time metric cards summarize election progress: Total Candidates (0), Registered Voters (0), Total Votes Cast (0), and Voter Turnout (0\%). The administrator interface provides controls to register eligible voter wallet addresses and declare official election candidates.
+
+\subsection{Candidate Declaration}
+To introduce candidates into the election, the administrator inputs the candidate's full legal name and party affiliation. Figure~\ref{fig:res_adding_candidate} illustrates the candidate addition transaction.
+
+\begin{figure}[H]
+\centering
+\adjustbox{max width=0.88\linewidth, center}{\includegraphics{results/adding_candidate.jpeg}}
+\caption{Declaration of official election candidate with candidate details and MetaMask transaction authorization prompt.}
+\label{fig:res_adding_candidate}
+\end{figure}
+
+In Figure~\ref{fig:res_adding_candidate}, the administrator declares candidate ``David'' representing the ``LDF'' party affiliation. Prior to this submission, Candidate \#1 (``Alice Walker'', representing ``UDF'') had already been registered and confirmed on-chain with an initial vote count of 0. Clicking ``Add Official Candidate'' constructs the smart contract invocation \texttt{addCandidate("David", "LDF")} and triggers the MetaMask extension. The prompt displays the interacting contract address (\texttt{0x1cAb5...9DBE4}), estimated gas fees, and requires explicit cryptographic confirmation by the administrator before broadcasting the transaction to the EVM.
+
+\subsection{Voter Whitelisting and Authorization}
+Voter eligibility is enforced via an on-chain cryptographic whitelist. The administrator registers eligible voters by specifying their 42-character hexadecimal Ethereum public addresses.
+
+Figure~\ref{fig:res_adding_voter} shows the voter registration interface and the associated MetaMask transaction request.
+
+\begin{figure}[H]
+\centering
+\adjustbox{max width=0.88\linewidth, center}{\includegraphics{results/adding_voter.jpeg}}
+\caption{Voter whitelisting interface and on-chain registration transaction prompt in MetaMask.}
+\label{fig:res_adding_voter}
+\end{figure}
+
+The administrator enters the voter wallet address:
+\begin{center}
+{\footnotesize \texttt{0x4Cc2712A3Ecac2cb054A5a07e1f802fd671010bD}}
+\end{center}
+When the administrator confirms the ``Register Voter on Blockchain'' transaction, the smart contract executes \texttt{registerVoter(address)}, setting \texttt{voters[address].isRegistered = true} and initializing \texttt{voters[address].hasVoted = false} in contract storage. The metric cards update to reflect 2 declared candidates and 0 cast ballots.
+
+\clearpage
+\subsection{Synchronized Ledger State Verification}
+Once candidate nominations and voter whitelisting transactions are mined, the dashboard synchronizes with the Ethereum state trie. Figure~\ref{fig:res_added_details} displays the verified on-chain roster.
+
+\begin{figure}[H]
+\centering
+\adjustbox{max width=0.88\linewidth, center}{\includegraphics{results/added_details.jpeg}}
+\caption{Administrative registry tables displaying declared candidate rosters and whitelisted voter authorization statuses.}
+\label{fig:res_added_details}
+\end{figure}
+
+As shown in Figure~\ref{fig:res_added_details}, the ``Declared Candidates'' table lists Candidate \#1 (Alice Walker, UDF) and Candidate \#2 (David, LDF), both initialized with zero votes. The ``Registered Voters'' table displays the three whitelisted voter addresses:
+\begin{enumerate}
+    \item {\small\texttt{0x4Cc2712A3Ecac2cb054A5a07e1f802fd671010bD}}: Registration Status = \textbf{Registered}, Voting Status = \textbf{Pending / Not Voted}.
+    \item {\small\texttt{0x24bfe1B5C50dA84d9330b99e3962ECA6677B0218}}: Registration Status = \textbf{Registered}, Voting Status = \textbf{Pending / Not Voted}.
+    \item {\small\texttt{0x882B9df9dAc1b841c5108E3005115AE19da7a6db}}: Registration Status = \textbf{Registered}, Voting Status = \textbf{Pending / Not Voted}.
+\end{enumerate}
+This synchronized view confirms that electoral data has been immutably written into the distributed state machine.
+
+\clearpage
+\section{Voter Eligibility Verification and Access Control Validation}
+Before a voter is permitted to access the voting booth or inspect active candidate ballots, the front-end performs client-side and smart-contract-level authentication.
+
+\subsection{Positive Verification: Eligible Whitelisted Voter}
+Figure~\ref{fig:res_voter_verification} demonstrates the eligibility authentication flow for a legitimate, whitelisted voter.
+
+\begin{figure}[H]
+\centering
+\adjustbox{max width=0.88\linewidth, center}{\includegraphics{results/voter_verification.jpeg}}
+\caption{Voter eligibility authentication portal confirming whitelisted status and authorization for ballot access.}
+\label{fig:res_voter_verification}
+\end{figure}
+
+When Voter 1 connects wallet address:
+\begin{center}
+{\footnotesize \texttt{0x4cc2712a3ecac2cb054a5a07e1f802fd671010bd}}
+\end{center}
+via MetaMask, the application queries the smart contract's public mapping \texttt{voters(address)}. The EVM verifies that \texttt{isRegistered == true} and \texttt{hasVoted == false}. The system renders an ``Eligibility Confirmed!'' notification card, affirming that the voter is verified on the smart contract voter list and has not yet voted. The ``Proceed to Voting Booth'' action button is unlocked, enabling seamless progression to ballot casting.
+
+\clearpage
+\subsection{Negative Verification: Unregistered Wallet Rejection}
+To evaluate the system's resilience against unauthorized participation, an unregistered address was connected to the voter portal. Figure~\ref{fig:res_voter_unregistered} illustrates the resulting rejection.
+
+\begin{figure}[H]
+\centering
+\adjustbox{max width=0.88\linewidth, center}{\includegraphics{results/voter_page.jpeg}}
+\caption{Security rejection notice for an unregistered Ethereum wallet attempting voter verification.}
+\label{fig:res_voter_unregistered}
+\end{figure}
+
+When an unregistered address (in this instance, the administrator wallet \texttt{0x5ef955...} or any arbitrary unwhitelisted public key) requests eligibility verification, the smart contract check returns \texttt{isRegistered == false}. The interface immediately displays a ``Wallet Not Registered'' alert, explaining that under the IEEE security protocol, unregistered addresses are strictly blocked from voting. The system provides clear remediation guidance directing the user to submit their public key to the election administrator for official credentialing.
+
+\subsection{Negative Verification: Direct URL Route Guard}
+In addition to portal-level checks, the system implements client-side route guards and smart contract acceptance predicates to prevent unauthorized users from bypassing the authentication portal by directly navigating to the voting booth route (\texttt{/cast-vote}).
+
+Figure~\ref{fig:res_voting_denied} displays the access denial barrier encountered during direct unauthorized navigation.
+
+\begin{figure}[H]
+\centering
+\adjustbox{max width=0.88\linewidth, center}{\includegraphics{results/vote_casting_session.jpeg}}
+\caption{Voting booth access control barrier blocking unauthorized direct URL access.}
+\label{fig:res_voting_denied}
+\end{figure}
+
+As shown in Figure~\ref{fig:res_voting_denied}, when an unverified address attempts to access the voting booth directly, the application intercepts the route lifecycle, queries the ledger, and renders a ``Voting Booth Access Denied'' error screen. The user is prevented from viewing candidate voting triggers and is redirected to either check registration status or inspect public election tallies.
+
+\clearpage
+\section{Ballot Casting and Double-Voting Mitigation Execution}
+The critical phase of the electoral protocol is ballot casting, where the voter cryptographically submits their choice to the EVM and triggers the atomic double-voting mitigation mechanism.
+
+\subsection{Electronic Voting Booth and Ballot Selection}
+Figure~\ref{fig:res_voting_booth} illustrates the active Electronic Voting Booth interface for an authenticated voter.
+
+\begin{figure}[H]
+\centering
+\adjustbox{max width=0.88\linewidth, center}{\includegraphics{results/voting_booth.jpeg}}
+\caption{Electronic voting booth interface showing candidate selection and pending MetaMask transaction signing.}
+\label{fig:res_voting_booth}
+\end{figure}
+
+Upon entering the voting booth, the voter's authentication state is verified, displaying the badge ``Authenticated Registered Voter'' with ``Single Vote Allocation Available''. The booth dynamically renders candidate selection cards retrieved from the smart contract, featuring Alice Walker (Candidate ID: 1, UDF) and David (Candidate ID: 2, LDF). When the voter selects Alice Walker and clicks ``Vote for Candidate'', the front end constructs the call \texttt{vote(1)}. MetaMask displays a transaction signature prompt, notifying the user that a state-changing transaction is being signed and broadcast to the Ethereum consensus layer. The interface presents a ``Voting Transaction Pending'' status notification while the transaction awaits block mining.
+
+\clearpage
+\subsection{On-Chain Confirmation and Double-Voting Mitigation Lock}
+Once the transaction is validated and sealed into a block by the consensus network, the system confirms the ballot and permanently locks the voter's status. Figure~\ref{fig:res_casted_vote} displays the ballot confirmation screen.
+
+\begin{figure}[H]
+\centering
+\adjustbox{max width=0.88\linewidth, center}{\includegraphics{results/casted_vote.jpeg}}
+\caption{Ballot confirmation receipt displaying transaction hash and enforcement of the double-voting mitigation protocol.}
+\label{fig:res_casted_vote}
+\end{figure}
+
+Figure~\ref{fig:res_casted_vote} confirms that the ballot was mined and included in the ledger, issuing the unique transaction digest:
+\begin{center}
+{\footnotesize \texttt{TxHash: 0x1f3dce5d36363d0de95ce4f26f16766ead83e34ddf5f911d1831a01ba40d23d7}}
+\end{center}
+The interface renders two critical validation badges:
+\begin{itemize}
+    \item \textbf{Transaction Confirmed on Blockchain:} Affirms that the ballot transaction was successfully executed by the EVM and the candidate vote counter was atomically updated.
+    \item \textbf{IEEE Double-Voting Mitigation Active:} Affirms that the smart contract has permanently written \texttt{voters[msg.sender].hasVoted = true} into immutable state storage.
+\end{itemize}
+Under this atomic mitigation protocol, should the same voter address (\texttt{0x4cc271...}) or an adversary submit a second transaction invoking \texttt{vote(c)}, the EVM evaluates the assertion:
+\begin{equation}
+\text{require}(!\text{voters}[\text{msg.sender}].\text{hasVoted}, \text{``You have already voted.''}),
+\end{equation}
+which evaluates to false, immediately triggering an \texttt{OP\_REVERT} opcode. All subsequent duplicate attempts consume minimal gas and are rejected without altering candidate tallies.
+
+\section{Live Auditing and Certified Election Results}
+The final phase of the election protocol involves real-time result aggregation and public verification. Because vote tallies are recorded in public contract state variables, any participant can inspect election outcomes without administrative intervention.
+
+\subsection{Real-Time Tally Overview}
+Figure~\ref{fig:res_results_overview} presents the Live Election Results and Tally overview screen after all registered voters cast their ballots.
+
+\begin{figure}[H]
+\centering
+\adjustbox{max width=0.88\linewidth, center}{\includegraphics{results/result.jpeg}}
+\caption{Live election results portal displaying total ballots cast, turnout metrics, and leading candidate summary.}
+\label{fig:res_results_overview}
+\end{figure}
+
+The live results portal provides a clear overview of the election metrics: Total Ballots Cast (3), Eligible Registered Voters (3), and Overall Turnout Rate (100\%). The ``Leading Candidate'' highlight card identifies Alice Walker (UDF) as the victor with 2 votes, representing 67\% of total cast ballots. Below the summary cards, the dynamic ``Vote Distribution Chart'' presents a graphical horizontal bar visualization reflecting candidate vote shares.
+
+\clearpage
+\subsection{Certified Standings and Vote Distribution}
+Figure~\ref{fig:res_results_standings} provides a detailed view of the certified candidate standings and final percentage breakdowns.
+
+\begin{figure}[H]
+\centering
+\adjustbox{max width=0.88\linewidth, center}{\includegraphics{results/result_page2.jpeg}}
+\caption{Certified candidate standings table and proportional vote distribution breakdown.}
+\label{fig:res_results_standings}
+\end{figure}
+
+As presented in Figure~\ref{fig:res_results_standings}, the final certified standings table displays:
+\begin{itemize}
+    \item \textbf{Rank 1st:} Candidate \#1, \textbf{Alice Walker} (UDF), receiving 2 votes, achieving a \textbf{66.7\%} majority share.
+    \item \textbf{Rank 2nd:} Candidate \#2, \textbf{David} (LDF), receiving 1 vote, achieving a \textbf{33.3\%} vote share.
+\end{itemize}
+The results are computed deterministically through gas-free \texttt{view} function calls directly to the Ethereum smart contract. Because the tally calculation is executed locally via static EVM calls without broadcasting state modifications, auditing is instantaneous, 100\% tamper-evident, and incurs zero transaction gas fees.
+
+\section{Empirical Test Case Verification Matrix}
+To systematically validate the implementation against the system requirements established in Chapter~4, ten formal empirical test cases were executed across the election lifecycle. Table~\ref{tab:test_cases} details the test objectives, preconditions, inputs, expected behaviors, observed results, and pass/fail statuses.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Empirical test case execution matrix and security validation results.}
+\label{tab:test_cases}
+\begin{tabularx}{\textwidth}{@{}l >{\raggedright\arraybackslash}p{2.0cm} >{\raggedright\arraybackslash}p{2.8cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X c@{}}
+\toprule
+\textbf{Test ID} & \textbf{Component} & \textbf{Test Condition} & \textbf{Expected Outcome} & \textbf{Observed Result} & \textbf{Status} \\
+\midrule
+TC-01 & Admin Auth & Contract deployer connects wallet & Admin verified; management controls enabled & Verified badge displayed; actions enabled & \textbf{PASS} \\
+\addlinespace[3pt]
+TC-02 & Candidate Reg & Admin invokes {\footnotesize\texttt{addCandidate}} & Candidate stored on-chain with unique ID and 0 votes & Candidate added; listed in on-chain table & \textbf{PASS} \\
+\addlinespace[3pt]
+TC-03 & Voter Whitelist & Admin registers 42-char address & \texttt{isRegistered = true}, \texttt{hasVoted = false} & Voter added to registry table as Pending & \textbf{PASS} \\
+\addlinespace[3pt]
+TC-04 & Access Control & Non-admin attempts voter registration & Transaction reverts via \texttt{onlyOwner} guard & EVM reverts call; non-admin blocked & \textbf{PASS} \\
+\addlinespace[3pt]
+TC-05 & Voter Auth & Whitelisted voter connects wallet & Verification succeeds; booth unlocked & Eligibility Confirmed badge displayed & \textbf{PASS} \\
+\addlinespace[3pt]
+TC-06 & Voter Auth & Unregistered wallet connects & Rejection notice; booth access blocked & ``Wallet Not Registered'' alert displayed & \textbf{PASS} \\
+\addlinespace[3pt]
+TC-07 & Route Security & Direct URL navigation to \texttt{/cast-vote} & Route guard intercepts; displays barrier & ``Voting Booth Access Denied'' rendered & \textbf{PASS} \\
+\addlinespace[3pt]
+TC-08 & Ballot Casting & Eligible voter submits single ballot & Vote recorded; tally increments; \texttt{hasVoted = true} & Tx mined; receipt generated; status updated & \textbf{PASS} \\
+\addlinespace[3pt]
+TC-09 & Double-Voting & Voter attempts second ballot transaction & Smart contract reverts with ``Already voted'' & Transaction reverts; duplicate ballot dropped & \textbf{PASS} \\
+\addlinespace[3pt]
+TC-10 & Real-Time Audit & Public client queries election tally & Real-time results retrieved via gas-free \texttt{view} & Results displayed with 100\% turnout & \textbf{PASS} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Summary of Experimental Findings}
+The empirical results substantiate the following core technical achievements:
+\begin{enumerate}
+    \item \textbf{Complete Prevention of Double Voting:} The smart contract's atomic mutation of \texttt{hasVoted = true} within the execution block of \texttt{vote()} guarantees that race conditions, concurrent RPC requests, and replay attacks cannot result in multiple ballots being recorded for a single voter.
+    \item \textbf{Strict Role-Based Separation:} Cryptographic verification guarantees that only the election administrator can whitelist voters and register candidates, while ensuring that the administrator has no power to cast ballots on behalf of registered voters or manipulate tally outcomes.
+    \item \textbf{Gas Efficiency and Predictability:} The observed execution costs align precisely with the theoretical EVM gas schedule analyzed in Chapter~7 (44,180 gas for ballot casting, 28,450 gas for voter registration). In a Proof-of-Authority deployment, these transactions incur zero monetary cost to voters.
+    \item \textbf{Transparent Auditability:} Public tally inspection provides instantaneous, tamper-proof verification of election results directly from smart contract storage without reliance on centralized counting servers.
+\end{enumerate}
+
+%==============================================================================
+% CHAPTER 10: CONCLUSION AND FUTURE SCOPE
 %==============================================================================
 \chapter{Conclusion and Future Scope}
 

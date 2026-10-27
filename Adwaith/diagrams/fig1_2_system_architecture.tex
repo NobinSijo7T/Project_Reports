@@ -1,0 +1,180 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usepackage{amsmath,amssymb}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shadows,shapes.geometric}
+
+% Color definitions
+\definecolor{lavenderDark}{RGB}{15, 44, 89}
+\definecolor{lavenderDeep}{RGB}{10, 28, 58}
+\definecolor{lavenderMedium}{RGB}{29, 78, 158}
+\definecolor{lavenderLight}{RGB}{240, 246, 255}
+\definecolor{lavenderBorder}{RGB}{180, 205, 237}
+\definecolor{lavenderAccent}{RGB}{2, 132, 199}
+\definecolor{prismNavy}{RGB}{15, 44, 89}
+\definecolor{prismBlue}{RGB}{29, 78, 158}
+\definecolor{prismTeal}{RGB}{13, 148, 136}
+\definecolor{prismMint}{RGB}{236, 253, 245}
+\definecolor{prismGold}{RGB}{217, 119, 6}
+\definecolor{prismDark}{RGB}{15, 23, 42}
+\definecolor{prismLight}{RGB}{248, 250, 252}
+\definecolor{prismIndigo}{RGB}{30, 58, 138}
+\definecolor{prismSlate}{RGB}{100, 116, 139}
+\definecolor{statusFail}{RGB}{220, 38, 38}
+\definecolor{cInput}{RGB}{241, 245, 249}
+\definecolor{cStem}{RGB}{224, 242, 254}
+\definecolor{cStage1}{RGB}{209, 250, 229}
+\definecolor{cStage2}{RGB}{254, 243, 199}
+\definecolor{cStage3}{RGB}{254, 226, 226}
+\definecolor{cStage4}{RGB}{207, 250, 254}
+\definecolor{cHead}{RGB}{219, 234, 254}
+\definecolor{cOutput}{RGB}{255, 228, 230}
+
+\begin{document}
+% Complete System Architecture for Explainable Visual Analytics in Power Grid Event Diagnosis
+\begin{tikzpicture}[
+  x=1cm, y=1cm,
+  every node/.style={align=center},
+  group/.style={draw=lavenderMedium!70, dashed, line width=0.85pt,
+    fill=lavenderLight!25, rounded corners=8pt},
+  grouptitle/.style={fill=lavenderDark, text=white, font=\fontsize{7.5}{9.0}\selectfont\bfseries,
+    rounded corners=3pt, inner xsep=6pt, inner ysep=3.0pt},
+  colbox/.style={rectangle, rounded corners=4pt, line width=0.75pt,
+    minimum height=1.20cm, inner ysep=3.5pt, inner xsep=5pt,
+    font=\fontsize{6.8}{8.0}\selectfont\bfseries},
+  arrow/.style={
+    -{Stealth[scale=0.85]}, line width=0.85pt, draw=lavenderDark!90
+  }
+]
+
+  %============================================================================
+  % COLUMN 1: DATA INGESTION & PREPROCESSING TIER
+  %============================================================================
+  \node[group, minimum width=3.60cm, minimum height=10.60cm] (g1) at (2.00, 5.80) {};
+  \node[grouptitle, anchor=west] at (0.25, 11.10) {1. Grid Data Ingestion Tier};
+
+  \node[colbox, text width=3.30cm, fill=cInput, draw=prismSlate!70] (g1_pmu) at (2.00, 9.80) {%
+    {\color{prismDark}\faBolt\ \textbf{PMU / WAMS Synchrophasors}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont 30--60\,Hz Sub-second Streams\\[1pt]Voltage, Current Phasors, Freq}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStem, draw=prismIndigo!70] (g1_scada) at (2.00, 7.30) {%
+    {\color{prismIndigo}\faDatabase\ \textbf{SCADA Operational Historian}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Multi-bus Active/Reactive Power\\[1pt]Breaker Status $\cdot$ Event Logs}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStage4, draw=prismBlue!80] (g1_window) at (2.00, 4.80) {%
+    {\color{lavenderDark}\faSlidersH\ \textbf{Sliding Window Preprocessor}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Temporal Slicing ($T \times D$ Tensors)\\[1pt]Z-score Standardization $\cdot$ Align}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStage1, draw=prismTeal!70] (g1_quality) at (2.00, 2.30) {%
+    {\color{prismTeal!90!black}\faCheckCircle\ \textbf{Data Quality Guard}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Missing Value Imputation\\[1pt]Noise \& Clock Desync Filtering}%
+  };
+
+  \draw[arrow] (g1_pmu) -- (g1_window);
+  \draw[arrow] (g1_scada) -- (g1_window);
+  \draw[arrow] (g1_window) -- (g1_quality);
+
+  %============================================================================
+  % COLUMN 2: LATENT REPRESENTATION ENGINE TIER
+  %============================================================================
+  \node[group, minimum width=3.60cm, minimum height=10.60cm] (g2) at (6.10, 5.80) {};
+  \node[grouptitle, anchor=west] at (4.35, 11.10) {2. Latent Learning Engine};
+
+  \node[colbox, text width=3.30cm, fill=cStage2!60, draw=prismGold!80] (g2_tft) at (6.10, 9.80) {%
+    {\color{prismGold!90!black}\faBrain\ \textbf{Temporal Fusion Transformer}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Variable Selection Network (VSN)\\[1pt]Multi-Head Temporal Self-Attention}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cInput, draw=prismSlate!70] (g2_vae_cnn) at (6.10, 7.30) {%
+    {\color{prismDark}\faLayerGroup\ \textbf{1D-CNN VAE Baseline}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont 1D Temporal Convolutions\\[1pt]Gaussian Latent Encoder-Decoder}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStage1, draw=prismTeal!80] (g2_vae_lstm) at (6.10, 4.80) {%
+    {\color{prismTeal!90!black}\faHistory\ \textbf{VAE-LSTM Baseline}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Recurrent Memory Cells\\[1pt]Sequence-to-Sequence VAE}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStage3!60, draw=statusFail!70] (g2_latent) at (6.10, 2.30) {%
+    {\color{lavenderDark}\faCodeBranch\ \textbf{Latent Feature Vectors}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Bottleneck Embeddings $\mathbf{z} \in \mathbb{R}^d$\\[1pt]Comparative Evaluation}%
+  };
+
+  \draw[arrow] (g2_tft) -- (g2_latent);
+  \draw[arrow] (g2_vae_cnn) -- (g2_latent);
+  \draw[arrow] (g2_vae_lstm) -- (g2_latent);
+
+  %============================================================================
+  % COLUMN 3: PROJECTION, CLUSTERING & VALIDATION TIER
+  %============================================================================
+  \node[group, minimum width=4.10cm, minimum height=10.60cm] (g3) at (10.45, 5.80) {};
+  \node[grouptitle, anchor=west] at (8.45, 11.10) {3. Projection \& Clustering};
+
+  \node[colbox, text width=3.80cm, fill=cStem!70, draw=lavenderDark!80] (g3_dimred) at (10.45, 9.80) {%
+    {\color{lavenderDark}\faCompress\ \textbf{2D Manifold Projection}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont \textbf{UMAP} (Fuzzy simplicial sets)\\[1pt]\textbf{t-SNE} (KL div) $\cdot$ \textbf{PCA} (Variance)}%
+  };
+
+  \node[colbox, text width=3.80cm, fill=cHead, draw=lavenderMedium!90] (g3_dbscan) at (10.45, 7.30) {%
+    {\color{lavenderDeep}\faProjectDiagram\ \textbf{DBSCAN Density Clustering}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Core Points ($\epsilon, \text{MinPts}$)\\[1pt]Arbitrary Cluster Shapes \& Outliers}%
+  };
+
+  \node[colbox, text width=3.80cm, fill=cStage2!70, draw=prismGold!90] (g3_metrics) at (10.45, 4.80) {%
+    {\color{prismGold!90!black}\faChartBar\ \textbf{Internal Validation Metrics}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Silhouette Score $\cdot$ Davies-Bouldin\\[1pt]Calinski-Harabasz Index}%
+  };
+
+  \node[colbox, text width=3.80cm, fill=cOutput, draw=prismBlue!70] (g3_relative) at (10.45, 2.30) {%
+    {\color{prismNavy}\faBalanceScale\ \textbf{Relative Model Comparison}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont TFT vs 1D-CNN VAE vs VAE-LSTM\\[1pt]Cluster Cohesion \& Stability}%
+  };
+
+  \draw[arrow] (g3_dimred) -- (g3_dbscan);
+  \draw[arrow] (g3_dbscan) -- (g3_metrics);
+  \draw[arrow] (g3_metrics) -- (g3_relative);
+
+  %============================================================================
+  % COLUMN 4: INTERACTIVE VISUAL ANALYTICS DASHBOARD
+  %============================================================================
+  \node[group, minimum width=3.60cm, minimum height=10.60cm] (g4) at (14.80, 5.80) {};
+  \node[grouptitle, anchor=west] at (13.05, 11.10) {4. Visual Analytics Dashboard};
+
+  \node[colbox, text width=3.30cm, fill=cInput, draw=prismSlate!70] (g4_map) at (14.80, 9.80) {%
+    {\color{prismDark}\faMap\ \textbf{2D Latent Space Map}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Interactive Cluster Scatterplot\\[1pt]Event Topology $\cdot$ Zoom/Pan/Brush}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStage1, draw=prismTeal!80] (g4_tree) at (14.80, 7.30) {%
+    {\color{prismTeal!90!black}\faSitemap\ \textbf{Hierarchical Multi-Label Tree}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Fault Type Taxonomy $\cdot$ Hierarchy\\[1pt]Grid Bus \& Substation Grouping}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStem, draw=lavenderDark!70] (g4_compare) at (14.80, 4.80) {%
+    {\color{lavenderDark}\faChartLine\ \textbf{Vector Comparison Chart}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Signal Dimension Inspection\\[1pt]Parallel Coordinates $\cdot$ Latent Dims}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStage4, draw=prismBlue!70] (g4_hitl) at (14.80, 2.30) {%
+    {\color{prismNavy}\faUserCheck\ \textbf{Human-in-the-Loop (HITL)}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Domain Expert Event Diagnosis\\[1pt]Annotation \& Root-Cause Feedback}%
+  };
+
+  \draw[arrow] (g4_map) -- (g4_tree);
+  \draw[arrow] (g4_tree) -- (g4_compare);
+  \draw[arrow] (g4_compare) -- (g4_hitl);
+
+  %============================================================================
+  % INTER-COLUMN CONNECTIONS
+  %============================================================================
+  \draw[arrow, line width=1.1pt] (g1_quality.east) -- (g2_latent.west);
+  \draw[arrow, line width=1.1pt] (g1_window.east) to[bend left=10] (g2_tft.west);
+  \draw[arrow, line width=1.1pt] (g2_latent.east) to[bend right=10] (g3_dimred.west);
+  \draw[arrow, line width=1.1pt] (g3_dbscan.east) -- (g4_map.west);
+  \draw[arrow, line width=1.1pt, dashed] (g4_hitl.west) to[bend left=20] (g3_metrics.east);
+
+\end{tikzpicture}
+\end{document}

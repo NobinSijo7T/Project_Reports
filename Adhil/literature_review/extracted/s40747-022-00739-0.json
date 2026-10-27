@@ -1,0 +1,740 @@
+{
+  "source_file": "s40747-022-00739-0.pdf",
+  "num_pages": 18,
+  "full_text": "Complex & Intelligent Systems (2022) 8:4863–4880 https://doi.org/10.1007/s40747-022-00739-0\nORIGINAL ARTICLE\nStrengthening intrusion detection system for adversarial attacks: improved handling of imbalance classification problem\nChutipon Pimsarn1 · Tossapon Boongoen1,2 · Natthakan Iam-On2 · Nitin Naik3 · Longzhi Yang4\nReceived: 3 August 2021 / Accepted: 8 April 2022 / Published online: 25 April 2022 © The Author(s) 2022\nAbstract Most defence mechanisms such as a network-based intrusion detection system (NIDS) are often sub-optimal for the detection of an unseen malicious pattern. In response, a number of studies attempt to empower a machine-learning-based NIDS to improve the ability to recognize adversarial attacks. Along this line of research, the present work focuses on non-payload connections at the TCP stack level, which is generalized and applicable to different network applications. As a compliment to the recently published investigation that searches for the most informative feature space for classifying obfuscated connections, the problem of class imbalance is examined herein. In particular, a multiple-clustering-based undersampling framework is proposed to determine the set of cluster centroids that best represent the majority class, whose size is reduced to be on par with that of the minority. Initially, a pool of centroids is created using the concept of ensemble clustering that aims to obtain a collection of accurate and diverse clusterings. From that, the final set of representatives is selected from this pool. Three different objective functions are formed for this optimization driven process, thus leading to three variants of FF-Majority, FF-Minority and FF-Overall. Based on the thorough evaluation of a published dataset, four classification models and different settings, these new methods often exhibit better predictive performance than its baseline, the single-clustering undersampling counterpart and state-of-the-art techniques. Parameter analysis and implication for analyzing an extreme case are also provided as a guideline for future applications.\nKeywords Intrusion detection system · Adversarial attack · Machine learning · Imbalance classification · Data clustering\nIntroduction\nAs the world becomes more interconnected, web-based applications like personalized online banking [2], industrial control systems [8], Internet of things [18] and wireless sensor networks [41] are subject to various security vulnera- bilities, thus raising an urgent need for effective network and information security measures [35,39]. For this, a number of\nB Tossapon Boongoen\ntossapon.boo@mfu.ac.th\n1 Center of Excellence in AI and Emerging Technologies, School of Information Technology, Mae Fah Luang University, Chiang Rai 57100, Thailand\n2 Department of Computer Science, Aberystwyth University, Aberystwyth, UK\n3 School of Informatics and Digital Engineering, Aston University, Birmingham, UK\n4 Department of Computer and Information Sciences, Northumbria University, Newcastle upon Tyne, UK\nattempts have developed different defence mechanisms such as a hardware/software firewall and an intrusion detection system (IDS) to safeguard assets as well as system/device control in a cyberspace [6,22,67]. Making use of unpatched services is a common instance of intrusive attacks that remain one of the crucial threats to both individuals and organi- zations [73]. This is highly critical to the Internet-based monitoring of engineering systems in general, especially in the case of critical national infrastructure such as health- care, manufacturing, power grid, gas and oil refineries [9]. Recently, a similar approach is proposed to detect an intrusive attack to an in-vehicle communication system, the controller- area-network bus protocol in particular [42].\nAs a response to this challenge, a network-based intrusion detection system (NIDS) has been continuously invented and improved to provide security by monitoring network traf- fics and identifying malicious connections [44]. To support a timely intervention and useful information for human oper- ators, an NIDS is required to be resilient to new breeds of threat like polymorphism, which allows an exploit-code to\n123\n\n--- Page Break ---\n\n4864 Complex & Intelligent Systems (2022) 8:4863–4880\navoid positive signature matching. At large, initial signature- based systems are ineffective for the detection of mutated patterns and zero-day attacks, with a common problem of high false positive rate [10,61]. This lacking leads to a fam- ily of machine-learning-based NIDS that has proven to be more effective provided up-to-date connection samples and corresponding expert-directed labels [52,58]. Over the years, different classification models have been investigated for this task that is sometimes referred to as an anomaly-based approach [36]. These include support vector machine or SVM [75], k-means clustering [76], artificial neural networks or ANN [63] and classifier ensemble [23]. Despite their suc- cesses reported in the literature, the aforementioned methods are capable of detecting some unknown intrusions that partly resemble those known to the NIDS, but they are still prone to adversarial attacks that exploit a variety of new obfuscation techniques [17,30]. These attacks are branded as adversarial machine learning, which explores blind spots of a machine learning-based system [8]. In particular, slight perturbations are introduced to new connections such that the pre-trained model may incorrectly justify a decision boundary, thus a predicted class [68].\nWithout the knowledge of obfuscation methods, one has to developNIDSthatismoreflexibletorecognizemodifiedtraf- fic patterns. One way to achieve this is to constantly update the underlying classifier with new training instances, while the other focuses on learning more from the attack class that is commonly a minority in a training data collection [7,20]. Specific to the latter, a number of studies have made use of techniques developed within the data science community to handle this issue, called class imbalance [36]. In general, a conventional oversampling technique like synthetic minor- ity oversampling or SMOTE [15] and its variants have been a common choice to cope with this problem for different classification algorithms [23,63,75]. However, the resulting model shows signs of overfitting as it is not generalized to unseen data [45]. To this extent, an undersampling strategy has proven more robust to overfitting across different domain problems [11,40]. Following the work of [46] that introduces an initial model of clustering-based undersampling, the mul- tiple clustering-based approach proposed in this paper aims to explore a pool of representative candidates, which is richer than that obtained from one clustering. As such, it may better preserve useful data patterns presented in the majority class, hence the improved predictive performance [65].\nAssumption Following the initial research of [30], this paper focuses on classification-based NIDS, which does not ana- lyze payload data [17]. It considers objects of TCP connec- tions, not at a lower level of individual packets. It is assumed that an adversary possesses knowledge about the design of the victim’s system, but can only mutate inputs to this sys- tem such that they still conform with the TCP/IP protocol\nspecification. Based on the report of [28], this is achieved by designing non-payload-based obfuscation techniques to work at network and transport layers. These will mutate samples of known intrusions in an exploit-independent way, thus making attacks looking similar to a legitimate one. This approach is on par with evasions of the measurement phase of IDS, defined in the taxonomy of adversarial attacks against IDS [16].\nProblem and Scope: Given the data collection generated within the study of [30], the current work aims to develop an effective clustering-based undersampling method, which is novel as well as more accurate than the baseline [46], other well-known methods found in the literature [60,66] and the standard oversampling counterpart [15]. This new approach selects representative samples from multiple clusterings that are generated with various settings to promote the diversity between them. This follows the concept and success reported for the field of consensus clustering [31,54]. In particular, this selection is designed as an optimization problem, where the best alternative is added to the target sampling set iter- atively. It is applied to reduce the cardinality of instances belonging to the majority class of the binary classification problem, i.e., legitimate and attack connections are majority and minority classes. Following that, a classification model developed from the balanced training set is employed to cate- gorize unseen and obfuscated attacks. Intuitively, the chance of recognizing these modified patterns may be improved, as the classifier is able to learn more from the smaller class, while information loss due to undersampling the majority class is minimized.\nContributions: Main contributions of this paper are summa- rized below.\n• This work extends the previous research of [30] to develop an accurate classification-based NIDS that is robust to adversarial attacks. It presents a new multiple clusterings-based method to handle imbalance classifi- cation through undersampling the majority class. The proposed framework allows any classification algorithm to learn better with the minority class that represents attack connections. As such, the resulting model becomes more effective in recognizing obfuscated intrusions, whose appearances partly overlap with those known direct attacks. In addition, the resulting framework is generalized to a wider range of non-payload adversar- ial attacks. • The proposed undersampling technique is based on an iterative and greedy-optimization process of selecting the best alternative from a pool of centroids that rep- resent different clustering results or data partitions. This is inspired by the concept of ensemble or consensus clus- tering [31,34], which usually provides a more accurate\n123\n\n--- Page Break ---\n\nComplex & Intelligent Systems (2022) 8:4863–4880 4865\ndata partition than a single clustering. Hence, this idea is novel and may enhance the effectiveness of an initial work of [46] that makes use of only one clustering to guide the sampling procedure. For the aforementioned selection, it is designed as an optimization problem that maximizes three different objective functions of: (i) the maximum distance from the centroid under the question to other k nearest centroids in the pool, (ii) the maxi- mum distance from the examined centroid to k nearest instances from the minority class, and (iii) the average between functions (i) and (ii), respectively. • The proposed model is evaluated against the single- clustering alternative of [46], RUS (Random UnderSam- pling [60]) as the conventional model of undersampling, other well-known ensemble-level techniques: RUSBoost [60] and IRUS (Inverse Random UnderSampling [66]), the oversampling technique of [15] and its recent exten- sion [70]. To generalize this experimental investigation, a range of basic classifiers and classifier ensemble method are employed. Specific to the line of IDS research, a state- of-the-art model is also included as a comparison method. Furthermore, parameter analysis specific to the proposed technique is also included such that the relation between predictive performance and algorithmic variables is illus- trated and discussed. Anyone tries to apply this to a future problem would find it helpful as to tailor the model for good performance.\nThe rest of this paper is organized as follows. Sec- tion2 emphasizes related works and problem definition, with details of the dataset exploited herein. Besides, Sect.3 presents the proposed undersampling framework, includ- ing the underlying optimization process. The performance evaluation of new and compared methods are included and discussed in Sect.4. At the end, the conclusion with direc- tions of future research are given in Sect.5. In addition, Table 1 provides a description of abbreviations used in this paper.\nTable 1 List of abbreviations used throughout this paper\nAbbreviation Description\nAdaBoost AdaBoost technique for boosting-based ensemble generation\nANN Artificial neural networks\nASNM Advanced security network metrics\nC4.5 A decision tree algorithm\nDNN Deep neural networks\nDT Decision tree\nHTTP Hypertext transfer protocol\nIDS Intrusion detection system\nTable 1 continued\nAbbreviation Description\nIP Internet protocol\nIRUS Inverse random undersampling\nKNN K nearest neighbours\nLDA Linear discriminant analysis\nLR Logistic regression\nMTU Maximum transmission unit\nNB Naive Bayes\nNIDS Network-based intrusion detection system\nPCA Principal component analysis\nRF Random forest\nRUS Random undersampling\nRUSBoost Random undersampling with boosting-based ensemble generation\nSMOTE Synthetic minority oversampling\nSVM Support vector machine\nTCP Transmission control protocol\nTCP FIN TCP finish flag\nTCP URG TCP urgent flag\nRelated works\nIn this section, background and related works of the proposed research regarding classification-based NIDS, traffic object of interest and non-payload-based obfuscations is elaborated to set a scene for the rest of paper. Then, the definition of NIDS as a classification problem is given as a basis for the proposed method, which is fully explained in Sect.3.\nClassification-based NIDS and handling of imbalance class problem\nWith an increasing demand for NIDS along with the develop- ment of Internet-of-things and network and wireless sensor networks [18,25], a series of intelligent agents to cope with intrusive traffics have been the center of many research works. In general, these systems rely on either signature matching to determine misuse and attack patterns that are largely different from signatures of legal activities [3], or a pattern recognition modeling normally referred to as anomalydetection-basedintrusiondetection[47].Togetover the problem with a low recall of unseen attacks, most of NIDS instances have turned to exploit a predictive model learned from an up-to-date data collection [24,71]. However, the major limitation is with a high false-positive rate caused by the difficulty in determining boundary between normal and abnormal cases [57]. Note that other approaches to NIDS such as watchdogs and trust models are also presented in the literature, but are beyond the scope of the current work that\n123\n\n--- Page Break ---\n\n4866 Complex & Intelligent Systems (2022) 8:4863–4880\nTable 2 Summarization of related works, with respect to classification-based NIDS & treatment of class imbalance\nProposed work Exploited technique Treatment of class imbalance\nOnline oversampling PCA for anomaly detection [43] PCA Oversampling\nAdaptive ensemble learning model [23] DT, RF, KNN & DNN n/a\nHandling of imbalance class in IDS [1] RF and DNN Oversampling & undersampling\nHybrid data mining approach [55] Clustering, feature selection & KNN Oversampling\nInformation-Gain based feature selection [69] RF & feature selection Oversampling\nFilter-based attribute reduction [14] K-means & SVM n/a\nHandling of imbalance class in IDS [36] DT, RF, KNN & LDA Oversampling\nDetermining informative features [19] RF & feature selection n/a\nRecursive feature elimination [62] SVM, DT & RF n/a\nFeature reduced IDS [4] ANN n/a\nArtificial bee colony for improved classifier ensemble [48] DT & AdaBoost n/a\nForwarding feature selection [30] DT, NB, LR & SVM n/a\nconcentrates solely on machine learning-based implementa- tions. Within this particular subject, a classification model has been an effective alternative that blends advantages of both signature-based and anomaly-based methods.\nFor instance, in the study of [36], a number of machine learning algorithms and the oversampling technique of SMOTE[15] areusedtoimprovethedetectionratefor minor- ity attack classes. This recent investigation is among some in the NIDS field that pay attention to the problem of class imbalance. It inspires the current research, with the summa- rization of related works being presented in Table 2 (please refer to reviews of [41,49] for a boarder scope of NIDS research).\nThese representative methods point out major directions taken to improve the classification performance with the presence of class imbalance. Some such as the studies of [1,43] deal with this problem directly by using conventional oversampling and undersampling methods like SMOTE [15] and RUS [60] to obtain a desired training dataset. On the other hand, many techniques get over this burden implicitly through the determination of feature space [4,14,19,30,62], and the ensemble methodology that learns from multiple data perturbations [23,48]. The ability to handling the prob- lem of class imbalance becomes even more critical as a classification-based NIDS encounters adversarial attacks, where known intrusive patterns are mutated to avoid a posi- tive recognition. In fact, those methods listed in Table 2 are capable of detecting some unknown intrusions, but it is still prone to evasion by obfuscation techniques [17,30]. The next section provides further details on this attack type, especially the case of non-payload-based obfuscation that is the focus of the present study.\nAdversarial attack and non-payload-based obfuscation\nBased on the taxonomy of evasion against machine learn- ing models [10], two major categories of evasive adversarial attacks against IDS can be highlighted, payload-based and non-payload-based approaches. As an initial investigation into the former, the Whisker tool is developed to mutate HTTP requests such that IDS becomes confused and inac- curate [17]. Similar works have been introduced to bypass the detection of IDS through changing the payload [16,72], using obfuscation techniques such as malware morphism [50,51,78]. However, those methods that are able to evade payload-based IDS mainly by morphing the payload may not be efficient for non-payload-based counterpart. Provided this, it is also necessary to recover defected patterns associat- ing to the attack morphing at network and transport layers of the TCP/IP stack [30]. As non-payload-based IDS is usually more cost-effective as well as generalized to network and application settings than the other, it motivates a large num- ber of research works, such as Protocol Scrubbing [74] and AGENT [59], for instance. Recently, another series of inves- tigations [28,30] on non-payload-based intrusion detection and obfuscation-based adversarial evasion has been reported. These assess the robustness of different ML models, based on experiments with the dataset that implements obfusca- tion techniques to simulate adversarial non-payload attacks. Note that a thorough feature engineering process, i.e., a wrap- per method [13], is designed to deliver a set of informative features to train a classifier with both original samples and mutated ones. Despite the good result reported therein, the\n123\n\n--- Page Break ---\n\nComplex & Intelligent Systems (2022) 8:4863–4880 4867\nissue of imbalance classification has not been clarified and handled.\nAs mentioned earlier, the current work investigates instances of TCP connection, not network packets, which represent application data exchanges between client and server on the TCP/IP stack up to the transport layer. Of course,thesearesubjecttoconnection-orientedprotocolTCP at Layer 4, Internet protocol IP at Layer 3 and Ethernet proto- col at Layer 2, respectively. In particular, a TCP connection γ can be presented by start and end timestamps, ports/IP addresses of the client and the server, sets of packets inter- changed between the two ends. Given this assumption, a connection γ can be explained with its network connection features, thus allowing the following extraction function to map γ to the feature space Λ of d dimensions [30].\nf (γ ) \u0002→Λ, Λ = (λ1, λ2, . . . , λd) (1)\nEachfunction fi(γ )mapstheconnectiontotheith dimension as follows.\nfi(γ ) \u0002→λi, i = {1, 2, . . . , d}, (2)\nAccording to [28,30], examples of these features include the standard deviation of outbound (client to server) packet sizes, modus of TCP header lengths in all traffic, the number of TCP URG flags occurred in inbound traffic, and the number of TCP FIN flags occurred in inbound traffic.\nHaving specified those, the next part describes the concept of non-payload-based obfuscation, which aims to modify connection characteristics or features for a remote attack. For a connection γa representing a remote attack without any obfuscation, it can be represented by the following equation.\nf (γa) \u0002→Λa, Λa = (λa\n1, λa 2, . . . , λa d) (3)\nThen, let turn to the connection γa′ that corresponds to an intrusive communication γa to which non-payload-based obfuscations are applied. These modifications make changes to packet sets of the original connection γa by insertion, removal and transformation of the packets. As such, the pre- vious feature space Λa is transformed to Λa′.\nf (γa′) \u0002→Λa′, Λa′ = (λa′\n1 , λa′ 2 , . . . , λa′ d ) (4)\nAs a result, a classifier trained without knowledge of obfuscated or modified patterns may not perform as well as it does against intrusive connections with original features. According to the study of [29], a set of techniques have been initiated as part of developing an obfuscation tool in the Unix environment. Examples of functions f (γa′) are listed below.\n• Spread out packets in time: constant delay of 1 and 8s., as well as the normal distribution of delay with 5s. mean with 2.5s. standard deviation (25% correlation) • Packets loss: 25% of packets • Unreliable network channel simulation: 25% of packets damaged, 35% of packets damaged, and 35% of packets damaged with 25% correlation • Packets duplication: 5% of packets • Packets order modifications: reordering of 25% and 50% packets; reordered packets are sent with 10 ms. delay and 50% correlation • Fragmentation: MTU 1000, MTU 750, MTU 500 and MTU 250 • Combinations of the aforementioned techniques\nIn accordance with previous studies of classification- based NIDS [63,75,76], let a training dataset X = V × Y be the space of labeled connection instances, where V denotes the feature space of n instances (V ∈Rn×d), Y represents the corresponding label space of size n × 1, and each entry xi ∈V is classified as yi ∈Y with the value of yi being drawn from the domain of class DX. For a classifier that is trained on the dataset X using the algorithm α, the resulting model C Fα\nX estimates the class yo ∈DX of a new instance xo ∈R1×d, i.e., C Fα\nX(xo) = yo. Specific to the context of NIDS as a binary classification problem, the predicted class yγa of a connection γa whose feature vector is defined as f (γa), can be defined by the following [30].\nyγa = C Fα\nX ( f (γa)) (5)\nwhere yγa ∈{Intrusion, Legitimate}. Now with a connec- tion yγa′ whose features are modified through obfuscation functions, the quality of prediction yγa′ is the subject worth investigating.\nyγa′ = C Fα\nX ( f (γa′)) (6)\nWithout any prior knowledge regarding mutated patterns or model adjustment, any classifier C Fα\nX can often be sub- optimal. To this extent, the original work of [30] overcomes this difficulty through a feature selection approach, which iteratively add highly informative features to the desired set. This leads to an improvement towards a robust classification of adversarial intrusions but lacks an appropriate handling of the class imbalance problem. Henceforth, a new undersam- pling method is proposed in the next section to attend to this issue.\n123\n\n--- Page Break ---\n\n4868 Complex & Intelligent Systems (2022) 8:4863–4880\nProposed method\nThe proposed undersampling framework can be considered as an extension to the initial work of [46], which employs a single clustering to determine representative instances of original samples belonging to the majority class. At the same time, it demonstrates an organic application of consensus clustering concept [31,32] to provide a pool of multiple clus- tering results from which better cluster-wise representatives can be extracted. This section provides details of different stages developed for this new method, including the creation of multiple clustering results, the selection of representatives from those data partitions, and the use of data after under- sampling to train a classifier.\nGenerating a Pool of Multiple Clusterings. Provided the dataset X, let X0 and X1 (where X0 ∪X1 = X) be the set of samples belonging to the majority class and that of the minority class, respectively. An undersampling technique χ is applied to X0 to extract the set of representative samples χ(X0) = X∗\n0, where |X∗ 0| ≪|X0| and |B| denotes the size of set B. Then, the target data X∗that can be formed as\nX∗= X1 ∪X∗\n0 is used to create a classifier C Fα X∗using the classification algorithm α (previously, this is C Fα\nX without the undersampling process). Figure 1 illustrates the overall process of undersampling the training data set. Based on the study presented by [46], the function χ is simply represented by a set of centroids Z obtained from a clustering of X0, where the k-means technique is a common alternative for this analysis. In other words, representative samples are cen- troids z1, z2, . . . , zρ from clustering X0 using k-means and\nthe preferred number of clusters as ρ. Note that ρ is set to the desired size of the majority class, which normally is the same as that of the other, i.e., ρ = |X1|.\nSpecific to the current work, the concept ensemble or consensus clustering [31] is exploited to create a pool of multiple clusterings, from which a collection of ρ clusters are selected to generate X∗\n0. Let V0 = {x1, x2, . . . , xn0} be the matrix in the normalized domain [0, 1]n0×d of n0 legit- imate connection instances with respect to d features. It is noteworthy that the label space Y0 from a training dataset\nX0 = V0 × Y0 will not be exploited here as a clustering pro- cess is an unsupervised model, which develop a data partition (i.e., a set of clusters) without the knowledge of class infor- mation. In addition, each sample xi ∈V0 is represented as a vector of d feature dimensions or xi = (xi1, . . . , xid), ∀i ∈ {1, 2, . . . , n0}. Also let Π = {π1, π2, . . . , πM} be a cluster ensemble with M base clusterings, i.e., a clustering result or ensemble member. In particular, the gth member deliv- ers a collection of clusters πg = {Cg\n1 , Cg 2 , . . . , Cg kg}, where \u0002kg\nt=1 Cg\nt = X0, \u0003kg\nt=1 Cg\nt = ∅, and kg is the number of clusters in partition πg. To ensure the diversity within Π, the following ensemble generation strategies are used together.\n• Random-k method: these clusterings are generated using k-means with a cluster number that is randomly cho- sen from the range {2, . . . √|X0|} or {2, . . . 50} when √|X0| > 50 (see the report of [32] for relevant details). • Random-subspace method: each base clustering can be generated from a random feature subspace V ′\n0 ∈ [0, 1]n0×d′ of the feature space V0. Each of the data\nFig. 1 Overview of the undersampling process\n123\n\n--- Page Break ---\n\nComplex & Intelligent Systems (2022) 8:4863–4880 4869\nsubspaces is created with respect to the following interval d′.\nd′ = d′\nmin + ⌊ε(d′\nmax −d′\nmin)⌋, (7)\nprovided that ε ∈[0, 1] is a uniform random variable, while d′\nmin and d′\nmax denote the lower and upper bounds of the generated subspace V ′\n0. Following the initial work of [33], d′\nmin and d′\nmax are set to 0.75d and 0.85d, respec- tively. With this being decided, one of d features is picked up at a time to form the desired subspace of d′ non- duplicated features is obtained. For that, the index of each randomly selected feature is determined by the following.\nh = ⌊1 + ηD⌋, (8)\nwhere h denotes the hth feature in the pool of d attributes and η ∈[0, 1) is another uniform random variable. As a\nworking example, Fig. 2 summarizes the process of gen- erating a set of representatives from a clustering of two clusters, while Fig. 3 extends this procedure to a selection of representatives from a pool of centroids generated by multiple clusterings. Note that the underlying selection process will be explained next.\nSelecting Cluster-Wise Representatives. Having obtained the ensemble Π, a pool of centroids ZΠ is created such that each centroid za ∈ZΠ represents a particular clus- ter Ca in the set {C1\n1, C1 2, . . . , C1 k1} ∪{C2\n1, C2 2, . . . , C2 k2} ∪ . . . {C M\n1 , C M 2 , . . . , C M kM }. Note that every centroid in this col- lection is represented by the original space of d features, i.e., za ∈[0, 1]1×d, ∀za ∈ZΠ. This processing stage is to select ρ of these centroids to form the target set of representative samples Z = {z1, z2, . . . , zρ}. It can be summarized by the following steps.\nFig. 2 The process of generating a set of representative centroids z1 and z2 from a single clustering with k = 2 and X0 = x1, x2, x3, x4\nFig. 3 The process of generating a set of representative centroids from two clusterings with k = 2 and k = 3\n123\n\n--- Page Break ---\n\n4870 Complex & Intelligent Systems (2022) 8:4863–4880\n• Step 1: To start with, the first member z1 of Z is selected from the ZΠ, provided that z1 maximizes the average distance to other centroids in ZΠ.\nz1 = argmax\n∀za∈ZΠ\n\u0004\n∀zb∈ZΠ,zb̸=za d(za, zb)\n|ZΠ| −1 (9)\nwhere d(xi, x j) denotes the distance between two sam- ples xi and x j.NotethattheEuclideanmetricisemployed in this research to estimate the distance measurement. In addition, |A| represents the size of set A. At the end of this step, |Z| is 1, while that of ZΠ is reduced by 1 as well, i.e., ZΠ = ZΠ −z1. • Step 2: Next, a new member is iteratively chosen from ZΠ and moved to Z. To be exact, in each iteration, a greedy optimization is exploited to determine the best centroid zc ∈ZΠ using one of three different objec- tive functions defined below. As a result, the two sets are updated by Z = Z ∪zc and ZΠ = ZΠ −zc, respectively. This is repeated until all ρ members are obtained, i.e., |Z| = ρ.Thefollowingequationdescribesthefirstobjec- tive function, called Furthest-First-Majority or shortly as FF-Majority(Z, ZΠ). This is to find a centroid represent- ing a unique feature space that is minimally overlapping with those of others in ZΠ. It is leveraged with a similar assessment to existing members of Z, which is the first term in this function.\nzc = argmax\n∀za∈ZΠ\n\u0005\u0004\n∀ze∈Z d(za, ze)\n|Z| +\n\u0004\n∀zb∈ZΠ,zb̸=za d(za, zb)\n|ZΠ| −1\n\u0006\n(10)\nThe second objective function, called Furthest-First- Minority or shortly as FF-Minority(Z, ZΠ, X1). It finds a centroid in ZΠ that is largely different from samples of the minority class X1. This can be formally specified as follows.\nzc = argmax\n∀za∈ZΠ\n\u0007\u0004\n∀ze∈Z d(za, ze)\n|Z| +\n\u0004\n∀xi∈X1 d(za, xi)\n|X1|\n\b\n(11)\nAnd the third alternative of objective function, called Furthest-First-Overall or shortly as FF-Overall(Z, ZΠ,\nX1), combines the two previous functions to gain the overall justification based on samples belong to both majority and minority classes. In particular, zc is any za ∈ZΠ that miximize the following measurement.\n\u0007\u0004\n∀ze∈Z d(za, ze)\n|Z| + 1\n2\n\u0007\u0004\n∀zb∈ZΠ,zb̸=za d(za, zb)\n|ZΠ| −1\n+\n\u0004\n∀xi∈X1 d(za, xi)\n|X1|\n\b\b\n(12)\nApplication to Training a Classifier. The set of sample representatives Z acquired from the last phase corresponds to the features space V ∗\n0 ∈[0, 1]ρ×d of the majority class Y ∗\n0 = {1}ρ×1, i.e., X∗ 0 = V ∗ 0 × Y ∗ 0 . The resulting training set is to aggregate this with the set of samples assigned to the minority class, or X∗= X1 ∪X∗\n0. Consequently, a classifier C Fα\nX∗can be trained with the balanced data X∗using the choice of classification algorithm α. As such, the prediction\nyγa′ of a connection instance whose features are altered by different obfuscation techniques is determined by the follow- ing definition.\nyγa′ = C Fα\nX∗( f (γa′)) (13)\nIt is noteworthy that other methods to handle the class imbal- ance problem can also be used in this way to generate the data\nX∗. These will be included in the empirical study reported next.\nPerformance evaluation\nHaving defined the problem under examination and the pro- posed method in the past two sections, this paper continues with an empirical study in which the new undersampling framework is assessed against the results published in the original work and other methods to handle the problem of imbalance class. In particular, details of the dataset, exper- imental design, results and discussion are included in this section.\nInvestigated dataset and experimental design\nThe dataset under investigation is acquired from the original study of [30], where it is used for evaluating the robustness of machine-learning-basedNIDStoobfuscatedattacks.Inorder to obtain this data collection, connections representing both legitimate and intrusive attacks are created across vulnerable network services. Note that obfuscated intrusions are also generated by applying obfuscation techniques to some direct attacks, such that their appearances partly resemble the orig- inals. Then, the TCP-level feature extractor called ASNM: Advanced Security Network Metrics [26] is deployed to generate the corresponding feature space. After normaliz- ing value domains, the resulting dataset X = V ×Y consists of a normalized feature space V ∈[0, 1]11,445×194, where\n123\n\n--- Page Break ---\n\nComplex & Intelligent Systems (2022) 8:4863–4880 4871\na class of an instance vi ∈V is drawn from the domain of 3 possible connection categories, i.e., yi ∈Y, yi ∈{Legit- imate, Direct attack, Obfuscated attack}. In Table 3, details of this dataset are presented with respect to number of class- specific samples that are generated using different network services. In addition, Table 4 illustrates ASNM feature cate- gories and those 14 ones that have been selected in the report of [30] for classifying instances of legitimate connections and direct attacks (please consult [26] for a full list of 194 features). The current research focuses on this selection as not to bias a predictive model with features that are highly associated with obfuscated cases, thus reducing the feature\nspace to V ∈[0, 1]11,445×14. Please consult the original data publication [27] for details of simulation and related settings.\nFor a thorough evaluation, a rich collection of compared methodsareincludedinthisempiricalstudy,inadditiontothe proposed framework with three different objective functions: FF-Majority, FF-Minority and FF-Overall, respectively. The ‘Baseline’ of these new models is that initially introduced by [30], i.e., a classifier is developed from the original dataset X with the presence of imbalance class problem. Another basic competitor is the single clustering technique proposed by [46],whichwillbereferredtoas‘SingleClus’hereafter.Also, other undersampling algorithms are investigated, including\nTable 3 Details of connections collected from different vulnerable network services\nNetwork service Legitimate Direct attack Obfuscated attack Total\nApache Tomcat 809 61 163 1033\nDistCC 100 12 23 135\nMSSQL 532 31 103 666\nPostgreSQL 737 13 45 795\nSamba 4641 19 44 4704\nServer 3339 26 100 3465\nOther legitimate traffics 647 n/a n/a 647\nAll services 10,805 162 478 11,445\nTable 4 ASNM feature categories (with a full list available in the work of [26]) and those 14 features chosen by the study of [30]. Note that FFT denotes Fast Fourier Transformation\nCategory(total number: selected number) & Feature name; Description\nStatistical(total 77: selected 4)\nSigPktLenOut; standard deviation of outbound packet lengths\nMeanPktLenIn; mean of packet sizes in inbound traffic of a connection\nConTcpFinCntIn; number of inbound packets of a connection with FIN flag set\nConTcpPshCntIn; number of inbound packets of a connection with PSH flag set\nLocalization(total 8: selected 0)\nDistributed(total 34: selected 0)\nDynamic(total 32: selected 0)\nBehavioral(total 43: selected 10)\nCntOfOldFlows; no. of mutual flows between client/server hosts of analyzed connection 5 mins before it started\nCntOfNewFlows; no. of mutual flows between client/server hosts of analyzed connection 5 mins after it finished\nFourGonModulIn[1]; the module of 2nd coefficient of the FFT in goniometric representation\nFourGonModulOut[1]; same as the previous one, but for outbound traffic\nFourGonAngleN[9]; the angle of 10th coefficient of the FFT in goniometric representation\nFourGonModulN[0]; same as the previous, but it represents the module of 1st coefficient of FFT\nPolyInd3ordOut[3]; same as the previous, but it represents 4th coefficient of the approximation\nGaussProds8Out[7]; same as the previous, but computed above outbound packets and represents a product of 8th slice of packets with\nGaussian function that fits to interval of packets’ slice\nOutPktLen32s10i[3]; same as the previous, but computed above the first 32 secs of a connection.It is totaled outbound packet\nlengths of 4th interval\nOutPktLen4s10i[2]; same as the previous, but computed above the first 4 secs of a connection.It is totaled outbound packet\nlengths of 3rd interval\n123\n\n--- Page Break ---\n\n4872 Complex & Intelligent Systems (2022) 8:4863–4880\nRUS or Random UnderSampling [60] and its extensions to an ensemble approach. These include RUSBoost [60] and IRUS or Inverse Random UnderSampling [66], with their hyper-parameters being set according to the comparative study of [53]. Note that the target size of the majority class after an undersampling process is the number of samples belonging to the minority one. Besides those undersam- pling and ensemble models, this assessment also explores the oversampling counterpart that increase the cardinality of\nX1 such that |X1| = |X0|. Specific to this work, the bench- mark SMOTE technique [15] and its recent variant named ‘Outlier-SMOTE’ are employed, using the parameter setting recommended in the original report of [70]. This extension is picked up as it employs a similar intuition to FF-Majority, where samples that are largely different from others will be considered more important. Other settings are summarized as follows.\n• For the proposed framework, the target size of multiple- clusteringpoolor M issetto150,andeachspecificsetting of these models is repeated for 30 trials to achieve a reli- able conclusion from non-deterministic processes, based on averages across multiple runs. • For the classification algorithm α, four techniques are included here. These include decision tree (C4.5) with the maximum depth of 15, Naive Bayes (NB) with the Gaussian kernel function, support vector machine (SVM) with the Radial kernel function, and Logistic Regression (LR), respectively. These are employed with the dataset generated by those filter and wrapper techniques to create a classifier. • Since the current research focuses on robustness of machine-learning-based NIDS to obfuscated intrusions, a classifier is to be trained with instances representing legitimate connections and direct attacks only. Without the knowledge of those obfuscated instances, it is the aim of this study to see how well different methods recog- nize unseen threats. As such, the stratified 10-fold cross validation is firstly applied to the task of classifying legit- imate connections and direct attacks, i.e., the examined data is the combination of instances belonging to these two classes only. The corresponding results illustrate the quality of classifiers to capture usual patterns. On top of that, the classifier trained in each fold will be used to predict 478 obfuscated intrusions, as either a legiti- mate or attack one. The latter experiment leads to the comparison of robustness as a classifier encounters truly new intrusive connections. At last, metrics used to assess predictive performance are TPR (True Positive Rate), FPR (False Positive Rate) and F1, respectively. Note that results with respect to Precision and Recall metrics are\nFig. 4 Comparison of F1 and TPR scores obtained by examined meth- ods, as averages across classification models and 30 trials of 10-fold cross validation\nalso provided in the Supplementary.1 However, TPR is the only appropriate alternative for the second experi- ment, as all examined samples belong to the same class, i.e., obfuscated intrusion.\nExperimental results\nTo start with, the overview of results obtained for the classifi- cation of legitimate and direct attack instances are provided in Figs. 4 and 5. In particular, the former presents F1 and TPR scores for different methods investigated herein. Note that these are averages across 30 trials of tenfold cross vali- dation and four classification algorithms. This figure shows that the proposed methods of FF-Majority, FF-Minority and FF-Overall are able to improve the F1 metric of 89.00% achieved by the Baseline, with scores of 90.40%, 89.48% and 91.52%, respectively. Of course, these outperform the main competitor of SingleClus that receives a lower F1 measure of 87.31%. This suggests the more effective use of multi- ple clusterings for undersampling the majority class than the initial model that exploits only a single clustering. Nonethe- less, SingleClus delivers more accurate classifiers than the random selection of representative samples, with RUS and its best ensemble extension getting the score of 84.17% and 86.60%. In addition to these compared methods that belong to the undersampling category, other oversampling alterna- tives of SMOTE and Outlier-SMOTE are also included in this experiment, where their F1 values are higher than that of the Baseline model and comparable to FF-Majority and FF-Minority. Only the FF-Overall technique performs better than these, where the highest score of 89.97% is obtained by Outlier-SMOTE. A similar trend can be observed with TPR scores acquired by those techniques, with the highest and\n1 https://drive.google.com/drive/folders/1V2wp7gReowaX3ZS6M8w GfA7uGnFjwSep?usp=sharing.\n123\n\n--- Page Break ---\n\nComplex & Intelligent Systems (2022) 8:4863–4880 4873\nFig. 5 Comparison of FPR scores obtained by examined methods, as averages across classification models and 30 trials of 10-fold cross val- idation\nthe lowest scores of 89.35% and 81.48% are reported with FF-Overall and RUS.\nIn Fig. 5, FPR measures of Baseline, proposed methods and those two oversampling models appear to be compara- ble, with the two lowest scores of 0.08% and 0.09% being seen with FF-Overall and Baseline, respectively. Despite this positive observation, oversampling algorithms may lead to overfitting, which can be witnessed later as a classification model is applied to unseen cases of obfuscated attacks. Sim- ilar to the previous results of F1 and TPR, RUS leads to the worst FPR score of 0.17%, where an improvement can be made by its extensions of RUSBoost and IRUS, i.e., lower measures of 0.14%. It is noteworthy that all three new meth- ods of FF-Majority, FF-Minority and FF-Overall perform better than SingleClus that the score of 0.13%. Given the resultsdepictedinbothFigs.4and5,theproposedframework can support a development of an accurate classifier, in addi- tion to the application of feature subset selection employed by Baseline (further results with Precision and Recall met- rics can be found in the Supplementary). However, the result discussed thus far is based on classify only legitimate connec- tions and direct attacks, without the knowledge of obfuscated intrusions. Next, it is crucial to see predictive performance of these classification models to recognize obfuscated attacks, whose patterns are only partly represented in training sam- ples of direct attacks.\nAs mentioned above, Fig. 6 provides the report of TPR scores each of which is acquired by one of investigated methods for classifying 478 obfuscated intrusions (as either legitimate or direct attack). These measures are presented as averages across classifiers and 30 runs of 10-fold cross vali- dation. The purpose of this empirical study is to investigate predictive performance of different couplings of methods to handle the imbalance class problem and benchmark classi- fication algorithms, with respect to the amount of unseen obfuscated attacks each of the resulting models can iden- tify as direct attacks. Ideally, the target TPR score expected\nFig. 6 Comparison of TPR scores obtained by different methods for classifying obfuscated instances. These are averages across classifica- tion models and 30 trials of tenfold cross validation\nfrom those should be higher than 49.111% that is seen with Baseline. In particular, the clustering-based undersampling approach is apparently more effective than the random coun- terpart. This is concluded from the 50.0% score achieved by SingleClus, which is higher than those of RUS, RUS- Boost and IRUS, i.e., 48.326%, 48.092% and 49.006%. Along this trend of improvement, all three new methods perform better than the single-clustering competitor, where average TPR measures summarized across different classi- fiers are 51.360%, 51.151% and 52.197% for FF-Majority, FF-Minority and FF-Overall, respectively. Note that the best result is somewhat 3.086% higher than the benchmark set by Baseline. Besides these reports, it is important to point out that oversampling techniques of SMOTE and Outlier- SMOTE become less effective to classify unseen samples than Baseline, with TPR scores of 47.908% and 48.431%. These are in par with the speculation regarding the over- fitting effect caused by learning from an oversampled data set. Further details are presented in Table 5, in which TPR scores have been recorded for each coupling of classifiers and thoseexaminedtechniques.Accordingtothis,thethreevaria- tions of proposed undersampling framework usually exhibit predictive performance superior than Baseline, SingleClus and other compared methods. In particular, the best accurate alternative among these combinations is the exploitation of FF-Overall with NB classifier, which delivers an averaged TPR score of 85.146%. This tendency is similarly observed across four classification techniques examined herein. These results suggest that the robustness of classifiers to obfuscated intrusions can well be enhanced using the clustering based undersampling scheme, especially the multiple-clustering approach introduced in this work. This observation is due to other data-level methods included in this empirical study either add new samples of the minority class or reduce those of the majority class, using the general concept of near- est neighbors. Provided that a clear border exists between classes, its application would be rather effective. However, an inter-class overlap may dampen the quality of this local\n123\n\n--- Page Break ---\n\n4874 Complex & Intelligent Systems (2022) 8:4863–4880\nTable 5 TPR scores as averages across from 30 trials of 10-fold cross validation, categorized by a combination of classifier and examined method. Note that corresponding values of standard deviation are given in (brackets)\nExamined Method NB C4.5 SVM LR\nBaseline 81.172 (4.182) 36.402 (2.891) 15.690 (3.446) 63.180 (3.852)\nSingleClus 82.636 (5.376) 38.494 (3.784) 17.782 (4.103) 65.272 (3.448)\nFF-Majority 83.891 (3.842) 39.540 (3.019) 19.038 (3.211) 66.946 (2.562)\nFF-Minority 84.100 (2.871) 39.540 (2.995) 18.619 (3.103) 66.527 (2.383)\nFF-Overall 85.146 (3.004) 40.377 (2.981) 19.665 (3.164) 67.782 (2.410)\nRUS 80.753 (5.122) 35.983 (4.721) 16.946 (5.673) 63.808 (6.714)\nRUSBoost 81.172 (4.219) 36.402 (4.016) 17.573 (4.862) 64.644 (4.673)\nIRUS 81.381 (5.134) 36.611 (3.673) 17.782 (4.523) 64.435 (4.381)\nSMOTE 79.079 (4.873) 35.565 (4.822) 16.318 (3.749) 64.854 (4.006)\nOutlier-SMOTE 79.498 (4.027) 36.192 (3.760) 16.946 (3.662) 65.272 (3.885)\napproach, as compared to the clustering-oriented technique such as SingleClus. The same problem is also witnessed for the task of imputing missing values, where clustering infor- mation can be exploited to improve the accuracy of estimates of those missing ones [37,38]. Nonetheless, the use of a sin- gle clustering seen with SingleClus may overlook patterns exhibited in data under examination. Intuitively, multiple clusterings might fill in this gap well, which is observed here as well as within the line of research called ensemble clus- tering [12].\nFortheinterpretationofexperimentalresultsthusfar,aver- ages across multiple trials are exploited for simplicity. This initial assessment follows the central limit theorem suggest- ing that the observed statistics in a controlled experiment may well be justified to the normal distribution. However, to obtain a more robust comparison between proposed models and other compared methods, the number of times that one is ‘significantly better’ and ‘significantly worse’ (of 95% confi- dence level) than the others are investigated next. Following the work of [33], let μ(i, t) be the average of TPR scores, across the t-th run of n-fold cross validation (n is 10 for the current research) for a model i ∈TC (TC consists of pro- posed and compared methods). Note that the TPR metric is the most appropriate with this second task of classifying a set of samples belonging to the same class of obfuscated attack. Formally, μ(i, t) can be defined as follows:\nμ(i, t) = 1\nn\nn\nη=1\nT P Rη(i, t), (14)\nwhere T P Rη(i, t) denotes the TPR score obtained from the η-th fold within the t-th run of method i. The comparison of means obtained from a single trial of cross validation may be misleading, as the difference between means may not be statistically significant at times. As such, it is more reliable to make a decision based on the 95% confidence interval for the\nmean μ(i, t). Such an interval is defined by the following.\n\nμ(i, t) −1.96 Std(i, t) √n , μ(i, t) + 1.96 Std(i, t) √n\n\n, (15)\nwhere Std(i, t) denotes the standard deviation of T P R mea- sures across n-folds cross validation of the t-th trial, for a technique i. The statistical significance of the difference between any two methods i, i′ ∈TC is found if there is no intersection between their confidence intervals of μ(i, t) and μ(i′, t). In particular, a model i is significantly better than the other model i′ when\n\u0007\nμ(i, t) −1.96 Std(i, t) √n\n\b\n>\n\u0007\nμ(i′, t) + 1.96 Std(i′, t) √n\n\b\n(16)\nFollowing that, the frequency that one method i ∈TC is significantly better than others across all experimented trials, i.e., B(i), is calculated by the next equation.\nB(i) =\n\n∀t=1...30\n\n∀i′∈TC,i′̸=i\nbetter(i, i′, t), (17)\nwhere\nbetter(i, i′, t)\n=\n\n1 if\nμ(i, t) −1.96 Std(i,t) √n\n\u000e\n>\n\nμ(i′, t) + 1.96 Std(i′,t) √n\n\u000e\n0 otherwise (18)\nLikewise, the frequency that one technique i ∈TC is signif- icantly worse than others, i.e., W(i), is estimated as follows.\nW(i) =\n\n∀t=1...30\n\n∀i′∈TC,i′̸=i\nworse(i, i′, t), (19)\n123\n\n--- Page Break ---\n\nComplex & Intelligent Systems (2022) 8:4863–4880 4875\nTable 6 Statistical assessment of TPR scores reported in Table 5 for the classification of unseen obfuscated instances. Note that, both better and worse metrics are reported for all combinations of compared methods and classification algorithms\nExamined Method NB C4.5 SVM LR better/worse better/worse better/worse better/worse\nBaseline 24/45 38/43 8/70 13/82\nSingleClus 50/31 46/37 41/31 47/38\nFF-Majority 73/23 70/30 55/18 74/28\nFF-Minority 87/20 69/28 49/23 67/32\nFF-Overall 101/12 93/19 80/14 90/13\nRUS 20/54 13/64 21/52 20/69\nRUSBoost 26/41 36/42 36/36 34/52\nIRUS 30/37 38/40 39/29 31/58\nSMOTE 8/96 5/69 16/58 36/49\nOutlier-SMOTE 16/76 19/55 32/46 49/40\nwhere\nworse j(i, i′, t)\n=\n\n1 if\nμ(i, t) + 1.96 Std(i,t) √n\n\u000e\n<\n\nμ(i′, t) −1.96 Std(i′,t) √n\n\u000e\n0 otherwise (20)\nGiven this assessment framework, the results reported in Table 5 is further analyzed, with the corresponding statistics being shown in Table 6. These suggest that the three varia- tions of proposed method appear to be more accurate than other compared methods. In particular, they possess higher ‘better’ and lower ‘worse’ measures than the baseline and the state-of-the-art oversampling model of Outlier-SMOTE. Hence, the new framework can be a competitive alternative to previous works that focus on handling the class imbal- ance problem through data sampling and feature engineering. In addition to the evaluation against Outlier-SMOTE, two other recent methods identified earlier in the related work are also investigated, i.e., Recursive feature elimination [62] and Adaptive ensemble learning [23]. The next comparison shown in Fig. 7 depicts TPR scores of the three best mod- els reported in Table 5, against those of the abovementioned state-of-the-art techniques. Based on this illustration, the pre- dictive performance of proposed models are comparable to those of both Recursive feature elimination and Adaptive ensemble learning, thus putting the new method as another benchmark for developing a classifier to recognize unseen and mutated intrusive attacks.\nDiscussion and implication of proposed framework\nIn addition to the comparative assessment presented pre- viously, this section continues with a discussion regarding parameter analysis specific to the proposed framework and its implication as a general method for handling the class imbalance problem. At first, there are two algorithmic vari-\nables that may influence predictive performance of all three variations of FF-Majority, FF-Minority and FF-Overall. One is the size of clustering results M, which determines the number of centroids in the pool and has been initially set to 150 for the results reported thus far. To disclose the association between this particular parameter and the accuracy of classifying those obfuscated intrusions, the experimentexplainedaboveisrepeatedfordifferentvaluesof\nM ∈{100, 150, 200, 250, 300, 350}. Provided that Fig. 8A summarizes the corresponding results across four different classifiers, a bigger M usually leads to improved TPR scores witnessed with all three new techniques. In particular to FF- Overall, the highest measures around 54% is obtained as the ensemble size grows above 250. In other words, adding more clustering results to the pool will not yield any fur- ther significant improvement. This is similarly seen with the other two models, where FF-Majority performs slightly bet- ter FF-Minority across different values of M. Besides, the\nFig. 7 TPR scores obtained by FF-Majority, FF-Minority and FF- Overall for the classification of unseen obfuscated instances using the NB model. These are compared with those achieved by Recursive feature elimination [62] and Adaptive ensemble learning [23], where parameter settings are based on original studies\n123\n\n--- Page Break ---\n\n4876 Complex & Intelligent Systems (2022) 8:4863–4880\nFig. 8 TPR scores obtained by FF-Majority, FF-Minority and FF-Overall, with different ensemble sizes of M ∈{100, 150, 200, 250, 300, 350}. These are summarized from 30 trials of 10-fold cross validation: A across four classifiers and B specific to NB\nsame comparison specific to the NB classifier is illustrated in Fig. 8B, where the score of FF-Overall increases from 85.146 to 86.673% by enlarging the ensemble size from 150 to 250. Alike trends are also observed for both FF-Majority and FF-Minority. Despite these, a tradeoff between gain in classification performance and a higher complexity is a real concern for resource-constrained applications. It is notewor- thy that the complexity of generating a single base clustering is approximated to O(n) and O(nM) for an ensemble of M members. In fact, the overall complexity of a new method is the combination of O(nkM) and O(ρ2) for the generation of multiple clusterings and the selection of representatives, where ρ denotes the final size of the majority class and k is the averaged number of clusters in a clustering result. Since ρ tends to be much smaller than n, this complexity may usually converges to O(n). However, it is more expensive than (to the a factor of M) the baseline of clustering whose complex- ity is commonly O(nk). It is noteworthy that the complexity analyzed herein focuses on the data preprocessing phase as a prior to training a classification model. As such, a predic- tion time would not be affected by the proposed procedure but depending on a choice of algorithm used to develop the target classifier. The resulting module can be embedded in a software solution to perform an automated NIDS. A timely response may be expected from such a setting; however, its efficiency is up to hardware support. Of course, to gain a rig- orous body of knowledge, matching the new undersampling framework to big training data may well require a great deal of time. In such a case, the exploitation of distributed com- puting might be sensible.\nAs mentioned above, another important parameter to be studied is the size ρ of reduced majority class X0, where it is set initially as the same as that of the minority coun- terpart X1. With the process of tenfold cross validation, it\nis automatically configured to be around 146 samples that will be referred to as Q hereafter. The next investigation is to discover the relation between overall as well as classifier- specific TPR scores and different values of Q: Q, 2Q and 3Q that correspond to target numbers of representative samples of the majority class being 146, 292 and 438, respectively. Based on the experiment of classifying obfuscated connec- tions using M = 250, the results summarized from all four classifiers are depicted in Fig. 9A, where the case of 2Q generally delivers a more accurate classification model. For instance, TPR scores of FF-Overall inclines from 54.079% to 54.813%, as the size of reduced majority class grows twice larger from Q to 2Q. This suggests a loss of majority-class information encountered along with the procedure of select- ing a small number of representative samples. Nonetheless, having too many of these in the case of 3Q may not be as effective since the cause of imbalance problem has been re-visited. A similar tendency can be seen in Fig. 9B that illustrates the result specific to NB. In particular, FF-Overall a higher TPR of 87.246% with 2Q, compared to 86.673% with the initial setting of Q.\nThe issue to be clarified next regards the implication of proposed methods to an extreme case of class imbalance, in which the size of minority class gets extremely small. For this experiment, the whole training data collection, i.e., sizes of majorityandminorityclassesare10.805and162,isexploited to determine classes of those unseen obfuscated instance. Notethattheexperimentisrepeatedfrom30trialswithdiffer- ent sizes of |X1| ∈{162, 122, 81, 41}, while M is 250 and the target size of majority class is 2Q, i.e., twice that of the other class. According to Fig. 10A that shows TPR scores obtained by the NB classifier, the tendency of predictive performance constantly declines as |X1| drops from 162 to 41. This is com- monly observed with different methods examined here, with\n123\n\n--- Page Break ---\n\nComplex & Intelligent Systems (2022) 8:4863–4880 4877\nFig. 9 TPR scores obtained by FF-Majority, FF-Minority and FF-Overall, with different sizes of the majority class, Q, 2Q and 3Q. These are summarized from 30 trials of tenfold cross validation: A across four classifiers and B specific to NB\nFig. 10 TPR scores obtained by FF-Majority, FF-Minority and FF-Overall, with different sizes of the minority class X1 ∈{162, 122, 81, 41}. These are summarized from 30 trials for two specific classifiers: A NB and B C4.5\nFF-Majority, FF-Minority and FF-Overall providing the best set of measures and outperforming both Baseline and Sin- gleClus. This is also observed with the C4.5 technique whose results are given in Fig. 10B. With these, it is possible to infer that the proposed framework can be a robust alternative to develop a classification model for a highly imbalance prob- lem found in many real-world domains, e.g., fraud detection and cancer diagnosis. Furthermore, the application of FF- Minority tends to be less effective as |X1| decreases, which is sensible given the fact that the underlying objective func- tion makes use of distances from a centroid of interest to members of X1. As such, the performance of FF-Overall is also affected by this estimation, where its TPR scores become lower than those of FF-Majority as |X1| getting to the small- est size of 41. For such a case, FF-Majority is preferred to the others, but it should be noted that accuracy of the resulting model will still be largely lower than that achieved with a bigger |X1|. To this end, it may be better to collect additional samples of the minority classes.\nConclusion\nThis paper has presented a new approach to handle the prob- lem of imbalance class for machine-learning-based NIDS with adversarial attacks, where legitimate, direct attacks and obfuscated intrusions can be more accurately classified. As a compliment to an initial attempt of seeking a feature subset that is optimal for this classification task, the current work focuses on solving the aforementioned difficulty by extend- ing the concept of clustering based undersampling. Instead of making a reference out of a single data partition, the tar- get set of representative centroids is selected from a pool of multiple clustering results, which has been generated using the concept of ensemble clustering. This ensures the diver- sity of data partitions, hence the resulting centroids, from which some can well be chosen to represent the original set ofmajorityclass.Threevariationsoftheproposedframework are introduced based on different objective functions used for\n123\n\n--- Page Break ---\n\n4878 Complex & Intelligent Systems (2022) 8:4863–4880\nthis iterative and greedy process: FF-Majority, FF-Minority and FF-Overall.\nBased on the evaluation with four different classifiers and the published dataset, those new methods usually outperform the baseline (i.e., the use of selected feature subset without handling the class imbalance problem) and the single- clustering-based undersampling. They also demonstrate the predictive performance that is in par with state-of-the-art methods included in this study. In fact, the proposed frame- work is generalized such that it can be coupled with any common classification model. Likewise, this applies to the exploitation of other objective functions to differentiate the goodness of a centroid as a representative of the majority class. However, the proposed models may be less effective if a more sophisticated obfuscation technique is exploited to mutate known patterns. Yet, they are more expensive than their baseline, which may not be appropriate for analyzing big data. Enriching a training set with modified instances [77] using new obfuscation methods can partly resolve the former, while applying the concept of federated learning may scale the application of proposed models up to a big security data collection [5]. Besides, another future work is to explore optimization techniques found in the literature [56] that may lead to a better selection of centroids from a pool of mul- tiple clusterings. This is similar to the attempt to improve a greedy optimization to discretization of feature domains [64]. Finally, an introduction of fuzzy sets and vocabularies isabletosupporttheexplainabilityofpredictionprocess[21]. This final remark draws a great deal of attention provided the emerging trend of explainable AI for modern applications.\nAcknowledgements ThisresearchworkispartlysupportedbyMaeFah Luang University, Newton IAPP 2017 (Royal Academy of Engineering and Thailand Research Fund), and Newton Institutional Links 2020-21 project (British Council and National Research Council of Thailand).\nDeclarations\nConflict of interest The authors declare no conflict of interest.\nCRediT author statement Chutipon Pimsarn: Data curation, Visualiza- tion, Investigation, Software, Writing - Original draft preparation Toss- apon Boongoen: Conceptualization, Methodology, Validation, Writing - Original draft preparation, Supervision Natthakan Iam-On: Method- ology, Validation, Writing - Reviewing and Editing, Supervision Nitin Naik: Writing - Reviewing and Editing Longzhi Yang: Writing - Reviewing and Editing\nOpen Access This article is licensed under a Creative Commons Attribution 4.0 International License, which permits use, sharing, adap- tation, distribution and reproduction in any medium or format, as long as you give appropriate credit to the original author(s) and the source, provide a link to the Creative Commons licence, and indi- cate if changes were made. The images or other third party material in this article are included in the article’s Creative Commons licence, unless indicated otherwise in a credit line to the material. If material is not included in the article’s Creative Commons licence and your\nintended use is not permitted by statutory regulation or exceeds the permitteduse,youwillneedtoobtainpermissiondirectlyfromthecopy- right holder. To view a copy of this licence, visit http://creativecomm ons.org/licenses/by/4.0/.\nReferences\n1. Abdulhammed R, Faezipour M, Abuzneid A, Abumallouh A (2019) Deep and machine learning approaches for anomaly-based intrusion detection of imbalanced network traffic. IEEE Sens Lett 3(1):1–4 2. Agarwal N, Hussain SZ (2018) A closer look at intrusion detection system for web applications. Secur Commun Netw 2018(9601357):1–27 3. Ahmim A, Derdour M, Ferrag M (2018) An intrusion detection system based on combining probability predictions of a tree of classifiers. Int J Commun Syst 31(9):e3547 4. Akashdeep, Manzoor I, Kumar N (2017) A feature reduced intru- sion detection system using ANN classifier. Expert Syst Appl 88:249–257 5. Alazab M, MSPR, MP, Reddy P, Gadekallu TR, Pham QV (2022) Federated learning for cybersecurity: Concepts, challenges and future directions. IEEE Trans Ind Inf. https://doi.org/10.1109/TII. 2021.3119038 6. Alcaraz C (2018) Cloud-assisted dynamic resilience for cyber- physical control systems. IEEE Wirel Commun 25(1):76–82 7. AljanabiM,IsmailMA,AliAH(2021)Intrusiondetectionsystems, issues, challenges, and needs. Int J Comput Intell Syst 14(1):560– 571 8. Anthi E, Williams L, Rhode M, Burnap P, Wedgbury A (2021) Adversarial attacks on machine learning cybersecurity defences in industrial control systems. J Inf Secur Appl 58(102717):1–9 9. Ashibani Y, Mahmoud QH (2017) Cyber physical systems security: Analysis, challenges and solutions. Computer Security 8:81–97 10. Barreno M, Nelson B, Joseph A, Tygar J (2010) The security of machine learning. Mach Learn 81(2):121–148 11. Blaszczynski J, Stefanowski J (2015) Neighborhood sampling in bagging for imbalanced data. Neurocomputing 150:529–542 12. Boongoen T, Iam-On N (2022) Using link-based consensus clus- tering for mixed-type data analysis. CMC 70(1):1993–2011 13. Boongoen T, Shang C, Iam-On N, Shen Q (2011) Extending data reliability measure to a filter approach for soft subspace cluster- ing. IEEE Transactions on Systems, Man and Cybernetics, Part B 41(6):1705–1714 14. Chandra A, Khatri SK, Simon R (2019) Filter-based attribute selec- tion approach for intrusion detection using k-means clustering and sequential minimal optimization technique. In: Proceedings of Amity International Conference on Artificial Intelligence, pp. 740–745 15. Chawla N, Bowyer K, Hall L, Kegelmeyer W (2002) SMOTE: synthetic minority over-sampling technique. Journal of Artificial Intelligence Research 16:321–357 16. Corona I, Giacinto G, Roli F (2013) Adversarial attacks against intrusion detection systems: Taxonomy, solutions and open issues. Inf Sci 239:201–225 17. Dka C, Papa J, Lisboa C, Munoz R, Dvhc A (2019) Internet of things: a survey on machine learning-based intrusion detection approaches. Comput Networks 151:147–157 18. Farhan BI, Jasim AD (2022) A survey of intrusion detection using deep learning in internet of things. Iraqi Journal For Computer Science and Mathematics 3(1):83–93 19. Farnaaz N, Jabbar MA (2016) Random forest modeling for network intrusion detection system. Procedia Computer Science 89:213– 217\n123\n\n--- Page Break ---\n\nComplex & Intelligent Systems (2022) 8:4863–4880 4879\n20. Fossaceca JM, Mazzuchi TA, Sarkani S (2015) MARK-ELM: application of a novel multiple kernel learning framework for improving the robustness of network intrusion detection. Expert Syst Appl 42:4062–4080 21. Fu X, Boongoen T, Shen Q (2010) Evidence directed generation of plausible crime scenarios with identity resolution. Appl Artif Intell 24(4):253–276 22. Gao L, Shen W, Li X (2019) New trends in intelligent manufactur- ing. Engineering 5(4):11–20 23. Gao X, Shan C, Hu C, Niu Z, Liu Z (2019) An adaptive ensem- ble machine learning model for intrusion detection. IEEE Access 7:82512–82521 24. Guo C, Ping Y, Liu N, Luo S (2016) A two-level hybrid approach for intrusion detection. Neurocomputing 214:391–400 25. Haseeb K, Almogren A, Islam N, Ud-Din I, Jan Z (2019) An energy-efficient and secure routing protocol for intrusion avoid- ance in iot-based wsn. Energies 12(21):4174 26. Homoliak I, Barabas M, Chmelar P, Drozd M, Hanacek P (2013) ASNM: Advanced security network metrics for attack vector description. In: Conference on Security and Management, pp. 350– 358 27. Homoliak I, Malinka K, Hanacek P (2020) ASNM Datasets: A collection of network attacks for testing of adversarial classifiers and intrusion detectors. IEEE Access 8:112427–112453 28. Homoliak I, Ovsonka D, Gregr M, Hanacek P (2014) NBA of obfuscatednetworkvulnerabilitiesexploitationhiddenintoHTTPS traffic. In: International Conference for Internet Technology and Secured Transactions, pp. 311–318 29. Homoliak I, Teknos M, Barabas M, Hanacek P (2016) Exploita- tion of netem utility for non-payload-based obfuscation techniques improving network anomaly detection. In: International Confer- ence on Security and Privacy in Communication Systems, pp. 770–773 30. Homoliak I, Teknos M, Ochoa M, Breitenbacher D, Hosseini S, Hanacek P (2018) Improving network intrusion detection classi- fiers by non-payload-based exploit-independent obfuscations: An adversarial approach. EAI Endorsed Transactions on Security and Safety 5(17):e4 31. Iam-On N (2020) Clustering data with the presence of attribute noise: a study of noise completely at random and ensemble of multiple k-means clusterings. Int J Mach Learn Cybern 11(3):491– 509 32. Iam-On N, Boongoen T (2015) Diversity-driven generation of link-based cluster ensemble and application to data classification. Expert Syst Appl 42(21):8259–8273 33. Iam-On N, Boongoen T, Garrett S, Price C (2011) A link-based approach to the cluster ensemble problem. IEEE Trans Pattern Anal Mach Intell 33(12):2396–2409 34. Iam-On N, Boongoen T (2017) Improved student dropout pre- diction in thai university using ensemble of mixed-type data clusterings. Int J Mach Learn Cybern 8(2):497–510 35. Jia Y, Qi Y, Shang H, Jiang R, Li A (2018) A practical approach to constructing a knowledge graph for cybersecurity. Engineering 4(1):53–60 36. Karatas G, Demir O, Sahingoz O (2020) Increasing the perfor- mance of machine learning-based idss on an imbalanced and up-to-date dataset. IEEE Access 8:32150–32162 37. Keerin P, Boongoen T (2022) Estimation of missing values in astro- nomical survey data: An improved local approach using cluster directed neighbor selection. Inf Process Manage 59(2):102881 38. Keerin P, Boongoen T (2022) Improved knn imputation for missing values in gene expression data. CMC-Computers, Materials and Continua 70(2):4009–4025 39. Kravchik M, Shabtai A (2018) Detecting cyber attacks in indus- trial control systems using convolutional neural networks. In: ACM\nInternational Workshop on Cyber-Physical Systems Security and Privacy, pp. 72–83 40. Krawczyk B (2016) Learning from imbalanced data: open chal- lenges and future directions. Progress in Artificial Intelligence 5:231–232 41. Kumar DP, Amgoth T, Annavarapu CSR (2019) Machine learning algorithms for wireless sensor networks: A survey. Information Fusion 49:1–25 42. Kumar DP, Amgoth T, Annavarapu CSR (2021) CANintelliIDS: Detecting In-Vehicle Intrusion Attacks on a Controller Area Net- work Using CNN and Attention-Based GRU. IEEE Transactions on Network Science and Engineering 8(2):1456–1466 43. Lee YJ, Yeh YR, Wang YCF (2013) Anomaly detection via online oversampling principal component analysis. IEEE Trans Knowl Data Eng 25(7):1460–1470 44. Li J, Qu Y, Chao F, Shum H, Ho E, Yang L (2019) Machine learning algorithms for network intrusion detection. In: AI in Cybersecurity, pp. 151–179. NY: Springer 45. Lin CT et al (2018) Minority oversampling in kernel adaptive sub- spaces for class imbalanced datasets. IEEE Trans Knowl Data Eng 30(5):950–962 46. Lin WC, Tsai CF, Hu YH, Jhang JS (2017) Clustering-based under- sampling in class-imbalanced data. Inf Sci 409–410:17–26 47. Ma W (2020) Analysis of anomaly detection method for internet of things based on deep learning. Transactions on Emerging Telecom- munications Technologies p. e3893 48. Mazini M, Shirazi B, Mahdavi I (2019) Anomaly network-based intrusion detection system using a reliable hybrid artificial bee colony and adaboost algorithms. Journal of King Saud University - Computer and Information Sciences 31(4):541–553 49. Molina-Coronado B, Mori U, Mendiburu A, Miguel-Alonso J (2020) Survey of network intrusion detection methods from the perspective of the knowledge discovery in databases process. IEEE Trans Netw Serv Manage 17(4):2451–2479 50. Naik N, Jenkins P, Savage N, Yang L, Boongoen T, Iam-On N (2021) Fuzzy-import hashing: A static analysis technique for malware detection. Forensic Science International: Digital Inves- tigation 37:301139 51. Naik N, Jenkins P, Savage N, Yang L, Boongoen T, Iam-On N, Naik K, Song J (2021) Embedded YARA rules: strengthening YARA rules utilising fuzzy hashing and fuzzy rules for malware analysis. Complex and Intelligent Systems 7:687–702 52. Najafabadi M, Villanustre F, Khoshgoftaar T, Seliya N, Wald R, Muharemagic E (2015) Deep learning applications and challenges in big data analytics. Journal of Big Data 2(1):1 53. Nanni L, Fantozzi C, Lazzarini N (2015) Coupling different meth- ods for overcoming the class imbalance problem. Neurocomputing 158:48–61 54. Panwong P, Boongoen T, Iam-On N (2020) Improving consensus clustering with noise-induced ensemble generation. Expert Syst Appl 146:113–138 55. Parsaei MR, Rostami SM, Javidan R (2016) A hybrid data mining approach for intrusion detection on imbalanced nsl-kdd dataset. Int J Adv Comput Sci Appl 7(6):20–25 56. Pervaiz S, Ul-Qayyum Z, Bangyal WH, Gao L, Ahmad J (2021) A systematic literature review on particle swarm optimization tech- niques for medical diseases detection. Comput Math Methods Med 2021(5990999):1–10 57. Pierazzi F, Cristalli S, Bruschi D, Colajanni M, Marchetti M, Lanzi GA (2020) Glyph: Efficient ML-based detection of heap spraying attacks. IEEE Trans Inf Forensics Secur 16:740–755 58. Prasad R, Rohokale V (2020) Artificial intelligence and machine learning in cyber security. In: Cyber Security: The Lifeline of Information and Communication Technology, pp. 231–247. NY: Springer\n123\n\n--- Page Break ---\n\n4880 Complex & Intelligent Systems (2022) 8:4863–4880\n59. Rubin S, Jha S, Miller B (2004) Automatic generation and analy- sis of NIDS attacks. In: Annual Computer Security Applications Conference, pp. 28–38 60. Seiffert C, Khoshgoftaar T, Hulse JV, Napolitano A (2010) Rus- boost: a hybrid approach to alleviating class imbalance. IEEE Transactions on System, Man and Cybernertics, Part A 40(1):185– 197 61. Sethi TS, Kantardzic M (2018) When good machine learning leads to bad security. Ubiquity May(1):1–14 62. Sharma NV, Yadav NS (2021) An optimal intrusion detection sys- tem using recursive feature elimination and ensemble of classifiers. Microprocess Microsyst 85:104293 63. Shen Y, Zheng K, Wu C, Zhang M, Niu X, Yang Y (2018) An ensemble method based on selection using bat algorithm for intru- sion detection. Comput J 61(4):526–538 64. Sriwanna K, Boongoen T, Iam-On N (2017) Graph clustering- based discretization of splitting and merging methods (graphs and graphm). HCIS 7(1):1–39 65. Sun Z, Song Q, Zhu X, Sun H, Xu B, Zhou Y (2015) A novel ensemble method for classifying imbalanced data. Pattern Recogn 48:1623–1637 66. Tahir M, Kittler J, Yan F (2012) Inverse random under sampling for class imbalance problem and its application to multi-label clas- sification. Pattern Recogn 45(10):3738–3750 67. Tarter A (2017) Importance of cyber security. In: Community Policing-A European Perspective: Strategies, Best Practices and Guidelines, pp. 213–230. NY: Springer 68. Teixeira MA, Salman T, Zolanvari M, Jain R, Meskin N, Samaka M (2018) SCADA system testbed for cybersecurity research using machine learning approach. Future Internet 10(8):76 69. Tesfahunand A, Bhaskari DL (2013) Intrusion detection using random forests classifier with SMOTE and feature reduction. In: Proceedings of International Conference on Cloud Ubiquitous Computing and Emerging Technology, pp. 127–132\n70. Turlapati VPK, Prusty MR (2020) Outlier-SMOTE: A refined oversampling technique for improved detection of COVID-19. Intelligence-Based Medicine 3–4:100023 71. Uddin M, Rahman A, Uddin N, Memon J, Alsaqour R, Kazi S (2013) Signature-based multi-layer distributed intrusion detec- tion system using mobile agents. International Journal of Network Security 15(2):97–105 72. Vigna G, Robertson W, Balzarotti D (2004) Testing network-based intrusion detection signatures using mutant exploits. In: ACM con- ference on Computer and Communications Security, pp. 21–30 73. Wang D, abd Y, Zhang XW, Jin L (2019) Detection of power grid disturbances and cyber-attacks based on machine learning. Journal of Information Security and Applications 46:42–52 74. Watson D, Smart M, Malan G, Jahanian F (2004) Protocol scrub- bing: Network security through transparent flow modification. IEEE/ACM Trans Networking 12(2):261–273 75. Yan B, Han G (2018) Effective feature extraction via stacked sparse autoencoder to improve intrusion detection system. IEEE 6:41238– 41248 76. Yao H, Fu D, Zhang P, Li M, Liu Y (2018) MSML: a novel mul- tilevel semi-supervised machine learning framework for intrusion detection system. IEEE Internet Things J 6(2):1949–1959 77. Yin C, Zhu Y, Liu S, Fei J, Zhang H (2020) Enhancing network intrusion detection classifiers using supervised adversarial training. Journal of Supercomputing 76:6690–6719 78. You I, Yim K (2010) Malware obfuscation techniques: A brief survey. In: International Conference on Broadband and Wireless Computing, Communication and Applications, pp. 297–300\nPublisher’s Note Springer Nature remains neutral with regard to juris- dictional claims in published maps and institutional affiliations.\n123",
+  "equations": [
+    {
+      "page": 5,
+      "raw_extracted": "As mentioned earlier, the current work investigates instances of TCP connection, not network packets, which represent application data exchanges between client and server on the TCP/IP stack up to the transport layer. Of course,thesearesubjecttoconnection-orientedprotocolTCP at Layer 4, Internet protocol IP at Layer 3 and Ethernet proto- col at Layer 2, respectively. In particular, a TCP connection γ can be presented by start and end timestamps, ports/IP addresses of the client and the server, sets of packets inter- changed between the two ends. Given this assumption, a connection γ can be explained with its network connection features, thus allowing the following extraction function to map γ to the feature space Λ of d dimensions [30].",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "f (γ ) \u0002→Λ, Λ = (λ1, λ2, . . . , λd) (1)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Eachfunction fi(γ )mapstheconnectiontotheith dimension as follows.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "fi(γ ) \u0002→λi, i = {1, 2, . . . , d}, (2)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Having specified those, the next part describes the concept of non-payload-based obfuscation, which aims to modify connection characteristics or features for a remote attack. For a connection γa representing a remote attack without any obfuscation, it can be represented by the following equation.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "f (γa) \u0002→Λa, Λa = (λa",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "1, λa 2, . . . , λa d) (3)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Then, let turn to the connection γa′ that corresponds to an intrusive communication γa to which non-payload-based obfuscations are applied. These modifications make changes to packet sets of the original connection γa by insertion, removal and transformation of the packets. As such, the pre- vious feature space Λa is transformed to Λa′.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "f (γa′) \u0002→Λa′, Λa′ = (λa′",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "1 , λa′ 2 , . . . , λa′ d ) (4)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "As a result, a classifier trained without knowledge of obfuscated or modified patterns may not perform as well as it does against intrusive connections with original features. According to the study of [29], a set of techniques have been initiated as part of developing an obfuscation tool in the Unix environment. Examples of functions f (γa′) are listed below.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "In accordance with previous studies of classification- based NIDS [63,75,76], let a training dataset X = V × Y be the space of labeled connection instances, where V denotes the feature space of n instances (V ∈Rn×d), Y represents the corresponding label space of size n × 1, and each entry xi ∈V is classified as yi ∈Y with the value of yi being drawn from the domain of class DX. For a classifier that is trained on the dataset X using the algorithm α, the resulting model C Fα",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "X estimates the class yo ∈DX of a new instance xo ∈R1×d, i.e., C Fα",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "X(xo) = yo. Specific to the context of NIDS as a binary classification problem, the predicted class yγa of a connection γa whose feature vector is defined as f (γa), can be defined by the following [30].",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "yγa = C Fα",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "X ( f (γa)) (5)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "where yγa ∈{Intrusion, Legitimate}. Now with a connec- tion yγa′ whose features are modified through obfuscation functions, the quality of prediction yγa′ is the subject worth investigating.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "yγa′ = C Fα",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "X ( f (γa′)) (6)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 5,
+      "raw_extracted": "Without any prior knowledge regarding mutated patterns or model adjustment, any classifier C Fα",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Generating a Pool of Multiple Clusterings. Provided the dataset X, let X0 and X1 (where X0 ∪X1 = X) be the set of samples belonging to the majority class and that of the minority class, respectively. An undersampling technique χ is applied to X0 to extract the set of representative samples χ(X0) = X∗",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "0, where |X∗ 0| ≪|X0| and |B| denotes the size of set B. Then, the target data X∗that can be formed as",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "X∗= X1 ∪X∗",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "0 is used to create a classifier C Fα X∗using the classification algorithm α (previously, this is C Fα",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "X without the undersampling process). Figure 1 illustrates the overall process of undersampling the training data set. Based on the study presented by [46], the function χ is simply represented by a set of centroids Z obtained from a clustering of X0, where the k-means technique is a common alternative for this analysis. In other words, representative samples are cen- troids z1, z2, . . . , zρ from clustering X0 using k-means and",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "the preferred number of clusters as ρ. Note that ρ is set to the desired size of the majority class, which normally is the same as that of the other, i.e., ρ = |X1|.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "Specific to the current work, the concept ensemble or consensus clustering [31] is exploited to create a pool of multiple clusterings, from which a collection of ρ clusters are selected to generate X∗",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "X0 = V0 × Y0 will not be exploited here as a clustering pro- cess is an unsupervised model, which develop a data partition (i.e., a set of clusters) without the knowledge of class infor- mation. In addition, each sample xi ∈V0 is represented as a vector of d feature dimensions or xi = (xi1, . . . , xid), ∀i ∈ {1, 2, . . . , n0}. Also let Π = {π1, π2, . . . , πM} be a cluster ensemble with M base clusterings, i.e., a clustering result or ensemble member. In particular, the gth member deliv- ers a collection of clusters πg = {Cg",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "1 , Cg 2 , . . . , Cg kg}, where \u0002kg",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "t = X0, \u0003kg",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "t = ∅, and kg is the number of clusters in partition πg. To ensure the diversity within Π, the following ensemble generation strategies are used together.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "• Random-k method: these clusterings are generated using k-means with a cluster number that is randomly cho- sen from the range {2, . . . √|X0|} or {2, . . . 50} when √|X0| > 50 (see the report of [32] for relevant details). • Random-subspace method: each base clustering can be generated from a random feature subspace V ′",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 6,
+      "raw_extracted": "0 ∈ [0, 1]n0×d′ of the feature space V0. Each of the data",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "min + ⌊ε(d′",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "max −d′",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "provided that ε ∈[0, 1] is a uniform random variable, while d′",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "h = ⌊1 + ηD⌋, (8)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "where h denotes the hth feature in the pool of d attributes and η ∈[0, 1) is another uniform random variable. As a",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "Selecting Cluster-Wise Representatives. Having obtained the ensemble Π, a pool of centroids ZΠ is created such that each centroid za ∈ZΠ represents a particular clus- ter Ca in the set {C1",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "1, C1 2, . . . , C1 k1} ∪{C2",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "1, C2 2, . . . , C2 k2} ∪ . . . {C M",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 7,
+      "raw_extracted": "1 , C M 2 , . . . , C M kM }. Note that every centroid in this col- lection is represented by the original space of d features, i.e., za ∈[0, 1]1×d, ∀za ∈ZΠ. This processing stage is to select ρ of these centroids to form the target set of representative samples Z = {z1, z2, . . . , zρ}. It can be summarized by the following steps.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "• Step 1: To start with, the first member z1 of Z is selected from the ZΠ, provided that z1 maximizes the average distance to other centroids in ZΠ.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "∀za∈ZΠ",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "\u0004",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "∀zb∈ZΠ,zb̸=za d(za, zb)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "|ZΠ| −1 (9)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "where d(xi, x j) denotes the distance between two sam- ples xi and x j.NotethattheEuclideanmetricisemployed in this research to estimate the distance measurement. In addition, |A| represents the size of set A. At the end of this step, |Z| is 1, while that of ZΠ is reduced by 1 as well, i.e., ZΠ = ZΠ −z1. • Step 2: Next, a new member is iteratively chosen from ZΠ and moved to Z. To be exact, in each iteration, a greedy optimization is exploited to determine the best centroid zc ∈ZΠ using one of three different objec- tive functions defined below. As a result, the two sets are updated by Z = Z ∪zc and ZΠ = ZΠ −zc, respectively. This is repeated until all ρ members are obtained, i.e., |Z| = ρ.Thefollowingequationdescribesthefirstobjec- tive function, called Furthest-First-Majority or shortly as FF-Majority(Z, ZΠ). This is to find a centroid represent- ing a unique feature space that is minimally overlapping with those of others in ZΠ. It is leveraged with a similar assessment to existing members of Z, which is the first term in this function.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "∀za∈ZΠ",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "\u0005\u0004",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "∀ze∈Z d(za, ze)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "\u0004",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "∀zb∈ZΠ,zb̸=za d(za, zb)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "|ZΠ| −1",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "\u0006",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "The second objective function, called Furthest-First- Minority or shortly as FF-Minority(Z, ZΠ, X1). It finds a centroid in ZΠ that is largely different from samples of the minority class X1. This can be formally specified as follows.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "∀za∈ZΠ",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "\u0007\u0004",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "∀ze∈Z d(za, ze)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "\u0004",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "∀xi∈X1 d(za, xi)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "\b",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "And the third alternative of objective function, called Furthest-First-Overall or shortly as FF-Overall(Z, ZΠ,",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "X1), combines the two previous functions to gain the overall justification based on samples belong to both majority and minority classes. In particular, zc is any za ∈ZΠ that miximize the following measurement.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "\u0007\u0004",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "∀ze∈Z d(za, ze)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "\u0007\u0004",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "∀zb∈ZΠ,zb̸=za d(za, zb)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "|ZΠ| −1",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "\u0004",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "∀xi∈X1 d(za, xi)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "\b\b",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "Application to Training a Classifier. The set of sample representatives Z acquired from the last phase corresponds to the features space V ∗",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "0 ∈[0, 1]ρ×d of the majority class Y ∗",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "0 = {1}ρ×1, i.e., X∗ 0 = V ∗ 0 × Y ∗ 0 . The resulting training set is to aggregate this with the set of samples assigned to the minority class, or X∗= X1 ∪X∗",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "0. Consequently, a classifier C Fα",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "X∗can be trained with the balanced data X∗using the choice of classification algorithm α. As such, the prediction",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "yγa′ of a connection instance whose features are altered by different obfuscation techniques is determined by the follow- ing definition.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "yγa′ = C Fα",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "X∗( f (γa′)) (13)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "X∗. These will be included in the empirical study reported next.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 8,
+      "raw_extracted": "The dataset under investigation is acquired from the original study of [30], where it is used for evaluating the robustness of machine-learning-basedNIDStoobfuscatedattacks.Inorder to obtain this data collection, connections representing both legitimate and intrusive attacks are created across vulnerable network services. Note that obfuscated intrusions are also generated by applying obfuscation techniques to some direct attacks, such that their appearances partly resemble the orig- inals. Then, the TCP-level feature extractor called ASNM: Advanced Security Network Metrics [26] is deployed to generate the corresponding feature space. After normaliz- ing value domains, the resulting dataset X = V ×Y consists of a normalized feature space V ∈[0, 1]11,445×194, where",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 9,
+      "raw_extracted": "a class of an instance vi ∈V is drawn from the domain of 3 possible connection categories, i.e., yi ∈Y, yi ∈{Legit- imate, Direct attack, Obfuscated attack}. In Table 3, details of this dataset are presented with respect to number of class- specific samples that are generated using different network services. In addition, Table 4 illustrates ASNM feature cate- gories and those 14 ones that have been selected in the report of [30] for classifying instances of legitimate connections and direct attacks (please consult [26] for a full list of 194 features). The current research focuses on this selection as not to bias a predictive model with features that are highly associated with obfuscated cases, thus reducing the feature",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 9,
+      "raw_extracted": "space to V ∈[0, 1]11,445×14. Please consult the original data publication [27] for details of simulation and related settings.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 10,
+      "raw_extracted": "• For the proposed framework, the target size of multiple- clusteringpoolor M issetto150,andeachspecificsetting of these models is repeated for 30 trials to achieve a reli- able conclusion from non-deterministic processes, based on averages across multiple runs. • For the classification algorithm α, four techniques are included here. These include decision tree (C4.5) with the maximum depth of 15, Naive Bayes (NB) with the Gaussian kernel function, support vector machine (SVM) with the Radial kernel function, and Logistic Regression (LR), respectively. These are employed with the dataset generated by those filter and wrapper techniques to create a classifier. • Since the current research focuses on robustness of machine-learning-based NIDS to obfuscated intrusions, a classifier is to be trained with instances representing legitimate connections and direct attacks only. Without the knowledge of those obfuscated instances, it is the aim of this study to see how well different methods recog- nize unseen threats. As such, the stratified 10-fold cross validation is firstly applied to the task of classifying legit- imate connections and direct attacks, i.e., the examined data is the combination of instances belonging to these two classes only. The corresponding results illustrate the quality of classifiers to capture usual patterns. On top of that, the classifier trained in each fold will be used to predict 478 obfuscated intrusions, as either a legiti- mate or attack one. The latter experiment leads to the comparison of robustness as a classifier encounters truly new intrusive connections. At last, metrics used to assess predictive performance are TPR (True Positive Rate), FPR (False Positive Rate) and F1, respectively. Note that results with respect to Precision and Recall metrics are",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "Fortheinterpretationofexperimentalresultsthusfar,aver- ages across multiple trials are exploited for simplicity. This initial assessment follows the central limit theorem suggest- ing that the observed statistics in a controlled experiment may well be justified to the normal distribution. However, to obtain a more robust comparison between proposed models and other compared methods, the number of times that one is ‘significantly better’ and ‘significantly worse’ (of 95% confi- dence level) than the others are investigated next. Following the work of [33], let μ(i, t) be the average of TPR scores, across the t-th run of n-fold cross validation (n is 10 for the current research) for a model i ∈TC (TC consists of pro- posed and compared methods). Note that the TPR metric is the most appropriate with this second task of classifying a set of samples belonging to the same class of obfuscated attack. Formally, μ(i, t) can be defined as follows:",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "μ(i, t) = 1",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "n",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "η=1",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "T P Rη(i, t), (14)",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "where T P Rη(i, t) denotes the TPR score obtained from the η-th fold within the t-th run of method i. The comparison of means obtained from a single trial of cross validation may be misleading, as the difference between means may not be statistically significant at times. As such, it is more reliable to make a decision based on the 95% confidence interval for the",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "mean μ(i, t). Such an interval is defined by the following.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "μ(i, t) −1.96 Std(i, t) √n , μ(i, t) + 1.96 Std(i, t) √n",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "where Std(i, t) denotes the standard deviation of T P R mea- sures across n-folds cross validation of the t-th trial, for a technique i. The statistical significance of the difference between any two methods i, i′ ∈TC is found if there is no intersection between their confidence intervals of μ(i, t) and μ(i′, t). In particular, a model i is significantly better than the other model i′ when",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "\u0007",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "μ(i, t) −1.96 Std(i, t) √n",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "\b",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "\u0007",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "μ(i′, t) + 1.96 Std(i′, t) √n",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "\b",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "Following that, the frequency that one method i ∈TC is significantly better than others across all experimented trials, i.e., B(i), is calculated by the next equation.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "∀t=1...30",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "∀i′∈TC,i′̸=i",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "1 if",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "μ(i, t) −1.96 Std(i,t) √n",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "\u000e",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "μ(i′, t) + 1.96 Std(i′,t) √n",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "\u000e",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "Likewise, the frequency that one technique i ∈TC is signif- icantly worse than others, i.e., W(i), is estimated as follows.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "∀t=1...30",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 12,
+      "raw_extracted": "∀i′∈TC,i′̸=i",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "1 if",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "μ(i, t) + 1.96 Std(i,t) √n",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "\u000e",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "μ(i′, t) −1.96 Std(i′,t) √n",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "\u000e",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 13,
+      "raw_extracted": "M ∈{100, 150, 200, 250, 300, 350}. Provided that Fig. 8A summarizes the corresponding results across four different classifiers, a bigger M usually leads to improved TPR scores witnessed with all three new techniques. In particular to FF- Overall, the highest measures around 54% is obtained as the ensemble size grows above 250. In other words, adding more clustering results to the pool will not yield any fur- ther significant improvement. This is similarly seen with the other two models, where FF-Majority performs slightly bet- ter FF-Minority across different values of M. Besides, the",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "Fig. 8 TPR scores obtained by FF-Majority, FF-Minority and FF-Overall, with different ensemble sizes of M ∈{100, 150, 200, 250, 300, 350}. These are summarized from 30 trials of 10-fold cross validation: A across four classifiers and B specific to NB",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "same comparison specific to the NB classifier is illustrated in Fig. 8B, where the score of FF-Overall increases from 85.146 to 86.673% by enlarging the ensemble size from 150 to 250. Alike trends are also observed for both FF-Majority and FF-Minority. Despite these, a tradeoff between gain in classification performance and a higher complexity is a real concern for resource-constrained applications. It is notewor- thy that the complexity of generating a single base clustering is approximated to O(n) and O(nM) for an ensemble of M members. In fact, the overall complexity of a new method is the combination of O(nkM) and O(ρ2) for the generation of multiple clusterings and the selection of representatives, where ρ denotes the final size of the majority class and k is the averaged number of clusters in a clustering result. Since ρ tends to be much smaller than n, this complexity may usually converges to O(n). However, it is more expensive than (to the a factor of M) the baseline of clustering whose complex- ity is commonly O(nk). It is noteworthy that the complexity analyzed herein focuses on the data preprocessing phase as a prior to training a classification model. As such, a predic- tion time would not be affected by the proposed procedure but depending on a choice of algorithm used to develop the target classifier. The resulting module can be embedded in a software solution to perform an automated NIDS. A timely response may be expected from such a setting; however, its efficiency is up to hardware support. Of course, to gain a rig- orous body of knowledge, matching the new undersampling framework to big training data may well require a great deal of time. In such a case, the exploitation of distributed com- puting might be sensible.",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "As mentioned above, another important parameter to be studied is the size ρ of reduced majority class X0, where it is set initially as the same as that of the minority coun- terpart X1. With the process of tenfold cross validation, it",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 14,
+      "raw_extracted": "The issue to be clarified next regards the implication of proposed methods to an extreme case of class imbalance, in which the size of minority class gets extremely small. For this experiment, the whole training data collection, i.e., sizes of majorityandminorityclassesare10.805and162,isexploited to determine classes of those unseen obfuscated instance. Notethattheexperimentisrepeatedfrom30trialswithdiffer- ent sizes of |X1| ∈{162, 122, 81, 41}, while M is 250 and the target size of majority class is 2Q, i.e., twice that of the other class. According to Fig. 10A that shows TPR scores obtained by the NB classifier, the tendency of predictive performance constantly declines as |X1| drops from 162 to 41. This is com- monly observed with different methods examined here, with",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    },
+    {
+      "page": 15,
+      "raw_extracted": "Fig. 10 TPR scores obtained by FF-Majority, FF-Minority and FF-Overall, with different sizes of the minority class X1 ∈{162, 122, 81, 41}. These are summarized from 30 trials for two specific classifiers: A NB and B C4.5",
+      "latex": null,
+      "extraction_method": "raw_unicode_flagged"
+    }
+  ],
+  "warnings": []
+}

@@ -1,0 +1,107 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usepackage{amsmath,amssymb}
+\usepackage{tabularx}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shadows,shapes.geometric,tikzmark}
+
+% Color definitions
+\definecolor{lavenderDark}{RGB}{15, 44, 89}
+\definecolor{lavenderDeep}{RGB}{10, 28, 58}
+\definecolor{lavenderMedium}{RGB}{29, 78, 158}
+\definecolor{lavenderLight}{RGB}{240, 246, 255}
+\definecolor{lavenderBorder}{RGB}{180, 205, 237}
+\definecolor{prismNavy}{RGB}{15, 44, 89}
+\definecolor{prismBlue}{RGB}{29, 78, 158}
+\definecolor{prismTeal}{RGB}{13, 148, 136}
+\definecolor{prismMint}{RGB}{236, 253, 245}
+\definecolor{prismGold}{RGB}{217, 119, 6}
+\definecolor{prismDark}{RGB}{15, 23, 42}
+\definecolor{cInput}{RGB}{241, 245, 249}
+\definecolor{cStem}{RGB}{224, 242, 254}
+\definecolor{cStage1}{RGB}{209, 250, 229}
+\definecolor{cStage2}{RGB}{254, 243, 199}
+\definecolor{cStage3}{RGB}{254, 226, 226}
+\definecolor{cStage4}{RGB}{207, 250, 254}
+
+\begin{document}
+% DAG Execution Walkthrough for Legal RAG Query Answering Pipeline
+\begin{tikzpicture}[
+  dagstep/.style={
+    rectangle, rounded corners=3.5pt, minimum height=1.12cm,
+    text width=3.35cm, align=center, draw=lavenderDark!75, fill=lavenderLight!75,
+    line width=0.85pt, font=\fontsize{8.5}{10.2}\selectfont\bfseries,
+    drop shadow={shadow xshift=0.8pt, shadow yshift=-0.8pt, opacity=0.10}
+  },
+  dagarrow/.style={-{Stealth[scale=0.85]}, line width=1.15pt, draw=prismTeal!95!black}
+]
+  % Row 1: 4-Step Pipeline Across Top
+  \node[dagstep] (s1) at (-5.55, 0) {1. Query Ingestion\\[2pt]\normalfont\fontsize{7.5}{8.8}\selectfont Text or WebSpeech Audio\\[1pt]Bilingual Malayalam / English};
+  \node[dagstep] (s2) at (-1.85, 0) {2. Task Decomposition\\[2pt]\normalfont\fontsize{7.5}{8.8}\selectfont Language Router + Embedder\\[1pt]Async Pipeline Execution};
+  \node[dagstep] (s3) at (1.85, 0) {3. Vector Retrieval\\[2pt]\normalfont\fontsize{7.5}{8.8}\selectfont Pinecone Cosine ANN Search\\[1pt]Top-$k$ Statutory Chunks ($k=5$)};
+  \node[dagstep] (s4) at (5.55, 0) {4. Grounded Synthesis\\[2pt]\normalfont\fontsize{7.5}{8.8}\selectfont Gemini 2.5 Flash Context LLM\\[1pt]Citation Verification $\to$ Client UI};
+
+  \draw[dagarrow] (s1) -- (s2);
+  \draw[dagarrow] (s2) -- (s3);
+  \draw[dagarrow] (s3) -- (s4);
+
+  % Row 2: Visual Data-Flow Graph
+  \node[rectangle, rounded corners=4pt, draw=prismTeal!80, fill=white,
+        line width=0.85pt, text width=14.6cm, inner sep=9pt, align=center, anchor=north,
+        drop shadow={shadow xshift=1pt, shadow yshift=-1pt, opacity=0.12}] (visualbox) at (0, -0.90) {%
+    \fontsize{9.2}{11.2}\selectfont\textbf{\color{prismTeal!90!black}\faProjectDiagram\ Visual Data-Flow Graph \& Execution Timing}\\[5pt]
+    \begin{tikzpicture}[
+      cnode/.style={rectangle, rounded corners=3.5pt, draw=prismTeal!90!black, fill=prismMint,
+        line width=0.8pt, minimum height=0.74cm, inner sep=3.5pt, align=center,
+        font=\fontsize{8.0}{9.4}\selectfont},
+      earr/.style={-{Stealth[scale=0.80]}, line width=1.05pt, draw=prismTeal!90!black}
+    ]
+      % Nodes
+      \node[cnode, text width=2.90cm] (na) at (-4.8, 0.65) {\textbf{Node A}: \texttt{DetectLang}\\[1pt]\fontsize{7.0}{8.2}\selectfont\color{prismDark}Unicode U+0D00 ($\approx 2$\,ms)};
+      \node[cnode, text width=2.90cm] (nb) at (-4.8, -0.65) {\textbf{Node B}: \texttt{Translate}\\[1pt]\fontsize{7.0}{8.2}\selectfont\color{prismDark}Malayalam $\to$ En ($\approx 320$\,ms)};
+
+      \node[cnode, text width=3.10cm] (nc) at (-0.3, 0.0) {\textbf{Node C}: \texttt{DenseEmbedding}\\[1pt]\fontsize{7.0}{8.2}\selectfont\color{prismDark}all-MiniLM-L6-v2 ($\approx 85$\,ms)};
+
+      \node[cnode, text width=2.90cm] (nd) at (3.8, 0.65) {\textbf{Node D}: \texttt{PineconeSearch}\\[1pt]\fontsize{7.0}{8.2}\selectfont\color{prismDark}HNSW Cosine ($\approx 45$\,ms)};
+      \node[cnode, text width=2.90cm] (ne) at (3.8, -0.65) {\textbf{Node E}: \texttt{GeminiSynthesis}\\[1pt]\fontsize{7.0}{8.2}\selectfont\color{prismDark}Grounded LLM ($\approx 950$\,ms)};
+
+      % Edges with data flow labels
+      \draw[earr] (na.south) -- node[left, font=\fontsize{7.0}{8.0}\selectfont\bfseries, text=lavenderDark] {\texttt{if\_ml}} (nb.north);
+      \draw[earr] (na.east) -- node[above, sloped, font=\fontsize{7.2}{8.2}\selectfont\bfseries, text=lavenderDark, fill=white, inner sep=1.2pt] {\texttt{en\_q}} (nc.west);
+      \draw[earr] (nb.east) -- node[below, sloped, font=\fontsize{7.2}{8.2}\selectfont\bfseries, text=lavenderDark, fill=white, inner sep=1.2pt] {\texttt{trans\_q}} (nc.west);
+      \draw[earr] (nc.east) -- node[above, sloped, font=\fontsize{7.2}{8.2}\selectfont\bfseries, text=lavenderDark, fill=white, inner sep=1.2pt] {$\mathbf{e}(q)$} (nd.west);
+      \draw[earr] (nd.south) -- node[right, font=\fontsize{7.0}{8.0}\selectfont\bfseries, text=lavenderDark] {\texttt{top\_k}} (ne.north);
+    \end{tikzpicture}\\[7pt]
+    \fontsize{7.8}{9.6}\selectfont
+    \begin{minipage}{14.0cm}
+    \begin{tabularx}{\linewidth}{@{}X X@{}}
+    \textbf{Pipeline Phase 1:} Input audit $\to$ Unicode detection $\to$ Translation (if needed) &
+    \textbf{Pipeline Phase 3:} Pinecone sub-50ms HNSW approximate nearest neighbor search \\
+    \textbf{Pipeline Phase 2:} 384-dimensional dense semantic query embedding &
+    \textbf{Pipeline Phase 4:} Gemini grounded generation with statutory citations ($\approx 1.4$\,s total)
+    \end{tabularx}
+    \end{minipage}
+    \vspace{2pt}
+  };
+
+  % Row 3: Computer Science Concept Walkthrough
+  \node[rectangle, rounded corners=4pt, draw=lavenderMedium!75, fill=lavenderLight!45,
+        line width=0.85pt, text width=14.6cm, inner sep=9pt, align=left, below=0.35cm of visualbox,
+        drop shadow={shadow xshift=1pt, shadow yshift=-1pt, opacity=0.10}] (csbox) {%
+    \fontsize{9.2}{11.2}\selectfont\textbf{\color{lavenderDark}\faCode\ Computer Science Explanation (Asynchronous Execution Pipeline):}\\[4pt]
+    \fontsize{8.0}{10.0}\selectfont
+    $\bullet$\enspace\textbf{Vertices ($V$) = Asynchronous Transformation Tasks:}\\
+    \enspace\enspace Node $A$: \texttt{is\_ml = detect\_unicode(raw\_query, 0x0D00, 0x0D7F)} \hfill \textit{[Language Router, $\approx 2$\,ms]}\\
+    \enspace\enspace Node $B$: \texttt{q\_en = await gemini.translate(raw\_query, to="en")} \hfill \textit{[Translation Worker, $\approx 320$\,ms]}\\
+    \enspace\enspace Node $C$: \texttt{emb = sbert\_model.encode(q\_en, normalize=True)} \hfill \textit{[Dense Vector Embedder, $\approx 85$\,ms]}\\
+    \enspace\enspace Node $D$: \texttt{chunks = await pinecone.query(emb, top\_k=5)} \hfill \textit{[Managed Vector Index, $\approx 45$\,ms]}\\
+    \enspace\enspace Node $E$: \texttt{answer = await gemini.generate(prompt(q\_en, chunks))} \hfill \textit{[Grounded LLM Synthesis, $\approx 950$\,ms]}\\[3pt]
+    $\bullet$\enspace\textbf{Edges ($E$) = Data Dependencies \& Variable Passing:}\\
+    \enspace\enspace Edge $\langle A, B\rangle$ routes Malayalam strings; edge $\langle B, C\rangle$ and direct branch $\langle A, C\rangle$ provide normalized English text.\\
+    \enspace\enspace Edge $\langle C, D\rangle$ transmits the 384-d float vector $\mathbf{e}(q)$; edge $\langle D, E\rangle$ transfers statutory passages with metadata.\\[3pt]
+    $\bullet$\enspace\textbf{Latency Profile \& System Responsiveness:}\\
+    \enspace\enspace Non-blocking asynchronous I/O ensures sub-200ms latency for cached vector queries and $\approx 1.4$\,s total round-trip for full LLM generation.%
+  };
+
+\end{tikzpicture}
+\end{document}

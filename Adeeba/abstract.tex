@@ -1,16 +1,23 @@
 %============================= abstract.tex================================
-\chapter*{Abstract}%
-\addcontentsline{toc}{chapter}{Abstract}%
-\vspace{-25pt}
+\newpage
+\thispagestyle{plain}
+\addcontentsline{toc}{chapter}{Abstract}
 
-\begin{spacing}{1.2}
+\begin{center}
+\vspace*{10pt}
+{\bfseries\Large ABSTRACT}\\[20pt]
+\end{center}
+
+\begin{spacing}{1.3}
+\fontsize{12pt}{17.5pt}\selectfont
+\justifying
 \noindent Conventional paper-based and centralized electronic voting systems suffer from systemic vulnerabilities, including ballot tampering, administrative opacity, slow vote tabulation, and double voting. Centralized electronic databases introduce a single point of failure and require electorates to place blind trust in a single administrative authority. To overcome these limitations, this project presents the design and implementation of a \textbf{Block Chain Based Electronic Voting System}, realized as a decentralized application (Voting DApp) built upon the Ethereum blockchain network.
 
-\vspace{8pt}
+\vspace{12pt}
 
 \noindent The core voting logic is governed by an immutable \textbf{Solidity} smart contract that enforces strict role-based access control, administrator-managed voter whitelisting, dynamic candidate management, and smart-contract-level mitigation of duplicate voting. An atomic evaluation mechanism ensures that a ballot is accepted if and only if the voter's Ethereum address is verified as registered and has not previously cast a vote. Casting a vote atomically marks the voter's participation flag and increments the candidate tally within a single transaction, eliminating race conditions and direct contract bypassing. The client interface is engineered using \textbf{React.js} and \textbf{Web3.js}, seamlessly interfacing with the \textbf{MetaMask} browser extension for asymmetric cryptographic authentication and non-repudiation.
 
-\vspace{8pt}
+\vspace{12pt}
 
 \noindent To address real-world deployment constraints, the system evaluates consensus models, identifying a consortium \textbf{Proof-of-Authority (PoA)} architecture as an optimal mechanism to eliminate unpredictable public gas fees and provide deterministic low-latency transaction processing during bursty polling windows. Furthermore, the report presents a comprehensive academic survey of fifteen recent blockchain voting architectures spanning multimodal biometrics, gesture authentication, blind signatures, and differential privacy, identifying critical scalability, cryptographic anonymity, and voter verification trade-offs. The resulting system establishes an auditable, decentralized, and tamper-resilient electoral platform.
 \end{spacing}

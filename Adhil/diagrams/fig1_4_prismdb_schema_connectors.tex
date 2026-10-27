@@ -1,0 +1,142 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usepackage{amsmath,amssymb}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shadows,shapes.geometric}
+
+% Color definitions
+\definecolor{lavenderDark}{RGB}{15, 44, 89}
+\definecolor{lavenderDeep}{RGB}{10, 28, 58}
+\definecolor{lavenderMedium}{RGB}{29, 78, 158}
+\definecolor{lavenderLight}{RGB}{240, 246, 255}
+\definecolor{lavenderBorder}{RGB}{180, 205, 237}
+\definecolor{prismTeal}{RGB}{13, 148, 136}
+\definecolor{prismMint}{RGB}{236, 253, 245}
+\definecolor{prismGold}{RGB}{217, 119, 6}
+\definecolor{prismDark}{RGB}{15, 23, 42}
+
+\begin{document}
+% Relational Entity & Storage Schema Connectors for CiviQ Legal RAG System
+\begin{tikzpicture}[
+  x=1cm, y=1cm,
+  font=\sffamily,
+  tblcard/.style={
+    rectangle, rounded corners=4pt, draw=lavenderDark!75, line width=0.85pt, fill=white,
+    inner sep=5pt, text width=4.30cm, align=left,
+    drop shadow={shadow xshift=1pt, shadow yshift=-1pt, opacity=0.12}
+  },
+  fkarrow/.style={
+    -{Stealth[scale=0.85]}, line width=1.0pt, draw=lavenderDark!90
+  },
+  fklabel/.style={
+    font=\fontsize{6.0}{7.0}\selectfont\bfseries, fill=white, inner sep=1.2pt, text=lavenderDark
+  }
+]
+
+  % ================= COLUMN 1: CORPUS & CHUNKS (x = -5.2) =================
+  
+  % Table 1: document_corpus_store
+  \node[tblcard] (corpus) at (-5.2, 2.5) {%
+    \centerline{\color{lavenderDark}\faBook\ \textbf{\fontsize{8.0}{9.5}\selectfont document\_corpus\_store}}\\[3pt]
+    \rule{\linewidth}{0.4pt}\\[3pt]
+    {\fontsize{6.6}{7.8}\selectfont
+    \textbf{\color{lavenderDark}[PK]} \texttt{doc\_id}: \textit{string} (UUID / Hash)\\
+    \textbf{\color{prismTeal}[FLD]} \texttt{filename}: \textit{string} (\texttt{bns.pdf}, \texttt{rti.pdf})\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{statute\_title}: \textit{BNS 2023, RTI Act 2005}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{page\_count}: \textit{integer} (Total pages)\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{checksum}: \textit{SHA-256 integrity tag}}%
+  };
+
+  % Table 2: chunk_store
+  \node[tblcard, below=0.70cm of corpus] (chunk) {%
+    \centerline{\color{lavenderDark}\faStream\ \textbf{\fontsize{8.0}{9.5}\selectfont chunk\_store}}\\[3pt]
+    \rule{\linewidth}{0.4pt}\\[3pt]
+    {\fontsize{6.6}{7.8}\selectfont
+    \textbf{\color{lavenderDark}[PK]} \texttt{chunk\_id}: \textit{string} (\texttt{doc\_id\_pX\_cY})\\
+    \textbf{\color{prismTeal}[FK]} \texttt{doc\_id}: \textit{corpus reference}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{page\_number}: \textit{integer} (PDF source page)\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{chunk\_text}: \textit{text} ($c=900$ words)\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{overlap\_words}: \textit{integer} ($o=150$)\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{token\_count}: \textit{integer} ($\ge 40$ words)}%
+  };
+
+  % ================= COLUMN 2: VECTOR EMBEDDINGS & RETRIEVAL (x = 0) =================
+  
+  % Table 3: vector_embeddings_store
+  \node[tblcard] (vector) at (0, 2.5) {%
+    \centerline{\color{lavenderDark}\faDatabase\ \textbf{\fontsize{8.0}{9.5}\selectfont vector\_embeddings\_store}}\\[3pt]
+    \rule{\linewidth}{0.4pt}\\[3pt]
+    {\fontsize{6.6}{7.8}\selectfont
+    \textbf{\color{lavenderDark}[PK]} \texttt{vector\_id}: \textit{string} (Pinecone ID)\\
+    \textbf{\color{prismTeal}[FK]} \texttt{chunk\_id}: \textit{chunk reference}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{embedding}: \textit{float[384]} (L2-normalized)\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{model}: \textit{all-MiniLM-L6-v2}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{namespace}: \textit{legal-statutes-2023}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{indexed\_at}: \textit{timestamp}}%
+  };
+
+  % Table 4: retrieval_config_store
+  \node[tblcard, below=0.70cm of vector] (config) {%
+    \centerline{\color{lavenderDark}\faSlidersH\ \textbf{\fontsize{8.0}{9.5}\selectfont retrieval\_config\_store}}\\[3pt]
+    \rule{\linewidth}{0.4pt}\\[3pt]
+    {\fontsize{6.6}{7.8}\selectfont
+    \textbf{\color{lavenderDark}[PK]} \texttt{config\_id}: \textit{string} (Preset ID)\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{top\_k}: \textit{integer} ($k=5$, range $1\dots 10$)\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{metric}: \textit{cosine similarity}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{min\_similarity}: \textit{float} ($\theta \ge 0.45$)\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{temperature}: \textit{0.3} (LLM determinism)\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{max\_tokens}: \textit{1024 output tokens}}%
+  };
+
+  % ================= COLUMN 3: QUERY LOGS & RESPONSES (x = 5.2) =================
+  
+  % Table 5: query_log_store
+  \node[tblcard] (query) at (5.2, 2.5) {%
+    \centerline{\color{lavenderDark}\faComments\ \textbf{\fontsize{8.0}{9.5}\selectfont query\_log\_store}}\\[3pt]
+    \rule{\linewidth}{0.4pt}\\[3pt]
+    {\fontsize{6.6}{7.8}\selectfont
+    \textbf{\color{lavenderDark}[PK]} \texttt{query\_id}: \textit{UUID}\\
+    \textbf{\color{prismTeal}[FK]} \texttt{config\_id}: \textit{retrieval config}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{raw\_query}: \textit{text} (User prompt)\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{input\_channel}: \textit{text / WebSpeech voice}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{detected\_lang}: \textit{en / ml}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{translated\_query}: \textit{text (if ml)}}%
+  };
+
+  % Table 6: response_log_store
+  \node[tblcard, below=0.70cm of query] (response) {%
+    \centerline{\color{lavenderDark}\faFileContract\ \textbf{\fontsize{8.0}{9.5}\selectfont response\_log\_store}}\\[3pt]
+    \rule{\linewidth}{0.4pt}\\[3pt]
+    {\fontsize{6.6}{7.8}\selectfont
+    \textbf{\color{lavenderDark}[PK]} \texttt{response\_id}: \textit{UUID}\\
+    \textbf{\color{prismTeal}[FK]} \texttt{query\_id}: \textit{query reference}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{answer\_text}: \textit{text} (Markdown grounded)\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{retrieved\_chunks}: \textit{JSON chunk IDs}\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{statute\_citations}: \textit{list} (Act/Section)\\
+    \textbf{\color{prismDark!80}[FLD]} \texttt{latency\_ms}: \textit{float} ($\approx 1420$\,ms)}%
+  };
+
+  % ================= RELATIONSHIPS / FOREIGN KEY CONNECTORS =================
+
+  % 1. Corpus -> Chunk
+  \draw[fkarrow] (corpus.south) -- 
+    node[right=2pt, fklabel]{doc\_id} (chunk.north);
+
+  % 2. Chunk -> Vector
+  \draw[fkarrow] (chunk.east) to[bend left=15] 
+    node[above=1pt, fklabel]{chunk\_id} (vector.west);
+
+  % 3. Config -> Query
+  \draw[fkarrow] (config.east) to[bend right=15] 
+    node[below=1pt, fklabel]{config\_id} (query.west);
+
+  % 4. Query -> Response
+  \draw[fkarrow] (query.south) -- 
+    node[right=2pt, fklabel]{query\_id} (response.north);
+
+  % 5. Vector -> Response (retrieved chunks)
+  \draw[fkarrow, dashed] (vector.east) -- 
+    node[above=1pt, fklabel]{chunk\_ids} (query.west);
+
+\end{tikzpicture}
+\end{document}

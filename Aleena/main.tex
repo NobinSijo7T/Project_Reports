@@ -71,6 +71,22 @@
 \usepackage{tabularx}
 \usepackage{hyperref}
 
+% Compact chapter-opening layout
+\makeatletter
+\def\@makechapterhead#1{%
+  \vspace*{0pt}%
+  {\parindent\z@ \raggedright \normalfont
+    \ifnum\c@secnumdepth>\m@ne
+      \huge\bfseries \@chapapp\space \thechapter
+      \par\nobreak
+      \vskip 10pt
+    \fi
+    \interlinepenalty\@M
+    \Huge\bfseries #1\par\nobreak
+    \vskip 15pt
+  }}
+\makeatother
+
 \hypersetup{
     plainpages=false,
     pdfpagelabels=true,
@@ -124,7 +140,7 @@
 \gdef \collegeplace{Kollam}
 \gdef \collegetown{Karunagappally}
 
-\gdef \guide{Hridhya J}
+\gdef \guide{Ms. Hridhya J}
 \gdef \guidedes{Assistant Professor}
 \gdef \coordinator{Dr. Smitha P}
 \gdef \coordinatordes{Associate Professor and HOD}
@@ -132,6 +148,9 @@
 \gdef \semcordinatorAdes{Associate Professor and HOD}
 \gdef \hod{Dr. Smitha P}
 \gdef \hoddes{Associate Professor and HOD}
+
+\providecommand{\candidateName}{\authorA}
+\providecommand{\candidateRoll}{\rollnoA}
 
 %==============================================================================
 % DOCUMENT BODY
@@ -146,6 +165,7 @@
 \include{coverpage}
 \include{vision_mission}
 \include{certificate1}
+\include{certificate_individual}
 \include{declaration}
 \hypersetup{pageanchor=true}
 

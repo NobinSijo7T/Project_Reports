@@ -1,0 +1,136 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shadows,shapes.geometric}
+
+% Color definitions
+\definecolor{lavenderDark}{RGB}{15, 44, 89}
+\definecolor{lavenderDeep}{RGB}{10, 28, 58}
+\definecolor{lavenderMedium}{RGB}{29, 78, 158}
+\definecolor{lavenderLight}{RGB}{240, 246, 255}
+\definecolor{lavenderBorder}{RGB}{180, 205, 237}
+\definecolor{lavenderAccent}{RGB}{2, 132, 199}
+\definecolor{prismNavy}{RGB}{15, 44, 89}
+\definecolor{prismBlue}{RGB}{29, 78, 158}
+\definecolor{prismTeal}{RGB}{13, 148, 136}
+\definecolor{prismMint}{RGB}{236, 253, 245}
+\definecolor{prismGold}{RGB}{217, 119, 6}
+\definecolor{prismDark}{RGB}{15, 23, 42}
+\definecolor{prismLight}{RGB}{248, 250, 252}
+\definecolor{prismIndigo}{RGB}{30, 58, 138}
+\definecolor{prismSlate}{RGB}{100, 116, 139}
+\definecolor{statusFail}{RGB}{220, 38, 38}
+\definecolor{cInput}{RGB}{241, 245, 249}
+\definecolor{cStem}{RGB}{224, 242, 254}
+\definecolor{cStage1}{RGB}{209, 250, 229}
+\definecolor{cStage2}{RGB}{254, 243, 199}
+\definecolor{cStage3}{RGB}{254, 226, 226}
+\definecolor{cStage4}{RGB}{207, 250, 254}
+\definecolor{cHead}{RGB}{219, 234, 254}
+\definecolor{cOutput}{RGB}{255, 228, 230}
+\definecolor{cDeliverable}{RGB}{204, 251, 241}
+
+\begin{document}
+% Complete Layered System Workflow for Ear Disease Detection
+\begin{tikzpicture}[
+    x=1cm, y=1cm,
+    font=\sffamily,
+    stepbox/.style={
+        rectangle, draw=lavenderDark!85, line width=0.95pt, fill=white,
+        rounded corners=4pt, inner sep=5pt, align=center,
+        drop shadow={shadow xshift=1pt, shadow yshift=-1pt, opacity=0.15}
+    },
+    flowarr/.style={
+        -{Stealth[scale=1.05]}, line width=1.25pt, draw=lavenderDark!90
+    },
+    dashloop/.style={
+        -{Stealth[scale=1.0]}, line width=1.15pt, dashed, draw=prismGold!95!black
+    }
+]
+
+    % Step 1: Otoscopic Acquisition
+    \node [stepbox, fill=cInput, text width=2.65cm] (b1) at (-5.75, 0) {
+        \textbf{\fontsize{9.6}{11.5}\selectfont\color{lavenderDark}1. Otoscopic Acquisition}\\[0.3em]
+        \fontsize{8.0}{9.5}\selectfont
+        $\bullet$ Digital otoscope input\\
+        $\bullet$ Bedside video endoscope\\
+        $\bullet$ Multipart streaming
+    };
+
+    % Step 2: Validation & CLAHE Preprocessing
+    \node [stepbox, fill=cStage1, text width=2.65cm] (b2) at (-2.65, 0) {
+        \textbf{\fontsize{9.6}{11.5}\selectfont\color{lavenderDark}2. CLAHE \& Validation}\\[0.3em]
+        \fontsize{8.0}{9.5}\selectfont
+        $\bullet$ MIME \& cerumen check\\
+        $\bullet$ CLAHE enhancement\\
+        $\bullet$ Resize to $224 \times 224$
+    };
+
+    % Step 3: CoMViT Backbone
+    \node [stepbox, fill=cStem, text width=3.85cm] (b3) at (1.45, 1.80) {
+        \textbf{\fontsize{9.6}{11.5}\selectfont\color{lavenderDark}3. CoMViT Backbone}\\[0.28em]
+        \fontsize{7.8}{9.4}\selectfont
+        {\color{prismIndigo}\faLayerGroup}\; \textbf{Conv Stem:} Local patch embedding\\[0.15em]
+        {\color{prismBlue}\faProjectDiagram}\; \textbf{Multi-Head Attention:} Global TM\\[0.15em]
+        {\color{prismTeal}\faCompress}\; \textbf{Curriculum Learning:} Adaptive loss\\[0.15em]
+        {\color{purple!75!black}\faNetworkWired}\; \textbf{Token Latent:} Rich representation
+    };
+
+    % Step 4: Grad-CAM++ Engine
+    \node [stepbox, fill=cStage2, text width=3.85cm] (b4) at (1.45, -1.80) {
+        \textbf{\fontsize{9.6}{11.5}\selectfont\color{lavenderDark}4. Grad-CAM++ Engine}\\[0.28em]
+        \fontsize{7.8}{9.4}\selectfont
+        {\color{prismGold!90!black}\faLink}\; \textbf{Hook:} Target transformer block\\[0.15em]
+        {\color{prismBlue}\faCalculator}\; \textbf{2nd-Order Gradients:} $\alpha_{ijk}^c$ pooling\\[0.15em]
+        {\color{prismTeal}\faEye}\; \textbf{Positive Attribution:} TM localization\\[0.15em]
+        {\color{red!70!black}\faPalette}\; \textbf{Color Overlay:} Lesion saliency map
+    };
+
+    % Step 5: Softmax Classification across 5 Classes
+    \node [stepbox, fill=cHead, text width=2.65cm] (b5) at (5.55, 0) {
+        \textbf{\fontsize{9.6}{11.5}\selectfont\color{lavenderDark}5. 5-Class Scoring}\\[0.3em]
+        \fontsize{7.8}{9.2}\selectfont
+        $\bullet$ Linear head $\to 5$ classes\\
+        $\bullet$ Softmax probability\\
+        $\bullet$ AOM, CSOM, Earwax,\\
+        \phantom{$\bullet$}\,Normal, Tympanosclerosis
+    };
+
+    % Step 6: Diagnostic Delivery & Triage
+    \node [stepbox, fill=cDeliverable!80, text width=3.85cm] (b6) at (9.65, 0) {
+        \textbf{\fontsize{9.6}{11.5}\selectfont\color{lavenderDark}6. Clinical Decision Support}\\[0.28em]
+        \fontsize{7.8}{9.4}\selectfont
+        {\color{prismNavy}\faDesktop}\; \textbf{Web Portal:} Diagnostic visualization\\[0.15em]
+        {\color{lavenderDark}\faMobile}\; \textbf{Mobile App:} Bedside otoscopy scan\\[0.15em]
+        {\color{prismTeal}\faClock}\; \textbf{FastAPI Serving:} Sub-50\,ms latency\\[0.15em]
+        {\color{red!75!black}\faShieldVirus}\; \textbf{Clinical Guidance:} ENT verification
+    };
+
+    % 1. Connect Step 1 -> Step 2
+    \draw [flowarr] (b1) -- (b2);
+
+    % 2. Clean Split from Validation into CoMViT and Grad-CAM++
+    \coordinate (split1) at ($(b2.east)!0.5!(b3.west |- b2.east)$);
+    \draw [line width=1.25pt, draw=lavenderDark!90] (b2.east) -- (split1);
+    \draw [flowarr] (split1) |- (b3.west);
+    \draw [flowarr] (split1) |- (b4.west);
+
+    % 3. Bidirectional interactive link between Features and Grad-CAM++ Hook
+    \draw [{Stealth[scale=1.05]}-{Stealth[scale=1.05]}, line width=1.25pt, draw=prismTeal] (b3.south) -- (b4.north);
+
+    % 4. Convergence into Classification
+    \coordinate (join1) at ($(b3.east |- b5.west)!0.5!(b5.west)$);
+    \draw [line width=1.25pt, draw=lavenderDark!90] (b3.east) -| (join1);
+    \draw [line width=1.25pt, draw=lavenderDark!90] (b4.east) -| (join1);
+    \draw [flowarr] (join1) -- (b5.west);
+
+    % 5. Connect Step 5 -> Step 6
+    \draw [flowarr] (b5) -- (b6);
+
+    % 6. Quality and Re-acquisition Feedback Loop
+    \draw [dashloop] (b5.north) -- (b5.north |- 0, 3.45) 
+        -- node[above=2.5pt, font=\fontsize{8.2}{9.8}\selectfont\bfseries\color{prismGold!95!black}]{Otoscopic Quality Audit \& Visibility Re-Check} (b2.north |- 0, 3.45) 
+        -- (b2.north);
+
+\end{tikzpicture}
+\end{document}
