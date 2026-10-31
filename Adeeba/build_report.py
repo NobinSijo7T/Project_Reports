@@ -67,7 +67,7 @@ report_content = r"""\documentclass[12pt,a4paper]{report}
 \newcommand{\Usefont}[1]{\fontfamily{#1}\selectfont}
 
 \usepackage{lscape}
-\linespread{1.5}
+\linespread{1.3}
 
 \usepackage{url}
 \usepackage{subcaption}
@@ -118,9 +118,9 @@ report_content = r"""\documentclass[12pt,a4paper]{report}
 \gdef \rollnoC{LKNP23CS117}
 
 \gdef \acadyear{2026--2027}
-\gdef \submonth{October 2026}
+\gdef \submonth{29-10-2026}
 \gdef \month{October 2026}
-\gdef \date{28-10-2026}
+\gdef \date{29-10-2026}
 \gdef \dept{Computer Science and Engineering}
 \gdef \deptabbr{Dept.\ of CSE}
 \gdef \degree{Bachelor of Technology}
@@ -242,10 +242,10 @@ This project report encompasses the complete architectural design, mathematical 
 % CHAPTER 2: LITERATURE REVIEW
 %==============================================================================
 \chapter{Literature Review}
+\section{Blockchain-Based Voting Frameworks and Consensus Design}
 
 The application of blockchain technology to electronic voting has garnered extensive academic attention over the past decade. Researchers have investigated blockchain architectures to address the vulnerabilities of centralized systems while striving to satisfy classical electoral criteria: eligibility, uniqueness, ballot secrecy, verifiability, and coercion resistance. This chapter synthesizes recent advancements across five thematic dimensions: blockchain voting frameworks, biometric and gesture authentication, cryptographic privacy techniques, surveys and governance studies, and smart contract design paradigms.
 
-\section{Blockchain-Based Voting Frameworks and Consensus Design}
 Early investigations focused on adapting core blockchain ledgers to record votes as immutable transactions. Farooq et al.~\cite{Farooq2022} proposed a comprehensive Voting Management System utilizing a custom blockchain with a pluggable consensus layer. In their framework, a web and mobile DApp verifies a voter's national identification credentials, verifies that the voter has not previously participated, converts the cast ballot into an encrypted transaction, and commits it to the chain. A proprietary Chain Security Algorithm continuously re-audits chain integrity upon block inclusion. Although their simulation demonstrated manageable response latencies and linear chain growth up to six million transactions, the architecture requires continuous internet connectivity, lacks a biometric verification layer, and mitigates 51\% attacks only through centralized monitoring of authorized mining nodes.
 
 Shahzad and Crowcroft~\cite{Shahzad2019} observed that polling periods are intrinsically bursty, characterized by high transaction volumes concentrated within a fixed window of 8--12 hours. Consequently, resource-heavy Proof-of-Work (PoW) consensus is computationally wasteful and impractical. They developed an adjusted consortium blockchain wherein certified presiding officers with verified cryptographic identities generate blocks during polling hours, sealing them at the close of voting using a proof-of-completeness hashing mechanism. While tamper-evident and computationally lightweight, the framework remains purely conceptual, lacks an empirical prototype, and retains significant administrative centralization within the election commission.
@@ -260,6 +260,7 @@ Voter authentication represents the most vulnerable attack surface in decentrali
 Mahmood et al.~\cite{Mahmood2024} focused on accessibility and assistive voting technologies for motor-impaired and elderly electorates. Their system tracks real-time facial landmarks and hand gestures via consumer webcams, allowing voters to navigate virtual ballot keyboards through subtle facial movements (e.g., eyebrow raises, nose gestures, or pinch gestures). Integrated with a PoW blockchain backend, the system demonstrated 100\% precision and 99\% recall across controlled trials. However, system accuracy degraded significantly under suboptimal lighting conditions, finger gestures exhibited lower tracking fidelity than facial landmarks, and elderly participants exhibited longer voting completion times.
 
 \section{Privacy and Cryptographic Techniques}
+
 Balancing the radical transparency of public distributed ledgers with the strict constitutional mandate of voter ballot secrecy remains a central cryptographic paradox. Pérez García et al.~\cite{PerezGarcia2021} addressed this challenge by implementing an ElGamal-based blind signature protocol over Hyperledger Fabric with Practical Byzantine Fault Tolerance (PBFT) consensus. In their protocol, a central electoral authority cryptographically signs an blinded, encrypted ballot without deciphering its content, completely uncoupling the voter's identity from the cast choice. Ballots are divided into two cryptographic shares such that neither share alone reveals the voter's candidate selection. While simulations confirmed total unlinkability and minimal computational overhead per client, transaction processing latency increased under high concurrency, and the centralized authority retains significant trust for blinded token issuance.
 
 Baniata and Caluna~\cite{Baniata2025} proposed \textit{BP-Vot}, a privacy-preserving framework deployed on Hyperledger Besu. \textit{BP-Vot} combines Self-Sovereign Identity (SSI) verifiable credentials with a $(k, \varepsilon)$-differential privacy mechanism to inject controlled mathematical noise into aggregate vote counts, guaranteeing plausible deniability for individual ballot selections. Their prototype achieved approximately one second transaction latency and demonstrated over 98\% tally approximation accuracy. However, evaluation was restricted to a three-node cluster processing up to 50,000 votes, fundamentally relies upon the honesty of the credential-issuing authority, and depends on global standardization of digital identity wallets.
@@ -275,11 +276,7 @@ Barelli et al.~\cite{Barelli2025} catalogued attacks on real-world e-voting depl
 
 Wermelinger et al.~\cite{Wermelinger2026} shifted focus from technical architecture to human factors and institutional trust. Utilizing Partial Least Squares Structural Equation Modeling (PLS-SEM) on survey responses from 1,851 Brazilian voters, they demonstrated that systemic institutional trust is the single dominant determinant of electronic voting acceptance and demands for printed voter-verified paper audit trails (VVPAT). Their findings prove that cryptographic security guarantees are insufficient on their own; public confidence demands transparent, understandable verification mechanisms and intuitive user interfaces.
 
-\section{Smart Contract Approaches and Network Support}
-Chaudhary et al.~\cite{Chaudhary2023} deployed an Ethereum smart contract incorporating \texttt{addCandidate}, \texttt{authorize}, \texttt{vote}, and \texttt{endElection} routines, optimized for execution over high-speed 5G wireless networks. To mitigate on-chain storage costs, bulky voter verification artifacts were offloaded to the InterPlanetary File System (IPFS), with only IPFS content identifiers (CIDs) committed on-chain. While achieving lower bit-error rates and passing formal Echidna fuzz testing, the protocol retains administrative centralization in contract deployment, and client devices remain vulnerable to local malware.
-
-The foundational baseline for our work is established by Asha et al.~\cite{Asha2025}, who developed a Voting DApp on Ethereum that directly addresses double voting through smart contract logic. In their design, the smart contract maintains state mappings of registered voter addresses and certified candidates. The election administrator retains exclusive authority to invoke \texttt{addCandidate} and \texttt{registerVoter}. Voters authenticate using MetaMask and cast ballots via a responsive React.js and Web3.js web interface. Their prototype demonstrated successful registration, atomic double-voting rejection, and real-time result tabulation on an Ethereum test network. However, Asha et al.\ observed that public Ethereum gas price fluctuations and interface complexity for non-technical users represent operational challenges that necessitate private consortium consensus and optimized user workflows.
-
+ 
 \section{Synthesis and Research Gap Identification}
 Table~\ref{tab:lit_comparison} synthesizes the fifteen surveyed literature works across six core criteria: publication year, blockchain platform, consensus mechanism, authentication methodology, evaluation maturity, and primary technical limitation.
 
@@ -327,7 +324,6 @@ Table~\ref{tab:lit_comparison} synthesizes the fifteen surveyed literature works
 \cite{Baniata2025} & 2025 & Hyperledger Besu & IBFT 2.0 & Diff.\ Privacy + SSI & 3-node cluster & Assumes honest authority; requires standardized digital wallets. \\ \addlinespace[3pt]
 \cite{Benabdallah2022} & 2022 & SLR (2010--21) & Diverse & Surveyed taxonomy & Systematic Review & Identifies scalability, coercion, and central eligibility gaps. \\ \addlinespace[3pt]
 \cite{Quzmar2021} & 2021 & Survey & Diverse & Key management analysis & Comparative Survey & Academic prototypes; lack of standard e-voting protocols. \\ \addlinespace[3pt]
-\pagebreak
 \cite{Sah2025} & 2025 & Review & PoW / PoS & Web3 / MetaMask & Architectural Review & Highlights gas cost barriers and rural internet connectivity. \\ \addlinespace[3pt]
 \cite{Barelli2025} & 2025 & Survey & Diverse & Cryptographic audit & Theoretical Survey & Transparency de-anonymizes voters; client malware ignored. \\ \addlinespace[3pt]
 \cite{Wermelinger2026} & 2026 & Empirical & N/A & PLS-SEM Trust Model & Empirical ($N=1851$) & Shows institutional trust dominates over technical guarantees. \\ \addlinespace[3pt]
@@ -517,6 +513,27 @@ Table~\ref{tab:specs} outlines the operational hardware and software environment
 \endgroup
 \end{table}
 
+\subsection{Technology Stack}
+The project uses the following technology stack:
+\begin{itemize}
+    \item \textbf{Smart Contract Layer:} Solidity 0.8.20, compiled with \texttt{solc} and executed on the Ethereum Virtual Machine (EVM).
+    \item \textbf{Blockchain and Testing Layer:} Ganache local Ethereum network with Chain ID 1337 and JSON-RPC endpoint \texttt{localhost:8545}; the design is compatible with Proof-of-Authority deployment.
+    \item \textbf{Front-End Layer:} React.js 18, HTML5, CSS3, JavaScript, and Vite for the responsive voting interface.
+    \item \textbf{Blockchain Integration Layer:} Web3.js and Ethers.js for contract calls, transaction creation, event monitoring, and result retrieval.
+    \item \textbf{Wallet and Authentication Layer:} MetaMask browser extension for account connection and ECDSA transaction signing.
+    \item \textbf{Development Tools:} Visual Studio Code, Node.js/npm, browser developer tools, and Git for implementation and testing.
+\end{itemize}
+
+\subsection{Hardware and Software Requirement Summary}
+\begin{enumerate}
+    \item \textbf{Development Environment:} A code editor such as Visual Studio Code, Node.js/npm, and a modern browser are required to build and run the React front end.
+    \item \textbf{Blockchain Environment:} Ganache or an equivalent local Ethereum-compatible network provides deterministic blocks, funded test accounts, and the JSON-RPC interface used during testing.
+    \item \textbf{Smart Contract Environment:} Solidity 0.8.20 and \texttt{solc} compile the voting contract, which executes inside the EVM with automatic arithmetic safety checks.
+    \item \textbf{Client Environment:} A laptop or desktop with Windows, Linux, or macOS, together with Chrome, Firefox, Brave, or Edge and the MetaMask extension, is sufficient for voting.
+    \item \textbf{Hardware Requirements:} A dual-core processor or better, at least 8 GB RAM, and approximately 10 GB of free storage are recommended for the development server, local blockchain, dependencies, and test data.
+    \item \textbf{Network Requirements:} A stable broadband connection is required when the front end communicates with a remote node; local Ganache execution can operate without external network access.
+\end{enumerate}
+
 %==============================================================================
 % CHAPTER 5: SYSTEM DESIGN
 %==============================================================================
@@ -584,8 +601,33 @@ Figure~\ref{fig:sys_flowchart} depicts the complete operational flowchart of the
 \label{fig:sys_flowchart}
 \end{figure}
 
+\clearpage
 \section{Comprehensive Operational Algorithm}
-The complete operational mechanics of the blockchain-based electronic voting system and its double-voting mitigation engine are formalized through the end-to-end procedural steps detailed below:
+The complete operational mechanics of the blockchain-based electronic voting system are summarized in the following pseudocode:
+
+\begin{verbatim}
+ALGORITHM DecentralizedVoting
+INPUT: candidate list C, voter wallet v, selected candidate c
+
+1. Deploy contract; set admin = deployer; initialize all counts to zero.
+2. ADMIN registers candidates in C and whitelists eligible wallets.
+3. VOTER connects MetaMask and obtains wallet address v.
+4. record <- readVoter(v)
+5. IF record.isRegistered = false OR record.hasVoted = true THEN
+       deny access and stop
+   END IF
+6. Display candidates and let voter select c.
+7. Sign vote(c) with MetaMask and submit the transaction.
+8. CONTRACT checks registration, hasVoted = false, and c is valid.
+9. IF any check fails THEN revert transaction and stop.
+10. Set voters[v].hasVoted <- true.
+11. Increment candidates[c].voteCount and emit VoteCast.
+12. Commit the transaction and display the receipt.
+13. Read final candidate tallies for public auditing.
+OUTPUT: immutable vote record and auditable election tally
+\end{verbatim}
+
+\iffalse
 
 \newenvironment{algsubsteps}{%
   \begin{list}{}{%
@@ -832,6 +874,7 @@ N(c) = \text{candidates}[c].\text{voteCount}, \quad \forall c \in [1, \text{cand
     \item[\textbf{12.2.2}] Certified results are displayed on the public audit dashboard; mathematical invariant $\sum N(c) \le |\mathcal{V}|$ holds.
 \end{algsubsteps}
 
+\fi
 \section{Block Structure and Cryptographic Chaining}
 Figure~\ref{fig:block_structure} details the internal architecture of blocks within the blockchain ledger, demonstrating how block headers, cryptographic timestamps $T_i$, nonces $n_i$, and transaction sets $Tx_i$ are chained via SHA-256 hashing.
 
@@ -1072,7 +1115,7 @@ Figure~\ref{fig:gantt_chart} presents the project implementation Gantt chart spa
 
 \begin{figure}[H]
 \centering
-\adjustbox{max width=0.98\linewidth, max height=0.48\textheight, keepaspectratio, center}{\input{diagrams/gantt_chart_project_timeline.tex}}
+\adjustbox{max width=1.0\linewidth, max height=0.60\textheight, keepaspectratio, center}{\input{diagrams/gantt_chart_project_timeline.tex}}
 \caption{Gantt chart illustrating the project development timeline and milestone schedule (Jul 2026 -- Mar 2027).}
 \label{fig:gantt_chart}
 \end{figure}

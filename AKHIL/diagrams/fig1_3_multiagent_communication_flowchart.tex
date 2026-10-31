@@ -148,12 +148,14 @@
   \draw[failarr] (d_model) -- node[above, font=\fontsize{6.5}{7.5}\selectfont\bfseries]{No} (e_model);
   \draw[failarr] (d_pil) -- node[above, font=\fontsize{6.5}{7.5}\selectfont\bfseries]{No} (e_pil);
 
-  % Terminate Error paths to common error end
-  \node[startend, fill=statusFail, right=1.60cm of e_model] (err_end) {TERMINATE};
-  \draw[failarr] (e_mime.east) to[bend left=15] (err_end.north);
-  \draw[failarr] (e_size.east) -- (err_end.north west);
-  \draw[failarr] (e_model.east) -- (err_end.west);
-  \draw[failarr] (e_pil.east) to[bend right=15] (err_end.south);
+  % Terminate Error paths via clean orthogonal bus to common error end
+  \node[startend, fill=statusFail, below=0.60cm of e_pil] (err_end) {TERMINATE};
+  \coordinate (bus) at ($(e_mime.east) + (0.75,0)$);
+  \draw[draw=statusFail!90, line width=0.80pt, dashed] (e_mime.east) -- (bus);
+  \draw[draw=statusFail!90, line width=0.80pt, dashed] (e_size.east) -- (bus |- e_size.east);
+  \draw[draw=statusFail!90, line width=0.80pt, dashed] (e_model.east) -- (bus |- e_model.east);
+  \draw[draw=statusFail!90, line width=0.80pt, dashed] (e_pil.east) -- (bus |- e_pil.east);
+  \draw[failarr] (bus) -- (bus |- err_end.east) -- (err_end.east);
 
 \end{tikzpicture}
 \end{document}

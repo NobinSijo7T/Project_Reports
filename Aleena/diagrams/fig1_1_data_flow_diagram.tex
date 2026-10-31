@@ -1,45 +1,40 @@
-\documentclass[tikz,border=8pt]{standalone}
+\documentclass[tikz,border=10pt]{standalone}
 \usepackage{tikz}
 \usepackage{amsmath,amssymb}
 \usepackage{fontawesome5}
 \usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shadows,shapes.geometric}
 
 % Color definitions
-\definecolor{lavenderDark}{RGB}{15, 44, 89}
-\definecolor{lavenderDeep}{RGB}{10, 28, 58}
-\definecolor{lavenderMedium}{RGB}{29, 78, 158}
-\definecolor{lavenderLight}{RGB}{240, 246, 255}
-\definecolor{lavenderBorder}{RGB}{180, 205, 237}
 \definecolor{prismNavy}{RGB}{15, 44, 89}
 \definecolor{prismBlue}{RGB}{29, 78, 158}
 \definecolor{prismTeal}{RGB}{13, 148, 136}
-\definecolor{prismMint}{RGB}{236, 253, 245}
-\definecolor{prismGold}{RGB}{217, 119, 6}
+\definecolor{prismGold}{RGB}{202, 138, 4}
 \definecolor{prismDark}{RGB}{15, 23, 42}
-\definecolor{cInput}{RGB}{241, 245, 249}
-\definecolor{cStem}{RGB}{224, 242, 254}
-\definecolor{cStage1}{RGB}{209, 250, 229}
-\definecolor{cStage2}{RGB}{254, 243, 199}
-\definecolor{cStage4}{RGB}{207, 250, 254}
-\definecolor{cHead}{RGB}{219, 234, 254}
+\definecolor{cInput}{RGB}{248, 250, 252}
+\definecolor{cStem}{RGB}{240, 249, 255}
+\definecolor{cStage1}{RGB}{240, 253, 250}
+\definecolor{cStage2}{RGB}{254, 252, 232}
+\definecolor{cStage4}{RGB}{238, 242, 255}
+\definecolor{cHead}{RGB}{224, 231, 255}
+\definecolor{lavenderLight}{RGB}{241, 245, 249}
 
 \begin{document}
 % Level-1 Data Flow Diagram (DFD) for CiviQ Indian Legal RAG System
 \begin{tikzpicture}[
-  x=1.15cm, y=1.05cm,
+  x=1.18cm, y=1.05cm,
   font=\sffamily,
   entity/.style={
-    rectangle, draw=lavenderDark!85, line width=0.95pt, rounded corners=3.5pt,
-    align=center, inner sep=4.0pt, font=\fontsize{7.0}{8.2}\selectfont\bfseries,
-    text width=2.30cm, fill=cInput, drop shadow={shadow xshift=0.6pt, shadow yshift=-0.6pt, opacity=0.08}
+    rectangle, draw=prismNavy!85, line width=0.95pt, rounded corners=3.5pt,
+    align=center, inner sep=4.5pt, font=\fontsize{7.0}{8.2}\selectfont\bfseries,
+    text width=2.45cm, fill=cInput, drop shadow={shadow xshift=0.6pt, shadow yshift=-0.6pt, opacity=0.08}
   },
   store/.style={
-    rectangle, draw=lavenderDark!80, line width=0.95pt, rounded corners=2.5pt,
-    align=center, inner sep=3.5pt, font=\fontsize{6.6}{7.8}\selectfont,
-    text width=2.45cm, fill=lavenderLight, drop shadow={shadow xshift=0.6pt, shadow yshift=-0.6pt, opacity=0.08}
+    rectangle, draw=prismNavy!80, line width=0.95pt, rounded corners=2.5pt,
+    align=center, inner sep=4.0pt, font=\fontsize{6.6}{7.8}\selectfont,
+    text width=2.85cm, fill=lavenderLight, drop shadow={shadow xshift=0.6pt, shadow yshift=-0.6pt, opacity=0.08}
   },
   proc/.style={
-    circle, draw=lavenderMedium!95, line width=0.95pt,
+    circle, draw=prismBlue!95, line width=0.95pt,
     align=center, inner sep=1.2pt, minimum size=1.55cm,
     font=\fontsize{6.2}{7.3}\selectfont\bfseries, fill=cStage1,
     drop shadow={shadow xshift=0.6pt, shadow yshift=-0.6pt, opacity=0.08}
@@ -48,10 +43,10 @@
   procgold/.style={proc, fill=cStage2},
   prochead/.style={proc, fill=cHead},
   dfdarr/.style={
-    -{Stealth[length=4.0pt, width=2.8pt]}, line width=0.90pt, draw=lavenderDark!90
+    -{Stealth[length=4.2pt, width=2.8pt]}, line width=0.95pt, draw=prismNavy!90
   },
   flowlbl/.style={
-    font=\fontsize{5.5}{6.5}\selectfont\bfseries, fill=white, inner sep=1.0pt, text=lavenderDark, rounded corners=1pt
+    font=\fontsize{5.6}{6.6}\selectfont\bfseries, fill=white, inner sep=1.2pt, text=prismNavy, rounded corners=1pt
   }
 ]
 
@@ -61,12 +56,12 @@
     {\fontsize{5.5}{6.5}\normalfont Text / Voice Input}
   };
 
-  \node[entity, fill=cStem!75] (client_ui) at (-5.8, -1.8) {
+  \node[entity, fill=cStem] (client_ui) at (-5.8, -1.8) {
     \faDesktop\ React 19 Client\\[1.2pt]
-    {\fontsize{5.5}{6.5}\normalfont Vite 8 $\cdot$ Single-Page}
+    {\fontsize{5.5}{6.5}\normalfont Vite 8 $\cdot$ Web App}
   };
 
-  \node[entity, fill=cInput!70] (gemini_api) at (5.8, -1.8) {
+  \node[entity, fill=cInput] (gemini_api) at (5.8, -1.8) {
     \faRobot\ Google Gemini API\\[1.2pt]
     {\fontsize{5.5}{6.5}\normalfont 2.5 Flash $\cdot$ Synthesis}
   };
@@ -79,11 +74,11 @@
 
   \node[store] (d2) at (5.8, 2.2) {
     \faDatabase\ \textbf{D2: Vector Index}\\
-    \texttt{Pinecone} (384-d HNSW)
+    \texttt{Pinecone (384-d HNSW)}
   };
 
-  % D3 placed under Process 6.0 on the right, keeping bottom-left clear for return flow
-  \node[store] (d3) at (1.8, -3.5) {
+  % D3 placed under Gemini on bottom-right, keeping return path to client_ui completely unobstructed
+  \node[store] (d3) at (5.8, -3.5) {
     \faFile\ \textbf{D3: Query Telemetry}\\
     \texttt{logs/} $\cdot$ Citations \& Latency
   };
@@ -95,37 +90,37 @@
   \node[procblue] (p4) at (2.6, 2.2) {4.0\\Pinecone\\Indexing};
 
   % Ingestion Data Flows (Strictly Linear Left-to-Right)
-  \draw[dfdarr] (d1) -- node[right=1pt, flowlbl]{Statute PDF} (p1);
-  \draw[dfdarr] (p1) -- node[above=1pt, flowlbl]{Clean Text} (p2);
-  \draw[dfdarr] (p2) -- node[above=1pt, flowlbl]{900w Chunks} (p3);
-  \draw[dfdarr] (p3) -- node[above=1pt, flowlbl]{384-d Dense Vec} (p4);
-  \draw[dfdarr] (p4) -- node[above=1pt, flowlbl]{Batch Upsert} (d2);
+  \draw[dfdarr] (d1.south) -- node[right=1pt, flowlbl]{Statute PDF} (p1.north);
+  \draw[dfdarr] (p1.east) -- node[above=1pt, flowlbl]{Clean Text} (p2.west);
+  \draw[dfdarr] (p2.east) -- node[above=1pt, flowlbl]{900w Chunks} (p3.west);
+  \draw[dfdarr] (p3.east) -- node[above=1pt, flowlbl]{384-d Dense Vec} (p4.west);
+  \draw[dfdarr] (p4.east) -- node[above=1pt, flowlbl]{Batch Upsert} (d2.west);
 
   % ================= 4. QUERY & SYNTHESIS PROCESSES (Row 2: y = -1.8) =================
   \node[procgold] (p5) at (-2.0, -1.8) {5.0\\Query Parse\\\& Translate};
   \node[prochead] (p6) at (1.8, -1.8) {6.0\\Retrieve \&\\Synthesize};
 
   % User to Client UI Flow
-  \draw[dfdarr] (user) -- node[right=1pt, flowlbl]{Query Input} (client_ui);
+  \draw[dfdarr] (user.south) -- node[right=1pt, flowlbl]{Query Input} (client_ui.north);
 
   % Frontend to Backend Query Router
-  \draw[dfdarr] (client_ui) -- node[above=1pt, flowlbl]{POST /ask} (p5);
+  \draw[dfdarr] (client_ui.east) -- node[above=1pt, flowlbl]{POST /ask} (p5.west);
 
   % Query Router to Retrieval & Synthesis Process
-  \draw[dfdarr] (p5) -- node[above=1pt, flowlbl]{English Query} (p6);
+  \draw[dfdarr] (p5.east) -- node[above=1pt, flowlbl]{English Query} (p6.west);
 
   % Vector DB to Retrieval Process (Gracefully curved, unobstructed)
-  \draw[dfdarr] (d2.south) to[out=270, in=60] node[pos=0.45, flowlbl]{Top-$k$ Evidence Chunks} (p6.north);
+  \draw[dfdarr] (d2.south) to[out=270, in=60] node[pos=0.45, flowlbl]{Top-$k$ Evidence} (p6.north);
 
   % Process 6.0 with Gemini API (Separate forward and return paths)
   \draw[dfdarr] (p6.north east) to[out=25, in=155] node[above=1pt, flowlbl]{Prompt + Context} (gemini_api.north west);
   \draw[dfdarr] (gemini_api.south west) to[out=205, in=335] node[pos=0.50, below=1pt, flowlbl]{Synthesized Answer} (p6.south east);
 
   % Synthesis to Client UI Return Flow (Smooth bottom loop with generous clearance under p5)
-  \draw[dfdarr] (p6.south west) to[out=215, in=325] node[below=1pt, flowlbl]{JSON Response (Answer + Citations)} (client_ui.south);
+  \draw[dfdarr] (p6.south west) to[out=215, in=325] node[below=2pt, flowlbl]{JSON Response (Answer + Citations)} (client_ui.south);
 
-  % Process 6.0 straight down to Telemetry Store (Zero crossings)
-  \draw[dfdarr] (p6.south) -- node[left=2pt, flowlbl]{Telemetry Log} (d3.north);
+  % Process 6.0 down to Telemetry Store (via Gemini API node bottom)
+  \draw[dfdarr] (gemini_api.south) -- node[right=2pt, flowlbl]{Telemetry Log} (d3.north);
 
 \end{tikzpicture}
 \end{document}

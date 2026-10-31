@@ -1,0 +1,249 @@
+\documentclass[tikz,border=12pt]{standalone}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usepackage{amsmath,amssymb}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shadows,shapes.geometric}
+
+% Color definitions (Deep Clinical Palette)
+\definecolor{lavenderDark}{RGB}{15, 44, 89}
+\definecolor{lavenderDeep}{RGB}{10, 28, 58}
+\definecolor{lavenderMedium}{RGB}{29, 78, 158}
+\definecolor{lavenderLight}{RGB}{240, 246, 255}
+\definecolor{lavenderBorder}{RGB}{180, 205, 237}
+\definecolor{lavenderAccent}{RGB}{2, 132, 199}
+\definecolor{prismNavy}{RGB}{15, 44, 89}
+\definecolor{prismBlue}{RGB}{29, 78, 158}
+\definecolor{prismTeal}{RGB}{13, 148, 136}
+\definecolor{prismMint}{RGB}{236, 253, 245}
+\definecolor{prismGold}{RGB}{217, 119, 6}
+\definecolor{prismDark}{RGB}{15, 23, 42}
+\definecolor{prismLight}{RGB}{248, 250, 252}
+\definecolor{prismIndigo}{RGB}{30, 58, 138}
+\definecolor{prismSlate}{RGB}{100, 116, 139}
+\definecolor{statusFail}{RGB}{220, 38, 38}
+\definecolor{cInput}{RGB}{241, 245, 249}
+\definecolor{cStem}{RGB}{224, 242, 254}
+\definecolor{cStage1}{RGB}{209, 250, 229}
+\definecolor{cStage2}{RGB}{254, 243, 199}
+\definecolor{cStage3}{RGB}{254, 226, 226}
+\definecolor{cStage4}{RGB}{207, 250, 254}
+\definecolor{cHead}{RGB}{219, 234, 254}
+\definecolor{cOutput}{RGB}{255, 228, 230}
+\definecolor{cRag}{RGB}{243, 232, 255}
+
+\begin{document}
+% Detailed End-to-End System Methodology Pipeline
+\begin{tikzpicture}[
+  x=1cm, y=1cm,
+  every node/.style={align=center},
+  phasebox/.style={
+    rectangle, rounded corners=6pt, line width=0.85pt,
+    minimum height=5.20cm, inner ysep=8pt, inner xsep=6pt,
+    font=\fontsize{7.0}{8.5}\selectfont
+  },
+  phasetitle/.style={
+    fill=lavenderDark, text=white, font=\fontsize{7.2}{8.5}\selectfont\bfseries,
+    rounded corners=3pt, inner xsep=6pt, inner ysep=2.5pt
+  },
+  inneritem/.style={
+    rectangle, rounded corners=3pt, line width=0.55pt,
+    fill=white, draw=lavenderMedium!60,
+    minimum height=1.05cm, inner xsep=4.0pt, inner ysep=2.5pt,
+    font=\fontsize{6.0}{7.2}\selectfont
+  },
+  arrow/.style={
+    -{Stealth[scale=0.90]}, line width=1.0pt, draw=lavenderDark!90
+  },
+  busarrow/.style={
+    -{Stealth[scale=0.95]}, line width=1.2pt, draw=lavenderMedium
+  },
+  badge/.style={
+    fill=white, draw=lavenderMedium!90, rounded corners=2.5pt, line width=0.60pt,
+    inner xsep=3.5pt, inner ysep=1.5pt, font=\fontsize{5.6}{6.6}\selectfont\bfseries
+  }
+]
+
+  %============================================================================
+  % ROW 1: INGESTION, PREPROCESSING, & DENSENET-121 BACKBONE (Center y = 9.60)
+  % Phase box span: y in [7.00, 12.20], Title at y = 12.25
+  % Inner card centers: y = 11.10, y = 9.60, y = 8.10 (Gap = 1.50cm)
+  % Column Centers: x1 = 2.20, x2 = 8.00, x3 = 13.80 (Width = 4.30, Gap = 1.50)
+  %============================================================================
+
+  % Phase 1: CXR Ingestion & Integrity Audit (Center x = 2.20)
+  \node[phasebox, text width=4.30cm, fill=cInput, draw=prismSlate!80] (p1) at (2.20, 9.60) {};
+  \node[phasetitle, anchor=south] at (2.20, 12.25) {Phase 1: Ingestion \& Data Hygiene};
+
+  \node[inneritem, text width=3.95cm, draw=prismSlate!70] at (2.20, 11.10) {%
+    {\color{prismDark}\faFileImage\ \textbf{Digital Radiograph Ingestion}}\\[1.5pt]
+    DICOM, JPEG, PNG, WEBP, BMP Formats\\
+    Direct PACS Stream or Bedside Film Scan
+  };
+  \node[inneritem, text width=3.95cm, draw=prismTeal!70] at (2.20, 9.60) {%
+    {\color{prismTeal!90!black}\faCheckDouble\ \textbf{Byte-Stream Verification}}\\[1.5pt]
+    PIL Header Audit $\cdot$ Size $\le 10$\,MB Limit\\
+    Corrupt Inputs to \texttt{corrupt\_images.csv}
+  };
+  \node[inneritem, text width=3.95cm, draw=lavenderMedium!70] at (2.20, 8.10) {%
+    {\color{lavenderMedium}\faColumns\ \textbf{Stratified Cohort Partitioning}}\\[1.5pt]
+    70\% Train $\cdot$ 15\% Validation $\cdot$ 15\% Test\\
+    Class Stratification ($s=42$): Normal, COVID, Pneumonia
+  };
+
+  % Phase 2: Geometric & Tensor Normalization (Center x = 8.00)
+  \node[phasebox, text width=4.30cm, fill=cStage1!60, draw=prismTeal!80] (p2) at (8.00, 9.60) {};
+  \node[phasetitle, anchor=south] at (8.00, 12.25) {Phase 2: Spatial \& Tensor Processing};
+
+  \node[inneritem, text width=3.95cm, draw=prismTeal!70] at (8.00, 11.10) {%
+    {\color{prismTeal!90!black}\faCrop\ \textbf{Geometric Standardization}}\\[1.5pt]
+    Single-channel/RGBA $\to$ 3-channel RGB\\
+    Bilinear Interpolation to $224 \times 224$ pixels
+  };
+  \node[inneritem, text width=3.95cm, draw=prismIndigo!70] at (8.00, 9.60) {%
+    {\color{prismIndigo}\faSlidersH\ \textbf{ImageNet Normalization}}\\[1.5pt]
+    $\mathbf{x}_{c,i,j} = (\mathbf{I}_{c,i,j} - \mu_c)/\sigma_c \in \mathbb{R}^{3\times 224\times 224}$\\
+    $\boldsymbol{\mu} = [0.485,0.456,0.406]$, $\boldsymbol{\sigma} = [0.229,0.224,0.225]$
+  };
+  \node[inneritem, text width=3.95cm, draw=prismGold!80] at (8.00, 8.10) {%
+    {\color{prismGold!90!black}\faRandom\ \textbf{Stochastic Data Regularization}}\\[1.5pt]
+    Random Horizontal Flips ($p=0.50$)\\
+    Rotation $\theta \in [-7^\circ, +7^\circ]$, Photometric Jitter
+  };
+
+  % Phase 3: DenseNet-121 Feature Learning (Center x = 13.80)
+  \node[phasebox, text width=4.30cm, fill=cStem!70, draw=lavenderDark!80] (p3) at (13.80, 9.60) {};
+  \node[phasetitle, anchor=south] at (13.80, 12.25) {Phase 3: DenseNet-121 Backbone};
+
+  \node[inneritem, text width=3.95cm, draw=lavenderDark!70] at (13.80, 11.10) {%
+    {\color{lavenderDark}\faLayerGroup\ \textbf{Convolutional Stem}}\\[1.5pt]
+    $7\times 7$ Conv (s=2, 64-ch) + $3\times 3$ MaxPool\\
+    Spatial reduction to $64 \times 56 \times 56$
+  };
+  \node[inneritem, text width=3.95cm, draw=prismBlue!70] at (13.80, 9.60) {%
+    {\color{prismBlue}\faNetworkWired\ \textbf{Iterative Dense Feature Reuse}}\\[1.5pt]
+    DenseBlocks 1--4 ($k=32$): $\mathbf{x}_l = H_l([\mathbf{x}_0,\dots,\mathbf{x}_{l-1}])$\\
+    Composite: $\mathrm{BN} \to \mathrm{ReLU} \to 1\times 1 \to \mathrm{BN} \to \mathrm{ReLU} \to 3\times 3$
+  };
+  \node[inneritem, text width=3.95cm, draw=lavenderDeep!70] at (13.80, 8.10) {%
+    {\color{lavenderDeep}\faCompress\ \textbf{Transition Compression}}\\[1.5pt]
+    $1\times 1$ Conv ($\theta=0.50$ compression) + $2\times 2$ AvgPool\\
+    Terminal \texttt{denseblock4} Map: $1024 \times 7 \times 7$
+  };
+
+  % Transitions Row 1 (Midpoints x = 5.10 and x = 10.90)
+  \draw[busarrow] (p1.east) -- (p2.west);
+  \node[badge] at (5.10, 9.60) {Byte Stream};
+  \draw[busarrow] (p2.east) -- (p3.west);
+  \node[badge] at (10.90, 9.60) {$(3, 224, 224)$};
+
+  %============================================================================
+  % ROW 2: MULTI-CLASS DECISION, GRAD-CAM XAI, & CLINICAL RAG (Center y = 2.80)
+  % Phase box span: y in [0.20, 5.40], Title at y = 5.45
+  % Inner card centers: y = 4.30, y = 2.80, y = 1.30 (Gap = 1.50cm)
+  %============================================================================
+
+  % Phase 4: Softmax Head & Posterior Scoring (Center x = 13.80)
+  \node[phasebox, text width=4.30cm, fill=cHead, draw=lavenderMedium!90] (p4) at (13.80, 2.80) {};
+  \node[phasetitle, anchor=south] at (13.80, 5.45) {Phase 4: Softmax Classification};
+
+  \node[inneritem, text width=3.95cm, draw=lavenderDark!70] at (13.80, 4.30) {%
+    {\color{lavenderDeep}\faChartPie\ \textbf{Global Average Pooling (GAP)}}\\[1.5pt]
+    $\mathbf{h} = \frac{1}{49} \sum_{i,j} \mathbf{A}_{i,j} \in \mathbb{R}^{1024}$\\
+    Latent thoracic representation vector
+  };
+  \node[inneritem, text width=3.95cm, draw=prismIndigo!70] at (13.80, 2.80) {%
+    {\color{prismIndigo}\faProjectDiagram\ \textbf{Linear Classifier Projection}}\\[1.5pt]
+    $\mathbf{z} = \mathbf{W}_{\text{cls}} \mathbf{h} + \mathbf{b}_{\text{cls}} \in \mathbb{R}^3$\\
+    Optimized via AdamW ($\lambda=10^{-4}$, $\eta=10^{-4}$)
+  };
+  \node[inneritem, text width=3.95cm, draw=lavenderMedium!80] at (13.80, 1.30) {%
+    {\color{lavenderMedium}\faPercentage\ \textbf{Calibrated Posterior Probabilities}}\\[1.5pt]
+    $\hat{y}_c = \exp(z_c) / \sum_j \exp(z_j)$\\
+    Predicted Class $\hat{c} \in \{\text{Normal}, \text{COVID}, \text{Pneumonia}\}$
+  };
+
+  % Phase 5: Grad-CAM Explainability (Center x = 8.00)
+  \node[phasebox, text width=4.30cm, fill=cStage2!60, draw=prismGold!90] (p5) at (8.00, 2.80) {};
+  \node[phasetitle, anchor=south] at (8.00, 5.45) {Phase 5: Visual Saliency (Grad-CAM)};
+
+  \node[inneritem, text width=3.95cm, draw=prismGold!80] at (8.00, 4.30) {%
+    {\color{prismGold!90!black}\faEye\ \textbf{Target Gradient Backpropagation}}\\[1.5pt]
+    Hook on \texttt{denseblock4}: $g^k = \partial z_{\hat{c}} / \partial A^k$\\
+    Class-specific sensitivity backpropagation
+  };
+  \node[inneritem, text width=3.95cm, draw=prismTeal!70] at (8.00, 2.80) {%
+    {\color{prismTeal!90!black}\faWeightHanging\ \textbf{Neuron Importance Pooling}}\\[1.5pt]
+    $\alpha_k^{\hat{c}} = \frac{1}{U\times V} \sum_{i,j} g_{i,j}^k \in \mathbb{R}^{1024}$\\
+    Rectified map: $L_{\text{cam}} = \mathrm{ReLU}(\sum \alpha_k^{\hat{c}} A^k)$
+  };
+  \node[inneritem, text width=3.95cm, draw=prismBlue!70] at (8.00, 1.30) {%
+    {\color{prismNavy}\faPalette\ \textbf{Heatmap Fusion Overlay}}\\[1.5pt]
+    Bilinear upsample to $224 \times 224$ + Jet colormap\\
+    $\mathbf{I}_{\text{overlay}} = 0.60\,\mathbf{I}_{\text{orig}} + 0.40\,\mathrm{JetMap}$
+  };
+
+  % Phase 6: Clinical RAG Decision Support (Center x = 2.20)
+  \node[phasebox, text width=4.30cm, fill=cRag, draw=lavenderMedium!90] (p6) at (2.20, 2.80) {};
+  \node[phasetitle, anchor=south] at (2.20, 5.45) {Phase 6: Clinical RAG Evidence};
+
+  \node[inneritem, text width=3.95cm, draw=lavenderDark!70] at (2.20, 4.30) {%
+    {\color{lavenderDark}\faBookMedical\ \textbf{Radiology Knowledge Base}}\\[1.5pt]
+    WHO/CDC Diagnostic Guidelines\\
+    Pulmonary Opacity Hallmarks
+  };
+  \node[inneritem, text width=3.95cm, draw=prismIndigo!70] at (2.20, 2.80) {%
+    {\color{prismIndigo}\faSearch\ \textbf{FAISS Vector Store Retrieval}}\\[1.5pt]
+    Dense text \& lesion embeddings\\
+    Top-$K$ cosine similarity for class $\hat{c}$
+  };
+  \node[inneritem, text width=3.95cm, draw=prismGold!80] at (2.20, 1.30) {%
+    {\color{prismGold!90!black}\faFileContract\ \textbf{Diagnostic Grounding Synthesis}}\\[1.5pt]
+    Corroborates DenseNet prediction\\
+    Verifiable clinical evidence summary
+  };
+
+  % Vertical link: Phase 3 to Phase 4 (Gutter between y=7.00 and y=5.45)
+  \draw[busarrow] (p3.south) -- (p4.north)
+    node[midway, right=4pt, font=\fontsize{5.8}{6.8}\selectfont\bfseries, text=lavenderDark] {DenseBlock4 Feature Maps\\($1024 \times 7 \times 7$)};
+
+  % Horizontal link: Phase 4 to Phase 5 (Gutter between x=11.65 and x=10.15)
+  \draw[busarrow] (p4.west) -- (p5.east);
+  \node[badge] at (10.90, 2.80) {Logits $z_{\hat{c}}$};
+
+  % Horizontal link: Phase 5 to Phase 6 (Gutter between x=5.85 and x=4.35)
+  \draw[busarrow] (p5.west) -- (p6.east);
+  \node[badge] at (5.10, 2.80) {Diagnosis $\hat{c}$};
+
+  %============================================================================
+  % ROW 3: PRODUCTION SERVING & CLINICAL SAFETY GATING (Center y = -1.65)
+  % Span: y in [-2.55, -0.75], Title at y = -0.70
+  %============================================================================
+  \node[rectangle, rounded corners=6pt, line width=0.85pt, fill=cStage4!40, draw=prismNavy!80,
+    minimum height=1.80cm, text width=15.90cm] (p7) at (8.00, -1.65) {};
+  \node[phasetitle, anchor=south] at (8.00, -0.70) {Phase 7: Asynchronous Serving, Cross-Platform Delivery \& Clinical Safety};
+
+  \node[inneritem, text width=4.75cm, draw=prismGold!80] at (2.40, -1.65) {%
+    {\color{prismGold!90!black}\faServer\ \textbf{FastAPI ASGI Microservice}}\\[1.5pt]
+    Non-blocking Uvicorn Workers $\cdot$ Sub-50ms Latency\\
+    Pydantic Schema Serialization $\cdot$ \texttt{/predict}
+  };
+
+  \node[inneritem, text width=4.75cm, draw=prismIndigo!80] at (8.00, -1.65) {%
+    {\color{prismIndigo}\faDesktop\ \textbf{Dual Client User Interfaces}}\\[1.5pt]
+    Next.js 15 Web (Drag \& Drop, Live Probability Bars)\\
+    Expo Mobile (Point-of-Care Bedside Scanner)
+  };
+
+  \node[inneritem, text width=4.75cm, draw=prismTeal!80] at (13.60, -1.65) {%
+    {\color{prismTeal!90!black}\faShieldVirus\ \textbf{Clinical Safety Boundaries}}\\[1.5pt]
+    Preliminary computer-aided screening notice\\
+    Mandatory non-diagnostic legal boundaries
+  };
+
+  % Links from Row 2 to Row 3 (Vertical travel from y = 0.20 to y = -0.72)
+  \draw[busarrow] (p6.south) -- ++(0, -0.45) -| (2.40, -0.72);
+  \draw[busarrow] (p5.south) -- (8.00, -0.72);
+  \draw[busarrow] (p4.south) -- ++(0, -0.45) -| (13.60, -0.72);
+
+\end{tikzpicture}
+\end{document}

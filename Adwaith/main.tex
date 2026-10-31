@@ -117,7 +117,7 @@
 \gdef \acadyear{2026--2027}
 \gdef \submonth{October 2026}
 \gdef \month{October 2026}
-\gdef \date{28-10-2026}
+\gdef \date{27-10-2026}
 \gdef \dept{Computer Science and Engineering}
 \gdef \deptabbr{Dept.\ of CSE}
 \gdef \degree{Bachelor of Technology}
@@ -312,9 +312,9 @@ The unique physical and operational characteristics of electrical power systems 
 \textbf{Biswal et al. (2023)} published \textit{Real-Time Grid Monitoring and Protection: Advanced Signal Processing and Machine Learning Approaches} \cite{ref_biswal2023_realtime}. The authors explored the fusion of advanced signal processing (Hilbert-Huang transform, discrete wavelet transforms) with deep neural networks for real-time fault location and classification. Their research underscored that high sampling rates ($>1$\,kHz in protection relays, $30\text{--}60$\,Hz in PMUs) require dimensionality reduction pipelines that preserve critical transient phase shifts while eliminating ambient measurement noise.
 
 \section{Explainable Artificial Intelligence (XAI) and Visual Analytics for Temporal Data}
-As black-box deep learning models achieve high statistical accuracy, establishing clinical, industrial, and operational trust through Explainable AI (XAI) and visual analytics has become paramount.
+As black-box deep learning models achieve high statistical accuracy, establishing industrial and operational trust through Explainable AI (XAI) and visual analytics has become paramount.
 
-\textbf{Arrieta et al. (2020)} formulated the definitive taxonomy in \textit{Explainable Artificial Intelligence (XAI): Concepts, Taxonomies, Opportunities and Challenges toward Responsible AI} \cite{ref_arrieta2020_xai}. The authors categorized XAI methods into transparent models (simulatability, decomposability, algorithmic transparency) and post-hoc explainability techniques (model-agnostic feature importance, visual saliency, surrogate modeling). They emphasized that in safety-critical domains such as healthcare and energy grids, algorithmic explanations must align with domain experts' mental models through intuitive interactive visualizations.
+\textbf{Arrieta et al. (2020)} formulated the definitive taxonomy in \textit{Explainable Artificial Intelligence (XAI): Concepts, Taxonomies, Opportunities and Challenges toward Responsible AI} \cite{ref_arrieta2020_xai}. The authors categorized XAI methods into transparent models (simulatability, decomposability, algorithmic transparency) and post-hoc explainability techniques (model-agnostic feature importance, visual saliency, surrogate modeling). They emphasized that in safety-critical domains such as energy grids, algorithmic explanations must align with domain experts' mental models through intuitive interactive visualizations.
 
 \textbf{Theissler et al. (2022)} presented a specialized review on \textit{Explainable AI for Time Series Classification: A Review, Taxonomy and Directions} \cite{ref_theissler2022_xai}. The authors reviewed attribution methods, prototype-based explanations, and attention visualizers specifically suited for 1D temporal signals. They pointed out that purely tabular or pixel-based explainability tools (e.g., standard Grad-CAM or SHAP) fail to communicate multi-signal temporal dynamics effectively, arguing for interactive multi-view dashboards that combine latent embeddings, temporal attention, and hierarchical class structures.
 
@@ -584,7 +584,7 @@ Figure~\ref{fig:system_flow} delineates the complete end-to-end data transformat
 \begin{figure}[H]
     \centering
     \adjustbox{max width=0.98\linewidth, max height=0.72\textheight, keepaspectratio, center}{\input{diagrams/fig11_end_to_end_system_flow.tex}}
-    \caption{Overall end-to-end system flow architecture from raw grid telemetry ingestion to clinical diagnostic delivery.}
+    \caption{Overall end-to-end system flow architecture from raw grid telemetry ingestion to power-grid event diagnosis.}
     \label{fig:system_flow}
 \end{figure}
 
@@ -780,6 +780,31 @@ The terminal state $\mathbf{h}_T$ parameterizes the latent distribution: $\bolds
 \section{Model Training and Hyperparameter Configuration}
 Table~\ref{tab:model_hyperparameters} details the comparative training hyperparameters employed across the three architectures.
 
+\section{Dataset Description and Configuration Verification}
+The report describes a GESL power-grid time-series dataset and uses the configuration $T=128$, $D=24$, with a stated total of 15,000 windows and stride $S=10$. The supplied project folder was inspected recursively, including source code, configuration, dataset-loading, training, evaluation, checkpoint, and output files. That inspection found a lung-detection image-classification application under 	exttt{codebase/lung-detection}, not a GESL power-grid implementation. Its loader uses 	exttt{ImageFolder}, the classes 	exttt{Normal}, 	exttt{COVID}, and 	exttt{Viral Pneumonia}, 224$	imes$224 RGB images, ImageNet normalization, and a 70/15/15 stratified image split. These files are unrelated to the GESL claims and cannot verify them.
+
+The GESL provider, original source or publication, covered time period, selected subset or event categories, 24 feature names and meanings, normalization statistics, missing-value policy, temporal ordering, window derivation, and power-grid train--validation--test split therefore remain 	extbf{Requires verification}. The report values $T=128$, $D=24$, 15,000 windows, and $S=10$ are retained only as stated configuration claims. No GESL implementation evidence was found from which to derive the window count, identify the 24 channels, or test for leakage from overlapping windows.
+
+\begin{tcolorbox}[colback=lavenderLight,colframe=lavenderBorder,title=Verification note]
+Dataset origin, feature list, time coverage, window-count derivation, preprocessing, split, and model-output evidence remain \textbf{pending source-code/dataset verification}. No new dataset details have been invented in this revision.
+\end{tcolorbox}
+
+\begin{table}[H]
+\centering
+\scriptsize
+\caption{Dataset configuration summary based on the supplied evidence. ``Requires verification'' denotes a field for which no GESL source or power-grid implementation artifact was available.}
+\label{tab:dataset_verification_summary}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.0cm} >{\raggedright\arraybackslash}p{2.1cm} >{\raggedright\arraybackslash}p{1.3cm} >{\raggedright\arraybackslash}p{1.4cm} X >{\raggedright\arraybackslash}p{2.6cm}}
+\toprule
+\textbf{Source / role} & \textbf{Samples or windows} & \textbf{Features} & \textbf{Length} & \textbf{Preprocessing} & \textbf{Split / status} \\
+\midrule
+GESL power-grid data claimed by the report & 15,000 windows (claimed; not observed) & $D=24$ (claimed; names unavailable) & $T=128$, $S=10$ (claimed) & Missing-value handling, cleaning, normalization, feature selection, temporal ordering, and event subset: \textbf{Requires verification} & Provider, official reference, split method/counts, and leakage check: \textbf{Requires verification} \\
+\addlinespace
+Supplied implementation (lung-detection) & Image samples; GESL windows not present & 224$\times$224 RGB image input; not $D=24$ & Not applicable & Image validation, resize, augmentation during training, ImageNet normalization & 70\% / 15\% / 15\% stratified image split; unrelated to GESL \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
 \begin{table}[H]
 \centering
 \small
@@ -847,10 +872,10 @@ The framework embeds Human-in-the-Loop validation to bridge algorithmic represen
 %==============================================================================
 \chapter{Preliminary Analysis}
 
-This chapter presents the empirical evaluation, comparative performance analysis, and visual clustering benchmarks assessing the proposed framework across power grid event benchmarks.
+This chapter presents the reported empirical evaluation and comparative visual-clustering benchmarks. The supplied materials contain evaluation outputs for the unrelated lung-detection application, but no GESL embeddings, labels, projection files, DBSCAN labels, or TFT/VAE evaluation logs. The reported power-grid metrics therefore remain unverified.
 
 \section{Latent Representation Quality and Reconstruction Evaluation}
-To evaluate representation fidelity, the three models—TFT, 1D-CNN VAE, and VAE-LSTM—were trained on a standardized power grid multivariate time-series benchmark comprising 15,000 temporal event windows ($T=128, D=24$). Table~\ref{tab:model_comparison_results} presents the quantitative comparison of model performance.
+The report states that the three models—TFT, 1D-CNN VAE, and VAE-LSTM—were trained on a standardized power-grid multivariate time-series benchmark comprising 15,000 temporal event windows ($T=128, D=24$). Table~\ref{tab:model_comparison_results} presents the values as reported. They are not marked as independently verified because the supplied implementation is an image classifier and provides no corresponding power-grid source dataset, model outputs, embeddings, labels, or evaluation logs. The available X-ray evaluation file cannot validate these metrics.
 
 \begin{table}[H]
 \centering
@@ -873,7 +898,7 @@ Intrinsic Interpretability & High (VSN + Attn) & None (Black-box) & Low (Hidden 
 \end{tabularx}
 \end{table}
 
-As demonstrated in Table~\ref{tab:model_comparison_results}, the **Temporal Fusion Transformer (TFT)** achieves the highest latent clustering quality, recording a Silhouette score of $0.684$ and a Davies-Bouldin index of $0.582$, outperforming both VAE architectures. Furthermore, TFT provides intrinsic interpretability through its Variable Selection Networks, identifying that during line-to-ground faults, reactive current and voltage phase angles contribute over 74\% of the selection weight.
+Within the reported table, the **Temporal Fusion Transformer (TFT)** has the highest listed latent clustering quality, with a Silhouette score of $0.684$ and a Davies-Bouldin index of $0.582$. These comparisons, including the stated 74\% selection weight for reactive current and voltage phase angles, require confirmation from saved embeddings, labels, and TFT selection weights before they can be treated as confirmed experimental findings.
 
 \section{Dimensionality Reduction Comparative Benchmarking}
 The 128-dimensional latent vectors generated by TFT were projected into 2D space using PCA, t-SNE, and UMAP. Table~\ref{tab:projection_comparison} benchmarks these techniques across neighborhood preservation, global structure preservation, and computational execution time.
@@ -897,7 +922,7 @@ Interactive Re-projection & Real-time ($<1$\,s) & Too slow ($>15$\,s) & Fast ($\
 \end{tabularx}
 \end{table}
 
-The empirical findings confirm that **UMAP** establishes the optimal balance: it achieves the highest trustworthiness ($0.965$) and 2D Silhouette score ($0.718$) while preserving global inter-cluster relationships and completing execution in only $1.45$\,seconds.
+In the reported table, **UMAP** has the highest listed trustworthiness ($0.965$) and 2D Silhouette score ($0.718$), with a reported runtime of $1.45$\,seconds. These values remain unverified. Confirmation requires the projected representations, neighborhood parameter, distance metric, random seed, and timing logs from the GESL pipeline; no such artifacts were found.
 
 \section{DBSCAN Density Clustering and Parameter Sensitivity}
 Figure~\ref{fig:dbscan_sensitivity} summarizes the sensitivity of cluster identification and noise isolation under varying neighborhood radius $\epsilon \in [0.1, 0.8]$ with $\text{MinPts}=15$.
@@ -937,7 +962,7 @@ Figure~\ref{fig:dbscan_sensitivity} summarizes the sensitivity of cluster identi
 \label{fig:dbscan_sensitivity}
 \end{figure}
 
-The analysis reveals an optimal clustering configuration at $\epsilon^* = 0.35$, yielding six distinct event clusters corresponding to the physical grid fault categories, while isolating 3.2\% of samples as anomalous noise transients.
+The report identifies $\epsilon^* = 0.35$ and $\text{MinPts}=15$ as the selected DBSCAN configuration, with six reported clusters and 3.2\% noise samples. These values remain pending verification against the 2D embeddings and DBSCAN labels. The number of clusters, noise count, percentage calculation, distance metric, label handling, and protection against train--test leakage should be recorded with the final GESL evaluation artifact; none can be independently reproduced from the supplied implementation.
 
 
 %==============================================================================
@@ -955,7 +980,7 @@ The technical viability of the platform is substantiated by mature computational
     \item \textbf{Scalable Web Graphics:} Modern client visualization frameworks (HTML5 Canvas, WebGL, D3.js) support smooth rendering of tens of thousands of interactive vector points at 60 fps.
 \end{itemize}
 
-\section{Operational and Clinical Feasibility}
+\section{Operational Feasibility}
 The system is explicitly engineered to integrate into existing power grid control room workflows without disrupting critical operations:
 \begin{itemize}
     \item \textbf{Operator-in-the-Loop Alignment:} Rather than replacing human operators, the dashboard serves as an explanatory decision aid, providing visual rationale that aligns with standard electrical engineering principles.
@@ -982,11 +1007,11 @@ The project lifecycle spans 36 weeks across nine structured milestones. Figure~\
 \chapter{Conclusion and Future Scope}
 
 \section{Conclusion}
-This project successfully designed, implemented, and empirically evaluated \textbf{Explainable AI for Multivariate Time Series Pattern Exploration: Latent Space Visual Analytics With Temporal Fusion Transformer and Variational Autoencoders in Power Grid Event Diagnosis}. By addressing the core challenges of high dimensionality, temporal dependencies, black-box opacity, and operator cognitive overload, the framework establishes a reliable, interpretable platform for power grid anomaly analysis.
+This project designed and documented \textbf{Explainable AI for Multivariate Time Series Pattern Exploration: Latent Space Visual Analytics With Temporal Fusion Transformer and Variational Autoencoders in Power Grid Event Diagnosis}. By addressing the core challenges of high dimensionality, temporal dependencies, black-box opacity, and operator cognitive overload, the framework specifies an interpretable platform for power-grid event analysis. Claims of field deployment or operational effectiveness remain outside the evidence supplied with this report.
 
-The deep learning engine employs the \textbf{Temporal Fusion Transformer (TFT)}, demonstrating superior latent representation learning compared to \textbf{1D-CNN VAE} and \textbf{VAE-LSTM} baselines, achieving a latent Silhouette score of $0.684$ and a reconstruction MSE of $0.0142$. Through Variable Selection Networks and interpretable multi-head self-attention, TFT reveals the critical physical channels and temporal intervals driving event classifications.
+The deep learning engine is specified around the \textbf{Temporal Fusion Transformer (TFT)}, with \textbf{1D-CNN VAE} and \textbf{VAE-LSTM} as comparative baselines. The report records a latent Silhouette score of $0.684$ and a reconstruction MSE of $0.0142$; these values are retained as reported results pending verification against the implementation outputs. Through Variable Selection Networks and interpretable multi-head self-attention, TFT is intended to expose the physical channels and temporal intervals associated with event patterns.
 
-The non-linear projection of latent vectors via \textbf{UMAP} into a 2D space enables intuitive \textbf{DBSCAN} density-based clustering, achieving high cluster purity ($S=0.718$). Delivered through an interactive visual analytics dashboard comprising a 2D Latent Space Map, a Hierarchical Multi-Label Tree, and a Latent Vector Comparison Chart, the platform empowers domain experts to explore event clusters, inspect borderline anomalies, and execute Human-in-the-Loop validation.
+The non-linear projection of latent vectors via \textbf{UMAP} into a 2D space enables \textbf{DBSCAN} density-based clustering. The reported UMAP trustworthiness ($0.965$), DBSCAN Silhouette score ($0.718$), and noise proportion ($3.2\%$) are retained as unverified results pending reproducible calculation from the implementation. The proposed interactive visual analytics dashboard comprises a 2D Latent Space Map, a Hierarchical Multi-Label Tree, and a Latent Vector Comparison Chart for human review of event clusters and borderline anomalies.
 
 \section{Limitations Encountered}
 Several technical and operational limitations were encountered during development:
@@ -1013,49 +1038,49 @@ Future enhancements to further expand and advance the framework include:
 \sloppy
 
 \bibitem{ref_xu2026_xai}
-H. Xu, Y. Wang, L. Zhang, and X. Chen, ``Explainable AI for multivariate time series pattern exploration,'' in \textit{IEEE Transactions on Visualization and Computer Graphics}, vol.~32, no.~1, pp.~110--122, 2026.
+Haowen Xu, Ali Boyaci, Jianming Lian, and Aaron J. Wilson, ``Explainable AI for multivariate time series pattern exploration: Latent space visual analytics with temporal fusion transformer and variational autoencoders in power grid event diagnosis,'' \textit{IEEE Access}, vol.~14, pp.~11744--11767, 2026, doi:~\href{https://doi.org/10.1109/ACCESS.2025.3602635}{10.1109/ACCESS.2025.3602635}.
 
 \bibitem{ref_lim2021_tft}
-B. Lim, S. O. Arik, N. Loeff, and T. Pfister, ``Temporal Fusion Transformers for interpretable multi-horizon time series forecasting,'' \textit{International Journal of Forecasting}, vol.~37, no.~4, pp.~1748--1764, 2021.
+Bryan Lim, Sercan \"{O}. Ar\i k, Nicolas Loeff, and Tomas Pfister, ``Temporal Fusion Transformers for interpretable multi-horizon time series forecasting,'' \textit{International Journal of Forecasting}, vol.~37, no.~4, pp.~1748--1764, 2021, doi:~\href{https://doi.org/10.1016/j.ijforecast.2021.03.012}{10.1016/j.ijforecast.2021.03.012}.
 
 \bibitem{ref_zerveas2021_transformer}
-G. Zerveas, S. Jayaraman, D. Patel, A. Bhamidipaty, and C. Eickhoff, ``A transformer-based framework for multivariate time series representation learning,'' in \textit{Proceedings of the 27th ACM SIGKDD International Conference on Knowledge Discovery \& Data Mining (KDD '21)}, pp.~2114--2124, 2021.
+George Zerveas, Srideepika Jayaraman, Dhaval Patel, Anuradha Bhamidipaty, and Carsten Eickhoff, ``A transformer-based framework for multivariate time series representation learning,'' in \textit{Proceedings of the 27th ACM SIGKDD International Conference on Knowledge Discovery \& Data Mining (KDD '21)}, pp.~2114--2124, 2021, doi:~\href{https://doi.org/10.1145/3447548.3467401}{10.1145/3447548.3467401}.
 
 \bibitem{ref_theissler2022_xai}
-A. Theissler, F. Spinnato, U. Schlegel, and R. Guidotti, ``Explainable AI for time series classification: A review, taxonomy and directions,'' \textit{IEEE Access}, vol.~10, pp.~80700--80724, 2022.
+Andreas Theissler, Francesco Spinnato, Udo Schlegel, and Riccardo Guidotti, ``Explainable AI for time series classification: A review, taxonomy and research directions,'' \textit{IEEE Access}, vol.~10, pp.~80700--80724, 2022, doi:~\href{https://doi.org/10.1109/ACCESS.2022.3207765}{10.1109/ACCESS.2022.3207765}.
 
 \bibitem{ref_xu2022_anomaly}
-J. Xu, H. Wu, J. Wang, and M. Long, ``Anomaly Transformer: Time series anomaly detection with association discrepancy,'' in \textit{International Conference on Learning Representations (ICLR)}, pp.~1--14, 2022.
+Jiehui Xu, Haixu Wu, Jianmin Wang, and Mingsheng Long, ``Anomaly Transformer: Time series anomaly detection with association discrepancy,'' in \textit{International Conference on Learning Representations (ICLR)}, pp.~1--14, 2022.
 
 \bibitem{ref_tuli2022_tranad}
-S. Tuli, G. Casale, and N. R. Jennings, ``TranAD: Deep transformer networks for anomaly detection in multivariate time series,'' \textit{Proceedings of the VLDB Endowment}, vol.~15, no.~6, pp.~1201--1214, 2022.
+Shreshth Tuli, Giuliano Casale, and Nicholas R. Jennings, ``TranAD: Deep transformer networks for anomaly detection in multivariate time series data,'' \textit{Proceedings of the VLDB Endowment}, vol.~15, no.~6, pp.~1201--1214, 2022, doi:~\href{https://doi.org/10.14778/3514061.3514067}{10.14778/3514061.3514067}.
 
 \bibitem{ref_audibert2020_usad}
-J. Audibert, P. Michiardi, F. Guyard, S. Marti, and M. A. Zuluaga, ``USAD: Unsupervised anomaly detection on multivariate time series,'' in \textit{Proceedings of the 26th ACM SIGKDD International Conference on Knowledge Discovery \& Data Mining (KDD '20)}, pp.~3395--3404, 2020.
+Julien Audibert, Pietro Michiardi, Fr\'ed\'eric Guyard, S\'ebastien Marti, and Maria A. Zuluaga, ``USAD: UnSupervised anomaly detection on multivariate time series,'' in \textit{Proceedings of the 26th ACM SIGKDD International Conference on Knowledge Discovery \& Data Mining (KDD '20)}, pp.~3395--3404, 2020, doi:~\href{https://doi.org/10.1145/3394486.3403392}{10.1145/3394486.3403392}.
 
 \bibitem{ref_su2019_omnianomaly}
-Y. Su, Y. Zhao, C. Niu, R. Liu, W. Sun, and D. Pei, ``Robust anomaly detection for multivariate time series through stochastic recurrent neural networks,'' in \textit{Proceedings of the 25th ACM SIGKDD International Conference on Knowledge Discovery \& Data Mining (KDD '19)}, pp.~2828--2837, 2019.
+Ya Su, Youjian Zhao, Chenhao Niu, Rong Liu, Wei Sun, and Dan Pei, ``Robust anomaly detection for multivariate time series through stochastic recurrent neural network,'' in \textit{Proceedings of the 25th ACM SIGKDD International Conference on Knowledge Discovery \& Data Mining (KDD '19)}, pp.~2828--2837, 2019, doi:~\href{https://doi.org/10.1145/3292500.3330672}{10.1145/3292500.3330672}.
 
 \bibitem{ref_adv_vae2024}
-Y. Zhang, S. Chen, H. Wang, and D. Liu, ``VAE with adversarial training for multivariate time series anomaly detection,'' \textit{Information Sciences}, vol.~668, art.~120852, pp.~1--18, 2024.
+Sheng He, Mingjing Du, Xiang Jiang, Wenbin Zhang, and Congyu Wang, ``VAEAT: Variational autoencoder with adversarial training for multivariate time series anomaly detection,'' \textit{Information Sciences}, vol.~668, art.~120852, 2024, doi:~\href{https://doi.org/10.1016/j.ins.2024.120852}{10.1016/j.ins.2024.120852}.
 
 \bibitem{ref_wu2023_timesnet}
-H. Wu, T. Hu, Y. Liu, H. Zhou, J. Wang, and M. Long, ``TimesNet: Temporal 2D-variation modeling for general time series analysis,'' in \textit{International Conference on Learning Representations (ICLR)}, pp.~1--16, 2023.
+Haixu Wu, Tengge Hu, Yong Liu, Hang Zhou, Jianmin Wang, and Mingsheng Long, ``TimesNet: Temporal 2D-variation modeling for general time series analysis,'' in \textit{International Conference on Learning Representations (ICLR)}, pp.~1--16, 2023.
 
 \bibitem{ref_nie2023_patchtst}
-Y. Nie, N. H. Nguyen, P. Sinthong, and J. Kalagnanam, ``A time series is worth 64 words: Long-term forecasting with transformers,'' in \textit{International Conference on Learning Representations (ICLR)}, pp.~1--15, 2023.
+Yuqi Nie, Nam H. Nguyen, Phanwadee Sinthong, and Jayant Kalagnanam, ``A time series is worth 64 words: Long-term forecasting with transformers,'' in \textit{International Conference on Learning Representations (ICLR)}, pp.~1--15, 2023.
 
 \bibitem{ref_syed2021_smartgrid}
-D. Syed, H. A. Abu-Rub, H. Refaat, A. Zainab, and M. Bouhali, ``Smart grid big data analytics: Survey of technologies, techniques, and applications,'' \textit{IEEE Access}, vol.~9, pp.~59564--59585, 2021.
+Dabeeruddin Syed, Ameema Zainab, Ali Ghrayeb, Shady S. Refaat, Haitham Abu-Rub, and Othmane Bouhali, ``Smart grid big data analytics: Survey of technologies, techniques, and applications,'' \textit{IEEE Access}, vol.~9, pp.~59564--59585, 2021, doi:~\href{https://doi.org/10.1109/ACCESS.2020.3041178}{10.1109/ACCESS.2020.3041178}.
 
 \bibitem{ref_rivas2020_faults}
-A. E. L. Rivas and T. Abr\~{a}o, ``Faults in smart grid systems: Monitoring, detection and classification,'' \textit{Electric Power Systems Research}, vol.~189, art.~106602, pp.~1--14, 2020.
+Angel Esteban Labrador Rivas and Taufik Abr\~{a}o, ``Faults in smart grid systems: Monitoring, detection and classification,'' \textit{Electric Power Systems Research}, vol.~189, art.~106602, 2020, doi:~\href{https://doi.org/10.1016/j.epsr.2020.106602}{10.1016/j.epsr.2020.106602}.
 
 \bibitem{ref_biswal2023_realtime}
-M. Biswal, B. P. Ganthia, S. K. Dash, and P. K. Ray, ``Real-time grid monitoring and protection: Advanced signal processing and machine learning approaches,'' \textit{MDPI Energies}, vol.~16, no.~8, art.~3512, pp.~1--24, 2023.
+Chinmayee Biswal, Binod Kumar Sahu, Manohar Mishra, and Pravat Kumar Rout, ``Real-time grid monitoring and protection: A comprehensive survey on the advantages of phasor measurement units,'' \textit{Energies}, vol.~16, no.~10, art.~4054, 2023, doi:~\href{https://doi.org/10.3390/en16104054}{10.3390/en16104054}.
 
 \bibitem{ref_arrieta2020_xai}
-A. B. Arrieta, N. D\'{\i}az-Rodr\'{\i}guez, J. Del Ser, A. Bennetot, S. Tabik, A. Barbado, S. Garcia, S. Gil-Lopez, D. Molina, R. Benjamins, R. Chatila, and F. Herrera, ``Explainable Artificial Intelligence (XAI): Concepts, taxonomies, opportunities and challenges toward responsible AI,'' \textit{Information Fusion}, vol.~58, pp.~82--115, 2020.
+Alejandro Barredo Arrieta, Natalia D\'{\i}az-Rodr\'{\i}guez, Javier Del Ser, Adrien Bennetot, Siham Tabik, Alberto Barbado, Salvador Garc\'{\i}a, Sergio Gil-Lopez, Daniel Molina, Richard Benjamins, Raja Chatila, and Francisco Herrera, ``Explainable Artificial Intelligence (XAI): Concepts, taxonomies, opportunities and challenges toward responsible AI,'' \textit{Information Fusion}, vol.~58, pp.~82--115, 2020, doi:~\href{https://doi.org/10.1016/j.inffus.2019.12.012}{10.1016/j.inffus.2019.12.012}.
 
 \end{thebibliography}
 

@@ -4,7 +4,7 @@ import os
 
 students = [
     {
-        "name": "MUHAMMED SALAMAN",
+        "name": "MOHAMMAD SALMAN",
         "roll": "KNP23CS076",
         "tex_file": "main_salaman.tex",
         "base_pdf": "main_salaman.pdf",

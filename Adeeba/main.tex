@@ -60,7 +60,7 @@
 \newcommand{\Usefont}[1]{\fontfamily{#1}\selectfont}
 
 \usepackage{lscape}
-\linespread{1.5}
+\linespread{1.3}
 
 \usepackage{url}
 \usepackage{subcaption}
@@ -111,9 +111,9 @@
 \gdef \rollnoC{LKNP23CS117}
 
 \gdef \acadyear{2026--2027}
-\gdef \submonth{October 2026}
+\gdef \submonth{29-10-2026}
 \gdef \month{October 2026}
-\gdef \date{28-10-2026}
+\gdef \date{29-10-2026}
 \gdef \dept{Computer Science and Engineering}
 \gdef \deptabbr{Dept.\ of CSE}
 \gdef \degree{Bachelor of Technology}
@@ -151,9 +151,7 @@
 \else\ifdefined\studentThara
   \input{certificate_thara}
 \else
-  \input{certificate_adeeba}
-  \input{certificate_avani}
-  \input{certificate_thara}
+  % Generic main.pdf: retain only the team certificate included above.
 \fi\fi\fi
 \include{declaration}
 \hypersetup{pageanchor=true}
@@ -241,16 +239,17 @@ This project report encompasses the complete architectural design, mathematical 
     \item \textbf{Chapter 8 (Feasibility Study):} Evaluates technical, operational, and economic feasibility dimensions, accompanied by the complete project milestone Gantt chart.
     \item \textbf{Chapter 9 (Results and Discussion):} Documents the empirical implementation, deployment testing, administrative management workflows, voter authentication guards, atomic double-voting mitigation enforcement, and real-time auditable election outcome tallying with full interface screenshots.
     \item \textbf{Chapter 10 (Conclusion and Future Scope):} Summarizes major technical milestones, discusses remaining real-world constraints (e.g., key custody, ballot privacy), and charts prospective research trajectories including Zero-Knowledge Proofs and Layer-2 scaling.
+    \item \textbf{Chapter 11 (Project Snapshots):} Presents the implemented application screens with concise captions.
 \end{itemize}
 
 %==============================================================================
 % CHAPTER 2: LITERATURE REVIEW
 %==============================================================================
 \chapter{Literature Review}
+\section{Blockchain-Based Voting Frameworks and Consensus Design}
 
 The application of blockchain technology to electronic voting has garnered extensive academic attention over the past decade. Researchers have investigated blockchain architectures to address the vulnerabilities of centralized systems while striving to satisfy classical electoral criteria: eligibility, uniqueness, ballot secrecy, verifiability, and coercion resistance. This chapter synthesizes recent advancements across five thematic dimensions: blockchain voting frameworks, biometric and gesture authentication, cryptographic privacy techniques, surveys and governance studies, and smart contract design paradigms.
 
-\section{Blockchain-Based Voting Frameworks and Consensus Design}
 Early investigations focused on adapting core blockchain ledgers to record votes as immutable transactions. Farooq et al.~\cite{Farooq2022} proposed a comprehensive Voting Management System utilizing a custom blockchain with a pluggable consensus layer. In their framework, a web and mobile DApp verifies a voter's national identification credentials, verifies that the voter has not previously participated, converts the cast ballot into an encrypted transaction, and commits it to the chain. A proprietary Chain Security Algorithm continuously re-audits chain integrity upon block inclusion. Although their simulation demonstrated manageable response latencies and linear chain growth up to six million transactions, the architecture requires continuous internet connectivity, lacks a biometric verification layer, and mitigates 51\% attacks only through centralized monitoring of authorized mining nodes.
 
 Shahzad and Crowcroft~\cite{Shahzad2019} observed that polling periods are intrinsically bursty, characterized by high transaction volumes concentrated within a fixed window of 8--12 hours. Consequently, resource-heavy Proof-of-Work (PoW) consensus is computationally wasteful and impractical. They developed an adjusted consortium blockchain wherein certified presiding officers with verified cryptographic identities generate blocks during polling hours, sealing them at the close of voting using a proof-of-completeness hashing mechanism. While tamper-evident and computationally lightweight, the framework remains purely conceptual, lacks an empirical prototype, and retains significant administrative centralization within the election commission.
@@ -265,6 +264,7 @@ Voter authentication represents the most vulnerable attack surface in decentrali
 Mahmood et al.~\cite{Mahmood2024} focused on accessibility and assistive voting technologies for motor-impaired and elderly electorates. Their system tracks real-time facial landmarks and hand gestures via consumer webcams, allowing voters to navigate virtual ballot keyboards through subtle facial movements (e.g., eyebrow raises, nose gestures, or pinch gestures). Integrated with a PoW blockchain backend, the system demonstrated 100\% precision and 99\% recall across controlled trials. However, system accuracy degraded significantly under suboptimal lighting conditions, finger gestures exhibited lower tracking fidelity than facial landmarks, and elderly participants exhibited longer voting completion times.
 
 \section{Privacy and Cryptographic Techniques}
+
 Balancing the radical transparency of public distributed ledgers with the strict constitutional mandate of voter ballot secrecy remains a central cryptographic paradox. Pérez García et al.~\cite{PerezGarcia2021} addressed this challenge by implementing an ElGamal-based blind signature protocol over Hyperledger Fabric with Practical Byzantine Fault Tolerance (PBFT) consensus. In their protocol, a central electoral authority cryptographically signs an blinded, encrypted ballot without deciphering its content, completely uncoupling the voter's identity from the cast choice. Ballots are divided into two cryptographic shares such that neither share alone reveals the voter's candidate selection. While simulations confirmed total unlinkability and minimal computational overhead per client, transaction processing latency increased under high concurrency, and the centralized authority retains significant trust for blinded token issuance.
 
 Baniata and Caluna~\cite{Baniata2025} proposed \textit{BP-Vot}, a privacy-preserving framework deployed on Hyperledger Besu. \textit{BP-Vot} combines Self-Sovereign Identity (SSI) verifiable credentials with a $(k, \varepsilon)$-differential privacy mechanism to inject controlled mathematical noise into aggregate vote counts, guaranteeing plausible deniability for individual ballot selections. Their prototype achieved approximately one second transaction latency and demonstrated over 98\% tally approximation accuracy. However, evaluation was restricted to a three-node cluster processing up to 50,000 votes, fundamentally relies upon the honesty of the credential-issuing authority, and depends on global standardization of digital identity wallets.
@@ -280,10 +280,6 @@ Barelli et al.~\cite{Barelli2025} catalogued attacks on real-world e-voting depl
 
 Wermelinger et al.~\cite{Wermelinger2026} shifted focus from technical architecture to human factors and institutional trust. Utilizing Partial Least Squares Structural Equation Modeling (PLS-SEM) on survey responses from 1,851 Brazilian voters, they demonstrated that systemic institutional trust is the single dominant determinant of electronic voting acceptance and demands for printed voter-verified paper audit trails (VVPAT). Their findings prove that cryptographic security guarantees are insufficient on their own; public confidence demands transparent, understandable verification mechanisms and intuitive user interfaces.
 
-\section{Smart Contract Approaches and Network Support}
-Chaudhary et al.~\cite{Chaudhary2023} deployed an Ethereum smart contract incorporating \texttt{addCandidate}, \texttt{authorize}, \texttt{vote}, and \texttt{endElection} routines, optimized for execution over high-speed 5G wireless networks. To mitigate on-chain storage costs, bulky voter verification artifacts were offloaded to the InterPlanetary File System (IPFS), with only IPFS content identifiers (CIDs) committed on-chain. While achieving lower bit-error rates and passing formal Echidna fuzz testing, the protocol retains administrative centralization in contract deployment, and client devices remain vulnerable to local malware.
-
-The foundational baseline for our work is established by Asha et al.~\cite{Asha2025}, who developed a Voting DApp on Ethereum that directly addresses double voting through smart contract logic. In their design, the smart contract maintains state mappings of registered voter addresses and certified candidates. The election administrator retains exclusive authority to invoke \texttt{addCandidate} and \texttt{registerVoter}. Voters authenticate using MetaMask and cast ballots via a responsive React.js and Web3.js web interface. Their prototype demonstrated successful registration, atomic double-voting rejection, and real-time result tabulation on an Ethereum test network. However, Asha et al.\ observed that public Ethereum gas price fluctuations and interface complexity for non-technical users represent operational challenges that necessitate private consortium consensus and optimized user workflows.
 
 \section{Synthesis and Research Gap Identification}
 Table~\ref{tab:lit_comparison} synthesizes the fifteen surveyed literature works across six core criteria: publication year, blockchain platform, consensus mechanism, authentication methodology, evaluation maturity, and primary technical limitation.
@@ -332,7 +328,6 @@ Table~\ref{tab:lit_comparison} synthesizes the fifteen surveyed literature works
 \cite{Baniata2025} & 2025 & Hyperledger Besu & IBFT 2.0 & Diff.\ Privacy + SSI & 3-node cluster & Assumes honest authority; requires standardized digital wallets. \\ \addlinespace[3pt]
 \cite{Benabdallah2022} & 2022 & SLR (2010--21) & Diverse & Surveyed taxonomy & Systematic Review & Identifies scalability, coercion, and central eligibility gaps. \\ \addlinespace[3pt]
 \cite{Quzmar2021} & 2021 & Survey & Diverse & Key management analysis & Comparative Survey & Academic prototypes; lack of standard e-voting protocols. \\ \addlinespace[3pt]
-\pagebreak
 \cite{Sah2025} & 2025 & Review & PoW / PoS & Web3 / MetaMask & Architectural Review & Highlights gas cost barriers and rural internet connectivity. \\ \addlinespace[3pt]
 \cite{Barelli2025} & 2025 & Survey & Diverse & Cryptographic audit & Theoretical Survey & Transparency de-anonymizes voters; client malware ignored. \\ \addlinespace[3pt]
 \cite{Wermelinger2026} & 2026 & Empirical & N/A & PLS-SEM Trust Model & Empirical ($N=1851$) & Shows institutional trust dominates over technical guarantees. \\ \addlinespace[3pt]
@@ -477,52 +472,99 @@ The functional requirements are categorized across three operational modules: Ad
 \end{itemize}
 
 \clearpage
-\section{Hardware and Software Specifications}
-Table~\ref{tab:specs} outlines the operational hardware and software environments utilized for system development, testbed deployment, and client execution.
+\section{\fontsize{12}{14}\selectfont Hardware and Software Specifications}
+{\fontsize{9.8pt}{11pt}\selectfont The hardware and software specifications define the computing environment and development tools required for the implementation, testing, and execution of the proposed Blockchain-Based Electronic Voting System. The system is developed using Visual Studio Code, React.js, Solidity, and a local Ethereum-compatible blockchain network. The frontend communicates with the blockchain through Web3 libraries, while MetaMask provides wallet connectivity and transaction authorization.\par}
 
 \begin{table}[H]
 \centering
 \caption{System Hardware and Software Technical Specifications}
 \label{tab:specs}
 \begingroup
-\fontsize{8.5pt}{10.5pt}\selectfont
-\renewcommand{\arraystretch}{1.08}
-\setlength{\tabcolsep}{4.5pt}
-\begin{tabularx}{\textwidth}{>{\RaggedRight\bfseries}p{3.5cm} >{\RaggedRight}p{4.2cm} >{\RaggedRight\arraybackslash}X}
-\toprule
-\textbf{Category} & \textbf{Component / Tool} & \textbf{Specification / Version} \\
-\midrule
-\multirow{5}{=}{\textbf{Blockchain Core \& Consensus Layer}} 
- & Blockchain Runtime & Ethereum Virtual Machine (EVM) / Go-Ethereum (Geth v1.13+) \\
- & Consensus Protocol & Proof-of-Authority (PoA / Clique Engine, IBFT 2.0) \\
- & Smart Contract Language & Solidity (v0.8.20+ with automated overflow checking) \\
- & Local Testbed Network & Ganache CLI / Hardhat In-Memory Network \\
- & Development Toolchain & Hardhat Suite (v2.19+) / Truffle / Remix IDE \\
-\midrule
-\multirow{5}{=}{\textbf{Middleware \& Application Layer}} 
- & Front-End Architecture & React.js (v18.2+) / Vite Engine / HTML5 / CSS3 \\
- & Web3 Provider Bridge & Web3.js (v1.10+) / Ethers.js (v6.x) JSON-RPC Client \\
- & Cryptographic Wallet & MetaMask Browser Extension (v11.x+) \\
- & RPC Communication & JSON-RPC 2.0 over Secure WebSocket (WSS) and HTTP \\
- & Decentralized Storage & InterPlanetary File System (IPFS) / Pinata Gateway \\
-\midrule
-\multirow{5}{=}{\textbf{Validator \& Server Hardware}} 
- & Central Processor (CPU) & Intel Core i7 / AMD Ryzen 7 (8 Cores, 16 Threads @ 3.6\,GHz) \\
- & System Memory (RAM) & 16\,GB / 32\,GB DDR4 3200\,MHz High-Speed RAM \\
- & Primary Storage & 512\,GB NVMe M.2 Solid State Drive (Read $\ge 3500$\,MB/s) \\
- & Host Operating System & Ubuntu Server 22.04 LTS (64-bit Linux Kernel 5.15+) \\
- & Network Interface & Gigabit Ethernet (1000BASE-T Full-Duplex Dedicated Link) \\
-\midrule
-\multirow{5}{=}{\textbf{Client Execution Environment}} 
- & Supported Platforms & Commodity Desktop PC, Laptop, Smartphone, Tablet \\
- & Client Operating Systems & Windows 10/11, macOS (v12+), Linux (Ubuntu), Android, iOS \\
- & Compatible Web Browsers & Google Chrome (v115+), Mozilla Firefox, Brave, MS Edge \\
- & Network Bandwidth & Broadband / 4G / 5G Low-Latency Connection ($\ge 2$\,Mbps) \\
- & Display Layout & Responsive UI ($360\times640$\,px Mobile to $1080$p Desktop) \\
-\bottomrule
+\fontsize{7.2pt}{8.1pt}\selectfont
+\renewcommand{\arraystretch}{0.98}
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabularx}{\textwidth}{|>{\RaggedRight\bfseries}p{3.35cm}|>{\RaggedRight}p{4.25cm}|>{\RaggedRight\arraybackslash}X|}
+\hline
+\textbf{Category} & \textbf{Component / Tool} & \textbf{Specification} \\
+\hline
+\multirow{4}{=}{Development\\Environment}
+ & Code Editor & Visual Studio Code (VS Code) \\
+ & Frontend Framework & React.js 18 \\
+ & Web Technologies & HTML5, CSS3, JavaScript \\
+ & Frontend Development Server & Vite \\
+\hline
+\multirow{4}{=}{Blockchain Environment}
+ & Blockchain Network & Local Ethereum-compatible blockchain \\
+ & Blockchain Simulator & Ganache CLI \\
+ & Network Endpoint & localhost:8545 \\
+ & Chain ID & 1337 \\
+\hline
+\multirow{4}{=}{Smart Contract}
+ & Programming Language & Solidity 0.8.20 \\
+ & Compiler & solc 0.8.20 \\
+ & Smart Contract File & voting.sol \\
+ & Execution Environment & Ethereum Virtual Machine (EVM) \\
+\hline
+\multirow{3}{=}{Blockchain Integration}
+ & Web3 Integration & web3.js / Ethers.js providers (as implemented) \\
+ & Wallet Provider & MetaMask browser extension \\
+ & Communication Protocol & Ethereum JSON-RPC over HTTP \\
+\hline
+\multirow{3}{=}{Client Environment}
+ & Computing Device & Laptop or desktop computer \\
+ & Operating System & Windows / Linux / macOS (as per setup) \\
+ & Web Browser & Chromium-based browser (MetaMask compatible) \\
+\hline
+\multirow{3}{=}{Hardware Requirements}
+ & Processor & Modern dual-core processor or better \\
+ & System Memory & 8 GB RAM (recommended) \\
+ & Storage & SSD with sufficient free space for development tools and dependencies \\
+\hline
+\multirow{1}{=}{Network Requirements}
+ & Connectivity & A localhost connectivity for the blockchain and frontend development server \\
+\hline
 \end{tabularx}
 \endgroup
 \end{table}
+
+\begingroup
+\fontsize{7.5pt}{8.5pt}\selectfont
+\noindent\textbf{Description of Hardware and Software Requirements}
+
+\noindent\begin{minipage}[t]{0.48\textwidth}
+\begin{enumerate}
+    \setlength{\itemsep}{4pt}
+    \setlength{\parskip}{0pt}
+    \item \textbf{Development Environment}\\
+    Visual Studio Code is used as the source-code editor for developing and maintaining the frontend and related project files. React.js is used to build the user interface, while HTML5, CSS3, and JavaScript provide the structure, styling, and interactive functionality. Vite is used to run the frontend development server.
+
+    \item \textbf{Blockchain Environment}\\
+    The system is tested using a local Ethereum-compatible blockchain simulated through Ganache CLI. The blockchain RPC endpoint is configured at \texttt{localhost:8545}, with Chain ID 1337. This environment enables smart contract deployment and blockchain testing without requiring deployment to a public blockchain network.
+\end{enumerate}
+
+\vspace{2pt}
+\noindent In summary, the selected hardware and software environment supports the development, deployment, and functional testing of the blockchain-based electronic voting prototype in a local development setup.
+\end{minipage}\hfill
+\begin{minipage}[t]{0.48\textwidth}
+\begin{enumerate}
+    \setcounter{enumi}{2}
+    \setlength{\itemsep}{4pt}
+    \setlength{\parskip}{0pt}
+
+    \item \textbf{Smart Contract Development}\\
+    The voting logic is implemented in Solidity using version 0.8.20. The voting smart contract handles election registration, voter registration, vote casting, prevention of revoting, and retrieval of election results. The Ethereum Virtual Machine executes the compiled smart contract bytecode.
+
+    \item \textbf{Blockchain Integration and Wallet}\\
+    The frontend communicates with the blockchain through the configured Web3 integration libraries. MetaMask is used to connect user accounts, authorize transactions, and sign blockchain requests. The wallet allows administrators and eligible voters to interact with the voting system using their respective accounts.
+
+    \item \textbf{Hardware Requirements}\\
+    A laptop or desktop computer with a modern processor, adequate RAM, and sufficient SSD storage is suitable for developing and testing the application. An 8 GB RAM configuration is recommended for running the development server, local blockchain, and web browser together.
+
+    \item \textbf{Client Execution Environment}\\
+    Users access the voting application through a web browser. During local development, the frontend and blockchain services run on the same computer, allowing the application to be tested without a dedicated production server. MetaMask must be configured to the local blockchain network for transaction-based operations.
+\end{enumerate}
+\end{minipage}
+\endgroup
 
 %==============================================================================
 % CHAPTER 5: SYSTEM DESIGN
@@ -593,38 +635,33 @@ Figure~\ref{fig:sys_flowchart} depicts the complete operational flowchart of the
 \label{fig:sys_flowchart}
 \end{figure}
 
-\section{Algorithm}
-The operational lifecycle of the decentralized electronic voting system and its atomic double-voting mitigation mechanism are executed through the following structured twelve-stage algorithmic procedure:
-
-\begin{enumerate}
-\renewcommand{\labelenumi}{\textbf{Step \arabic{enumi}:}}
-    \item \textbf{System Initialization and Contract Deployment:} The election administrator compiles the Solidity smart contract (\texttt{Voting.sol}) and broadcasts the deployment transaction to the Ethereum network via an authenticated JSON-RPC provider. The constructor atomically binds administrative ownership to the deployer's address (\texttt{msg.sender}) and initializes the election state.
-    
-    \item \textbf{Candidate Nomination:} The administrator registers certified candidates using \texttt{addCandidate(name, party)}. The smart contract enforces the \texttt{onlyOwner} modifier, assigns a sequential candidate ID, and records the candidate on-chain with an initial vote count of zero.
-    
-    \item \textbf{Voter Whitelisting:} The administrator authorizes eligible voters by registering their 42-character Ethereum public addresses via \texttt{registerVoter(address)}. The contract confirms that the caller is the administrator and that the address has not already been registered, then sets \texttt{voters[v].isRegistered = true} and initializes \texttt{voters[v].hasVoted = false} in persistent storage.
-    
-    \item \textbf{Client Connection and Wallet Handshake:} The voter accesses the web application through a Web3-enabled browser. Upon initiating login, the front end requests account access via MetaMask (\texttt{eth\_requestAccounts}), establishing a secure connection and retrieving the active wallet address.
-    
-    \item \textbf{Eligibility Verification:} The client executes a gas-free view call querying the voter's on-chain status. Unregistered addresses are denied access with an authorization alert, accounts that have already voted are blocked from entering the booth, and eligible unvoted accounts proceed to the ballot interface.
-    
-    \item \textbf{Dynamic Ballot Presentation:} The client queries the contract for all declared candidates and dynamically renders the certified ballot options, including candidate names, affiliations, and IDs.
-    
-    \item \textbf{Ballot Selection and Transaction Assembly:} The voter selects their chosen candidate $c$. The front end encodes the function payload \texttt{vote(c)}, estimates the required execution gas, and prepares the transaction parameters.
-    
-    \item \textbf{Cryptographic Transaction Signing:} The transaction payload is transmitted to MetaMask for client confirmation. The voter cryptographically signs the transaction digest using their private key via ECDSA without exposing sensitive credentials, and the signed raw transaction is broadcast to the network.
-    
-    \item \textbf{Smart Contract Execution and Double-Voting Mitigation:} Upon receiving the transaction, the EVM verifies voter registration (\texttt{voters[v].isRegistered == true}), validates candidate boundaries, and enforces the atomic double-voting barrier: \texttt{require(!voters[v].hasVoted)}. If valid, the contract atomically sets \texttt{voters[v].hasVoted = true}, increments the candidate's vote count, and emits a \texttt{VoteCast} event within the same atomic transaction. Any subsequent attempt from the same address is immediately reverted by the EVM with zero state mutation.
-    
-    \item \textbf{Consensus and Block Commitment:} Designated Proof-of-Authority validator nodes package verified ballot transactions into a candidate block $B_i$, append the block to the distributed ledger, and achieve deterministic finality.
-    
-    \item \textbf{Real-Time Confirmation Notification:} The front-end captures the emitted on-chain event via WebSocket/RPC, updating the interface to confirm that the ballot is permanently recorded and displaying the cryptographic transaction hash.
-    
-    \item \textbf{Auditability and Election Tabulation:} Following the conclusion of voting, public clients audit the final election outcome directly from the immutable ledger state through gas-free view calls, guaranteeing transparent, tamper-proof result tabulation.
-\end{enumerate}
-
-
 \clearpage
+\section{Algorithm}
+The system workflow is summarized below in pseudocode.
+
+\begin{verbatim}
+ALGORITHM DecentralizedVoting
+INPUT: candidate list C, voter wallet v, selected candidate c
+
+1. Deploy contract; set admin = deployer; initialize all counts to zero.
+2. ADMIN registers each candidate in C and whitelists eligible wallets.
+3. VOTER connects MetaMask and obtains wallet address v.
+4. record <- readVoter(v)
+5. IF record.isRegistered = false OR record.hasVoted = true THEN
+       deny access and stop
+   END IF
+6. Display candidates and let voter select c.
+7. Sign vote(c) with MetaMask and submit the transaction.
+8. CONTRACT checks registration, hasVoted = false, and c is valid.
+9. IF any check fails THEN revert transaction and stop.
+10. Set voters[v].hasVoted <- true.
+11. Increment candidates[c].voteCount and emit VoteCast.
+12. Commit the transaction to the blockchain and display the receipt.
+13. Read final candidate tallies for public auditing.
+OUTPUT: immutable vote record and auditable election tally
+\end{verbatim}
+
+
 \section{Block Structure and Cryptographic Chaining}
 Figure~\ref{fig:block_structure} details the internal architecture of blocks within the blockchain ledger, demonstrating how block headers, cryptographic timestamps $T_i$, nonces $n_i$, and transaction sets $Tx_i$ are chained via SHA-256 hashing.
 
@@ -637,7 +674,6 @@ Figure~\ref{fig:block_structure} details the internal architecture of blocks wit
 
 The cryptographic linking between consecutive blocks $B_{i-1}$ and $B_i$ guarantees that historical records cannot be retroactively modified without invalidating all downstream block hashes. Each block encapsulates the Merkle root summarizing its transaction set $Tx_i$, ensuring that any attempted alteration of a single cast vote invalidates the entire block header digest.
 
-\clearpage
 \section{Smart Contract State Schemas and Structs}
 Figure~\ref{fig:db_schema} depicts the relational entity connections, state mapping layouts, and event logging structures organized across three primary architectural tiers in the Solidity smart contract.
 
@@ -660,7 +696,6 @@ The smart contract decouples voter authorization, candidate registry, and audit 
     \item \textbf{Relational Storage Mappings:} \texttt{mapping(address => Voter) public voters} provides constant-time lookup during ballot validation while safeguarding voter roster privacy. The \texttt{Candidate[] public candidates} array enables dynamic candidate onboarding and bounds checking.
     \item \textbf{Access Control and Event Emission:} Privileged administrative actions are restricted to \texttt{address public admin} via the \texttt{onlyAdmin} modifier. Each accepted ballot atomically increments $N(c)$ and emits a standardized \texttt{VoteCast} event into the EVM receipt trie for real-time, gasless auditability by external Web3 observers.
 \end{itemize}
-\clearpage
 \section{Level-1 Data Flow Diagram (DFD)}
 \vspace{-0.3em}
 Figure~\ref{fig:dfd1} illustrates the Level-1 Data Flow Diagram (DFD) characterizing the operational data pipelines, external actor interfaces, smart contract execution routines, and persistent ledger data stores.
@@ -954,7 +989,7 @@ Figure~\ref{fig:gantt_chart} presents the project implementation Gantt chart spa
 
 \begin{figure}[H]
 \centering
-\adjustbox{max width=0.98\linewidth, max height=0.48\textheight, keepaspectratio, center}{\input{diagrams/gantt_chart_project_timeline.tex}}
+\adjustbox{max width=1.0\linewidth, max height=0.60\textheight, keepaspectratio, center}{\input{diagrams/gantt_chart_project_timeline.tex}}
 \caption{Gantt chart illustrating the project development timeline and milestone schedule (Jul 2026 -- Mar 2027).}
 \label{fig:gantt_chart}
 \end{figure}
@@ -968,6 +1003,17 @@ The project progressed through eleven structured milestones: problem scoping and
 
 This chapter presents the empirical results, user interface execution flows, and functional validation of the implemented \textbf{Block Chain Based Electronic Voting System}. The prototype was deployed and evaluated on a local Ethereum blockchain testbed, assessing administrator operations, candidate nominations, voter authorization workflows, security access barriers, ballot casting with atomic double-voting mitigation, and real-time auditable election outcome tallying.
 
+\section{Summary of Experimental Results}
+The Voting DApp was tested on a local Ganache Ethereum network using MetaMask, React.js, Web3.js, and the Solidity smart contract. The evaluation covered administrator authorization, candidate and voter registration, voter eligibility checks, ballot casting, duplicate-vote prevention, and public result retrieval.
+
+Three voters were registered and two candidates were added successfully. Registered wallets received access to the voting booth, while unregistered wallets and direct unauthorized route requests were rejected. A valid ballot was mined successfully, and the contract permanently set the voter's \texttt{hasVoted} flag.
+
+The final tally recorded three ballots with 100\% turnout: Alice Walker (UDF) received two votes (66.7\%) and David (LDF) received one vote (33.3\%). A second vote from the same wallet was reverted by the smart contract, confirming atomic double-voting protection. Results were read directly from on-chain state for transparent auditing.
+
+\section{Verification Summary}
+All ten functional checks passed, confirming access control and vote integrity at both the interface and smart-contract layers.
+
+\iffalse
 \section{Experimental Setup and System Overview}
 The experimental evaluation of the voting decentralized application (Voting DApp) was conducted in an isolated development and testing environment. The core components of the experimental setup are detailed below:
 \begin{itemize}
@@ -1228,6 +1274,8 @@ The empirical results substantiate the following core technical achievements:
     \item \textbf{Transparent Auditability:} Public tally inspection provides instantaneous, tamper-proof verification of election results directly from smart contract storage without reliance on centralized counting servers.
 \end{enumerate}
 
+\fi
+
 %==============================================================================
 % CHAPTER 10: CONCLUSION AND FUTURE SCOPE
 %==============================================================================
@@ -1263,6 +1311,91 @@ To address these limitations, future research will explore the following advance
     \item \textbf{Layer-2 Rollups and Sharding:} Deploy Layer-2 Zero-Knowledge Rollups (zk-Rollups) or Optimistic Rollups to batch thousands of ballot transactions off-chain, scaling throughput to tens of thousands of TPS suited for national elections.
     \item \textbf{Decentralized Off-Chain Storage with IPFS:} Integrate the InterPlanetary File System (IPFS) to store candidate manifestos, multimedia profiles, and audit receipts in a decentralized content-addressed storage layer.
 \end{itemize}
+
+%==============================================================================
+% CHAPTER 11: PROJECT SNAPSHOTS
+%==============================================================================
+\chapter{Project Snapshots}
+
+The following screenshots present the main user interfaces of the implemented blockchain voting system.
+\begingroup
+\footnotesize
+\setlength{\abovecaptionskip}{1pt}
+\setlength{\belowcaptionskip}{1pt}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}[t]{0.47\textwidth}\centering
+\includegraphics[width=\linewidth,height=3.4cm,keepaspectratio]{results/Home_page.jpeg}
+\captionof{figure}{Snapshot 1: Home page.}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.47\textwidth}\centering
+\includegraphics[width=\linewidth,height=3.4cm,keepaspectratio]{results/admin_dashboard.jpeg}
+\captionof{figure}{Snapshot 2: Administrator dashboard.}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}[t]{0.47\textwidth}\centering
+\includegraphics[width=\linewidth,height=3.4cm,keepaspectratio]{results/adding_candidate.jpeg}
+\captionof{figure}{Snapshot 3: Candidate registration.}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.47\textwidth}\centering
+\includegraphics[width=\linewidth,height=3.4cm,keepaspectratio]{results/adding_voter.jpeg}
+\captionof{figure}{Snapshot 4: Voter registration.}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}[t]{0.47\textwidth}\centering
+\includegraphics[width=\linewidth,height=3.4cm,keepaspectratio]{results/added_details.jpeg}
+\captionof{figure}{Snapshot 5: Registered entities.}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.47\textwidth}\centering
+\includegraphics[width=\linewidth,height=3.4cm,keepaspectratio]{results/voter_verification.jpeg}
+\captionof{figure}{Snapshot 6: Voter verification.}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}[t]{0.47\textwidth}\centering
+\includegraphics[width=\linewidth,height=3.4cm,keepaspectratio]{results/voter_page.jpeg}
+\captionof{figure}{Snapshot 7: Unregistered voter rejection.}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.47\textwidth}\centering
+\includegraphics[width=\linewidth,height=3.4cm,keepaspectratio]{results/vote_casting_session.jpeg}
+\captionof{figure}{Snapshot 8: Route access control.}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}[t]{0.47\textwidth}\centering
+\includegraphics[width=\linewidth,height=3.4cm,keepaspectratio]{results/voting_booth.jpeg}
+\captionof{figure}{Snapshot 9: Voting booth.}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.47\textwidth}\centering
+\includegraphics[width=\linewidth,height=3.4cm,keepaspectratio]{results/casted_vote.jpeg}
+\captionof{figure}{Snapshot 10: Ballot confirmation.}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{minipage}[t]{0.47\textwidth}\centering
+\includegraphics[width=\linewidth,height=3.4cm,keepaspectratio]{results/result.jpeg}
+\captionof{figure}{Snapshot 11: Live election results.}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.47\textwidth}\centering
+\includegraphics[width=\linewidth,height=3.4cm,keepaspectratio]{results/result_page2.jpeg}
+\captionof{figure}{Snapshot 12: Certified standings.}
+\end{minipage}
+\end{figure}
+
+\endgroup
 
 %==============================================================================
 % REFERENCES

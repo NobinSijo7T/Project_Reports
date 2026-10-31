@@ -1,10 +1,10 @@
-\documentclass[tikz,border=10pt]{standalone}
+\documentclass[tikz,border=12pt]{standalone}
 \usepackage{tikz}
 \usepackage{fontawesome5}
 \usepackage{amsmath,amssymb}
 \usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shadows,shapes.geometric}
 
-% Color definitions
+% Color definitions (Deep Clinical Palette)
 \definecolor{lavenderDark}{RGB}{15, 44, 89}
 \definecolor{lavenderDeep}{RGB}{10, 28, 58}
 \definecolor{lavenderMedium}{RGB}{29, 78, 158}
@@ -29,163 +29,203 @@
 \definecolor{cStage4}{RGB}{207, 250, 254}
 \definecolor{cHead}{RGB}{219, 234, 254}
 \definecolor{cOutput}{RGB}{255, 228, 230}
+\definecolor{cRag}{RGB}{243, 232, 255}
 
 \begin{document}
-% Zero-Overlap Complete System Architecture Map for Lung Disease Detection
+% Zero-Overlap System Architecture Map with Clinical RAG & Explainability Tiers
 \begin{tikzpicture}[
   x=1cm, y=1cm,
   every node/.style={align=center},
   group/.style={draw=lavenderMedium!70, dashed, line width=0.85pt,
     fill=lavenderLight!25, rounded corners=8pt},
-  grouptitle/.style={fill=lavenderDark, text=white, font=\fontsize{7.5}{9.0}\selectfont\bfseries,
-    rounded corners=3pt, inner xsep=6pt, inner ysep=3.0pt},
+  grouptitle/.style={fill=lavenderDark, text=white, font=\fontsize{7.2}{8.5}\selectfont\bfseries,
+    rounded corners=3pt, inner xsep=5pt, inner ysep=2.5pt},
   colbox/.style={rectangle, rounded corners=4pt, line width=0.75pt,
-    minimum height=1.20cm, inner ysep=3.5pt, inner xsep=5pt,
+    minimum height=1.25cm, inner ysep=3.5pt, inner xsep=5pt,
     font=\fontsize{6.8}{8.0}\selectfont\bfseries},
-  modelbox/.style={rectangle, rounded corners=3.5pt, line width=0.75pt,
-    draw=lavenderDark!85, fill=white,
-    minimum height=1.20cm, inner ysep=3.5pt, inner xsep=4.5pt,
-    font=\fontsize{6.6}{7.8}\selectfont},
   arrow/.style={
     -{Stealth[scale=0.85]}, line width=0.85pt, draw=lavenderDark!90
   },
-  modelarrow/.style={
-    -{Stealth[scale=0.75]}, line width=0.75pt, draw=lavenderDark!80
+  busarrow/.style={
+    -{Stealth[scale=0.85]}, line width=1.1pt, draw=lavenderMedium
   },
   badge/.style={
     fill=white, draw=lavenderMedium!90, rounded corners=2.5pt, line width=0.60pt,
-    inner xsep=4.0pt, inner ysep=2.2pt, font=\fontsize{6.2}{7.2}\selectfont\bfseries
+    inner xsep=4.0pt, inner ysep=2.0pt, font=\fontsize{6.2}{7.2}\selectfont\bfseries
   }
 ]
 
   %============================================================================
-  % COLUMN 1: PRESENTATION & CLIENT INTERFACE TIER
+  % COLUMN 1: CLIENT PRESENTATION TIER (Center x = 2.00, Width = 3.60)
+  % Gutter 1 between Col 1 and Col 2: [3.80, 4.40]
   %============================================================================
-  \node[group, minimum width=3.60cm, minimum height=10.60cm] (g1) at (2.00, 5.80) {};
-  \node[grouptitle, anchor=west] at (0.25, 11.10) {1. Client Presentation Tier};
+  \node[group, minimum width=3.60cm, minimum height=11.20cm] (g1) at (2.00, 5.50) {};
+  \node[grouptitle, anchor=west] at (0.30, 11.15) {1. Client Presentation};
 
-  \node[colbox, text width=3.30cm, fill=cInput, draw=prismSlate!70] (g1_user) at (2.00, 9.80) {%
+  \node[colbox, text width=3.30cm, fill=cInput, draw=prismSlate!70] (g1_user) at (2.00, 9.90) {%
     {\color{prismDark}\faUserMd\ \textbf{Clinical User / Radiologist}}\\[2.0pt]
-    {\fontsize{6.2}{7.2}\selectfont\normalfont Chest Radiograph Ingestion\\[1pt]Digital CXR / Mobile Film Scan}%
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Digital Chest Radiograph Upload\\[1pt]or Physical Film Photo Capture}%
   };
 
-  \node[colbox, text width=3.30cm, fill=cStem, draw=prismIndigo!70] (g1_web) at (2.00, 7.30) {%
+  \node[colbox, text width=3.30cm, fill=cStem, draw=prismIndigo!70] (g1_web) at (2.00, 7.60) {%
     {\color{prismIndigo}\faDesktop\ \textbf{Next.js 15 Web Application}}\\[2.0pt]
-    {\fontsize{6.2}{7.2}\selectfont\normalfont React 19 $\cdot$ TypeScript $\cdot$ Tailwind\\[1pt]Drag \& Drop $\cdot$ Live Probability Bars}%
+    {\fontsize{6.2}{7.2}\selectfont\normalfont React 19 $\cdot$ TypeScript $\cdot$ Tailwind\\[1pt]Drag \& Drop $\cdot$ Interactive Heatmaps}%
   };
 
-  \node[colbox, text width=3.30cm, fill=cStage4, draw=prismBlue!80] (g1_mob) at (2.00, 4.80) {%
+  \node[colbox, text width=3.30cm, fill=cStage4, draw=prismBlue!80] (g1_mob) at (2.00, 5.30) {%
     {\color{lavenderDark}\faMobile\ \textbf{Expo / React Native App}}\\[2.0pt]
     {\fontsize{6.2}{7.2}\selectfont\normalfont Point-of-Care Bedside Scanner\\[1pt]Camera Capture $\cdot$ Pinch-to-Zoom}%
   };
 
-  \node[colbox, text width=3.30cm, fill=cStage1, draw=prismTeal!70] (g1_disclaimer) at (2.00, 2.30) {%
+  \node[colbox, text width=3.30cm, fill=cStage1, draw=prismTeal!70] (g1_disclaimer) at (2.00, 3.00) {%
     {\color{prismTeal!90!black}\faShieldVirus\ \textbf{Diagnostic Safety Boundary}}\\[2.0pt]
-    {\fontsize{6.2}{7.2}\selectfont\normalfont Preliminary Screening Disclaimer\\[1pt]Clinical Non-Diagnostic Notice}%
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Preliminary Screening Disclaimer\\[1pt]Automated Clinical Non-Diagnostic Notice}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cOutput, draw=prismBlue!70] (g1_dashboard) at (2.00, 0.70) {%
+    {\color{prismNavy}\faChartBar\ \textbf{Clinical Reporting Dashboard}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Calibrated Probability Distribution\\[1pt]RAG Diagnostic Grounding Summary}%
   };
 
   \draw[arrow] (g1_user) -- (g1_web);
-  \draw[arrow] (g1_user) to[bend right=25] (g1_mob);
-  \draw[arrow] (g1_web) -- (g1_disclaimer);
+  \draw[arrow] (g1_web) -- (g1_mob);
   \draw[arrow] (g1_mob) -- (g1_disclaimer);
+  \draw[arrow] (g1_disclaimer) -- (g1_dashboard);
 
   %============================================================================
-  % COLUMN 2: API GATEWAY & PREPROCESSING TIER
+  % COLUMN 2: API GATEWAY & VALIDATION TIER (Center x = 6.30, Width = 3.60)
+  % Gutter 2 between Col 2 and Col 3: [8.10, 8.80]
   %============================================================================
-  \node[group, minimum width=3.60cm, minimum height=10.60cm] (g2) at (6.10, 5.80) {};
-  \node[grouptitle, anchor=west] at (4.35, 11.10) {2. API Gateway \& Validation};
+  \node[group, minimum width=3.60cm, minimum height=11.20cm] (g2) at (6.30, 5.50) {};
+  \node[grouptitle, anchor=west] at (4.60, 11.15) {2. API Gateway \& Validation};
 
-  \node[colbox, text width=3.30cm, fill=cStage2!60, draw=prismGold!80] (g2_fastapi) at (6.10, 9.80) {%
+  \node[colbox, text width=3.30cm, fill=cStage2!60, draw=prismGold!80] (g2_fastapi) at (6.30, 9.90) {%
     {\color{prismGold!90!black}\faServer\ \textbf{FastAPI REST Microservice}}\\[2.0pt]
-    {\fontsize{6.2}{7.2}\selectfont\normalfont Asynchronous ASGI (Uvicorn)\\[1pt]\texttt{/health} $\cdot$ \texttt{/predict} Routes}%
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Asynchronous ASGI (Uvicorn Worker)\\[1pt]\texttt{/predict} Multi-part Form Ingestion}%
   };
 
-  \node[colbox, text width=3.30cm, fill=cInput, draw=prismSlate!70] (g2_validate) at (6.10, 7.30) {%
-    {\color{prismDark}\faCheckCircle\ \textbf{Image Verification \& Audit}}\\[2.0pt]
-    {\fontsize{6.2}{7.2}\selectfont\normalfont MIME: JPEG, PNG, WEBP, BMP\\[1pt]Payload Limit: $\le 10$\,MB $\cdot$ PIL Verify}%
+  \node[colbox, text width=3.30cm, fill=cInput, draw=prismSlate!70] (g2_validate) at (6.30, 7.60) {%
+    {\color{prismDark}\faCheckCircle\ \textbf{MIME \& File Integrity Audit}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Authorized: JPEG, PNG, WEBP, BMP\\[1pt]Size Cap $\le 10$\,MB $\cdot$ PIL Byte Check}%
   };
 
-  \node[colbox, text width=3.30cm, fill=cStage1, draw=prismTeal!80] (g2_preprocess) at (6.10, 4.80) {%
-    {\color{prismTeal!90!black}\faCrop\ \textbf{Tensor Normalization Engine}}\\[2.0pt]
-    {\fontsize{6.2}{7.2}\selectfont\normalfont RGB Conversion $\cdot$ Resize $224\times 224$\\[1pt]ImageNet $\mu=[0.485,0.456,0.406]$}%
+  \node[colbox, text width=3.30cm, fill=cStage1, draw=prismTeal!80] (g2_preprocess) at (6.30, 5.30) {%
+    {\color{prismTeal!90!black}\faCrop\ \textbf{Spatial Normalization Engine}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont RGB Conversion $\cdot$ Resize $224\times 224$\\[1pt]ImageNet Standardization ($\boldsymbol{\mu}, \boldsymbol{\sigma}$)}%
   };
 
-  \node[colbox, text width=3.30cm, fill=cStage3!60, draw=statusFail!70] (g2_error) at (6.10, 2.30) {%
+  \node[colbox, text width=3.30cm, fill=cStage3!60, draw=statusFail!70] (g2_error) at (6.30, 3.00) {%
     {\color{statusFail}\faExclamationTriangle\ \textbf{HTTP Fault Mitigation}}\\[2.0pt]
-    {\fontsize{6.2}{7.2}\selectfont\normalfont 400 Invalid Image $\cdot$ 413 Too Large\\[1pt]415 Format $\cdot$ 503 Model Unavailable}%
+    {\fontsize{6.2}{7.2}\selectfont\normalfont 400 Bad Image $\cdot$ 413 Payload Too Large\\[1pt]415 Media Type $\cdot$ 503 Model Service}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStem!50, draw=prismNavy!70] (g2_health) at (6.30, 0.70) {%
+    {\color{prismNavy}\faHeartbeat\ \textbf{Telemetry \& Health Endpoints}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont \texttt{/health} Readiness Checks\\[1pt]Sub-50ms Latency Benchmark Logs}%
   };
 
   \draw[arrow] (g2_fastapi) -- (g2_validate);
   \draw[arrow] (g2_validate) -- (g2_preprocess);
   \draw[arrow] (g2_validate) -- (g2_error);
+  \draw[arrow] (g2_error) -- (g2_health);
 
   %============================================================================
-  % COLUMN 3: DEEP LEARNING & EXPLAINABILITY (DENSENET-121 + GRAD-CAM)
+  % COLUMN 3: DEEP LEARNING & EXPLAINABILITY (Center x = 10.60, Width = 3.60)
+  % Gutter 3 between Col 3 and Col 4: [12.40, 13.10]
   %============================================================================
-  \node[group, minimum width=4.10cm, minimum height=10.60cm] (g3) at (10.45, 5.80) {};
-  \node[grouptitle, anchor=west] at (8.45, 11.10) {3. Inference \& Explainability};
+  \node[group, minimum width=3.60cm, minimum height=11.20cm] (g3) at (10.60, 5.50) {};
+  \node[grouptitle, anchor=west] at (8.90, 11.15) {3. Inference \& Explainability};
 
-  \node[colbox, text width=3.80cm, fill=cStem!70, draw=lavenderDark!80] (g3_stem) at (10.45, 9.80) {%
-    {\color{lavenderDark}\faLayerGroup\ \textbf{DenseNet-121 Feature Stem}}\\[2.0pt]
-    {\fontsize{6.2}{7.2}\selectfont\normalfont $7\times 7$ Conv (s=2) + $3\times 3$ MaxPool\\[1pt]DenseBlocks 1--4 ($k=32$) + Transitions}%
+  \node[colbox, text width=3.30cm, fill=cStem!70, draw=lavenderDark!80] (g3_stem) at (10.60, 9.90) {%
+    {\color{lavenderDark}\faLayerGroup\ \textbf{DenseNet-121 Backbone}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont $7\times 7$ Conv (s=2) + DenseBlocks 1--4\\[1pt]Iterative Feature Reuse ($k=32$)}%
   };
 
-  \node[colbox, text width=3.80cm, fill=cHead, draw=lavenderMedium!90] (g3_head) at (10.45, 7.30) {%
-    {\color{lavenderDeep}\faBrain\ \textbf{Linear Classifier \& Softmax}}\\[2.0pt]
-    {\fontsize{6.2}{7.2}\selectfont\normalfont Global Avg Pooling ($1024$-dim)\\[1pt]Softmax $\to$ Normal, COVID, Viral Pneumonia}%
+  \node[colbox, text width=3.30cm, fill=cHead, draw=lavenderMedium!90] (g3_head) at (10.60, 7.60) {%
+    {\color{lavenderDeep}\faBrain\ \textbf{Classification Head \& Softmax}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont 1024-d GAP $\to$ Linear Projection\\[1pt]$\hat{y} \in$ \{Normal, COVID, Viral Pneumonia\}}%
   };
 
-  \node[colbox, text width=3.80cm, fill=cStage2!70, draw=prismGold!90] (g3_gradcam) at (10.45, 4.80) {%
+  \node[colbox, text width=3.30cm, fill=cStage2!70, draw=prismGold!90] (g3_gradcam) at (10.60, 5.30) {%
     {\color{prismGold!90!black}\faEye\ \textbf{Grad-CAM Saliency Engine}}\\[2.0pt]
-    {\fontsize{6.2}{7.2}\selectfont\normalfont Backward Hook on \texttt{denseblock4}\\[1pt]Gradients $\alpha_k^c$ $\cdot$ ReLU Activation Map}%
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Backward Hook on \texttt{denseblock4}\\[1pt]Channel Importance Weights $\alpha_k^c$}%
   };
 
-  \node[colbox, text width=3.80cm, fill=cOutput, draw=prismBlue!70] (g3_overlay) at (10.45, 2.30) {%
-    {\color{prismNavy}\faPalette\ \textbf{Visual Saliency Map Synthesis}}\\[2.0pt]
-    {\fontsize{6.2}{7.2}\selectfont\normalfont Bilinear Interpolation to $224\times 224$\\[1pt]Jet Colormap Superimposition on Radiograph}%
+  \node[colbox, text width=3.30cm, fill=cStage4!80, draw=prismBlue!80] (g3_overlay) at (10.60, 3.00) {%
+    {\color{prismNavy}\faPalette\ \textbf{Heatmap Fusion Engine}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Bilinear Upsampling to $224\times 224$\\[1pt]Jet Colormap Blend ($\beta=0.60$)}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cInput, draw=prismSlate!70] (g3_weights) at (10.60, 0.70) {%
+    {\color{prismDark}\faDatabase\ \textbf{Model Weights Registry}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont \texttt{models/best\_model.pth} (7.0M params)\\[1pt]Checkpoint State Dictionaries}%
   };
 
   \draw[arrow] (g3_stem) -- (g3_head);
-  \draw[arrow] (g3_stem) -- (g3_gradcam);
+  \draw[arrow] (g3_head) -- (g3_gradcam);
   \draw[arrow] (g3_gradcam) -- (g3_overlay);
 
   %============================================================================
-  % COLUMN 4: STORAGE, ARTIFACTS & EVALUATION
+  % COLUMN 4: CLINICAL RAG & DECISION SUPPORT TIER (Center x = 14.90, Width = 3.60)
   %============================================================================
-  \node[group, minimum width=3.60cm, minimum height=10.60cm] (g4) at (14.80, 5.80) {};
-  \node[grouptitle, anchor=west] at (13.05, 11.10) {4. Storage \& Artifacts};
+  \node[group, minimum width=3.60cm, minimum height=11.20cm] (g4) at (14.90, 5.50) {};
+  \node[grouptitle, anchor=west] at (13.20, 11.15) {4. Clinical RAG \& Evidence};
 
-  \node[colbox, text width=3.30cm, fill=cInput, draw=prismSlate!70] (g4_weights) at (14.80, 9.80) {%
-    {\color{prismDark}\faDatabase\ \textbf{Model Weights Repository}}\\[2.0pt]
-    {\fontsize{6.2}{7.2}\selectfont\normalfont \texttt{checkpoints/best\_model.pt}\\[1pt]\texttt{models/best\_model.pth} $\cdot$ \texttt{classes.json}}%
+  \node[colbox, text width=3.30cm, fill=cRag, draw=lavenderMedium!90] (g4_kb) at (14.90, 9.90) {%
+    {\color{lavenderDark}\faBookMedical\ \textbf{Clinical Knowledge Base}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont WHO/CDC Radiographic Guidelines\\[1pt]Thoracic Opacity Hallmarks \& Literature}%
   };
 
-  \node[colbox, text width=3.30cm, fill=cStage1, draw=prismTeal!80] (g4_data) at (14.80, 7.30) {%
-    {\color{prismTeal!90!black}\faFolderOpen\ \textbf{Dataset \& Split Registry}}\\[2.0pt]
-    {\fontsize{6.2}{7.2}\selectfont\normalfont Stratified Splits (70 / 15 / 15)\\[1pt]\texttt{data/images/} $\cdot$ \texttt{corrupt\_images.csv}}%
+  \node[colbox, text width=3.30cm, fill=cStem!60, draw=prismIndigo!80] (g4_index) at (14.90, 7.60) {%
+    {\color{prismIndigo}\faSearchPlus\ \textbf{FAISS Vector Store \& Embeddings}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Dense Text/Feature Embeddings\\[1pt]Cosine Similarity Indexing}%
   };
 
-  \node[colbox, text width=3.30cm, fill=cStem, draw=lavenderDark!70] (g4_eval) at (14.80, 4.80) {%
-    {\color{lavenderDark}\faChartLine\ \textbf{Evaluation \& Telemetry}}\\[2.0pt]
+  \node[colbox, text width=3.30cm, fill=cStage1, draw=prismTeal!80] (g4_retriever) at (14.90, 5.30) {%
+    {\color{prismTeal!90!black}\faFilter\ \textbf{Clinical Context Retriever}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Top-$K$ Guideline \& Case Matching\\[1pt]Targeted to Predicted Diagnostic Class}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStage2!80, draw=prismGold!90] (g4_synth) at (14.90, 3.00) {%
+    {\color{prismGold!90!black}\faFileMedical\ \textbf{Evidence Synthesis Engine}}\\[2.0pt]
+    {\fontsize{6.2}{7.2}\selectfont\normalfont Radiographic Verification Summary\\[1pt]Clinical Evidence Grounding}%
+  };
+
+  \node[colbox, text width=3.30cm, fill=cStage4, draw=prismBlue!70] (g4_audit) at (14.90, 0.70) {%
+    {\color{prismNavy}\faClipboardCheck\ \textbf{Audit \& Evaluation Registry}}\\[2.0pt]
     {\fontsize{6.2}{7.2}\selectfont\normalfont Accuracy: 92.63\% $\cdot$ ROC-AUC: 98.50\%\\[1pt]\texttt{evaluation.json} $\cdot$ Confusion Matrix}%
   };
 
-  \node[colbox, text width=3.30cm, fill=cStage4, draw=prismBlue!70] (g4_history) at (14.80, 2.30) {%
-    {\color{prismNavy}\faHistory\ \textbf{Training History Logs}}\\[2.0pt]
-    {\fontsize{6.2}{7.2}\selectfont\normalfont Loss \& Accuracy Curves ($\le 30$ ep)\\[1pt]Early Stopping Triggered (Patience=6)}%
-  };
+  \draw[arrow] (g4_kb) -- (g4_index);
+  \draw[arrow] (g4_index) -- (g4_retriever);
+  \draw[arrow] (g4_retriever) -- (g4_synth);
+  \draw[arrow] (g4_synth) -- (g4_audit);
 
-  \draw[arrow] (g4_weights) -- (g4_eval);
-  \draw[arrow] (g4_data) -- (g4_history);
+  % Clean horizontal storage link between weights and audit registry
+  \draw[arrow, dashed] (g3_weights) -- (g4_audit);
 
   %============================================================================
-  % INTER-COLUMN CONNECTIONS
+  % INTER-COLUMN CLEAN ORTHOGONAL CONNECTIONS (NO BOX CROSSINGS)
   %============================================================================
-  \draw[arrow, line width=1.1pt] (g1_web.east) -- (g2_fastapi.west);
-  \draw[arrow, line width=1.1pt] (g1_mob.east) to[bend left=10] (g2_fastapi.west);
-  \draw[arrow, line width=1.1pt] (g2_preprocess.east) to[bend left=10] (g3_stem.west);
-  \draw[arrow, line width=1.1pt] (g3_head.east) -- (g4_weights.west);
-  \draw[arrow, line width=1.1pt, dashed] (g3_overlay.west) to[bend left=20] (g1_web.east);
+
+  % 1. Client uploads to FastAPI Gateway via Gutter 1 (x = 4.15)
+  \draw[busarrow] (g1_web.east) -- ++(0.40, 0) |- (g2_fastapi.175);
+  \draw[busarrow] (g1_mob.east) -- ++(0.20, 0) |- (g2_fastapi.185);
+
+  % 2. Preprocessed Tensor to DenseNet-121 Stem via Gutter 2 (x = 8.45)
+  \draw[busarrow] (g2_preprocess.east) -- ++(0.35, 0) |- (g3_stem.west);
+
+  % 3. Class Logits to Clinical Context Retriever via Gutter 3 (x = 12.75)
+  \draw[busarrow] (g3_head.east) -- ++(0.35, 0) |- (g4_retriever.west);
+
+  % 4. Evidence Synthesis feeds directly horizontally into Heatmap Fusion (Same Row y = 3.00)
+  \draw[busarrow] (g4_synth.west) -- (g3_overlay.east);
+
+  % 5. Integrated Diagnostic Output Stream:
+  % Exits g3_overlay.west into Gutter 2 (x = 8.45), goes down to y = -0.55 (completely below all boxes),
+  % travels left to x = 2.00, then up into g1_dashboard.south!
+  \draw[busarrow, dashed] (g3_overlay.west) -- ++(-0.40, 0) -- (8.45, -0.55) -- (2.00, -0.55) -- (g1_dashboard.south);
+  \node[badge] at (5.20, -0.55) {Multi-Modal Delivery: Class Probabilities + Grad-CAM Heatmap + RAG Evidence};
 
 \end{tikzpicture}
 \end{document}

@@ -28,21 +28,22 @@
   font=\sffamily,
   tblcard/.style={
     rectangle, rounded corners=4pt, draw=lavenderDark!75, line width=0.85pt, fill=white,
-    inner sep=5pt, text width=4.40cm, align=left,
+    inner sep=5pt, text width=4.15cm, align=left,
     drop shadow={shadow xshift=1pt, shadow yshift=-1pt, opacity=0.12}
   },
   fkarrow/.style={
     -{Stealth[scale=0.85]}, line width=1.0pt, draw=lavenderDark!90
   },
   fklabel/.style={
-    font=\fontsize{6.2}{7.2}\selectfont\bfseries, fill=white, inner sep=1.5pt, text=lavenderDark
+    font=\fontsize{6.0}{7.0}\selectfont\bfseries, fill=white, draw=lavenderBorder!80, line width=0.35pt,
+    rounded corners=1.5pt, inner sep=1.8pt, text=lavenderDark
   }
 ]
 
-  % ================= COLUMN 1: DATASET & CONFIGURATION (x = -5.2) =================
+  % ================= COLUMN 1: DATASET & CONFIGURATION (x = -6.0) =================
   
   % Table 1: dataset_partition_schema
-  \node[tblcard] (dataset) at (-5.2, 2.5) {%
+  \node[tblcard] (dataset) at (-6.0, 2.5) {%
     \centerline{\color{lavenderDark}\faFolderOpen\ \textbf{\fontsize{8.0}{9.5}\selectfont dataset\_partition\_store}}\\[3pt]
     \rule{\linewidth}{0.4pt}\\[3pt]
     {\fontsize{6.8}{8.0}\selectfont
@@ -94,10 +95,10 @@
     \textbf{\color{prismDark!80}[FLD]} \texttt{class\_f1}: \textit{Norm: 94.7\%, Cov: 86.8\%}}
   };
 
-  % ================= COLUMN 3: API CONTRACTS & CLIENT STATE (x = 5.2) =================
+  % ================= COLUMN 3: API CONTRACTS & CLIENT STATE (x = 6.0) =================
   
   % Table 5: api_prediction_schema
-  \node[tblcard] (prediction) at (5.2, 2.5) {%
+  \node[tblcard] (prediction) at (6.0, 2.5) {%
     \centerline{\color{lavenderDark}\faServer\ \textbf{\fontsize{8.0}{9.5}\selectfont api\_prediction\_schema}}\\[3pt]
     \rule{\linewidth}{0.4pt}\\[3pt]
     {\fontsize{6.8}{8.0}\selectfont
@@ -127,28 +128,28 @@
   % ================= RELATIONSHIPS / FOREIGN KEY CONNECTORS =================
 
   % 1. Config -> Checkpoint
-  \draw[fkarrow] (config.east) to[bend right=20] 
-    node[above=1pt, fklabel]{config\_id} (checkpoint.west);
+  \draw[fkarrow] (config.east) -- ++(0.40,0) |- 
+    node[pos=0.25, above=1pt, fklabel]{config\_id} ($(checkpoint.west)+(0,-0.40)$);
 
   % 2. Dataset -> Checkpoint (Data used to train)
   \draw[fkarrow] (dataset.east) -- 
-    node[above=1pt, fklabel]{train\_split} (checkpoint.west);
+    node[pos=0.50, above=1pt, fklabel]{train\_split} ($(checkpoint.west)+(0,0.40)$);
 
   % 3. Checkpoint -> Evaluation
   \draw[fkarrow] (checkpoint.south) -- 
-    node[right=2pt, fklabel]{checkpoint\_id} (eval.north);
+    node[pos=0.50, right=2pt, fklabel]{checkpoint\_id} (eval.north);
 
   % 4. Checkpoint -> API Prediction
   \draw[fkarrow] (checkpoint.east) -- 
-    node[above=1pt, fklabel]{weights} (prediction.west);
+    node[pos=0.50, above=1pt, fklabel]{weights} (prediction.west);
 
   % 5. API Prediction -> Client UI State
   \draw[fkarrow] (prediction.south) -- 
-    node[right=2pt, fklabel]{prediction\_id} (client.north);
+    node[pos=0.50, right=2pt, fklabel]{prediction\_id} (client.north);
 
   % 6. Eval metrics reference in Client UI
   \draw[fkarrow, dashed] (eval.east) -- 
-    node[above=1pt, fklabel]{benchmarks} (client.west);
+    node[pos=0.50, above=1pt, fklabel]{benchmarks} (client.west);
 
 \end{tikzpicture}
 \end{document}

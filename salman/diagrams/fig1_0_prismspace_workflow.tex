@@ -34,10 +34,11 @@
 % Complete Layered System Workflow for Ear Disease Detection
 \begin{tikzpicture}[
     x=1cm, y=1cm,
-    font=\sffamily,
+    font=\setstretch{0.95}\sffamily\selectfont,
     stepbox/.style={
         rectangle, draw=lavenderDark!85, line width=0.95pt, fill=white,
-        rounded corners=4pt, inner sep=5pt, align=center,
+        rounded corners=4pt, inner sep=4.5pt, align=center,
+        font=\setstretch{0.95}\selectfont,
         drop shadow={shadow xshift=1pt, shadow yshift=-1pt, opacity=0.15}
     },
     flowarr/.style={
@@ -50,6 +51,7 @@
 
     % Step 1: Otoscopic Acquisition
     \node [stepbox, fill=cInput, text width=2.65cm] (b1) at (-5.75, 0) {
+        \setstretch{0.95}
         \textbf{\fontsize{9.6}{11.5}\selectfont\color{lavenderDark}1. Otoscopic Acquisition}\\[0.3em]
         \fontsize{8.0}{9.5}\selectfont
         $\bullet$ Digital otoscope input\\
@@ -59,6 +61,7 @@
 
     % Step 2: Validation & CLAHE Preprocessing
     \node [stepbox, fill=cStage1, text width=2.65cm] (b2) at (-2.65, 0) {
+        \setstretch{0.95}
         \textbf{\fontsize{9.6}{11.5}\selectfont\color{lavenderDark}2. CLAHE \& Validation}\\[0.3em]
         \fontsize{8.0}{9.5}\selectfont
         $\bullet$ MIME \& cerumen check\\
@@ -67,7 +70,8 @@
     };
 
     % Step 3: CoMViT Backbone
-    \node [stepbox, fill=cStem, text width=3.85cm] (b3) at (1.45, 1.80) {
+    \node [stepbox, fill=cStem, text width=3.85cm] (b3) at (1.45, 2.70) {
+        \setstretch{0.92}
         \textbf{\fontsize{9.6}{11.5}\selectfont\color{lavenderDark}3. CoMViT Backbone}\\[0.28em]
         \fontsize{7.8}{9.4}\selectfont
         {\color{prismIndigo}\faLayerGroup}\; \textbf{Conv Stem:} Local patch embedding\\[0.15em]
@@ -77,7 +81,8 @@
     };
 
     % Step 4: Grad-CAM++ Engine
-    \node [stepbox, fill=cStage2, text width=3.85cm] (b4) at (1.45, -1.80) {
+    \node [stepbox, fill=cStage2, text width=3.85cm] (b4) at (1.45, -2.70) {
+        \setstretch{0.92}
         \textbf{\fontsize{9.6}{11.5}\selectfont\color{lavenderDark}4. Grad-CAM++ Engine}\\[0.28em]
         \fontsize{7.8}{9.4}\selectfont
         {\color{prismGold!90!black}\faLink}\; \textbf{Hook:} Target transformer block\\[0.15em]
@@ -88,6 +93,7 @@
 
     % Step 5: Softmax Classification across 5 Classes
     \node [stepbox, fill=cHead, text width=2.65cm] (b5) at (5.55, 0) {
+        \setstretch{0.95}
         \textbf{\fontsize{9.6}{11.5}\selectfont\color{lavenderDark}5. 5-Class Scoring}\\[0.3em]
         \fontsize{7.8}{9.2}\selectfont
         $\bullet$ Linear head $\to 5$ classes\\
@@ -98,6 +104,7 @@
 
     % Step 6: Diagnostic Delivery & Triage
     \node [stepbox, fill=cDeliverable!80, text width=3.85cm] (b6) at (9.65, 0) {
+        \setstretch{0.92}
         \textbf{\fontsize{9.6}{11.5}\selectfont\color{lavenderDark}6. Clinical Decision Support}\\[0.28em]
         \fontsize{7.8}{9.4}\selectfont
         {\color{prismNavy}\faDesktop}\; \textbf{Web Portal:} Diagnostic visualization\\[0.15em]
@@ -128,8 +135,8 @@
     \draw [flowarr] (b5) -- (b6);
 
     % 6. Quality and Re-acquisition Feedback Loop
-    \draw [dashloop] (b5.north) -- (b5.north |- 0, 3.45) 
-        -- node[above=2.5pt, font=\fontsize{8.2}{9.8}\selectfont\bfseries\color{prismGold!95!black}]{Otoscopic Quality Audit \& Visibility Re-Check} (b2.north |- 0, 3.45) 
+    \draw [dashloop] (b5.north) -- (b5.north |- 0, 4.90) 
+        -- node[above=2.5pt, font=\setstretch{0.95}\fontsize{8.2}{9.8}\selectfont\bfseries\color{prismGold!95!black}]{Otoscopic Quality Audit \& Visibility Re-Check} (b2.north |- 0, 4.90) 
         -- (b2.north);
 
 \end{tikzpicture}

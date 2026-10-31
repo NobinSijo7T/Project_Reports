@@ -1,154 +1,191 @@
-\documentclass[tikz,border=10pt]{standalone}
+\documentclass[tikz,border=12pt]{standalone}
 \usepackage{tikz}
-\usepackage{adjustbox}
 \usepackage{fontawesome5}
+\usepackage{amsmath,amssymb}
 \usetikzlibrary{arrows.meta,positioning,fit,backgrounds,calc,shadows,shapes.geometric}
 
-% Lavender & Legal RAG Color Palette
-\definecolor{lavenderDark}{RGB}{15, 44, 89}
-\definecolor{lavenderDeep}{RGB}{10, 28, 58}
-\definecolor{lavenderMedium}{RGB}{29, 78, 158}
-\definecolor{lavenderLight}{RGB}{240, 246, 255}
-\definecolor{lavenderBorder}{RGB}{180, 205, 237}
-\definecolor{lavenderAccent}{RGB}{2, 132, 199}
+% Professional Academic Color Palette
 \definecolor{prismNavy}{RGB}{15, 44, 89}
 \definecolor{prismBlue}{RGB}{29, 78, 158}
 \definecolor{prismTeal}{RGB}{13, 148, 136}
-\definecolor{prismMint}{RGB}{236, 253, 245}
-\definecolor{prismGold}{RGB}{217, 119, 6}
+\definecolor{prismGold}{RGB}{202, 138, 4}
 \definecolor{prismDark}{RGB}{15, 23, 42}
-\definecolor{prismLight}{RGB}{248, 250, 252}
-\definecolor{cInput}{RGB}{241, 245, 249}
-\definecolor{cStem}{RGB}{224, 242, 254}
-\definecolor{cStage1}{RGB}{209, 250, 229}
-\definecolor{cStage2}{RGB}{254, 243, 199}
-\definecolor{cStage3}{RGB}{254, 226, 226}
-\definecolor{cStage4}{RGB}{207, 250, 254}
-\definecolor{cHead}{RGB}{219, 234, 254}
-\definecolor{cOutput}{RGB}{255, 228, 230}
+\definecolor{prismSlate}{RGB}{71, 85, 105}
+\definecolor{cInput}{RGB}{248, 250, 252}
+\definecolor{cStem}{RGB}{240, 249, 255}
+\definecolor{cStage1}{RGB}{240, 253, 250}
+\definecolor{cStage2}{RGB}{254, 252, 232}
+\definecolor{cStage3}{RGB}{254, 242, 242}
+\definecolor{cStage4}{RGB}{238, 242, 255}
+\definecolor{cHead}{RGB}{224, 231, 255}
+\definecolor{cOutput}{RGB}{240, 253, 244}
+\definecolor{lavenderLight}{RGB}{241, 245, 249}
 
 \begin{document}
 \begin{tikzpicture}[
-  >=Latex,
-  stagebox/.style={
-    draw=lavenderDark!85,
-    rounded corners=7pt,
-    minimum height=5.50cm,
-    text width=2.65cm,
-    align=center,
-    inner sep=5pt,
-    line width=1.1pt,
-    fill=white,
-    drop shadow={shadow xshift=1.5pt, shadow yshift=-1.8pt, opacity=0.16}
+  x=1cm, y=1cm,
+  every node/.style={align=center},
+  phasebox/.style={
+    draw=prismNavy!70, dashed, line width=0.85pt,
+    fill=lavenderLight!35, rounded corners=6pt
   },
-  pipearrow/.style={
-    ->,
-    draw=lavenderDark,
-    line width=1.8pt,
-    arrows={-Latex[length=3.2mm, width=2.4mm]}
+  phasetitle/.style={
+    fill=prismNavy, text=white, font=\fontsize{7.5}{9.0}\selectfont\bfseries,
+    rounded corners=2.5pt, inner xsep=8pt, inner ysep=3.2pt
+  },
+  methodnode/.style={
+    rectangle, rounded corners=4pt, line width=0.85pt,
+    minimum height=2.85cm, inner ysep=4.0pt, inner xsep=5.0pt,
+    font=\fontsize{6.8}{8.0}\selectfont\bfseries,
+    drop shadow={shadow xshift=0.8pt, shadow yshift=-0.8pt, opacity=0.10}
+  },
+  flowarrow/.style={
+    -{Stealth[scale=0.95]}, line width=1.1pt, draw=prismNavy
+  },
+  bridgearrow/.style={
+    -{Stealth[scale=1.0]}, line width=1.1pt, dashed, draw=prismTeal
   }
 ]
 
-  % Stage 1: PDF Ingestion
-  \node[stagebox, fill=cInput!65] (ingest) {
-    \vspace{3pt}
-    {\fontsize{16}{18}\selectfont\textcolor{lavenderDark}{\faFilePdf}}\\[4pt]
-    {\fontsize{10.0}{12.0}\selectfont\textbf{1. PDF Ingestion}}\\[2pt]
-    {\fontsize{7.0}{8.2}\selectfont\textcolor{prismTeal}{\textbf{[Corpus Acquisition]}}}\\[5pt]
-    \rule{2.3cm}{0.6pt}\\[6pt]
-    \begin{minipage}{2.45cm}
-      \fontsize{7.8}{9.6}\selectfont
-      $\bullet$ Legal PDF corpus\\
-      $\bullet$ User document upload\\
-      $\bullet$ MIME validation\\
-      $\bullet$ PyMuPDF (fitz) text\\
-      $\bullet$ Page-numbered blocks\\
-      $\bullet$ Payload guard $\le 50$\,MB
-    \end{minipage}
-    \vspace{4pt}
+  %============================================================================
+  % PHASE A: OFFLINE CORPUS PREPARATION & VECTOR INDEXING METHODOLOGY
+  %============================================================================
+  \node[phasebox, minimum width=18.40cm, minimum height=3.95cm] (phaseA) at (9.20, 6.45) {};
+  \node[phasetitle, anchor=west] at (0.25, 8.65) {%
+    \faDatabase\ \ Phase A: Offline Corpus Ingestion, Semantic Chunking \& Vector Indexing Methodology%
   };
 
-  % Stage 2: Text Preprocessing & Chunking
-  \node[stagebox, fill=cStage1!60, right=0.22cm of ingest] (preprocess) {
-    \vspace{3pt}
-    {\fontsize{16}{18}\selectfont\textcolor{prismTeal}{\faStream}}\\[4pt]
-    {\fontsize{10.0}{12.0}\selectfont\textbf{2. Text Chunker}}\\[2pt]
-    {\fontsize{7.0}{8.2}\selectfont\textcolor{prismTeal}{\textbf{[Token Overlap]}}}\\[5pt]
-    \rule{2.3cm}{0.6pt}\\[6pt]
-    \begin{minipage}{2.45cm}
-      \fontsize{7.8}{9.6}\selectfont
-      $\bullet$ Clean headers/footers\\
-      $\bullet$ Whitespace normalization\\
-      $\bullet$ Word chunking ($c=900$)\\
-      $\bullet$ Overlap window ($o=150$)\\
-      $\bullet$ Filter fragments $<40$w\\
-      $\bullet$ Preserve source metadata
-    \end{minipage}
-    \vspace{4pt}
+  % Stage A1: Corpus Ingestion
+  \node[methodnode, text width=3.70cm, fill=cInput, draw=prismSlate!80] (m_ingest) at (2.05, 6.25) {%
+    {\color{prismNavy}\faFilePdf\ \textbf{1. Document Ingestion}}\\[3.0pt]
+    \rule{3.40cm}{0.4pt}\\[3.0pt]
+    {\fontsize{6.0}{7.2}\selectfont\normalfont
+      $\bullet$ 7 Core Statutes (BNS, BSA, etc.)\\
+      $\bullet$ PyMuPDF (\texttt{fitz}) Page Stream Parser\\
+      $\bullet$ Strip Headers, Footers, Page Nums\\
+      $\bullet$ Unicode Text Sanitization\\
+      $\bullet$ Format Integrity Validation
+    }%
   };
 
-  % Stage 3: Embedding Generation
-  \node[stagebox, fill=cStem!60, draw=lavenderDark!95, line width=1.3pt, right=0.20cm of preprocess] (embed) {
-    \vspace{3pt}
-    {\fontsize{16}{18}\selectfont\textcolor{lavenderDark}{\faBrain}}\\[4pt]
-    {\fontsize{10.0}{12.0}\selectfont\textbf{3. SBERT Embed}}\\[2pt]
-    {\fontsize{7.0}{8.2}\selectfont\textcolor{lavenderDark}{\textbf{[Semantic Vectors]}}}\\[5pt]
-    \rule{2.3cm}{0.6pt}\\[6pt]
-    \begin{minipage}{2.45cm}
-      \fontsize{7.8}{9.6}\selectfont
-      $\bullet$ Sentence-Transformers\\
-      $\bullet$ \texttt{all-MiniLM-L6-v2}\\
-      $\bullet$ 384-dimensional dense\\
-      $\bullet$ Unit L2 normalization\\
-      $\bullet$ Fast CPU inference\\
-      $\bullet$ Semantic similarity map
-    \end{minipage}
-    \vspace{4pt}
+  % Stage A2: Semantic Overlapping Chunking
+  \node[methodnode, text width=3.70cm, fill=cStage1, draw=prismTeal!80] (m_chunk) at (6.65, 6.25) {%
+    {\color{prismTeal!90!black}\faStream\ \textbf{2. Chunking Engine}}\\[3.0pt]
+    \rule{3.40cm}{0.4pt}\\[3.0pt]
+    {\fontsize{6.0}{7.2}\selectfont\normalfont
+      $\bullet$ Window Size: $c = 900$ words\\
+      $\bullet$ Overlap Stride: $o = 150$ words\\
+      $\bullet$ Fragment Filter: $\theta_{\min} \ge 40$ words\\
+      $\bullet$ Preserve Legal Section Boundaries\\
+      $\bullet$ Corpus Yield: $\approx 7,500$ chunks
+    }%
   };
 
-  % Stage 4: Pinecone Indexing
-  \node[stagebox, fill=cStage4!60, right=0.22cm of embed] (index) {
-    \vspace{3pt}
-    {\fontsize{16}{18}\selectfont\textcolor{lavenderDark}{\faDatabase}}\\[4pt]
-    {\fontsize{10.0}{12.0}\selectfont\textbf{4. Vector Index}}\\[2pt]
-    {\fontsize{7.0}{8.2}\selectfont\textcolor{lavenderDark}{\textbf{[HNSW Indexing]}}}\\[5pt]
-    \rule{2.3cm}{0.6pt}\\[6pt]
-    \begin{minipage}{2.45cm}
-      \fontsize{7.8}{9.6}\selectfont
-      $\bullet$ Pinecone cloud index\\
-      $\bullet$ Cosine metric\\
-      $\bullet$ Batch upsert (100 vec)\\
-      $\bullet$ Document metadata tags\\
-      $\bullet$ Sub-100ms ANN lookup\\
-      $\bullet$ 1M capacity tier
-    \end{minipage}
-    \vspace{4pt}
+  % Stage A3: Dense Semantic Vectorization
+  \node[methodnode, text width=3.70cm, fill=cHead, draw=prismBlue!90] (m_embed) at (11.25, 6.25) {%
+    {\color{prismNavy}\faBrain\ \textbf{3. SBERT Embedding}}\\[3.0pt]
+    \rule{3.40cm}{0.4pt}\\[3.0pt]
+    {\fontsize{6.0}{7.2}\selectfont\normalfont
+      $\bullet$ \texttt{all-MiniLM-L6-v2} Encoder\\
+      $\bullet$ 384-Dimensional Dense Vectors\\
+      $\bullet$ Mean Pooling over Layer-6 Tokens\\
+      $\bullet$ Unit $L_2$ Projection: $\mathbf{e} / \|\mathbf{e}\|_2$\\
+      $\bullet$ Sub-5ms Vector Inference on CPU
+    }%
   };
 
-  % Stage 5: Retrieval & Gemini Generation
-  \node[stagebox, fill=cStage2!65, draw=prismGold!95!black, line width=1.2pt, right=0.22cm of index] (generate) {
-    \vspace{3pt}
-    {\fontsize{16}{18}\selectfont\textcolor{prismGold!95!black}{\faComments}}\\[4pt]
-    {\fontsize{10.0}{12.0}\selectfont\textbf{5. LLM Synthesis}}\\[2pt]
-    {\fontsize{7.0}{8.2}\selectfont\textcolor{prismGold!95!black}{\textbf{[Grounded QA]}}}\\[5pt]
-    \rule{2.3cm}{0.6pt}\\[6pt]
-    \begin{minipage}{2.45cm}
-      \fontsize{7.8}{9.6}\selectfont
-      $\bullet$ Query top-$k$ retrieval\\
-      $\bullet$ Google Gemini 2.5 Flash\\
-      $\bullet$ Context prompt assembly\\
-      $\bullet$ Statutory section cites\\
-      $\bullet$ Malayalam translation\\
-      $\bullet$ Zero hallucination guard
-    \end{minipage}
-    \vspace{4pt}
+  % Stage A4: Pinecone Cloud Indexing
+  \node[methodnode, text width=3.70cm, fill=cStage4, draw=prismNavy!80] (m_index) at (15.85, 6.25) {%
+    {\color{prismNavy}\faServer\ \textbf{4. Vector Indexing}}\\[3.0pt]
+    \rule{3.40cm}{0.4pt}\\[3.0pt]
+    {\fontsize{6.0}{7.2}\selectfont\normalfont
+      $\bullet$ Managed Pinecone Vector Index\\
+      $\bullet$ Cosine Metric: $s_i = \mathbf{e}_q^\top \mathbf{e}_{c_i}$\\
+      $\bullet$ Batch Upsert Pipeline ($B = 100$)\\
+      $\bullet$ Metadata: Act, Section, Page Tags\\
+      $\bullet$ Sub-100ms ANN Search Latency
+    }%
   };
 
-  % Pipeline Flow Arrows
-  \draw[pipearrow] (ingest) -- (preprocess);
-  \draw[pipearrow] (preprocess) -- (embed);
-  \draw[pipearrow] (embed) -- (index);
-  \draw[pipearrow] (index) -- (generate);
+  \draw[flowarrow] (m_ingest) -- (m_chunk)
+    node[midway, above, font=\fontsize{5.5}{6.5}\selectfont\bfseries\color{prismNavy}] {Clean Text};
+  \draw[flowarrow] (m_chunk) -- (m_embed)
+    node[midway, above, font=\fontsize{5.5}{6.5}\selectfont\bfseries\color{prismNavy}] {Token Chunks};
+  \draw[flowarrow] (m_embed) -- (m_index)
+    node[midway, above, font=\fontsize{5.5}{6.5}\selectfont\bfseries\color{prismNavy}] {384-d Vectors};
+
+  %============================================================================
+  % PHASE B: ONLINE INFERENCE, RETRIEVAL & SYNTHESIS METHODOLOGY
+  %============================================================================
+  \node[phasebox, minimum width=18.40cm, minimum height=3.95cm] (phaseB) at (9.20, 1.55) {};
+  \node[phasetitle, anchor=west] at (0.25, 3.75) {%
+    \faComments\ \ Phase B: Online Query Processing, Bilingual Routing, Semantic Retrieval \& Grounded Synthesis%
+  };
+
+  % Stage B1: Multimodal Ingestion & Language Routing
+  \node[methodnode, text width=3.70cm, fill=cStem, draw=prismBlue!80] (m_query) at (2.05, 1.35) {%
+    {\color{prismNavy}\faUser\ \textbf{5. Query \& Routing}}\\[3.0pt]
+    \rule{3.40cm}{0.4pt}\\[3.0pt]
+    {\fontsize{6.0}{7.2}\selectfont\normalfont
+      $\bullet$ Typed Text / Web Speech Audio\\
+      $\bullet$ Unicode Scan: U+0D00 to U+0D7F\\
+      $\bullet$ Malayalam Detection $\to$ Flag $\tau_{\mathrm{lang}}$\\
+      $\bullet$ Gemini Translate: $\mathrm{ml} \to \mathrm{en}$\\
+      $\bullet$ Normalization of Query String $q_{\mathrm{en}}$
+    }%
+  };
+
+  % Stage B2: Real-time Query Vector Projection
+  \node[methodnode, text width=3.70cm, fill=cHead, draw=prismBlue!90] (m_qembed) at (6.65, 1.35) {%
+    {\color{prismNavy}\faBrain\ \textbf{6. Query Projection}}\\[3.0pt]
+    \rule{3.40cm}{0.4pt}\\[3.0pt]
+    {\fontsize{6.0}{7.2}\selectfont\normalfont
+      $\bullet$ Shared Transformer Encoder $\phi$\\
+      $\bullet$ Forward Pass: $\mathbf{e}_q = \phi(q_{\mathrm{en}})$\\
+      $\bullet$ Unit Normalization: $\|\mathbf{e}_q\|_2 = 1.0$\\
+      $\bullet$ Aligned in Shared Semantic Space\\
+      $\bullet$ Low Latency ($< 15$\,ms)
+    }%
+  };
+
+  % Stage B3: Cosine ANN Top-k Passage Retrieval
+  \node[methodnode, text width=3.70cm, fill=cStage2, draw=prismGold!90] (m_ann) at (11.25, 1.35) {%
+    {\color{prismGold!90!black}\faSearch\ \textbf{7. Top-K Retrieval}}\\[3.0pt]
+    \rule{3.40cm}{0.4pt}\\[3.0pt]
+    {\fontsize{6.0}{7.2}\selectfont\normalfont
+      $\bullet$ Cosine Similarity: $\mathbf{e}_q^\top \mathbf{e}_{c_i}$\\
+      $\bullet$ Pinecone HNSW Graph Traversal\\
+      $\bullet$ Fetch Top-$k$ Passages ($k \in [1, 10]$)\\
+      $\bullet$ Re-rank by Similarity Score $s_i$\\
+      $\bullet$ Extract Statutory Section Labels
+    }%
+  };
+
+  % Stage B4: Gemini Grounded Synthesis & UI Delivery
+  \node[methodnode, text width=3.70cm, fill=cOutput, draw=prismTeal!80] (m_llm) at (15.85, 1.35) {%
+    {\color{prismTeal!90!black}\faRobot\ \textbf{8. LLM Synthesis}}\\[3.0pt]
+    \rule{3.40cm}{0.4pt}\\[3.0pt]
+    {\fontsize{6.0}{7.2}\selectfont\normalfont
+      $\bullet$ Strict Context Injection Prompt\\
+      $\bullet$ Google Gemini 2.5 Flash ($T=0.3$)\\
+      $\bullet$ Citation Grounding \& Verification\\
+      $\bullet$ If $\tau_{\mathrm{lang}}=\mathrm{ml}$: Translate Answer\\
+      $\bullet$ Deliver JSON Payload $\to$ React 19 UI
+    }%
+  };
+
+  \draw[flowarrow] (m_query) -- (m_qembed)
+    node[midway, above, font=\fontsize{5.5}{6.5}\selectfont\bfseries\color{prismNavy}] {Clean $q_{\mathrm{en}}$};
+  \draw[flowarrow] (m_qembed) -- (m_ann)
+    node[midway, above, font=\fontsize{5.5}{6.5}\selectfont\bfseries\color{prismNavy}] {Dense $\mathbf{e}_q$};
+  \draw[flowarrow] (m_ann) -- (m_llm)
+    node[midway, above, font=\fontsize{5.5}{6.5}\selectfont\bfseries\color{prismNavy}] {Top-$k$ Evidence};
+
+  % Cross-Phase Bridge: Pinecone Index (A4) queries into Retrieval (B3)
+  % Clean stepped orthogonal route via right channel - ZERO intersection with Phase B title!
+  \draw[bridgearrow] (m_index.south) -- ++(0, -0.45) -| (m_ann.north)
+    node[pos=0.25, fill=white, inner sep=2pt, font=\fontsize{5.8}{7.0}\selectfont\bfseries\color{prismTeal}]
+    {HNSW Cosine Vector Index Matching};
 
 \end{tikzpicture}
 \end{document}

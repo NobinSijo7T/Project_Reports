@@ -79,7 +79,7 @@
     citecolor=black,
     urlcolor=black,
     pdftitle={Ear Disease Detection from Otoscopic Images Using Robust Deep Learning Models},
-    pdfauthor={Muhammed Salaman, Jithin Joseph, Punya A J, Sana Azeez}
+    pdfauthor={Mohammad Salman, Jithin Joseph, Punya A J, Sana Azeez}
 }
 
 % Spacing and line-breaking settings to prevent overflow and overfull hboxes
@@ -100,7 +100,7 @@
 \gdef \title{EAR DISEASE DETECTION FROM OTOSCOPIC IMAGES USING ROBUST DEEP LEARNING MODELS}
 \gdef \shorttitle{Ear Disease Detection from Otoscopic Images}
 
-\gdef \authorA{MUHAMMED SALAMAN}
+\gdef \authorA{MOHAMMAD SALMAN}
 \gdef \rollnoA{KNP23CS076}
 
 \gdef \authorB{JITHIN JOSEPH}
@@ -133,8 +133,8 @@
 \gdef \hod{Dr. Smitha P}
 \gdef \hoddes{Associate Professor and HOD}
 
-\providecommand{\candidateName}{\authorA}
-\providecommand{\candidateRoll}{\rollnoA}
+% Individual candidate credentials (defined by wrapper files main_salaman.tex, etc.)
+% When compiling main.tex directly, candidateName is undefined so the second individual certificate is omitted.
 
 %==============================================================================
 % DOCUMENT BODY
@@ -149,7 +149,9 @@
 \include{coverpage}
 \include{vision_mission}
 \include{certificate1}
+\ifdefined\candidateName
 \include{certificate_individual}
+\fi
 \include{declaration}
 \hypersetup{pageanchor=true}
 
@@ -249,7 +251,7 @@ The remainder of this report is structured as follows:
     \item \textbf{Chapter 2 (Literature Review):} Synthesizes contemporary research in otoscopic artificial intelligence, clinical guidelines for AOM, CSOM, and tympanosclerosis, Vision Transformers in medical imaging, cross-dataset generalization, Grad-CAM++ explainability, and edge otoscopy systems, directly citing 15 core research papers from the literature.
     \item \textbf{Chapter 3 (Problem Definition):} Formulates the mathematical problem definition, describes clinical challenges, defines operational boundaries, and presents the optimization, MixUp, curriculum, and Grad-CAM++ formulations.
     \item \textbf{Chapter 4 (Requirements Specification):} Details the formal System Requirements Specification (SRS), detailing functional requirements, non-functional quality attributes, and hardware/software specifications.
-    \item \textbf{Chapter 5 (System Design):} Details the multi-tier system architecture, operational workflows, system flowchart, 12-stage end-to-end algorithm, CoMViT structural topology, relational data schemas, and Level-1 Data Flow Diagram (DFD).
+    \item \textbf{Chapter 5 (System Design):} Details the multi-tier system architecture, operational workflows, system flowchart, 6-stage end-to-end algorithm, CoMViT structural topology, relational data schemas, and Level-1 Data Flow Diagram (DFD).
     \item \textbf{Chapter 6 (Design and Methodology):} Expounds the mathematical foundations of CoMViT, CLAHE contrast equalization, controlled MixUp, adaptive curriculum learning, Grad-CAM++ derivations, merged dataset curation, FastAPI serving, and multi-class diagnostic evaluation metrics.
     \item \textbf{Chapter 7 (Preliminary Analysis):} Presents comparative analyses of deep learning architectures (CNNs vs.\ ViTs vs.\ CoMViT), preprocessing techniques (CLAHE vs.\ standard equalization), explainability methods (Grad-CAM vs.\ Grad-CAM++), and backend serving runtimes.
     \item \textbf{Chapter 8 (Feasibility Study):} Assesses technical, economic, and schedule feasibility, supported by the project execution Gantt chart.
@@ -446,6 +448,7 @@ The formal System Requirements Specification (SRS) establishes the functional ca
     \item \textbf{NFR-5 (Extensibility and Interoperability):} The architecture shall expose standard RESTful endpoints enabling seamless integration into hospital Picture Archiving and Communication Systems (PACS) and electronic health records (EHR).
 \end{itemize}
 
+\clearpage
 \section{System Requirements}
 \begin{itemize}
     \item \textbf{Hardware Requirements:}
@@ -480,8 +483,8 @@ The system architecture follows a decoupled four-tier paradigm depicted in Figur
 
 \begin{figure}[H]
     \centering
-    \adjustbox{max width=0.98\linewidth, max height=0.72\textheight, keepaspectratio, center}{\input{diagrams/fig1_2_system_architecture.tex}}
-    \caption{Detailed multi-tier system architecture illustrating Client Presentation Tier, API Gateway \& Preprocessing Tier, CoMViT Inference \& Grad-CAM++ Explainability Tier, and Storage \& Telemetry Repository.}
+    \includegraphics[width=\linewidth, keepaspectratio]{diagrams/architecture.jpeg}
+    \caption{Detailed system architecture of the ear disease detection and explainability framework.}
     \label{fig:system_architecture}
 \end{figure}
 
@@ -523,137 +526,95 @@ Figure~\ref{fig:end_to_end_flow} illustrates the end-to-end data flow transition
 \section{System Flowchart and Algorithms}
 
 \subsection{System Flowchart}
-Figure~\ref{fig:multiagent_flowchart} maps the decision logic, validation checks, and HTTP exception branches executing during clinical inference requests.
+Figure~\ref{fig:multiagent_flowchart} maps the complete execution logic, preprocessing steps, convolutional tokenization, transformer attention sequence, classification, and Grad-CAM explainability workflow executing during clinical inference requests.
 
 \begin{figure}[H]
     \centering
-    \adjustbox{max width=0.98\linewidth, max height=0.72\textheight, keepaspectratio, center}{\input{diagrams/fig1_3_multiagent_communication_flowchart.tex}}
-    \caption{System flowchart detailing otoscopic image ingestion, validation checks, CLAHE preprocessing, CoMViT model inference, Grad-CAM++ generation, and clinical review.}
+    \includegraphics[width=0.92\linewidth, height=0.83\textheight, keepaspectratio]{diagrams/flowchart.jpeg}
+    \caption{System flowchart detailing otoscopic image ingestion, preprocessing, convolutional tokenization, Locality Self-Attention transformer encoding, classification, and Grad-CAM explanation generation.}
     \label{fig:multiagent_flowchart}
 \end{figure}
 
 \subsection{System Algorithm}
-The complete operational algorithm is formalized below across twelve sequential operational steps:
+The complete operational algorithm of the ear disease classification and explainability framework is formalized below across six sequential stages:
 
-\subsubsection*{Step 1: Otoscopic Image Acquisition and Stream Sanitization}
+\subsubsection*{Step 1: Data Loading and Preprocessing}
 \begin{enumerate}
-  \item[\textbf{1.1}] Ingest raw otoscopic file payload $\mathcal{F}_{\text{in}}$ via HTTP multipart upload or live digital otoscope feed.
-  \item[\textbf{1.2}] Perform MIME header verification for valid JPEG, PNG, or BMP formats.
-  \item[\textbf{1.3}] Validate payload size boundary: Verify $\mathrm{size}(\mathcal{F}_{\text{in}}) \le 10\,\mathrm{MB}$; emit HTTP 413 on violation.
-  \item[\textbf{1.4}] Perform byte-level decoding audit using PIL; reject corrupt uploads with HTTP 400.
-\end{enumerate}
-
-\subsubsection*{Step 2: Multi-Source Dataset Harmonization and Curriculum Partitioning}
-\begin{enumerate}
-  \item[\textbf{2.1}] Aggregate verified otoscopic images into five target classes: $\mathcal{C} = \{\text{AOM}, \text{CSOM}, \text{Earwax}, \text{Normal}, \text{Tympanosclerosis}\}$.
-  \item[\textbf{2.2}] Partition dataset into stratified curriculum splits with fixed seed $s = 42$: $\mathcal{D}_{\text{train}} : \mathcal{D}_{\text{val}} : \mathcal{D}_{\text{test}} = 0.70 : 0.15 : 0.15$.
-  \item[\textbf{2.3}] Stratify class ratios identically across splits to prevent class distributional drift.
-\end{enumerate}
-
-\subsubsection*{Step 3: Contrast Limited Adaptive Histogram Equalization (CLAHE)}
-\begin{enumerate}
-  \item[\textbf{3.1}] Convert input RGB image $\mathbf{I}$ into LAB color space: $\mathbf{I}_{\text{LAB}} = \mathrm{RGB2LAB}(\mathbf{I})$.
-  \item[\textbf{3.2}] Apply CLAHE to the luminance ($L$) channel with clip limit $C_L = 2.0$ over an $8 \times 8$ grid of contextual tiles:
+  \item[\textbf{1.1}] Import the otoscopic dataset encompassing the five diagnostic categories: Earwax, Normal, Acute Otitis Media (AOM), Chronic Suppurative Otitis Media (CSOM), and Tympanosclerosis.
+  \item[\textbf{1.2}] Split the dataset into training, validation, and testing sets.
+  \item[\textbf{1.3}] Resize every image to $224 \times 224$ pixels and normalize pixel values to $[0, 1]$:
     \begin{equation}
-      L_{\text{CLAHE}} = \mathrm{CLAHE}(L, \text{clipLimit}=2.0, \text{tileGridSize}=(8, 8))
+      x' = \frac{x}{255}
     \end{equation}
-  \item[\textbf{3.3}] Merge enhanced $L_{\text{CLAHE}}$ with original $A$ and $B$ channels and convert back to RGB: $\mathbf{I}_{\text{CLAHE}} = \mathrm{LAB2RGB}(L_{\text{CLAHE}}, A, B)$.
+  \item[\textbf{1.4}] Apply data augmentation (rotation, horizontal and vertical flipping, brightness adjustments, and zooming) to the training set (optional).
 \end{enumerate}
 
-\subsubsection*{Step 4: Spatial Standardization and Online Data Augmentation}
+\subsubsection*{Step 2: Convolutional Tokenization}
 \begin{enumerate}
-  \item[\textbf{4.1}] Resize $\mathbf{I}_{\text{CLAHE}}$ to $224 \times 224$ pixels via bilinear interpolation.
-  \item[\textbf{4.2}] Apply stochastic online augmentation during training:
-    \begin{itemize}
-      \item[\textbf{4.2.1}] Random Horizontal and Vertical Flips ($p = 0.50$).
-      \item[\textbf{4.2.2}] Random Rotation within bounds $\theta \in [-15^\circ, +15^\circ]$.
-      \item[\textbf{4.2.3}] Random Affine Scaling ($0.9 \times$ to $1.1 \times$) and subtle shear.
-    \end{itemize}
+  \item[\textbf{2.1}] Input the preprocessed image ($224 \times 224 \times 3$) to the tokenizer configured with two convolutional stages.
+  \item[\textbf{2.2}] Apply $\text{Conv2D}\,(7 \times 7)$ filters to extract inductive local features such as edges and textures.
+  \item[\textbf{2.3}] Apply Rectified Linear Unit activation, $f(x) = \max(0, x)$, and max pooling to reduce the spatial size to $56 \times 56 \times 256$.
+  \item[\textbf{2.4}] Flatten the feature map into $N = 3136$ tokens of dimension $D = 256$ and add learnable positional embeddings.
 \end{enumerate}
 
-\subsubsection*{Step 5: Controlled MixUp Regularization}
+\subsubsection*{Step 3: Transformer Encoder (Repeated 7 Times)}
 \begin{enumerate}
-  \item[\textbf{5.1}] Sample mixing coefficient $\lambda \sim \mathrm{Beta}(\alpha, \alpha)$ with $\alpha = 0.20$.
-  \item[\textbf{5.2}] Generate synthesized training exemplar and continuous target vector:
+  \item[\textbf{3.1}] Apply Layer Normalization ($\mathrm{LN}$) to the token sequence $\mathbf{Z} \in \mathbb{R}^{N \times D}$.
+  \item[\textbf{3.2}] Apply Locality Self-Attention (LSA) with a diagonal mask and a learnable temperature $\tau$:
+    \begin{equation}
+      \mathrm{Attention}(\mathbf{Q}, \mathbf{K}, \mathbf{V}) = \mathrm{softmax}\left( \frac{\mathbf{Q}\mathbf{K}^T}{\tau} + \mathbf{M} \right) \mathbf{V}, \quad M_{ii} = -\infty
+    \end{equation}
+  \item[\textbf{3.3}] Add the residual connection following the attention mechanism:
+    \begin{equation}
+      \mathbf{Z}' = \mathbf{Z} + \mathrm{LSA}\big( \mathrm{LN}(\mathbf{Z}) \big)
+    \end{equation}
+  \item[\textbf{3.4}] Apply Layer Normalization, feed into the Multi-Layer Perceptron (MLP feed-forward network with GELU activation), and add the residual connection:
+    \begin{equation}
+      \mathbf{Z}'' = \mathbf{Z}' + \mathrm{MLP}\big( \mathrm{LN}(\mathbf{Z}') \big)
+    \end{equation}
+\end{enumerate}
+
+\subsubsection*{Step 4: Sequence Pooling, Classification and Loss Computation}
+\begin{enumerate}
+  \item[\textbf{4.1}] Apply learnable sequence pooling (without requiring a dedicated [CLS] token) to generate a weighted summary representation across all tokens:
+    \begin{equation}
+      \mathbf{a} = \mathrm{softmax}\Big( \mathrm{Linear}\big( \mathrm{LN}(\mathbf{Z}) \big) \Big), \quad \mathbf{z} = \mathbf{a}^T \mathbf{Z} \quad (1 \times 256)
+    \end{equation}
+  \item[\textbf{4.2}] Apply Dropout regularization, followed by a fully-connected projection classification layer ($256 \to 5$).
+  \item[\textbf{4.3}] Apply the Softmax activation function to calculate the posterior probability for each of the 5 classes:
+    \begin{equation}
+      P_i = \frac{\exp(z_i)}{\sum_{j=1}^5 \exp(z_j)}, \quad i \in \{1, \dots, 5\}
+    \end{equation}
+  \item[\textbf{4.4}] Compute the categorical cross-entropy loss, backpropagate error gradients, and update network parameters using the Adam optimizer:
+    \begin{equation}
+      \mathcal{L} = -\sum_{i=1}^5 y_i \log(P_i)
+    \end{equation}
+\end{enumerate}
+
+\subsubsection*{Step 5: Model Evaluation}
+\begin{enumerate}
+  \item[\textbf{5.1}] Evaluate the trained model on the unseen validation and test partitions.
+  \item[\textbf{5.2}] Calculate Accuracy, Precision, Recall, and F1-score (per diagnostic class, followed by macro-averaging across all five classes):
     \begin{align}
-      \tilde{\mathbf{x}} &= \lambda \mathbf{x}_i + (1 - \lambda) \mathbf{x}_j \\
-      \tilde{\mathbf{y}} &= \lambda \mathbf{y}_i + (1 - \lambda) \mathbf{y}_j
+      \mathrm{Accuracy}  &= \frac{\mathrm{TP} + \mathrm{TN}}{\mathrm{TP} + \mathrm{TN} + \mathrm{FP} + \mathrm{FN}} \\
+      \mathrm{Precision} &= \frac{\mathrm{TP}}{\mathrm{TP} + \mathrm{FP}} \\
+      \mathrm{Recall}    &= \frac{\mathrm{TP}}{\mathrm{TP} + \mathrm{FN}} \\
+      \text{F1-score}    &= \frac{2 \times (\mathrm{Precision} \times \mathrm{Recall})}{\mathrm{Precision} + \mathrm{Recall}}
     \end{align}
 \end{enumerate}
 
-\subsubsection*{Step 6: Tensor Normalization and Device Allocation}
+\subsubsection*{Step 6: Generate a Grad-CAM Explanation}
 \begin{enumerate}
-  \item[\textbf{6.1}] Convert image matrix into Float32 tensor scaled to $[0.0, 1.0]$.
-  \item[\textbf{6.2}] Normalize RGB channels using ImageNet statistics $\boldsymbol{\mu} = [0.485, 0.456, 0.406]$, $\boldsymbol{\sigma} = [0.229, 0.224, 0.225]$.
-  \item[\textbf{6.3}] Pin memory and transfer tensor to active compute device (CUDA GPU or CPU).
-\end{enumerate}
-
-\subsubsection*{Step 7: CoMViT Local-Global Feature Encoding}
-\begin{enumerate}
-  \item[\textbf{7.1}] Pass normalized tensor through convolutional patch stem to extract local eardrum inductive tokens:
+  \item[\textbf{6.1}] Preprocess the new otoscopic image, predict the target class $\hat{c} = \arg\max(\mathbf{P})$, and extract the Grad-CAM activation heatmap from the final convolutional feature map to identify the anatomical regions contributing to the prediction.
+  \item[\textbf{6.2}] Calculate the importance weights of the feature maps using backpropagated gradients:
     \begin{equation}
-      \mathbf{z}_0 = [\mathbf{x}_{\text{class}}; \, \mathbf{E}\mathbf{x}_p^1; \, \dots; \, \mathbf{E}\mathbf{x}_p^N] + \mathbf{E}_{\text{pos}}
+      \alpha_k^c = \frac{1}{Z} \sum_i \sum_j \frac{\partial y^c}{\partial A_{ij}^k}
     \end{equation}
-  \item[\textbf{7.2}] Propagate tokens across $L$ CoMViT transformer layers combining Multi-Head Self-Attention (MHSA) and MLP blocks:
-    \begin{align}
-      \mathbf{z}'_l &= \mathrm{MHSA}\big(\mathrm{LN}(\mathbf{z}_{l-1})\big) + \mathbf{z}_{l-1} \\
-      \mathbf{z}_l &= \mathrm{MLP}\big(\mathrm{LN}(\mathbf{z}'_l)\big) + \mathbf{z}'_l
-    \end{align}
-\end{enumerate}
-
-\subsubsection*{Step 8: Multi-Class Classification and Softmax Logit Scoring}
-\begin{enumerate}
-  \item[\textbf{8.1}] Extract terminal class token $\mathbf{z}_L^0$ and project through the linear classification head:
+  \item[\textbf{6.3}] Generate the localization heatmap using weighted feature maps and Rectified Linear Unit (ReLU) activation:
     \begin{equation}
-      \mathbf{z} = \mathbf{W}_{\text{cls}} \mathbf{z}_L^0 + \mathbf{b}_{\text{cls}} \in \mathbb{R}^5
+      L_{\text{Grad-CAM}}^c = \mathrm{ReLU}\left( \sum_k \alpha_k^c A^k \right)
     \end{equation}
-  \item[\textbf{8.2}] Compute posterior class probabilities via Softmax:
-    \begin{equation}
-      \hat{y}_c = \frac{\exp(z_c)}{\sum_{j=1}^5 \exp(z_j)} \quad \text{for } c \in \{\text{AOM}, \text{CSOM}, \text{Earwax}, \text{Normal}, \text{Tympanosclerosis}\}
-    \end{equation}
-  \item[\textbf{8.3}] Predict disease class $\hat{c} = \arg\max_c \hat{y}_c$ and confidence score $\kappa = \max_c \hat{y}_c$.
-\end{enumerate}
-
-\subsubsection*{Step 9: Optimization and Adaptive Curriculum Pacing}
-\begin{enumerate}
-  \item[\textbf{9.1}] Update network parameters $\theta$ using AdamW ($\eta = 10^{-4}$, weight decay $\lambda = 10^{-4}$) minimizing curriculum-weighted loss:
-    \begin{equation}
-      \mathcal{L}(\theta) = -\sum_{c=1}^5 \tilde{y}_c \log \hat{y}_c
-    \end{equation}
-  \item[\textbf{9.2}] Track validation loss $\mathcal{L}_{\text{val}}$ after each epoch; save optimal weights to \texttt{checkpoints/comvit\_best.pt}.
-  \item[\textbf{9.3}] Halt training if validation loss fails to improve for 7 consecutive epochs.
-\end{enumerate}
-
-\subsubsection*{Step 10: Grad-CAM++ Higher-Order Gradient Computation}
-\begin{enumerate}
-  \item[\textbf{10.1}] Register backward hook on the terminal transformer feature block.
-  \item[\textbf{10.2}] Compute second- and third-order partial derivatives of score $Y^{\hat{c}} = \exp(z_{\hat{c}})$ w.r.t activation map $A^k$.
-  \item[\textbf{10.3}] Calculate positive neuron importance weights $\alpha_{ijk}^{\hat{c}}$ and channel weights $w_k^{\hat{c}}$.
-  \item[\textbf{10.4}] Generate the rectified localization map: $M_{\text{cam}} = \mathrm{ReLU}\left( \sum_k w_k^{\hat{c}} A^k \right)$.
-\end{enumerate}
-
-\subsubsection*{Step 11: Heatmap Standardization and Visual Superimposition}
-\begin{enumerate}
-  \item[\textbf{11.1}] Normalize saliency map: $M_{\text{norm}} = \frac{M_{\text{cam}}}{\max(M_{\text{cam}}) + 10^{-8}}$.
-  \item[\textbf{11.2}] Upsample $M_{\text{norm}}$ to $224 \times 224$ via bilinear interpolation.
-  \item[\textbf{11.3}] Map intensities to RGB Jet colormap and alpha-blend with original otoscopic image:
-    \begin{equation}
-      \mathbf{I}_{\text{overlay}} = \beta \cdot \mathbf{I}_{\text{orig}} + (1 - \beta) \cdot \mathrm{JetColor}(M_{\text{norm}})
-    \end{equation}
-    with transparency factor $\beta = 0.60$.
-\end{enumerate}
-
-\subsubsection*{Step 12: Asynchronous REST Serving and Client Delivery}
-\begin{enumerate}
-  \item[\textbf{12.1}] Package diagnostic results into strongly-typed Pydantic JSON payload:
-    \begin{equation}
-    \begin{aligned}
-      \mathcal{R} = \big\{ & \texttt{"success"}: \mathrm{true}, \; \texttt{"predicted\_class"}: \hat{c}, \; \texttt{"confidence"}: \kappa, \\
-                           & \texttt{"probabilities"}: \hat{\mathbf{y}}, \; \texttt{"latency\_ms"}: t \big\}
-    \end{aligned}
-    \end{equation}
-  \item[\textbf{12.2}] Append clinical decision-support advisory notice.
-  \item[\textbf{12.3}] Transmit JSON and heatmap overlay to web and mobile client interfaces in sub-50ms.
+  \item[\textbf{6.4}] Overlay the rectified heatmap on the original otoscopic image to visualize the decisive regions for clinical interpretability.
 \end{enumerate}
 
 \subsection{CoMViT Structural Topology and Layer Decomposition}
