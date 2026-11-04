@@ -35,7 +35,7 @@
     -{Stealth[scale=0.85]}, line width=1.0pt, draw=lavenderDark!90
   },
   fklabel/.style={
-    font=\fontsize{6.2}{7.2}\selectfont\bfseries, fill=white, inner sep=1.5pt, text=lavenderDark
+    font=\fontsize{7.0}{8.2}\selectfont\bfseries, fill=white, inner sep=1.5pt, text=lavenderDark
   }
 ]
 
@@ -43,9 +43,9 @@
   
   % Table 1: merged_otoscopic_dataset_store
   \node[tblcard] (dataset) at (-5.2, 2.5) {%
-    \centerline{\color{lavenderDark}\faFolderOpen\ \textbf{\fontsize{8.0}{9.5}\selectfont merged\_otoscopic\_dataset}}\\[3pt]
+    \centerline{\color{lavenderDark}\faFolderOpen\ \textbf{\fontsize{8.6}{10.2}\selectfont merged\_otoscopic\_dataset}}\\[3pt]
     \rule{\linewidth}{0.4pt}\\[3pt]
-    {\fontsize{6.8}{8.0}\selectfont
+    {\fontsize{7.6}{9.0}\selectfont
     \textbf{\color{lavenderDark}[PK]} \texttt{image\_id}: \textit{string} (Indexed)\\
     \textbf{\color{prismTeal}[FLD]} \texttt{class\_label}: \textit{AOM/CSOM/WAX/NORM/TS}\\
     \textbf{\color{prismDark!80}[FLD]} \texttt{split}: \textit{train / val / test (Curriculum)}\\
@@ -55,9 +55,9 @@
 
   % Table 2: training_curriculum_store
   \node[tblcard, below=0.70cm of dataset] (config) {%
-    \centerline{\color{lavenderDark}\faCogs\ \textbf{\fontsize{8.0}{9.5}\selectfont training\_curriculum\_store}}\\[3pt]
+    \centerline{\color{lavenderDark}\faCogs\ \textbf{\fontsize{8.6}{10.2}\selectfont training\_curriculum\_store}}\\[3pt]
     \rule{\linewidth}{0.4pt}\\[3pt]
-    {\fontsize{6.8}{8.0}\selectfont
+    {\fontsize{7.6}{9.0}\selectfont
     \textbf{\color{lavenderDark}[PK]} \texttt{config\_id}: \textit{string} (UUID)\\
     \textbf{\color{prismDark!80}[FLD]} \texttt{image\_size}: \textit{224} $\cdot$ \texttt{batch\_size}: \textit{32}\\
     \textbf{\color{prismDark!80}[FLD]} \texttt{mixup\_alpha}: \textit{0.2 (Beta distribution)}\\
@@ -70,9 +70,9 @@
   
   % Table 3: comvit_model_store
   \node[tblcard] (checkpoint) at (0, 2.5) {%
-    \centerline{\color{lavenderDark}\faDatabase\ \textbf{\fontsize{8.0}{9.5}\selectfont comvit\_model\_store}}\\[3pt]
+    \centerline{\color{lavenderDark}\faDatabase\ \textbf{\fontsize{8.6}{10.2}\selectfont comvit\_model\_store}}\\[3pt]
     \rule{\linewidth}{0.4pt}\\[3pt]
-    {\fontsize{6.8}{8.0}\selectfont
+    {\fontsize{7.6}{9.0}\selectfont
     \textbf{\color{lavenderDark}[PK]} \texttt{checkpoint\_id}: \textit{timestamp}\\
     \textbf{\color{prismTeal}[FK]} \texttt{config\_id}: \textit{curriculum ref}\\
     \textbf{\color{prismDark!80}[FLD]} \texttt{architecture}: \textit{CoMViT (Hybrid ViT)}\\
@@ -83,9 +83,9 @@
 
   % Table 4: evaluation_telemetry_store
   \node[tblcard, below=0.70cm of checkpoint] (eval) {%
-    \centerline{\color{lavenderDark}\faChartLine\ \textbf{\fontsize{8.0}{9.5}\selectfont evaluation\_telemetry\_store}}\\[3pt]
+    \centerline{\color{lavenderDark}\faChartLine\ \textbf{\fontsize{8.6}{10.2}\selectfont evaluation\_telemetry\_store}}\\[3pt]
     \rule{\linewidth}{0.4pt}\\[3pt]
-    {\fontsize{6.8}{8.0}\selectfont
+    {\fontsize{7.6}{9.0}\selectfont
     \textbf{\color{lavenderDark}[PK]} \texttt{eval\_id}: \textit{UUID}\\
     \textbf{\color{prismTeal}[FK]} \texttt{checkpoint\_id}: \textit{model reference}\\
     \textbf{\color{prismDark!80}[FLD]} \texttt{multi\_class\_acc}: \textit{test benchmark}\\
@@ -98,9 +98,9 @@
   
   % Table 5: api_prediction_schema
   \node[tblcard] (prediction) at (5.2, 2.5) {%
-    \centerline{\color{lavenderDark}\faServer\ \textbf{\fontsize{8.0}{9.5}\selectfont api\_prediction\_schema}}\\[3pt]
+    \centerline{\color{lavenderDark}\faServer\ \textbf{\fontsize{8.6}{10.2}\selectfont api\_prediction\_schema}}\\[3pt]
     \rule{\linewidth}{0.4pt}\\[3pt]
-    {\fontsize{6.8}{8.0}\selectfont
+    {\fontsize{7.6}{9.0}\selectfont
     \textbf{\color{lavenderDark}[PK]} \texttt{prediction\_id}: \textit{UUID}\\
     \textbf{\color{prismTeal}[FK]} \texttt{checkpoint\_id}: \textit{active CoMViT}\\
     \textbf{\color{prismDark!80}[FLD]} \texttt{success}: \textit{boolean (true)}\\
@@ -113,9 +113,9 @@
 
   % Table 6: client_ui_state_schema
   \node[tblcard, below=0.70cm of prediction] (client) {%
-    \centerline{\color{lavenderDark}\faDesktop\ \textbf{\fontsize{8.0}{9.5}\selectfont client\_ui\_state\_schema}}\\[3pt]
+    \centerline{\color{lavenderDark}\faDesktop\ \textbf{\fontsize{8.6}{10.2}\selectfont client\_ui\_state\_schema}}\\[3pt]
     \rule{\linewidth}{0.4pt}\\[3pt]
-    {\fontsize{6.8}{8.0}\selectfont
+    {\fontsize{7.6}{9.0}\selectfont
     \textbf{\color{lavenderDark}[PK]} \texttt{session\_id}: \textit{UUID}\\
     \textbf{\color{prismTeal}[FK]} \texttt{prediction\_id}: \textit{payload reference}\\
     \textbf{\color{prismDark!80}[FLD]} \texttt{otoscopy\_preview}: \textit{blob/base64}\\

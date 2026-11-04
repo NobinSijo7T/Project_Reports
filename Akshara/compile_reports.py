@@ -68,16 +68,25 @@ print(f"main.pdf updated successfully ({os.path.getsize('main.pdf')} bytes)")
 print("\n=== Verification with pdftotext ===")
 for student in students:
     for alias in [student["aliases"][0]]:
-        # Page 4 is the individual certificate page (page 1: cover, page 2: vision/mission, page 3: group cert, page 4: individual cert)
-        cmd = ["pdftotext", "-f", "4", "-l", "4", alias, "-"]
+        # Page 3 is the individual certificate page (page 1: cover, page 2: vision/mission, page 3: individual cert, page 4: declaration)
+        cmd = ["pdftotext", "-f", "3", "-l", "3", alias, "-"]
         txt_proc = subprocess.run(cmd, capture_output=True, text=True)
         out = txt_proc.stdout
         has_name = student["name"] in out
         has_roll = student["roll"] in out
-        print(f"{alias} Page 4 Certificate Check: Name match={has_name}, Roll match={has_roll}")
+        print(f"{alias} Page 3 Certificate Check: Name match={has_name}, Roll match={has_roll}")
         if not (has_name and has_roll):
             print(f"ERROR: Verification failed for {alias}!")
             print(out)
             exit(1)
+
+# Verify main.pdf has the team certificate on Page 3 with all students
+main_proc = subprocess.run(["pdftotext", "-f", "3", "-l", "3", "main.pdf", "-"], capture_output=True, text=True)
+main_out = main_proc.stdout
+all_in_main = all(s["name"] in main_out for s in students)
+print(f"main.pdf Page 3 Team Certificate Check: All 3 students present={all_in_main}")
+if not all_in_main:
+    print("ERROR: Team certificate verification failed in main.pdf!")
+    exit(1)
 
 print("\nAll reports compiled and verified successfully!")

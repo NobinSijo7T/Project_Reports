@@ -45,7 +45,7 @@
         rectangle, draw=lavenderDark!85, line width=0.85pt, fill=lavenderLight,
         rounded corners=3.5pt, inner sep=4.5pt, align=left,
         text width=4.10cm,
-        font=\fontsize{7.2}{8.8}\selectfont
+        font=\fontsize{7.8}{9.4}\selectfont
     },
     stagebox/.style={
         rectangle, draw=lavenderDark!40, dashed, rounded corners=5pt, line width=0.8pt,
@@ -73,19 +73,19 @@
     \node [hdrbox] (h1) at (-5.40, 2.20) {1. Ingestion \& CLAHE};
     \node [stepbox, below=0.28cm of h1] (s1_1) {
         \textbf{MIME \& Resolution Check}\\[0.15em]
-        {\fontsize{6.8}{8.0}\selectfont Validation $\le 10$\,MB $\cdot$ Cerumen/Noise Audit}
+        {\fontsize{7.4}{8.8}\selectfont Validation $\le 10$\,MB $\cdot$ Cerumen/Noise Audit}
     };
     \node [stepbox, below=0.28cm of s1_1] (s1_2) {
         \textbf{CLAHE Contrast Equalization}\\[0.15em]
-        {\fontsize{6.8}{8.0}\selectfont Enhance Local Eardrum Morphology \& Details}
+        {\fontsize{7.4}{8.8}\selectfont Enhance Local Eardrum Morphology \& Details}
     };
     \node [stepbox, below=0.28cm of s1_2] (s1_3) {
         \textbf{Spatial Transformation}\\[0.15em]
-        {\fontsize{6.8}{8.0}\selectfont RGB Mapping $\cdot$ Standard Resize $224\times 224$}
+        {\fontsize{7.4}{8.8}\selectfont RGB Mapping $\cdot$ Standard Resize $224\times 224$}
     };
     \node [stepbox, below=0.28cm of s1_3] (s1_4) {
         \textbf{Data Augment \& MixUp}\\[0.15em]
-        {\fontsize{6.8}{8.0}\selectfont Controlled Linear Mix $\cdot$ Curriculum Weighting}
+        {\fontsize{7.4}{8.8}\selectfont Controlled Linear Mix $\cdot$ Curriculum Weighting}
     };
 
     \draw [flowarr] (s1_1) -- (s1_2);
@@ -101,7 +101,7 @@
     \node [enginebox, below=0.28cm of h2] (s2_1) {
         \centering\textbf{\fontsize{8.0}{9.5}\selectfont\color{lavenderDark}CoMViT Architecture}\\[0.2em]
         {\color{lavenderMedium!60}\rule{\linewidth}{0.5pt}}\\[0.28em]
-        {\fontsize{7.0}{8.5}\selectfont
+        {\fontsize{7.6}{9.2}\selectfont
         $\bullet$ \textbf{Convolutional Stem:} Inductive local patches\\[0.22em]
         $\bullet$ \textbf{Multi-Head Self-Attention:} Global TM context\\[0.22em]
         $\bullet$ \textbf{Hybrid Blocks:} Combines fine texture \& shape\\[0.22em]
@@ -110,7 +110,7 @@
 
     \node [stepbox, below=0.28cm of s2_1] (s2_2) {
         \textbf{5-Class Softmax Head}\\[0.15em]
-        {\fontsize{6.8}{8.0}\selectfont Linear Classifier $\to$ AOM, CSOM, Wax, Normal, TS}
+        {\fontsize{7.4}{8.8}\selectfont Linear Classifier $\to$ AOM, CSOM, Wax, Normal, TS}
     };
 
     \draw [flowarr] (s2_1) -- (s2_2);
@@ -123,15 +123,15 @@
     \node [hdrbox] (h3) at (5.40, 2.20) {3. Grad-CAM++ \& Delivery};
     \node [stepbox, below=0.38cm of h3] (s3_1) {
         \textbf{Grad-CAM++ Hook Registration}\\[0.2em]
-        {\fontsize{6.8}{8.0}\selectfont 2nd-order gradients on terminal block}
+        {\fontsize{7.4}{8.8}\selectfont 2nd-order gradients on terminal block}
     };
     \node [stepbox, below=0.48cm of s3_1] (s3_2) {
         \textbf{Saliency Map Generation}\\[0.2em]
-        {\fontsize{6.8}{8.0}\selectfont Positive weights $\alpha_{ijk}^c \to$ Jet Color TM Overlay}
+        {\fontsize{7.4}{8.8}\selectfont Positive weights $\alpha_{ijk}^c \to$ Jet Color TM Overlay}
     };
     \node [stepbox, below=0.48cm of s3_2, fill=lavenderLight] (s3_3) {
         \textbf{Low-Latency Clinical Delivery}\\[0.2em]
-        {\fontsize{6.8}{8.0}\selectfont FastAPI Serving $\le 50$\,ms $\cdot$ Web / Mobile Portal}
+        {\fontsize{7.4}{8.8}\selectfont FastAPI Serving $\le 50$\,ms $\cdot$ Web / Mobile Portal}
     };
 
     \draw [flowarr] (s3_1) -- (s3_2);

@@ -36,10 +36,10 @@
     drop shadow={shadow xshift=0.8pt, shadow yshift=-0.8pt, opacity=0.10}},
   dagarrow/.style={-{Stealth[scale=0.85]}, line width=1.15pt, draw=prismTeal!95!black},
   blkbox/.style={rectangle, rounded corners=4pt, line width=0.85pt,
-    minimum height=1.40cm, text width=2.40cm, align=center,
+    minimum height=1.40cm, text width=2.05cm, align=center,
     font=\fontsize{7.2}{8.5}\selectfont, drop shadow={shadow xshift=0.6pt, shadow yshift=-0.6pt, opacity=0.12}},
   transbox/.style={rectangle, rounded corners=3pt, line width=0.80pt,
-    draw=prismTeal!80, fill=cStage1!60, minimum height=1.15cm, text width=1.45cm, align=center,
+    draw=prismTeal!80, fill=cStage1!60, minimum height=1.15cm, text width=1.20cm, align=center,
     font=\fontsize{6.5}{7.6}\selectfont},
   skipconn/.style={-{Stealth[scale=0.75]}, line width=0.85pt, draw=prismNavy, dashed}
 ]
@@ -58,48 +58,48 @@
   \draw[draw=lavenderBorder, line width=0.6pt] (-7.5, -0.90) -- (7.5, -0.90);
 
   % Row 2 & 3: Detailed Layer Decomposition Flow
-  \node[blkbox, fill=cInput, draw=prismSlate!80] (input_node) at (-6.50, -2.60) {
+  \node[blkbox, fill=cInput, draw=prismSlate!80] (input_node) at (-6.20, -2.60) {
     \textbf{Input Otoscopy}\\[2pt]
     $224\times 224\times 3$\\[1pt]
     {\fontsize{6.0}{7.0}\selectfont CLAHE Enhanced}
   };
 
-  \node[blkbox, fill=cStem, draw=lavenderDark] (stem_node) at (-4.20, -2.60) {
+  \node[blkbox, fill=cStem, draw=lavenderDark] (stem_node) at (-4.10, -2.60) {
     \textbf{Conv Stem}\\[2pt]
     $3\times 3$ Strided Conv\\
     Inductive Local Bias\\
     Feature Maps
   };
 
-  \node[blkbox, fill=cStage4, draw=prismBlue!90] (token_node) at (-1.65, -2.60) {
+  \node[blkbox, fill=cStage4, draw=prismBlue!90] (token_node) at (-2.00, -2.60) {
     \textbf{Patch Tokenizer}\\[2pt]
     $16\times 16$ Patches\\
     Positional Embed\\
     + $[x_{\text{class}}]$ Token
   };
 
-  \node[transbox] (tr1) at (0.35, -2.60) {
+  \node[transbox] (tr1) at (0.00, -2.60) {
     \textbf{LayerNorm}\\[1pt]
     Pre-LN\\
     Dropout\\
     Residual
   };
 
-  \node[blkbox, fill=cStage2, draw=prismGold!90] (vit1) at (2.40, -2.60) {
+  \node[blkbox, fill=cStage2, draw=prismGold!90] (vit1) at (2.20, -2.60) {
     \textbf{CoMViT Block 1}\\[2pt]
     Multi-Head Attn\\
     8 Parallel Heads\\
     Query/Key/Value
   };
 
-  \node[transbox] (tr2) at (4.45, -2.60) {
+  \node[transbox] (tr2) at (4.30, -2.60) {
     \textbf{MLP Block}\\[1pt]
     GELU Act\\
     Linear $D\to 4D$\\
     Linear $4D\to D$
   };
 
-  \node[blkbox, fill=cStage3, draw=statusFail!70] (vit2) at (6.50, -2.60) {
+  \node[blkbox, fill=cStage3, draw=statusFail!70] (vit2) at (6.40, -2.60) {
     \textbf{CoMViT Block 2}\\[2pt]
     Local-Global Fusion\\
     Spatial Attention\\
@@ -107,33 +107,33 @@
   };
 
   % Second Row of Layers
-  \node[transbox] (tr3) at (6.50, -4.80) {
+  \node[transbox] (tr3) at (6.20, -4.80) {
     \textbf{LayerNorm}\\[1pt]
     Stable Scale\\
     Post-Attn\\
     Latent Space
   };
 
-  \node[blkbox, fill=cHead, draw=lavenderDark!90, text width=2.80cm] (vitL) at (3.30, -4.80) {
+  \node[blkbox, fill=cHead, draw=lavenderDark!90, text width=2.40cm] (vitL) at (3.10, -4.80) {
     \textbf{CoMViT Block $L$ (Terminal)}\\[2pt]
     Multi-Head Attention Layers\\[1pt]
     {\color{prismTeal}\textbf{[Grad-CAM++ Hook Point]}}\\[1pt]
     {\fontsize{6.0}{7.0}\selectfont Captures TM Pathology Cues}
   };
 
-  \node[blkbox, fill=cInput, draw=prismNavy] (cls_token) at (0.20, -4.80) {
+  \node[blkbox, fill=cInput, draw=prismNavy] (cls_token) at (0.00, -4.80) {
     \textbf{Class Token Extract}\\[2pt]
     $\mathbf{z}_L^0 \in \mathbb{R}^D$\\[1pt]
     {\fontsize{6.0}{7.0}\selectfont Global Eardrum Summary}
   };
 
-  \node[blkbox, fill=cStage1, draw=prismTeal!90, text width=2.60cm] (head) at (-3.10, -4.80) {
+  \node[blkbox, fill=cStage1, draw=prismTeal!90, text width=2.25cm] (head) at (-3.00, -4.80) {
     \textbf{Linear Classifier Head}\\[2pt]
     Projection $D \to 5$ Classes\\[1pt]
     Logits $z_1 \dots z_5$
   };
 
-  \node[blkbox, fill=lavenderLight, draw=lavenderDark, text width=2.50cm] (softmax) at (-6.20, -4.80) {
+  \node[blkbox, fill=lavenderLight, draw=lavenderDark, text width=2.20cm] (softmax) at (-6.00, -4.80) {
     \textbf{5-Class Softmax}\\[2pt]
     AOM, CSOM, Earwax,\\
     Normal, Tympanosclerosis\\[1pt]

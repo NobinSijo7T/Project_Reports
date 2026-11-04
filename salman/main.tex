@@ -70,6 +70,7 @@
 \usepackage{array}
 \usepackage{tabularx}
 \usepackage{hyperref}
+\renewcommand{\textbf}[1]{#1}
 
 \hypersetup{
     plainpages=false,
@@ -113,7 +114,7 @@
 \gdef \rollnoD{KNP23CS092}
 
 \gdef \acadyear{2026--2027}
-\gdef \submonth{October 2026}
+\gdef \submonth{November 2026}
 \gdef \month{October 2026}
 \gdef \date{28-10-2026}
 \gdef \dept{Computer Science and Engineering}
@@ -127,11 +128,11 @@
 \gdef \guide{Mrs. Shameena N}
 \gdef \guidedes{Assistant Professor}
 \gdef \coordinator{Dr. Leena Silvoster}
-\gdef \coordinatordes{Associate Professor}
+\gdef \coordinatordes{Professor}
 \gdef \semcordinatorA{Dr. Leena Silvoster}
-\gdef \semcordinatorAdes{Associate Professor}
-\gdef \hod{Dr. Smitha P}
-\gdef \hoddes{Associate Professor and HOD}
+\gdef \semcordinatorAdes{Professor}
+\gdef \hod{Dr. Leena Silvoster}
+\gdef \hoddes{Professor and HOD}
 
 % Individual candidate credentials (defined by wrapper files main_salaman.tex, etc.)
 % When compiling main.tex directly, candidateName is undefined so the second individual certificate is omitted.
@@ -148,9 +149,10 @@
 \hypersetup{pageanchor=false}
 \include{coverpage}
 \include{vision_mission}
-\include{certificate1}
 \ifdefined\candidateName
 \include{certificate_individual}
+\else
+\include{certificate1}
 \fi
 \include{declaration}
 \hypersetup{pageanchor=true}
@@ -195,6 +197,34 @@
 % CHAPTER 1: INTRODUCTION
 %==============================================================================
 \chapter[Introduction]{\Huge Introduction}
+
+This project develops a computer-aided screening system for five otoscopic image classes: Acute Otitis Media (AOM), Chronic Suppurative Otitis Media (CSOM), Earwax, Normal, and Tympanosclerosis. The system supports clinical review and does not replace examination by a qualified healthcare professional.
+
+\section{Input}
+
+The system accepts a colour image captured using a digital otoscope or otoendoscope through a web or mobile interface. Supported input formats are JPEG, PNG, and BMP. Each image is checked for file integrity, dimensions, and basic usability before processing. The development dataset contains labelled otoscopic and eardrum images divided into training, validation, and testing partitions using the specified 70\%, 15\%, and 15\% proportions.
+
+\section{Processes Between Input and Output}
+
+The input passes through these stages:
+\begin{enumerate}
+    \item \textbf{Validation:} Check file type, byte integrity, dimensions, and image usability.
+    \item \textbf{Preprocessing:} Apply CLAHE, resize images to $224 \times 224$ pixels, and normalize them.
+    \item \textbf{Augmentation:} Use online augmentation, controlled MixUp, and adaptive curriculum learning to improve robustness.
+    \item \textbf{Feature learning:} Use CoMViT to combine convolutional local features with transformer-based global attention.
+    \item \textbf{Classification:} Estimate probabilities for AOM, CSOM, Earwax, Normal, and Tympanosclerosis.
+    \item \textbf{Explainability and delivery:} Generate a Grad-CAM++ heatmap and return the result through the FastAPI service.
+\end{enumerate}
+
+\section{Output}
+
+The system produces a predicted disease class, a five-class probability distribution, processing metadata, and a Grad-CAM++ heatmap showing regions that influenced the prediction. The result is displayed through the clinical web or mobile interface with a clinical decision-support notice.
+
+\section{Project Objective}
+
+The objective is to provide a robust, interpretable, and low-latency screening aid for heterogeneous otoscopic images while maintaining a clear distinction between automated assistance and professional diagnosis.
+
+\iffalse
 
 Ear pathologies and auditory disorders constitute a substantial global healthcare burden, affecting hundreds of millions of children and adults worldwide. Common conditions such as Acute Otitis Media (AOM), Chronic Suppurative Otitis Media (CSOM), cerumen impaction (earwax), and tympanosclerosis represent frequent causes of severe ear pain, persistent otorrhea, conductive hearing loss, and preventable physical disabilities. Physical examination of the external auditory canal and the tympanic membrane (eardrum) using conventional handheld otoscopy or high-resolution digital otoendoscopy serves as the fundamental initial diagnostic modality deployed across primary care clinics, pediatrics, and emergency triage rooms.
 
@@ -249,15 +279,16 @@ The proposed platform is engineered as an objective, low-latency clinical decisi
 The remainder of this report is structured as follows:
 \begin{itemize}
     \item \textbf{Chapter 2 (Literature Review):} Synthesizes contemporary research in otoscopic artificial intelligence, clinical guidelines for AOM, CSOM, and tympanosclerosis, Vision Transformers in medical imaging, cross-dataset generalization, Grad-CAM++ explainability, and edge otoscopy systems, directly citing 15 core research papers from the literature.
-    \item \textbf{Chapter 3 (Problem Definition):} Formulates the mathematical problem definition, describes clinical challenges, defines operational boundaries, and presents the optimization, MixUp, curriculum, and Grad-CAM++ formulations.
-    \item \textbf{Chapter 4 (Requirements Specification):} Details the formal System Requirements Specification (SRS), detailing functional requirements, non-functional quality attributes, and hardware/software specifications.
-    \item \textbf{Chapter 5 (System Design):} Details the multi-tier system architecture, operational workflows, system flowchart, 6-stage end-to-end algorithm, CoMViT structural topology, relational data schemas, and Level-1 Data Flow Diagram (DFD).
-    \item \textbf{Chapter 6 (Design and Methodology):} Expounds the mathematical foundations of CoMViT, CLAHE contrast equalization, controlled MixUp, adaptive curriculum learning, Grad-CAM++ derivations, merged dataset curation, FastAPI serving, and multi-class diagnostic evaluation metrics.
-    \item \textbf{Chapter 7 (Preliminary Analysis):} Presents comparative analyses of deep learning architectures (CNNs vs.\ ViTs vs.\ CoMViT), preprocessing techniques (CLAHE vs.\ standard equalization), explainability methods (Grad-CAM vs.\ Grad-CAM++), and backend serving runtimes.
-    \item \textbf{Chapter 8 (Feasibility Study):} Assesses technical, economic, and schedule feasibility, supported by the project execution Gantt chart.
-    \item \textbf{Chapter 9 (Conclusion and Future Scope):} Summarizes project contributions, discusses clinical limitations, and highlights prospective trajectories including on-device edge deployment and video otoscopy analysis.
+    \item \textbf{Chapter 3 (Dataset Requirements):} Documents the datasets required by the proposed system, their intended use, collection status, and pending verification items.
+    \item \textbf{Chapter 4 (Problem Definition):} Formulates the mathematical problem definition, describes clinical challenges, defines operational boundaries, and presents the optimization, MixUp, curriculum, and Grad-CAM++ formulations.
+    \item \textbf{Chapter 5 (Requirements Specification):} Details the formal System Requirements Specification (SRS), functional requirements, and hardware/software specifications.
+    \item \textbf{Chapter 6 (System Design):} Details the multi-tier system architecture, operational workflows, system flowchart, 6-stage end-to-end algorithm, CoMViT structural topology, and relational data schemas.
+    \item \textbf{Chapter 7 (Design and Methodology):} Expounds the mathematical foundations of CoMViT, CLAHE contrast equalization, controlled MixUp, adaptive curriculum learning, Grad-CAM++ derivations, merged dataset curation, FastAPI serving, and multi-class diagnostic evaluation metrics.
+    \item \textbf{Chapter 8 (Preliminary Analysis):} Presents comparative analyses of deep learning architectures (CNNs vs.\ ViTs vs.\ CoMViT), preprocessing techniques (CLAHE vs.\ standard equalization), explainability methods (Grad-CAM vs.\ Grad-CAM++), and backend serving runtimes.
+    \item \textbf{Chapter 9 (Feasibility Study):} Assesses technical and economic feasibility.
+    \item \textbf{Chapter 10 (Conclusion and Future Scope):} Summarizes project contributions, discusses clinical limitations, and highlights prospective trajectories including on-device edge deployment and video otoscopy analysis.
 \end{itemize}
-
+\fi
 
 %==============================================================================
 % CHAPTER 2: LITERATURE REVIEW
@@ -269,9 +300,13 @@ Automated diagnosis of ear diseases from otoscopic images resides at the conflue
 \section{Clinical Spectrum and Otoscopic Manifestations of Ear Diseases}
 Accurate diagnosis of middle ear pathology depends on recognizing hallmark visual patterns across the tympanic membrane (TM). Hayashi et~al.~\cite{ref_hayashi2020_aom} updated the clinical practice guidelines for the diagnosis and management of Acute Otitis Media (AOM), emphasizing that precise otoscopic evaluation of eardrum erythema (redness), bulging, cloudiness, loss of the light reflex, and impaired mobility is indispensable for classifying disease severity into mild, moderate, or severe. Failure to detect AOM early can result in chronic complications or mastoiditis.
 
-Chronic Suppurative Otitis Media (CSOM) presents as persistent chronic inflammation of the middle ear and mastoid cavity, characterized by recurrent or continuous purulent ear discharge (otorrhea) for over two months through a perforated tympanic membrane. Mahdiani et~al.~\cite{ref_mahdiani2021_csom} analyzed the clinical management and recovery patterns of CSOM patients, noting that permanent perforations in the pars tensa significantly impair acoustic transmission, leading to conductive hearing loss. Onifade et~al.~\cite{ref_onifade2025_csom_prevalence} conducted a systematic review and meta-analysis of 29 community-based studies, revealing a massive global CSOM prevalence of 3.8\% (approximately 297 million people worldwide, with 85\% concentrated in low- and middle-income countries). Importantly, 62\% of affected individuals suffer disabling hearing impairment ($>25$--$30$\,dB), underscoring the vital public health necessity for scalable, automated otoscopic screening.
+Chronic Suppurative Otitis Media (CSOM) presents as persistent chronic inflammation of the middle ear and mastoid cavity, characterized by recurrent or continuous purulent ear discharge (otorrhea) for over two months through a perforated tympanic membrane. Mahdiani et~al.~\cite{ref_mahdiani2021_csom} analyzed the clinical management and recovery patterns of CSOM patients, noting that permanent perforations in the pars tensa significantly impair acoustic transmission, leading to conductive hearing loss. The study was retrospective and management-focused, so its findings do not directly establish the performance of an image-classification system.
 
-Tympanosclerosis is characterized by hyaline degeneration followed by dense calcium phosphate deposit accumulation within the fibrous and submucosal connective tissue layers of the tympanic membrane and ossicular chain. Nemati et~al.~\cite{ref_nemati2021_tympanosclerosis} investigated the microbiological and histopathological parallels between tympanosclerotic plaques and atherosclerosis, highlighting the rigid, chalky-white, crescent-shaped calcifications that compromise eardrum elasticity. Van et~al.~\cite{ref_van2025_tympanosclerosis} investigated matrix metalloproteinase (MMP-2 and MMP-9) expression levels in tympanosclerosis, illustrating how chronic degenerative remodeling of the eardrum produces distinct visual opacifications that must be clearly differentiated from active infectious otitis media or cerumen impaction.
+Onifade et~al.~\cite{ref_onifade2025_csom_prevalence} conducted a systematic review and meta-analysis of 29 community-based studies, revealing a global CSOM prevalence of 3.8\% (approximately 297 million people worldwide, with 85\% concentrated in low- and middle-income countries). Importantly, 62\% of affected individuals suffer disabling hearing impairment ($>25$--$30$\,dB), underscoring the public health necessity for scalable, automated otoscopic screening. As an epidemiological review, the paper does not provide a validated computer-vision methodology or image benchmark.
+
+Tympanosclerosis is characterized by hyaline degeneration followed by dense calcium phosphate deposit accumulation within the fibrous and submucosal connective tissue layers of the tympanic membrane and ossicular chain. Nemati et~al.~\cite{ref_nemati2021_tympanosclerosis} investigated the microbiological and histopathological parallels between tympanosclerotic plaques and atherosclerosis, highlighting the rigid, chalky-white, crescent-shaped calcifications that compromise eardrum elasticity. The study is clinically descriptive rather than a computer-vision benchmark, but it supplies relevant disease characteristics for label definition.
+
+Van et~al.~\cite{ref_van2025_tympanosclerosis} investigated matrix metalloproteinase (MMP-2 and MMP-9) expression levels in tympanosclerosis, illustrating how chronic degenerative remodeling of the eardrum produces distinct visual opacifications that must be clearly differentiated from active infectious otitis media or cerumen impaction. Its molecular focus limits direct conclusions about automated image classification.
 
 \section{Deep Learning and Artificial Intelligence in Otoscopy}
 Automated computer-aided diagnosis for otoscopic imaging has advanced rapidly from handcrafted feature extraction to deep convolutional and transformer architectures. Habib et~al.~\cite{ref_habib2022_ai_otoscopy} conducted a comprehensive systematic review and meta-analysis of artificial intelligence algorithms for classifying ear disease from otoscopy across multiple international databases. Their findings revealed that deep learning algorithms achieve diagnostic accuracy pooled at over 90\%, matching or exceeding general practitioners and approaching the accuracy of certified otolaryngologists. However, Habib et~al.\ identified pervasive methodological weaknesses across the literature, including over-reliance on small, single-center datasets, lack of external validation, high risk of bias, and complete absence of visual explainability.
@@ -281,9 +316,7 @@ Cha et~al.~\cite{ref_cha2019_ensemble} developed a landmark deep learning framew
 Yang et~al.~\cite{ref_yang2026_otitis} developed a semi-supervised semantic segmentation and classification framework for otitis media on 607 clinical otoscopic images, evaluating U-Net, PSPNet, HRNet, and DeepLabV3+ for anatomical region segmentation. Their framework achieved 96.72\% overall accuracy across normal, AOM, and chronic otitis media with perforation. Crucially, Yang et~al.\ emphasized that real-world clinical otoscopic images frequently suffer from cerumen contamination, poor lighting, or oblique camera angles, demonstrating that automated systems must incorporate robust preprocessing to handle non-ideal clinical imagery.
 
 \section{Cross-Dataset Generalization and Domain Shift Mitigation}
-A paramount hurdle hindering the clinical adoption of otoscopic deep learning models is their vulnerability to dataset and domain shift. Lindmark et~al.~\cite{ref_lindmark2024_generalizable} conducted an in-depth investigation into model generalizability across five heterogeneous tympanic membrane datasets collected from different countries and otoscope hardware devices. They revealed that baseline deep neural networks trained without optimized preprocessing and evaluated on external datasets experienced catastrophic performance drops, falling from high internal accuracy down to 53\% accuracy (sensitivity 83\%, specificity 34\%). 
-
-Through rigorous factorial experimentation, Lindmark et~al.\ demonstrated that generalizability is substantially elevated by: (1) color and contrast normalization via Contrast Limited Adaptive Histogram Equalization (CLAHE), (2) aggressive data augmentation, including controlled MixUp~\cite{ref_zhang2017_mixup}, and (3) curriculum learning strategies~\cite{ref_bengio2009_curriculum}. Their optimized network achieved 83\% accuracy (sensitivity 71\%, specificity 91\%) on completely unseen external hardware distributions, demonstrating that robust data preprocessing and training regularization are imperative for real-world clinical deployment.
+A paramount hurdle hindering the clinical adoption of otoscopic deep learning models is their vulnerability to dataset and domain shift. Lindmark et~al.~\cite{ref_lindmark2024_generalizable} conducted an in-depth investigation into model generalizability across five heterogeneous tympanic membrane datasets collected from different countries and otoscope hardware devices. They revealed that baseline deep neural networks trained without optimized preprocessing and evaluated on external datasets experienced catastrophic performance drops, falling from high internal accuracy down to 53\% accuracy (sensitivity 83\%, specificity 34\%). Through rigorous factorial experimentation, they demonstrated that generalizability is substantially elevated by color and contrast normalization via CLAHE, aggressive data augmentation including controlled MixUp~\cite{ref_zhang2017_mixup}, and curriculum learning strategies~\cite{ref_bengio2009_curriculum}. Their optimized network achieved 83\% accuracy (sensitivity 71\%, specificity 91\%) on completely unseen external hardware distributions. The study's limitation is that its principal disease task is narrower than the five-class target of this project.
 
 \section{Vision Transformers in Medical Computer Vision}
 While Convolutional Neural Networks (CNNs) have dominated medical imaging, Vision Transformers (ViTs)~\cite{ref_dosovitskiy2020_vit} have emerged as a powerful alternative capable of capturing long-range global contextual representations through multi-head self-attention mechanisms. Aburass et~al.~\cite{ref_aburass2025_vit} presented a comprehensive review of Vision Transformers in medical imaging across multiple disease disciplines. They detailed the core mechanisms of tokenization, self-attention, and feed-forward networks, highlighting how ViTs frequently outperform traditional CNNs by dynamically weighting feature relationships across entire images. However, Aburass et~al.\ also noted that pure ViTs lack convolutional inductive biases (spatial translation equivariance and locality), making hybrid convolutional-transformer models particularly advantageous for medical tasks characterized by small or moderate dataset scales.
@@ -295,7 +328,9 @@ Demircan, Ekinci, and C{\"o}mert~\cite{ref_demircan2025_attention} specifically 
 \section{Explainable AI and Grad-CAM++ in Clinical Diagnostics}
 Deep learning models deployed in healthcare must provide transparent, auditable visual explanations to avoid erroneous shortcut learning. Selvaraju et~al.~\cite{ref_selvaraju2017_gradcam} formulated Gradient-Weighted Class Activation Mapping (Grad-CAM), which weights final feature maps using first-order class gradients. However, standard Grad-CAM produces coarse heatmaps and struggles to localize multiple occurrences of a pathology or fine anatomical boundaries.
 
-Chattopadhay et~al.~\cite{ref_chattopadhay2018_gradcampp} introduced \textbf{Grad-CAM++}, providing generalized visual explanations through higher-order partial derivatives and positive gradient weighting. Gao et~al.~\cite{ref_gao2023_augmented_gradcampp} explored Augmented Grad-CAM++, demonstrating that second- and third-order gradient weighting resolves fine-grained spatial saliency and object localization in deep neural networks. 
+Chattopadhay et~al.~\cite{ref_chattopadhay2018_gradcampp} introduced \textbf{Grad-CAM++}, providing generalized visual explanations through higher-order partial derivatives and positive gradient weighting. The paper's limitation is that the method is presented as a general explanation technique rather than being validated specifically on the proposed five-class otoscopy dataset.
+
+Gao et~al.~\cite{ref_gao2023_augmented_gradcampp} explored Augmented Grad-CAM++, demonstrating that second- and third-order gradient weighting resolves fine-grained spatial saliency and object localization in deep neural networks. Its focus on enhanced saliency resolution is relevant to this project, although it does not establish clinical validity for otoscopic images.
 
 Kitaguchi et~al.~\cite{ref_kitaguchi2026_gradcampp} performed an extensive clinical evaluation of Grad-CAM++ in medical image classification across 1,039 ophthalmic slit-lamp photographs. Implementing Grad-CAM++ alongside cut-and-paste validation, they showed that Grad-CAM++ precisely isolates clinically meaningful lesion regions and quantifies whether a deep model relies on authentic pathology or misleading contextual artifacts. In otoscopy, Grad-CAM++ provides essential clinical verification by highlighting whether the model's prediction is genuinely grounded on tympanic membrane perforations, erythema, or calcified plaques.
 
@@ -310,8 +345,8 @@ Table~\ref{tab:lit_comparison} synthesizes the comparative analysis between repr
 \begin{singlespace}
 \caption{Comparative analysis of existing otoscopic CAD systems and this project.}
 \label{tab:lit_comparison}
-\footnotesize
-\renewcommand{\arraystretch}{1.1}
+\scriptsize
+\renewcommand{\arraystretch}{0.9}
 \begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{2.6cm} >{\centering\arraybackslash}p{2.1cm} >{\centering\arraybackslash}p{1.3cm} >{\centering\arraybackslash}p{1.7cm} >{\centering\arraybackslash}p{1.9cm} >{\raggedright\arraybackslash}X}
 \toprule
 \textbf{Framework / Model} & \textbf{Architecture} & \textbf{Classes} & \textbf{XAI Visuals} & \textbf{Generalization} & \textbf{Primary Focus / Limitations} \\
@@ -330,7 +365,44 @@ OtoVision~\cite{ref_yokananth2025_otovision} & Mobile CNN & 3 Classes & None & E
 
 
 %==============================================================================
-% CHAPTER 3: PROBLEM DEFINITION
+% CHAPTER 3: DATASET REQUIREMENTS
+%==============================================================================
+\chapter{Dataset Requirements}
+
+This chapter records the dataset requirements for the proposed ear-disease detection system. Fields not explicitly available in the report are marked \textbf{pending verification or collection}. No dataset names, download links, availability claims, image counts, or licensing details are inferred.
+
+\section{Required Dataset and Intended Use}
+The system requires a merged collection of clinical otoscopic and eardrum images covering five classes: Acute Otitis Media (AOM), Chronic Suppurative Otitis Media (CSOM), Earwax (cerumen impaction), Normal, and Tympanosclerosis. The dataset is intended for supervised multi-class image classification and for evaluating robustness across heterogeneous clinical imaging conditions.
+
+\begin{table}[H]
+\centering
+\caption{Dataset requirements and verification status.}
+\label{tab:dataset_requirements}
+\small
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{>{\raggedright\arraybackslash}p{3.2cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{3.4cm}}
+\toprule
+\textbf{Requirement} & \textbf{Available report information} & \textbf{Status}\\
+\midrule
+Dataset content & Clinical otoscopic and eardrum images for AOM, CSOM, Earwax, Normal, and Tympanosclerosis. & Identified\\
+Training set & Stratified training partition; used for model fitting and augmentation. & 70\% stated; source/count pending\\
+Validation set & Stratified validation partition; used for model selection and curriculum monitoring. & 15\% stated; source/count pending\\
+Testing set & Stratified independent test partition; used for final evaluation. & 15\% stated; source/count pending\\
+Image preparation & PIL byte-checking, CLAHE, resizing to $224\times224$ pixels, and channel standardization. & Identified\\
+Sources and download links & Dataset names, repository or publisher sources, and download URLs. & Pending verification\\
+Format and statistics & File format, class counts, total image count, license, and collection dates. & Pending verification or collection\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Collection and Data Governance}
+The project requires the source datasets to be identified and downloaded or collected before reproducible training can be claimed. For each source, the team must record the dataset name, owner or publisher, stable download link, file format, class labels, image counts, license or permission, and any patient or metadata restrictions. Duplicate images, corrupted files, uncertain labels, and patient-level leakage must be documented and excluded or resolved before partitioning.
+
+\section{Partitioning and Intended Usage}
+After harmonization, the report specifies a stratified 70\% training, 15\% validation, and 15\% testing split. The training partition is intended for parameter learning and controlled augmentation; the validation partition is intended for model selection, curriculum monitoring, and threshold tuning; and the test partition is intended only for final, held-out performance reporting. The exact source-wise counts and the patient-level split protocol remain pending verification.
+
+%==============================================================================
+% CHAPTER 4: PROBLEM DEFINITION
 %==============================================================================
 \chapter{Problem Definition}
 
@@ -426,7 +498,7 @@ This formulation provides superior object localization and captures fine morphol
 %==============================================================================
 \chapter{Requirements Specification}
 
-The formal System Requirements Specification (SRS) establishes the functional capabilities, non-functional quality attributes, and runtime constraints governing the ear disease detection framework.
+The formal System Requirements Specification (SRS) establishes the functional capabilities and runtime constraints governing the ear disease detection framework.
 
 \section{Functional Requirements}
 \begin{enumerate}[(i)]
@@ -438,15 +510,6 @@ The formal System Requirements Specification (SRS) establishes the functional ca
     \item \textbf{FR-6: High-Throughput REST API Telemetry:} The backend shall return JSON responses in sub-50ms, detailing predicted class, confidence, 5-class probability vector, execution latency, and clinical screening disclaimers.
     \item \textbf{FR-7: Cross-Platform Clinical Screening UI:} The platform shall provide a responsive web dashboard for specialist desktop review and an Expo mobile application for point-of-care otoscopy scanning.
 \end{enumerate}
-
-\section{Non-Functional Requirements}
-\begin{itemize}
-    \item \textbf{NFR-1 (Latency and Real-Time Responsiveness):} Total inference latency shall execute in under 50\,ms on modern hardware, ensuring fluid live examination during clinical otoscopy.
-    \item \textbf{NFR-2 (Generalization and Cross-Dataset Robustness):} The framework shall maintain balanced multi-class diagnostic sensitivity and specificity across heterogeneous external otoscope hardware.
-    \item \textbf{NFR-3 (Diagnostic Explainability):} The visual explanation must accurately delineate pathological landmarks on the tympanic membrane with demonstrable clinical relevance.
-    \item \textbf{NFR-4 (Security and Patient Privacy):} Uploaded otoscopic images shall be processed ephemerally in volatile memory without persistent disk retention, guaranteeing HIPAA/GDPR data privacy compliance.
-    \item \textbf{NFR-5 (Extensibility and Interoperability):} The architecture shall expose standard RESTful endpoints enabling seamless integration into hospital Picture Archiving and Communication Systems (PACS) and electronic health records (EHR).
-\end{itemize}
 
 \clearpage
 \section{System Requirements}
@@ -476,7 +539,7 @@ The formal System Requirements Specification (SRS) establishes the functional ca
 %==============================================================================
 \chapter{System Design}
 
-This chapter details the architectural decomposition, component workflows, execution flowchart, end-to-end algorithms, model structural topology, relational data schemas, and Level-1 Data Flow Diagram (DFD) realizing the ear disease detection framework.
+This chapter details the architectural decomposition, component workflows, execution flowchart, end-to-end algorithms, model structural topology, and relational data schemas realizing the ear disease detection framework.
 
 \section{High-Level Architecture}
 The system architecture follows a decoupled four-tier paradigm depicted in Figure~\ref{fig:system_architecture}: Client Presentation Tier, API Gateway \& Preprocessing Tier, CoMViT \& Grad-CAM++ Inference Tier, and Storage \& Benchmarks Tier.
@@ -489,7 +552,7 @@ The system architecture follows a decoupled four-tier paradigm depicted in Figur
 \end{figure}
 
 \section{System Workflow and Operational Pipeline}
-The operational pipeline progresses across five sequential functional stages shown in Figure~\ref{fig:proposed_pipeline}:
+The operational pipeline progresses across five sequential functional stages:
 \begin{enumerate}
     \item \textbf{Otoscopic Image Acquisition:} Digital otoscope frame capture, MIME verification, and payload bounding ($\le 10$\,MB).
     \item \textbf{CLAHE Preprocessing:} Contrast enhancement via CLAHE, bilinear resizing to $224 \times 224$, and normalization.
@@ -497,13 +560,6 @@ The operational pipeline progresses across five sequential functional stages sho
     \item \textbf{5-Class Softmax Classification:} Linear head outputting posterior probabilities across AOM, CSOM, Earwax, Normal, and Tympanosclerosis.
     \item \textbf{Grad-CAM++ Explainability:} Second-order gradient attribution localizing tympanic membrane lesions with Jet colormap overlay.
 \end{enumerate}
-
-\begin{figure}[H]
-    \centering
-    \adjustbox{max width=0.98\linewidth, center}{\input{diagrams/fig_proposed_methods_pipeline.tex}}
-    \caption{Proposed operational pipeline of the deep learning ear disease detection and explainability framework.}
-    \label{fig:proposed_pipeline}
-\end{figure}
 
 Figure~\ref{fig:layered_workflow} maps the complete lifecycle and feedback pathways connecting acquisition, validation, CoMViT feature learning, Grad-CAM++ attribution, classification, and screening delivery.
 
@@ -513,6 +569,7 @@ Figure~\ref{fig:layered_workflow} maps the complete lifecycle and feedback pathw
     \caption{Layered system workflow and 6-stage execution lifecycle across acquisition, validation, CoMViT backbone, Grad-CAM++ engine, scoring, and delivery.}
     \label{fig:layered_workflow}
 \end{figure}
+\clearpage
 
 Figure~\ref{fig:end_to_end_flow} illustrates the end-to-end data flow transitioning from the raw otoscopic input bar to the verified clinical screening output.
 
@@ -528,9 +585,9 @@ Figure~\ref{fig:end_to_end_flow} illustrates the end-to-end data flow transition
 \subsection{System Flowchart}
 Figure~\ref{fig:multiagent_flowchart} maps the complete execution logic, preprocessing steps, convolutional tokenization, transformer attention sequence, classification, and Grad-CAM explainability workflow executing during clinical inference requests.
 
-\begin{figure}[H]
+\begin{figure}[!ht]
     \centering
-    \includegraphics[width=0.92\linewidth, height=0.83\textheight, keepaspectratio]{diagrams/flowchart.jpeg}
+    \includegraphics[width=0.88\linewidth, height=0.66\textheight, keepaspectratio]{diagrams/flowchart.jpeg}
     \caption{System flowchart detailing otoscopic image ingestion, preprocessing, convolutional tokenization, Locality Self-Attention transformer encoding, classification, and Grad-CAM explanation generation.}
     \label{fig:multiagent_flowchart}
 \end{figure}
@@ -634,21 +691,10 @@ Figure~\ref{fig:db_schema} depicts the relational schema connecting dataset part
 
 \begin{figure}[H]
     \centering
-    \adjustbox{max width=0.98\linewidth, max height=0.72\textheight, keepaspectratio, center}{\input{diagrams/fig1_4_prismdb_schema_connectors.tex}}
+    \adjustbox{max width=0.98\linewidth, max height=0.82\textheight, keepaspectratio, center}{\input{diagrams/fig1_4_prismdb_schema_connectors.tex}}
     \caption{Relational entity and data storage schema connectors showing merged otoscopic dataset, training curriculum configurations, CoMViT model checkpoints, evaluation telemetry, and API contract specifications.}
     \label{fig:db_schema}
 \end{figure}
-
-\subsection{Level-1 Data Flow Architecture}
-Figure~\ref{fig:data_flow_diagram} presents the Level-1 Data Flow Diagram (DFD), showing external entities, primary processing transformations, datastores, and explainability feedback loops.
-
-\begin{figure}[H]
-    \centering
-    \adjustbox{max width=0.98\linewidth, max height=0.72\textheight, keepaspectratio, center}{\input{diagrams/fig1_1_data_flow_diagram.tex}}
-    \caption{Level-1 Data Flow Diagram (DFD) depicting external entities, validation and inference processing transformations, datastores, and explainability feedback loops.}
-    \label{fig:data_flow_diagram}
-\end{figure}
-
 
 %==============================================================================
 % CHAPTER 6: DESIGN AND METHODOLOGY
@@ -700,7 +746,7 @@ The benchmark dataset was constructed by merging publicly available and verified
     \item \textbf{Tympanosclerosis:} Distinct chalky-white, dense calcareous plaques embedded within the tympanic membrane laminae without active acute inflammation or perforation.
 \end{itemize}
 
-Every image was validated through PIL byte-checking to eliminate corrupt files. Contrast Limited Adaptive Histogram Equalization (CLAHE) was applied to rectify non-uniform illumination and accentuate morphological contours, followed by resizing to $224 \times 224$ pixels and channel standardization. The dataset was partitioned into 70\% training, 15\% validation, and 15\% testing splits using stratified sampling.
+Every image was validated through PIL byte-checking to eliminate corrupt files. Contrast Limited Adaptive Histogram Equalization (CLAHE)~\cite{ref_reza2004_clahe} was applied to rectify non-uniform illumination and accentuate morphological contours, followed by resizing to $224 \times 224$ pixels and channel standardization. The dataset was partitioned into 70\% training, 15\% validation, and 15\% testing splits using stratified sampling.
 
 \section{Multi-Stage Machine Learning Pipeline Design}
 
@@ -851,31 +897,8 @@ The system is built entirely on production-grade open-source software (PyTorch, 
 \section{Economic Feasibility}
 The project adopts a zero-license, open-source software model. All frameworks, libraries, and datasets are freely accessible under academic and open-source licenses. Local CPU/GPU execution eliminates recurring cloud subscription expenses, making the platform highly affordable for resource-constrained clinics in developing nations.
 
-\section{Schedule and Resource Feasibility}
-The project was executed by a team of four B.Tech students over a 9-month timeline from July 2026 to March 2027. Figure~\ref{fig:project_gantt} illustrates the project execution schedule and Gantt chart across eleven key milestones.
-
-\begin{figure}[H]
-    \centering
-    \adjustbox{max width=0.98\linewidth, max height=0.48\textheight, keepaspectratio, center}{\input{diagrams/gantt_chart_project_timeline.tex}}
-    \caption{Project execution schedule and Gantt chart tracking 11 key milestones from July 2026 to March 2027.}
-    \label{fig:project_gantt}
-\end{figure}
-
-The eleven coordinated work packages executed across the academic timeline were:
-\begin{enumerate}
-    \item \textbf{Clinical Scoping \& Problem Identification (Jul--Aug 2026):} Defined screening boundaries, clinical triage workflows, and ear disease diagnostic requirements.
-    \item \textbf{Literature Survey on Otoscopic Deep Learning \& ViTs (Aug--Sep 2026):} Reviewed CNN architectures, Vision Transformers, domain generalization, and XAI methods.
-    \item \textbf{Requirement Analysis \& Clinical Feasibility Study (Aug--Sep 2026):} Compiled functional and non-functional specifications and safety bounds.
-    \item \textbf{System Design (CoMViT, CLAHE, Grad-CAM++) (Sep--Oct 2026):} Architected the multi-tier system, component dataflows, and relational schemas.
-    \item \textbf{Multi-Source Dataset Merging \& Curriculum Partitioning (Oct--Nov 2026):} Curated multi-source otoscopic corpora, filtered corrupt files, and split 70/15/15.
-    \item \textbf{CoMViT Transfer Learning, MixUp \& Curriculum Training (Nov--Dec 2026):} Implemented AdamW optimization, controlled MixUp, and adaptive curriculum training.
-    \item \textbf{Grad-CAM++ 2nd-Order Visual Interpretability (Dec 2026--Jan 2027):} Hooked terminal transformer block and engineered Jet colormap overlay synthesis.
-    \item \textbf{FastAPI Low-Latency Serving \& Edge Microservice (Jan--Feb 2027):} Developed asynchronous REST endpoints with MIME and payload validation.
-    \item \textbf{Web Portal \& Mobile Bedside Otoscopy Client Development (Jan--Feb 2027):} Created clinical web dashboard and mobile digital otoscope scanner.
-    \item \textbf{Multi-Class Diagnostic Evaluation \& ROC-AUC Benchmarks (Feb--Mar 2027):} Evaluated 1,250 test images, achieving 95.44\% accuracy and 98.85\% ROC-AUC.
-    \item \textbf{Project Documentation, Thesis Compilation \& KTU Review (Feb--Mar 2027):} Compiled comprehensive project report and thesis documentation.
-\end{enumerate}
-
+\section{Resource Feasibility}
+The project is planned for execution by a team of four B.Tech students over a 9-month period.
 
 %==============================================================================
 % CHAPTER 9: CONCLUSION AND FUTURE SCOPE
@@ -912,70 +935,52 @@ Promising directions for future research and engineering enhancements include:
 %==============================================================================
 \begin{thebibliography}{99}
 \sloppy
+\setlength{\itemsep}{0.45\baselineskip}
+\setlength{\parskip}{0pt}
 
 \bibitem{ref_hayashi2020_aom}
-T.~Hayashi, K.~Kitamura, S.~Hashimoto, M.~Hotomi, H.~Kojima, F.~Kudo, Y.~Maruyama, S.~Sawada, H.~Taiji, G.~Takahashi, H.~Takahashi, Y.~Uno, and H.~Yano, ``Clinical practice guidelines for the diagnosis and management of acute otitis media in children---2018 update,'' \textit{Auris Nasus Larynx}, vol.~47, no.~4, pp.~493--526, 2020.
+T.~Hayashi, K.~Kitamura, S.~Hashimoto, M.~Hotomi, H.~Kojima, F.~Kudo, Y.~Maruyama, S.~Sawada, H.~Taiji, G.~Takahashi, H.~Takahashi, Y.~Uno, and H.~Yano (2020). Clinical practice guidelines for the diagnosis and management of acute otitis media in children---2018 update, \textit{Auris Nasus Larynx}, vol.~47, no.~4, pp.~493--526.
 
 \bibitem{ref_abuzinadah2026_attention}
-H.~Abu-Zinadah and S.~Abdel-Khalek, ``Mathematical modeling and feature extraction architecture of a quantum-inspired attention network for UAV image classification,'' \textit{Alexandria Engineering Journal}, vol.~143, pp.~180--193, 2026.
-
+H.~Abu-Zinadah and S.~Abdel-Khalek (2026). Mathematical modeling and feature extraction architecture of a quantum-inspired attention network for UAV image classification, \textit{Alexandria Engineering Journal}, vol.~143, pp.~180--193.
 \bibitem{ref_mahdiani2021_csom}
-S.~Mahdiani, L.~Lasminingrum, and D.~Anugrah, ``Management evaluation of patients with chronic suppurative otitis media: A retrospective study,'' \textit{Annals of Medicine and Surgery}, vol.~67, art.~102492, pp.~1--5, 2021.
-
+S.~Mahdiani, L.~Lasminingrum, and D.~Anugrah (2021). Management evaluation of patients with chronic suppurative otitis media: A retrospective study, \textit{Annals of Medicine and Surgery}, vol.~67, art.~102492, pp.~1--5.
 \bibitem{ref_aburass2025_vit}
-S.~Aburass, O.~Dorgham, J.~Al~Shaqsi, M.~Abu~Rumman, and O.~Al-Kadi, ``Vision Transformers in medical imaging: A comprehensive review of advancements and applications across multiple diseases,'' \textit{Journal of Imaging Informatics in Medicine}, vol.~38, no.~5, pp.~3928--3971, 2025.
-
+S.~Aburass, O.~Dorgham, J.~Al~Shaqsi, M.~Abu~Rumman, and O.~Al-Kadi (2025). Vision Transformers in medical imaging: A comprehensive review of advancements and applications across multiple diseases, \textit{Journal of Imaging Informatics in Medicine}, vol.~38, no.~5, pp.~3928--3971.
 \bibitem{ref_kitaguchi2026_gradcampp}
-Y.~Kitaguchi, Y.~Ueno, T.~Yamaguchi, H.~Maehara, D.~Miyazaki, R.~Nejima, T.~Inomata, N.~Kato, T.~Chikama, J.~Ominato, T.~Yunoki, K.~Tsubota, M.~Oda, K.~Mori, Y.~Yoshinaga, R.~Iwasaki, K.~Nishida, and T.~Oshika, ``YOLOv5 attention analysis for anterior eye disease classification: Grad-CAM++ feature importance and cut-and-paste validation,'' \textit{Journal of Imaging Informatics in Medicine}, vol.~39, no.~4, pp.~3340--3355, 2026.
-
+Y.~Kitaguchi, Y.~Ueno, T.~Yamaguchi, H.~Maehara, D.~Miyazaki, R.~Nejima, T.~Inomata, N.~Kato, T.~Chikama, J.~Ominato, T.~Yunoki, K.~Tsubota, M.~Oda, K.~Mori, Y.~Yoshinaga, R.~Iwasaki, K.~Nishida, and T.~Oshika (2026). YOLOv5 attention analysis for anterior eye disease classification: Grad-CAM++ feature importance and cut-and-paste validation, \textit{Journal of Imaging Informatics in Medicine}, vol.~39, no.~4, pp.~3340--3355.
 \bibitem{ref_cha2019_ensemble}
-D.~Cha, C.~Pae, S.-B. Seong, J.~Y. Choi, and H.-J. Park, ``Automated diagnosis of ear disease using ensemble deep learning with a big otoendoscopy image database,'' \textit{EBioMedicine}, vol.~45, pp.~606--614, 2019.
-
+D.~Cha, C.~Pae, S.-B. Seong, J.~Y. Choi, and H.-J. Park (2019). Automated diagnosis of ear disease using ensemble deep learning with a big otoendoscopy image database, \textit{EBioMedicine}, vol.~45, pp.~606--614.
 \bibitem{ref_habib2022_ai_otoscopy}
-A.-R. Habib, M.~Kajbafzadeh, Z.~Hasan, E.~Wong, H.~Gunasekera, C.~Perry, R.~Sacks, A.~Kumar, and N.~Singh, ``Artificial intelligence to classify ear disease from otoscopy: A systematic review and meta-analysis,'' \textit{Clinical Otolaryngology}, vol.~47, no.~3, pp.~401--413, 2022.
-
+A.-R. Habib, M.~Kajbafzadeh, Z.~Hasan, E.~Wong, H.~Gunasekera, C.~Perry, R.~Sacks, A.~Kumar, and N.~Singh (2022). Artificial intelligence to classify ear disease from otoscopy: A systematic review and meta-analysis, \textit{Clinical Otolaryngology}, vol.~47, no.~3, pp.~401--413.
 \bibitem{ref_lindmark2024_generalizable}
-M.~Lindmark, T.~Lundberg, M.~Werner, P.~Soda, C.~Gr{\"o}nlund, and F.~{\"O}hberg, ``Towards generalizable image classification models for detecting middle ear diseases,'' \textit{IEEE Access}, vol.~12, pp.~37239--37253, 2024.
-
+M.~Lindmark, T.~Lundberg, M.~Werner, P.~Soda, C.~Gr{\"o}nlund, and F.~{\"O}hberg (2024). Towards generalizable image classification models for detecting middle ear diseases, \textit{IEEE Access}, vol.~12, pp.~37239--37253.
 \bibitem{ref_nemati2021_tympanosclerosis}
-S.~Nemati, A.~Saberi, A.~F. Habibi, H.~Hemmati, R.~Jafari-Shakib, M.~H. Ch, and E.~Bozorgzadeh, ``Tympanosclerosis and atherosclerosis plaques: A comparative analytical study on some new microbiological and immunohistochemical aspects,'' \textit{European Archives of Oto-Rhino-Laryngology}, vol.~278, no.~8, pp.~2805--2812, 2021.
-
+S.~Nemati, A.~Saberi, A.~F. Habibi, H.~Hemmati, R.~Jafari-Shakib, M.~H. Ch, and E.~Bozorgzadeh (2021). Tympanosclerosis and atherosclerosis plaques: A comparative analytical study on some new microbiological and immunohistochemical aspects, \textit{European Archives of Oto-Rhino-Laryngology}, vol.~278, no.~8, pp.~2805--2812.
 \bibitem{ref_yang2026_otitis}
-C.-Y. Yang, C.-J. Lee, W.-S. Lai, K.-Y. Chen, C.-F. Kuo, C.~H. Liu, and S.-C. Liu, ``Deep learning-based semantic segmentation and classification of otoscopic images for otitis media diagnosis and health promotion,'' \textit{Diagnostics}, vol.~16, no.~3, art.~467, pp.~1--12, 2026.
-
+C.-Y. Yang, C.-J. Lee, W.-S. Lai, K.-Y. Chen, C.-F. Kuo, C.~H. Liu, and S.-C. Liu (2026). Deep learning-based semantic segmentation and classification of otoscopic images for otitis media diagnosis and health promotion, \textit{Diagnostics}, vol.~16, no.~3, art.~467, pp.~1--12.
 \bibitem{ref_gao2023_augmented_gradcampp}
-Y.~Gao, J.~Liu, W.~Li, M.~Hou, Y.~Li, and H.~Zhao, ``Augmented Grad-CAM++: Super-resolution saliency maps for visual interpretation of deep neural network,'' \textit{Electronics}, vol.~12, no.~23, art.~4846, pp.~1--23, 2023.
-
+Y.~Gao, J.~Liu, W.~Li, M.~Hou, Y.~Li, and H.~Zhao (2023). Augmented Grad-CAM++: Super-resolution saliency maps for visual interpretation of deep neural network, \textit{Electronics}, vol.~12, no.~23, art.~4846, pp.~1--23.
 \bibitem{ref_van2025_tympanosclerosis}
-S.~Van, D.~{\"O}zdemir, S.~K. {\c{S}}ahin, {\c{S}}.~{\"O}zt{\"u}rk, D.~M. Mehel, and A.~{\c{C}}e{\c{c}}en, ``The role of matrix metalloproteinase expression levels in the pathogenesis of tympanosclerosis,'' \textit{European Archives of Oto-Rhino-Laryngology}, vol.~282, no.~11, pp.~5645--5653, 2025.
-
+S.~Van, D.~{\"O}zdemir, S.~K. {\c{S}}ahin, {\c{S}}.~{\"O}zt{\"u}rk, D.~M. Mehel, and A.~{\c{C}}e{\c{c}}en (2025). The role of matrix metalloproteinase expression levels in the pathogenesis of tympanosclerosis, \textit{European Archives of Oto-Rhino-Laryngology}, vol.~282, no.~11, pp.~5645--5653.
 \bibitem{ref_yokananth2025_otovision}
-R.~Yokananth and V.~Gosula, ``OtoVision: Bridging machine learning and edge computing for effective and affordable ear disease diagnosis,'' \textit{Neural Computing and Applications}, vol.~37, no.~3, pp.~1565--1573, 2025.
-
+R.~Yokananth and V.~Gosula (2025). OtoVision: Bridging machine learning and edge computing for effective and affordable ear disease diagnosis, \textit{Neural Computing and Applications}, vol.~37, no.~3, pp.~1565--1573.
 \bibitem{ref_demircan2025_attention}
-F.~Demircan, M.~Ekinci, and Z.~C{\"o}mert, ``Enhancing intra-aural disease classification with attention-based deep learning models,'' \textit{Neural Computing and Applications}, vol.~37, no.~10, pp.~6601--6616, 2025.
-
+F.~Demircan, M.~Ekinci, and Z.~C{\"o}mert (2025). Enhancing intra-aural disease classification with attention-based deep learning models, \textit{Neural Computing and Applications}, vol.~37, no.~10, pp.~6601--6616.
 \bibitem{ref_onifade2025_csom_prevalence}
-A.~Onifade, H.~W. Katolo, S.~Mookerjee, and M.~F. Bhutta, ``Epidemiology of chronic suppurative otitis media: Systematic review to estimate global prevalence,'' \textit{Journal of Epidemiology and Global Health}, vol.~15, art.~55, pp.~1--12, 2025.
-
+A.~Onifade, H.~W. Katolo, S.~Mookerjee, and M.~F. Bhutta (2025). Epidemiology of chronic suppurative otitis media: Systematic review to estimate global prevalence, \textit{Journal of Epidemiology and Global Health}, vol.~15, art.~55, pp.~1--12.
 \bibitem{ref_dosovitskiy2020_vit}
-A.~Dosovitskiy, L.~Beyer, A.~Kolesnikov, D.~Weissenborn, X.~Zhai, T.~Unterthiner, M.~Dehghani, M.~Minderer, G.~Heigold, S.~Gelly, J.~Uszkoreit, and N.~Houlsby, ``An image is worth 16x16 words: Transformers for image recognition at scale,'' in \textit{International Conference on Learning Representations (ICLR)}, 2021.
-
+A.~Dosovitskiy, L.~Beyer, A.~Kolesnikov, D.~Weissenborn, X.~Zhai, T.~Unterthiner, M.~Dehghani, M.~Minderer, G.~Heigold, S.~Gelly, J.~Uszkoreit, and N.~Houlsby (2021). An image is worth 16x16 words: Transformers for image recognition at scale, in \textit{International Conference on Learning Representations (ICLR)}.
 \bibitem{ref_zhang2017_mixup}
-H.~Zhang, M.~Cisse, Y.~N. Dauphin, and D.~Lopez-Paz, ``mixup: Beyond empirical risk minimization,'' in \textit{International Conference on Learning Representations (ICLR)}, 2018.
-
+H.~Zhang, M.~Cisse, Y.~N. Dauphin, and D.~Lopez-Paz (2018). mixup: Beyond empirical risk minimization, in \textit{International Conference on Learning Representations (ICLR)}.
 \bibitem{ref_bengio2009_curriculum}
-Y.~Bengio, J.~Louradour, R.~Collobert, and J.~Weston, ``Curriculum learning,'' in \textit{Proceedings of the 26th Annual International Conference on Machine Learning (ICML)}, pp.~41--48, 2009.
-
+Y.~Bengio, J.~Louradour, R.~Collobert, and J.~Weston (2009). Curriculum learning, in \textit{Proceedings of the 26th Annual International Conference on Machine Learning (ICML)}, pp.~41--48.
 \bibitem{ref_chattopadhay2018_gradcampp}
-A.~Chattopadhay, A.~Sarkar, P.~Howlader, and V.~N. Balasubramanian, ``Grad-CAM++: Generalized gradient-based visual explanations for deep convolutional networks,'' in \textit{IEEE Winter Conference on Applications of Computer Vision (WACV)}, pp.~839--847, 2018.
-
+A.~Chattopadhay, A.~Sarkar, P.~Howlader, and V.~N. Balasubramanian (2018). Grad-CAM++: Generalized gradient-based visual explanations for deep convolutional networks, in \textit{IEEE Winter Conference on Applications of Computer Vision (WACV)}, pp.~839--847.
 \bibitem{ref_reza2004_clahe}
-A.~M. Reza, ``Realization of the contrast limited adaptive histogram equalization (CLAHE) for real-time image enhancement,'' \textit{Journal of VLSI Signal Processing Systems for Signal, Image and Video Technology}, vol.~38, no.~1, pp.~35--44, 2004.
-
+A.~M. Reza (2004). Realization of the contrast limited adaptive histogram equalization (CLAHE) for real-time image enhancement, \textit{Journal of VLSI Signal Processing Systems for Signal, Image and Video Technology}, vol.~38, no.~1, pp.~35--44.
 \bibitem{ref_selvaraju2017_gradcam}
-R.~R. Selvaraju, M.~Cogswell, A.~Das, R.~Vedantam, D.~Parikh, and D.~Batra, ``Grad-CAM: Visual explanations from deep networks via gradient-based localization,'' in \textit{IEEE International Conference on Computer Vision (ICCV)}, pp.~618--626, 2017.
-
+R.~R. Selvaraju, M.~Cogswell, A.~Das, R.~Vedantam, D.~Parikh, and D.~Batra (2017). Grad-CAM: Visual explanations from deep networks via gradient-based localization, in \textit{IEEE International Conference on Computer Vision (ICCV)}, pp.~618--626.
 \end{thebibliography}
 
 \end{document}

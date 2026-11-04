@@ -40,49 +40,49 @@
   \node[modelrow, fill=lavenderLight!85, text width=4.10cm, align=left, minimum height=1.15cm] (m1r) at (5.60, 0.0)
     {\fontsize{7.6}{9.0}\selectfont \textbf{Sanitized Byte Stream}\\[2pt]{\fontsize{6.8}{8.0}\selectfont Rejects corrupted uploads}};
 
-  % Stage 2: CLAHE Enhancement & RGB (y = -1.55)
-  \node[modelrow, fill=cStage1!65, text width=2.40cm, align=center, minimum height=1.15cm] (m2l) at (-5.85, -1.55)
+  % Stage 2: CLAHE Enhancement & RGB (y = -1.90)
+  \node[modelrow, fill=cStage1!65, text width=2.40cm, align=center, minimum height=1.15cm] (m2l) at (-5.85, -1.90)
     {{\fontsize{8.5}{10.2}\selectfont\color{lavenderDark}\faCrop\ \textbf{2. CLAHE \& Resize}}\\[2pt]
      {\fontsize{7.5}{9.0}\selectfont\texttt{clahe\_engine}}};
-  \node[modelrow, fill=lavenderLight!85, text width=7.40cm, align=left, minimum height=1.15cm] (m2p) at (-0.55, -1.55)
+  \node[modelrow, fill=lavenderLight!85, text width=7.40cm, align=left, minimum height=1.15cm] (m2p) at (-0.55, -1.90)
     {\fontsize{7.6}{9.0}\selectfont \textbf{Contrast Enhancement} $\rightarrow$ CLAHE adaptive equalization\\[2pt]Bilinear spatial interpolation to target resolution $(224 \times 224 \times 3)$};
-  \node[modelrow, fill=lavenderLight!85, text width=4.10cm, align=left, minimum height=1.15cm] (m2r) at (5.60, -1.55)
+  \node[modelrow, fill=lavenderLight!85, text width=4.10cm, align=left, minimum height=1.15cm] (m2r) at (5.60, -1.90)
     {\fontsize{7.6}{9.0}\selectfont \textbf{Enhanced Otoscopy}\\[2pt]{\fontsize{6.8}{8.0}\selectfont Enhanced TM $(224\times 224)$}};
 
-  % Stage 3: Tensor Normalization (y = -3.10)
-  \node[modelrow, fill=cStage4!65, text width=2.40cm, align=center, minimum height=1.15cm] (m3l) at (-5.85, -3.10)
+  % Stage 3: Tensor Normalization (y = -3.80)
+  \node[modelrow, fill=cStage4!65, text width=2.40cm, align=center, minimum height=1.15cm] (m3l) at (-5.85, -3.80)
     {{\fontsize{8.5}{10.2}\selectfont\color{lavenderDark}\faCalculator\ \textbf{3. Normalizer}}\\[2pt]
      {\fontsize{7.5}{9.0}\selectfont\texttt{tensor\_prep.py}}};
-  \node[modelrow, fill=lavenderLight!85, text width=7.40cm, align=left, minimum height=1.15cm] (m3p) at (-0.55, -3.10)
+  \node[modelrow, fill=lavenderLight!85, text width=7.40cm, align=left, minimum height=1.15cm] (m3p) at (-0.55, -3.80)
     {\fontsize{7.6}{9.0}\selectfont \textbf{Tensor Standardization} $\rightarrow$ PyTorch Float32 scaling to $[0, 1]$\\[2pt]Channel-wise normalization $\mu=[0.485,0.456,0.406]$, $\sigma=[0.229,0.224,0.225]$};
-  \node[modelrow, fill=lavenderLight!85, text width=4.10cm, align=left, minimum height=1.15cm] (m3r) at (5.60, -3.10)
+  \node[modelrow, fill=lavenderLight!85, text width=4.10cm, align=left, minimum height=1.15cm] (m3r) at (5.60, -3.80)
     {\fontsize{7.6}{9.0}\selectfont \textbf{Normalized Tensor}\\[2pt]{\fontsize{6.8}{8.0}\selectfont Tensor $(1, 3, 224, 224)$}};
 
-  % Stage 4: CoMViT Feature Representation (y = -4.65)
-  \node[modelrow, fill=cStem!65, text width=2.40cm, align=center, minimum height=1.15cm] (m4l) at (-5.85, -4.65)
+  % Stage 4: CoMViT Feature Representation (y = -5.70)
+  \node[modelrow, fill=cStem!65, text width=2.40cm, align=center, minimum height=1.15cm] (m4l) at (-5.85, -5.70)
     {{\fontsize{8.5}{10.2}\selectfont\color{lavenderDark}\faLayerGroup\ \textbf{4. CoMViT}}\\[2pt]
      {\fontsize{7.5}{9.0}\selectfont\texttt{comvit\_model}}};
-  \node[modelrow, fill=lavenderLight!85, text width=7.40cm, align=left, minimum height=1.15cm] (m4p) at (-0.55, -4.65)
+  \node[modelrow, fill=lavenderLight!85, text width=7.40cm, align=left, minimum height=1.15cm] (m4p) at (-0.55, -5.70)
     {\fontsize{7.6}{9.0}\selectfont \textbf{Hybrid ViT Forward Pass} $\rightarrow$ Conv stem inductive patch tokens\\[2pt]Multi-Head Self-Attention layers fusing local texture \& global TM context};
-  \node[modelrow, fill=lavenderLight!85, text width=4.10cm, align=left, minimum height=1.15cm] (m4r) at (5.60, -4.65)
+  \node[modelrow, fill=lavenderLight!85, text width=4.10cm, align=left, minimum height=1.15cm] (m4r) at (5.60, -5.70)
     {\fontsize{7.6}{9.0}\selectfont \textbf{Latent Embeddings}\\[2pt]{\fontsize{6.8}{8.0}\selectfont Deep contextual token space}};
 
-  % Stage 5: Softmax Classification (y = -6.20)
-  \node[modelrow, fill=cHead!65, text width=2.40cm, align=center, minimum height=1.15cm] (m5l) at (-5.85, -6.20)
+  % Stage 5: Softmax Classification (y = -7.60)
+  \node[modelrow, fill=cHead!65, text width=2.40cm, align=center, minimum height=1.15cm] (m5l) at (-5.85, -7.60)
     {{\fontsize{8.5}{10.2}\selectfont\color{lavenderDark}\faBrain\ \textbf{5. Classifier}}\\[2pt]
      {\fontsize{7.5}{9.0}\selectfont\texttt{ear\_classifier}}};
-  \node[modelrow, fill=lavenderLight!85, text width=7.40cm, align=left, minimum height=1.15cm] (m5p) at (-0.55, -6.20)
+  \node[modelrow, fill=lavenderLight!85, text width=7.40cm, align=left, minimum height=1.15cm] (m5p) at (-0.55, -7.60)
     {\fontsize{7.6}{9.0}\selectfont \textbf{5-Class Head Projection} $\rightarrow$ Linear classifier ($D \to 5$ logits)\\[2pt]Softmax activation: AOM, CSOM, Earwax, Normal, Tympanosclerosis};
-  \node[modelrow, fill=lavenderLight!85, text width=4.10cm, align=left, minimum height=1.15cm] (m5r) at (5.60, -6.20)
+  \node[modelrow, fill=lavenderLight!85, text width=4.10cm, align=left, minimum height=1.15cm] (m5r) at (5.60, -7.60)
     {\fontsize{7.6}{9.0}\selectfont \textbf{5-Class Probabilities}\\[2pt]{\fontsize{6.8}{8.0}\selectfont Calibrated confidence vector}};
 
-  % Stage 6: Grad-CAM++ Explainability (y = -7.75)
-  \node[modelrow, fill=cStage2!70, text width=2.40cm, align=center, minimum height=1.15cm] (m6l) at (-5.85, -7.75)
+  % Stage 6: Grad-CAM++ Explainability (y = -9.50)
+  \node[modelrow, fill=cStage2!70, text width=2.40cm, align=center, minimum height=1.15cm] (m6l) at (-5.85, -9.50)
     {{\fontsize{8.5}{10.2}\selectfont\color{lavenderDark}\faEye\ \textbf{6. Grad-CAM++}}\\[2pt]
      {\fontsize{7.5}{9.0}\selectfont\texttt{gradcam\_plus}}};
-  \node[modelrow, fill=lavenderLight!85, text width=7.40cm, align=left, minimum height=1.15cm] (m6p) at (-0.55, -7.75)
+  \node[modelrow, fill=lavenderLight!85, text width=7.40cm, align=left, minimum height=1.15cm] (m6p) at (-0.55, -9.50)
     {\fontsize{7.6}{9.0}\selectfont \textbf{2nd-Order Saliency Mapping} $\rightarrow$ Backward hook on terminal block\\[2pt]Weights $\alpha_{ijk}^c \rightarrow$ Positive ReLU attribution map $\rightarrow$ Jet TM overlay};
-  \node[modelrow, fill=lavenderLight!85, text width=4.10cm, align=left, minimum height=1.15cm] (m6r) at (5.60, -7.75)
+  \node[modelrow, fill=lavenderLight!85, text width=4.10cm, align=left, minimum height=1.15cm] (m6r) at (5.60, -9.50)
     {\fontsize{7.6}{9.0}\selectfont \textbf{Tympanic Heatmap}\\[2pt]{\fontsize{6.8}{8.0}\selectfont Clinically verified focus}};
 
   % Vertical Connections between Stages
