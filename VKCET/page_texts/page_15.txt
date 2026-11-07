@@ -1,0 +1,25 @@
+6
+interact with an environment and learn from feedback such as rewards or penalties.
+Deep Reinforcement Learning (DRL) and Collaborative Multi-Agent Learning (CMAL) are
+specifically highlighted as mechanisms that can support autonomous decision-making,
+cooperation and scalability
+2.8 Hierarchical Task Networks
+Hierarchical Task Networks (HTNs) are discussed as a method for decomposing complex
+tasks into simpler subtasks. This is closely related to MAWS because a large workflow can
+first be represented at a high level and then divided into manageable units that can be assigned
+to different agents.
+The approach is especially relevant to workflows in which several dependent activities must be
+coordinated.
+2.9 Coordination and Mechanism Design
+The reference paper discusses game theory, auction theory and mechanism design as
+approaches that have been used to improve coordination and resolve conflicts among agents.
+These approaches can help agents make decisions about resources and task allocation when
+multiple agents compete for or depend on the same resources.
+2.10 Research Gap and Motivation
+The literature and reference paper indicate several practical gaps. Many workflows still depend
+on manual control and fixed task assignment. Traditional centralized systems can be less
+flexible when the workload or environment changes. As the number of tasks and agents grows,
+coordination and communication become more difficult.
+The motivation for MAWS is therefore to combine task decomposition, automatic agent
+selection, autonomous execution, communication, cooperation and dynamic reassignment in
+one workflow-oriented architecture. The aim is not simply to add more agents, but to

@@ -1,0 +1,24 @@
+12
+CHAPTER 4
+WORKFLOW AND IMPLEMENTATION
+4.1 Overall Workflow
+The workflow can be represented as:
+Overall Task  Task Decomposition  Agent Selection and Assignment  Agent Execution 
+Communication and Cooperation  Dynamic Reassignment  Final Result
+This sequence represents the core design described in the seminar material.
+Step 1 – Receive the Task
+The system first receives an overall task or workflow objective. The task describes what the
+system is expected to accomplish. At this stage, the system identifies the goal and the
+information needed to begin processing.
+Step 2 – Divide the Task
+The overall task is divided into smaller subtasks. The purpose is to create units of work that can
+be handled by suitable agents. The decomposition can reflect dependencies between tasks so
+that tasks requiring earlier results are scheduled accordingly.
+Step 3 – Select Agents
+The system identifies agents whose capabilities match the subtasks. Availability and current
+workload can also be considered. The objective is to avoid assigning a task to an unsuitable or
+overloaded agent when another suitable agent is available.
+Step 4 – Execute Tasks
+Selected agents perform their assigned subtasks. Each agent focuses on its role while
+maintaining awareness of relevant workflow information. Agents can operate with reduced
+continuous human control according to the required level of autonomy.

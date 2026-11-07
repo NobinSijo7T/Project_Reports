@@ -1,0 +1,16 @@
+20
+6.8 Smart Environments
+Future-oriented applications includes mart environments and smart cities, where multiple
+intelligent services may need to coordinate information and resources. The multi-agent
+approach is suitable for such settings because the environment can contain many independent
+but related activities.
+6.9 Limitations
+The reference material identifies several limitations:
+6.9.1 Managing many agents becomes difficult as system size increases.
+6.9.2 Communication becomes more complex when more agents interact.
+6.9.3 Larger systems require additional computing resources
+6.9.4 Complex workflows need stronger coordination mechanisms.
+Some situations may still require human supervision.
+These limitations show that autonomy and scalability introduce engineering challenges. A
+successful MAWS must therefore balance agent independence with system-level control and
+coordination.

@@ -1,0 +1,42 @@
+17
+Table 5.3 Reported collaboration efficiency and adaptability
+Scenario
+Collaboration Efficiency
+Adaptability
+Healthcare Workflow
+92%
+5 min
+Manufacturing Workflow
+88%
+7 min
+Logistics Workflow
+85%
+6 min
+Dynamic Task Assignment
+90%
+4 min
+5.7 Reliability and Recovery
+The reference paper reports recovery time and reliability for failure scenarios. Agent failure is
+reported with a recovery time of 2 minutes and system reliability of 98%. Resource failure is
+reported with 3 minutes and 97% reliability, while task overload is reported with 4 minutes
+and 96% reliability.
+These values indicate that the paper considered the ability of the system to continue operating
+when a component or resource becomes unavailable.
+Table 5.4 Reported recovery time and system reliability
+Scenario
+Recovery Time
+Reliability
+Agent Failure
+2 min
+98%
+Resource Failure
+3 min
+97%
+Task Overload
+4 min
+96%
+5.8 Evaluation Limitations
+The supplied reference material does not provide complete details of experimental hardware,
+datasets, statistical significance testing or a formal mathematical definition of every
+performance. Therefore, the reported values should be understood as the values presented in
+the reference paper rather than independently verified experimental results for this seminar.

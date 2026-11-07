@@ -1,0 +1,41 @@
+16
+5.4 System Efficiency
+Reported efficiency increases from 80% with 5 agents to 90% with 20 agents. Within the
+presented test, this is associated with better workflow performance as work is distributed
+among more agents.
+The supplied material does not provide a precise mathematical definition of the efficiency
+metric, so this report does not invent one.
+5.5 Scenario-Based Evaluation
+The reference paper also reports results for healthcare, manufacturing, logistics and dynamic
+task-assignment scenarios. The healthcare workflow is reported with 8 agents, 3.5 hours
+average task completion time and 90% resource utilization. Manufacturing is reported with 10
+agents, 5.2 hours and 85% resource utilization. Logistics is reported with 12 agents, 6.1 hours
+and 80% resource utilization. Dynamic task assignment is reported with 15 agents, 4.9 hours
+and 83% resource utilization.
+Table 5.2 Reported task completion time and resource utilization across scenarios
+Scenario
+Agents
+Completion Time
+Resource Utilization
+Manufacturing Workflow
+10
+5.2 h
+85%
+Healthcare Workflow
+8
+3.5 h
+90%
+Logistics Workflow
+12
+6.1 h
+80%
+Dynamic Task Assignment
+15
+4.9 h
+83%
+5.6 Collaboration and Adaptability
+The reference paper reports collaboration efficiency of 92% for healthcare, 88% for
+manufacturing, 85% for logistics and 90% for dynamic task assignment. Adaptability time is
+reported as 5, 7, 6 and 4 minutes respectively.
+These results indicate that the reference evaluation considered not only completion time but
+also how well agents cooperate and how quickly the workflow can respond to changes.

@@ -1,0 +1,16 @@
+DECLARATION
+I, SOHAN ANTONY  hereby declare that the seminar report entitled “Design of Multi-Agent
+Autonomous Workflow Systems using Agentic AI Frameworks” submitted for the partial
+fulfilment of the requirements for the award of the Degree of Bachelor of Technology in
+Computer Science and Engineering of APJ Abdul Kalam Technological University, Kerala is a
+bona fide work carried out under the supervision of RINTU JOHNSON, Assistant professor,
+Department Of Computer Science and Engineering, Valia Koonambaikulathamma College of
+Engineering and Technology, Chavarcode, Paripally, Thiruvananthapuram.
+I further declare that the material presented in this report is based on the supplied seminar
+reference material and that the sources used have been acknowledged. I have not knowingly
+fabricated experimental results or sources. The numerical performance values included in the
+Results and Discussion chapter are explicitly presented as reported values from the supplied
+reference paper.
+Chavarcode
+SOHAN ANTONY
+SEPTEMBER  2026

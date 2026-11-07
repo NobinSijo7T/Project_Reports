@@ -1,0 +1,25 @@
+13
+Step 5 – Communicate
+During execution, agents exchange useful information such as progress, task results, status and
+resource changes. Communication allows one agent's output to become useful input for
+another agent.
+Step 6 – Reassign When Needed
+If the environment changes, the original allocation may no longer be suitable. The system can
+reassign tasks based on the new state. Examples include a change in priority, increased
+workload or an unavailable agent.
+Step 7 – Produce the Final Result
+After subtasks are completed, the outputs are combined or coordinated to produce the overall
+workflow result. The final result represents the collective work of the agents rather than the
+output of only one agent.
+4.2 Working Example
+Consider a generic logistics workflow. The overall objective is to complete a set of deliveries.
+One group of agents can handle delivery information, another can handle route-related
+decisions, and another can monitor resource or vehicle status. If a route becomes unsuitable,
+the system can reassign work or update the plan. The example illustrates the principle of
+specialization, communication and dynamic adaptation without depending on a specific
+software implementation.
+4.3 Implementation Considerations
+A practical implementation would require an agent manager or orchestration mechanism, agent
+definitions, a task queue, a communication mechanism, access to workflow data, decision
+logic and monitoring. The exact software stack is not specified in the supplied reference paper,
+so this report does not claim a particular framework or programming language as the

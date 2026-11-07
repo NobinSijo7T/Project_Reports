@@ -1,0 +1,15 @@
+9. T. Song, M. Luo, X. Zhang, L. Chen, Y. Huang, J. Cao, Q. Zhu, D. Liu, B. Zhang, G.
+Zou, et al., “A multiagent-driven robotic AI chemist enabling autonomous chemical research on
+demand,” Journal of the American Chemical Society, 147(15), pp. 12534–12545, 2025.
+10. A.Zhang, Y.Chen, L.Sheng, X.Wang, T.-S.Chua, “On generative agents in
+recommendation,” Proceedings of the 47th International ACM SIGIR Conference, pp. 1807–
+1817, 2024.
+11. Z.Liu,T.Hoang,J.Zhang,M.Zhu,T.Lan,J.Tan,W.Yao,Z.Liu,Y.Feng,R.RN,etal.,“A
+pigen:Automated pipeline for generating verifiable and diverse function-calling datasets,”
+Advances in Neural Information Processing Systems, 37, pp. 54463–54482, 2024.
+12. I.Hettiarachchi, “Exploring generative AI agents: Architecture, applications, and
+challenges,” Journal of Artificial Intelligence and General Science, 8(1), pp. 105–127, 2025.
+13. R.Surapaneni, J.Miku, M.Vakoc, T.Segal, “Announcing the Agent 2 Agent
+protocol(A2A),”Google Developers Blog, 2025.
+14. Z.Duan,J.Wang, “Exploration of LL Mmulti-agent application implementation based on
+Lang Graph+CrewAI,” 2024.

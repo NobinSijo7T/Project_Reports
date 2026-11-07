@@ -1,0 +1,24 @@
+ABSTRACT
+Artificial Intelligence (AI) is increasingly being used to perform tasks that traditionally require
+continuous human involvement. A single AI agent can perform a particular task, but complex
+workflows may contain several related tasks that need to be completed in sequence or in
+parallel. A Multi-Agent System (MAS) addresses this requirement by using multiple
+autonomous agents with different roles that communicate and cooperate toward a common
+goal. This seminar studies the design of Multi-Agent Autonomous Workflow Systems
+(MAWS) using Agentic AI frameworks. The central idea is to divide a large workflow into
+smaller tasks, select suitable agents, assign the tasks according to agent capability and
+availability, allow agents to execute their work, exchange information, and dynamically
+reassign tasks when workload or environmental conditions change. The reference paper
+discusses system architecture, agent modelling, the operating environment, dynamic task
+allocation, communication, learning mechanisms, adaptability, cooperation, autonomy, testing,
+and continuous improvement. It also discusses the relevance of reinforcement learning, deep
+learning, and collaborative multi-agent learning in improving autonomous decision-making.
+The reported evaluation in the reference material considers task completion time, resource
+utilization, collaboration efficiency, adaptability, scalability, recovery, and reliability. In the
+reported agent-count test, completion time decreased from 7.3 hours with 5 agents to 4.2 hours
+with 20 agents, while reported efficiency increased from 80% to 90%. Scenario-based results
+also report different completion times and resource utilization for healthcare, manufacturing,
+logistics, and dynamic task-assignment workflows. The paper describes failure recovery and
+reliability measurements as well. These values are reported results from the supplied reference
+material and are not newly generated experiments in this seminar.
+ii

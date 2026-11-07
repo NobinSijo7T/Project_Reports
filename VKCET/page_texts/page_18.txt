@@ -1,0 +1,25 @@
+9
+The framework also supports communication and coordination so that individual agents can
+participate inthe larger workflow. The important point is that the framework provides the agents
+with a structured way to observe, decide, act and communicate.
+3.5 Task Decomposition
+Task decomposition is the first major workflow operation. The overall task is divided into
+smaller subtasks. Decomposition reduces the complexity of the original task and makes it
+possible to distribute work.
+For example, a large workflow can be divided into information collection, analysis, planning
+and reporting. The actual subtasks depend on the application and are not fixed by the
+architecture.
+3.6 Agent Selection and Dynamic Task Allocation
+After decomposition, suitable agents are selected for the subtasks. The reference paper states
+that allocation can consider capability, availability and current work load. Dynamic allocation is
+important because the state of the system can change after the initial assignment.
+If an agent becomes unavailable or a task becomes more urgent, the system can redistribute
+work. This prevents the workflow from remaining locked to an assignment that is no longer
+suitable.
+3.7 Communication Layer
+The communication layer allows agents to exchange task updates, data, status and other relevant
+information. The reference paper discusses both synchronous and asynchronous communication.
+Synchronous communication is useful when an agent needs an immediate response.
+Asynchronous communication allows agents to continue working and exchange messages
+without requiring all participants to act at exactly the same time. A robust communication layer
+is therefore important for coordination.

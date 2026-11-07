@@ -1,0 +1,22 @@
+ACKNOWLEDGEMENT
+On the submission of this report,  I am greatly indebted to all those who helped to
+complete the seminar on “Design of Multi-Agent Autonomous Workflow Systems using
+Agentic AI Frameworks” and being the part of my seminar.
+I would like to express my sincere gratitude and I am deeply in debted to Dr. P Sreeraj,
+Principal, VKCET, Paripally for his moral support and spirit for the successful
+completion of this seminar.
+I would like to express my sincere thanks to Dr Shine Raj G, Head of the Department,
+Department of Computer Science and Engineering who has greatly encouraged and
+supported in doing the seminar by providing all the necessary equipment and facilities.
+I would also like to sincerely thank to Ms.Reeba B, Assistant Professor Department of
+Computer Science and Engineering for coordinating the seminar with such vast
+dedication and efficiency. Your guidance and support have been crucial in ensuring the
+success of this event.
+I would like to express my immerse gratitude to my guide Ms. Rintu Johnson, Assistant
+Professor Department of Computer Science and Engineering for her exhilarating
+supervision and constant encouragement throughout the duration of the seminar.
+Finally, let me express my sincere thanks to all staff members of the Department of
+Computer Science and Engineering and the management of VKCET for supporting and
+providing all necessary facilities throughout the seminar.
+SOHAN ANTONY
+i

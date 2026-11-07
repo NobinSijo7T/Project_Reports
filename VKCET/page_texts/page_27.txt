@@ -1,0 +1,24 @@
+18
+CHAPTER 6
+RESULTS, DISCUSSION, ADVANTAGES AND APPLICATIONS
+6.1 Results Summary
+The overall reported results indicate that MAWS can improve workflow handling when
+multiple agents cooperate. The agent-count test associates an increase from 5 to 20 agents with
+a reduction in completion time from 7.3 to 4.2 hours and an increase in reported efficiency
+from 80% to 90%.
+The scenario-based results also show that the system was evaluated across different workflow
+characteristics. Healthcare produced the highest reported collaboration efficiency among the
+listed scenarios, while logistics had a lower collaboration efficiency because route and
+timetable changes create dependencies.
+6.2 Discussion
+The main benefit of the architecture is not simply the number of agents but the distribution and
+coordination of work. A complex task can be decomposed into manageable units, specialized
+agents can work on those units, and information can be exchanged between them.
+Dynamicreassignmentisimportantbecauseaworkflowisrarelycompletelystatic.Ifconditionschang
+e, the ability to modify assignments helps the system remain useful. At the same time, more
+agents create more communication and coordination overhead. Therefore, scalability requires
+careful system design rather than simply increasing the agent count.
+6.3 Advantages
+The reference material identifies several advantages:
+1. Reduced need for continuous manual task handling.
+2. Distribution of complex work among multiple agents.

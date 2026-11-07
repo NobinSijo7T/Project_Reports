@@ -1,0 +1,25 @@
+1
+CHAPTER 1
+INTRODUCTION
+1.1 General Background
+Artificial Intelligence has developed from systems that mainly execute predefined instructions
+toward systems that can reason about tasks and act with greater autonomy. An AI agent can be
+understood as an AI system designed to perform a particular task. When several agents with
+different roles operate together and exchange information, the result is a Multi-Agent System
+(MAS).
+Complex real-world workflows often contain many related activities. Some tasks may be
+independent and can be performed in parallel, while others depend on information produced by
+earlier tasks. Traditional workflow systems frequently rely on fixed sequences, manual task
+assignment, or centralized control. Such arrangements can become difficult to manage when
+the work load changes, resources become unavailable, or new tasks arrive.
+Multi-Agent Autonomous Workflow Systems address this problem by treating the workflow
+as a team activity. Instead of requiring one system or one person to manage every step, the
+overall task can be divided into smaller subtasks. Specialized agents can then perform different
+subtasks, communicate useful information, and adjust task assignments when conditions
+change. The supplied reference paper presents this approach as a way to improve flexibility,
+scalability and decision-making in changing environments.
+1.2 Need for Multi-Agent Autonomous Workflows
+A complex work flow may require different types of expert is eat the same time. For example,
+a large business workflow may include information gathering, analysis, planning, resource
+allocation and reporting. Giving every task to a single agent can make the system less flexible
+and may create a bottleneck. A multi-agent approach distributes responsibilities across agents.

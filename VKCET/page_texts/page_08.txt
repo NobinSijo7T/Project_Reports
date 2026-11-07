@@ -1,0 +1,14 @@
+LIST OF TABLES
+No.
+Title
+Page No.
+Table 2.1     Literature survey summary
+7
+Table 5.1     Reported completion time and efficiency for different agent counts
+15
+Table 5.2     Reported task completion time and resource utilization across scenarios
+16
+Table 5.3     Reported collaboration efficiency and adaptability
+17
+Table 5.4     Reported recovery time and system reliability                                                 17
+v

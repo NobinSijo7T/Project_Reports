@@ -1,0 +1,24 @@
+8
+CHAPTER 3
+SYSTEM ARCHITECTURE AND METHODOLOGY
+3.1 System Overview
+A Multi-Agent Autonomous Workflow System contains several connected components:
+agents, an operating environment, an Agentic AI framework, task allocation mechanisms and a
+communication layer. Together these components allow the system to receive a workflow,
+divide it into tasks, assign work, execute subtasks, exchange information and adapt to changes.
+3.2 Agents
+Agents are the main active components of MAWS. Each agent is responsible for a particular job
+or group of jobs. An agent can work independently while contributing to the overall workflow.
+Agents may differ in capabilities, availability and workload. The architecture therefore does not
+assume that every agent is equally suitable for every task. The system selects agents according
+to the requirements of the subtask and the current state of the workflow.
+3.3 Environment
+The environment is the situation in which agents operate. It provides information such as tasks,
+resource status and operational conditions. The environment may be physical, such as a factory
+or delivery route, or abstract, such as a scheduling and decision-making environment.
+Agent actions can change the state of the environment. For example, completing a task changes
+the set of remaining tasks and may make new information available to other agents.
+3.4 Agentic AI Framework
+The Agentic AI framework provides the algorithms and tools that support agent decision-
+making and task execution. The reference paper discusses machine learning, reinforcement
+learning and deep learning as possible components.

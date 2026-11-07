@@ -1,0 +1,26 @@
+2
+The need for autonomous workflows becomes stronger when the environment is dynamic.
+New tasks may arrive, priorities may change, or an agent may become unavailable. A fixed
+workflow may not respond quickly to these changes. Dynamic task allocation allows work to
+be moved to another suitable agent. Communication allows agents to share status and
+information. Cooperation allows them to work toward a common objective.
+The reference paper therefore focuses on a combination of multi-agent systems and Agentic AI
+frameworks rather than treating agents as isolated programs.
+1.3 Basic Terminology
+An AI Agent is an AI-based entity that performs a specific task. A Multi-Agent System is a
+collection of multiple agents that work in the same problem environment. Agentic AI refers to
+an approach in which AI systems can perform tasks with greater autonomy, make decisions
+and coordinate actions.
+A workflow is an ordered set of tasks required to achieve an overall goal. Task decomposition
+means breaking a large task into smaller subtasks. Task allocation means assigning those
+subtasks to suitable agents. Dynamic task allocation means changing those assignments when
+the situation changes. Communication is the exchange of information between agents, while
+cooperation means working together to achieve a shared objective.
+1.4 Scope of the Seminar
+The seminar concentrates on autonomous workflows formed by multiple cooperating AI
+agents. It focuses on agent roles, task decomposition, task assignment, autonomous execution,
+communication, cooperation, dynamic reassignment and performance evaluation.
+The seminar does not claim to implement a new production - ready MAWS. The report
+explains and analyzes the design presented in the supplied 2026 IEEE reference paper and
+organizes its concepts into a clear workflow-oriented model. Reported numerical results are
+presented as reference-paper results rather than as experiments conducted for this seminar.

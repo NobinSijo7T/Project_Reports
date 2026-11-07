@@ -1,0 +1,24 @@
+4
+CHAPTER 2
+LITERATURE SURVEY
+2.1 Overview
+Research in Multi-Agent Systems has developed across robotics, distributed systems, business
+process management, healthcare and other domains. Earlier systems often used static task
+allocation in which tasks were assigned to agents without much ability to modify the
+workflow. The reference paper identifies this lack of flexibility as a motivation for more
+adaptive multi-agent models.
+The literature discussed in the reference paper covers logic-based multi-agent systems, agent-
+based programming, dynamic task allocation, cooperation, learning mechanisms, task
+decomposition, coordination and modern Agentic AI. These areas provide the conceptual
+foundation for autonomous workflows.
+2.2 Multi-Agent Systems
+Calegarietal. (2021) is identified as a systematic literature review on logic-based technologies
+for multi-agent systems. The relevance to this seminar is the broader understanding of how
+multiple agents can be coordinated as components of a distributed intelligent system.
+The key idea carried into MAWS is that agents can have separate responsibilities while still
+participating in a common coordinated process.
+2.3 Agent-Based Programming
+Cardoso and Ferrando (2021) review agent-based programming for multi-agent systems.
+Agent-based approaches provide a conceptual basis for representing autonomous entities, their
+behavior and interactions.
+For MAWS, this supports the idea that agents can be model led as separate entities with roles

@@ -1,0 +1,11 @@
+22
+7.6 Autonomous Vehicles
+The reference paper identifies self-driving vehicles as a future application. Multi-agent
+coordination could support decision-making in changing traffic and operational conditions.
+7.7 Wider Industrial Use
+The approach can be extended to additional industries and smart environments where tasks are
+interdependent, resources are shared and conditions change over time.
+7.8 Human-AI Collaboration
+Future systems can combine autonomy with controlled human oversight. Instead of completely
+removing humans, the system can allow people to supervise important decisions, handle
+exceptional cases and intervene when the agents are uncertain.

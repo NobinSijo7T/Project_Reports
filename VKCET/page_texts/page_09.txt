@@ -1,0 +1,36 @@
+ABBREVIATIONS
+Abbreviation
+Expansion
+AI
+Artificial Intelligence
+A2A
+Agent2Agent
+AAI
+Agentic AI
+API
+Application Programming Interface
+BDI
+Belief–Desire–Intention
+CMAL
+Collaborative Multi-Agent Learning
+DRL
+Deep Reinforcement Learning
+HTN
+Hierarchical Task Network
+LLM
+Large Language Model
+MAS
+Multi-Agent System
+MAWS
+Multi-Agent Autonomous Workflow System
+ML
+Machine Learning
+NLP
+Natural Language Processing
+RL
+Reinforcement Learning
+SLA
+Service-Level Agreement
+V2X
+Vehicle-to-Everything
+vi

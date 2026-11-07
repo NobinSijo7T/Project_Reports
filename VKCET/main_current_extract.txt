@@ -1,0 +1,2642 @@
+                             FRACVISION
+   MULTIMODAL X-RAY FRACTURE ANALYSIS AND
+LONGITUDINAL HEALING-STAGE RESEARCH PROTOTYPE
+
+                              PROJECT REPORT
+
+                                 Submitted by
+
+
+                         ADWAITH S VKE23CS006
+
+                         ASWATHY P VKE23CS019
+
+                      SOHAN ANTONY VKE23CS045
+
+                      SREENANDHA M VKE23CS046
+                                       to
+            the APJ Abdul Kalam Technological University, Kerala
+      in partial fulfilment of the requirements for the award of the Degree
+                                       of
+
+                            Bachelor of Technology
+                                       In
+
+                      Computer Science and Engineering
+
+
+
+
+             Department of Computer Science and Engineering
+
+      Valia Koonambaikulathamma College of Engineering & Technology
+                        Paripally, Thiruvananthapuram
+
+                              NOVEMBER 2026
+                                         DECLARATION
+
+
+
+I, SOHAN ANTONY hereby declare that the project report entitled “FracVision: Multimodal X-ray
+
+Fracture Analysis and Longitudinal Healing-Stage Research Prototype” submitted for the partial
+
+fulfilment of the requirements for the award of the Degree of Bachelor of Technology in Computer
+
+Science and Engineering of APJ Abdul Kalam Technological University, Kerala is a bona fide work
+
+carried out under the supervision of Reeba B, Assistant Professor, Department of Computer Science
+
+and Engineering, Valia Koonambaikulathamma College of Engineering and Technology, Chavarcode,
+
+Paripally, Thiruvananthapuram.
+
+I further declare that the material presented in this report is based on the supplied project reference ma-
+
+terial and that the sources used have been acknowledged. I have not knowingly fabricated experimental
+
+results or sources. The report presents the system architecture, algorithms, workflows, and feasibility
+
+of the proposed FracVision research prototype without claiming unsupported clinical performance.
+
+
+
+Chavarcode                                                                           SOHAN ANTONY
+SEPTEMBER 2026
+           VALIA KOONAMBAIKULATHAMMA COLLEGE OF
+                       ENGINEERING & TECHNOLOGY
+
+          DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING
+
+
+                                      CERTIFICATE
+
+
+
+This is to certify that the project report entitled “FracVision: Multimodal X-ray Fracture
+
+Analysis and Longitudinal Healing-Stage Research Prototype” submitted by Adwaith
+
+S [VKE23CS006], Aswathy P [VKE23CS019], Sohan Antony [VKE23CS045], and
+
+Sreenandha M [VKE23CS046], of the 2023–2027 batch, is a bonafide record of the project
+
+work carried out under the guidance. The report has been prepared according to the prescribed
+
+
+academic format and has been reviewed for project evaluation.
+
+
+
+
+       Project Guide               Project Coordinator           Head of the Department
+
+        Ms. Reeba B                   Dr. Shine Raj G                 Dr. Shine Raj G
+
+     Assistant Professor             Assistant Professor                 Professor
+
+     Department of CSE              Department of CSE               Department of CSE
+
+          VKCET                           VKCET                           VKCET
+Acknowledgement
+
+
+On the submission of this report, I am greatly indebted to all those who helped to complete the project entitled
+“FracVision: Multimodal X-ray Fracture Analysis and Longitudinal Healing-Stage Research Prototype”.
+
+I would like to express my sincere gratitude and I am deeply indebted to Dr. P Sreeraj, Principal, VKCET,
+Paripally, for his moral support and spirit for the successful completion of this project.
+
+I would like to express my sincere thanks to Dr Shine Raj G, Head of the Department, Department of
+Computer Science and Engineering, who has greatly encouraged and supported the project by providing all
+the necessary equipment and facilities.
+
+I would also like to sincerely thank Dr Shine Raj G, Project Coordinator, Department of Computer Science
+and Engineering, for coordinating the project with dedication and efficiency. His guidance and support have
+been crucial in ensuring the successful completion of this work.
+
+I would like to express my immense gratitude to my guide Ms. Reeba B, Assistant Professor, Department
+of Computer Science and Engineering, for her supervision and constant encouragement throughout the
+duration of the project.
+
+Finally, let me express my sincere thanks to all staff members of the Department of Computer Science and
+Engineering and the management of VKCET for supporting and providing all necessary facilities throughout
+the project.
+
+
+
+                                                                                                    Adwaith S
+
+                                                                                                   Aswathy P
+
+                                                                                                Sohan Antony
+
+                                                                                               Sreenandha M
+                                             ABSTRACT
+
+
+
+FracVision: Multimodal X-ray Fracture Analysis and Longitudinal Healing-Stage Research Proto-
+
+type is a modular research system for multimodal analysis of bone X-ray images. The implementation
+
+combines image quality control and preprocessing with RT-DETRv2 for fracture-related detection, Med-
+
+SAM for box-prompted segmentation, DINOv2 for visual feature extraction, and a configurable multilabel
+
+classifier operating on DINOv2 embeddings. A Mamba-style longitudinal model is implemented for
+
+sequence-level healing-stage classification when serial patient studies and appropriate labels are available.
+
+The application is exposed through a FastAPI service and a Next.js web interface supporting single-image
+
+analysis, serial comparison, and prediction history.
+
+The codebase is intentionally conservative about medical claims. Every prediction carries a non-clinical
+
+disclaimer, outputs include quality-control status and stage-level errors, and supervised recovery-time
+
+training is disabled because the configured datasets do not provide verified time-to-union or censoring
+
+labels. The supplied snapshot contains model interfaces, adapters, training scripts, evaluation utilities,
+
+tests, and deployment configuration, but no dataset files or trained checkpoint artifacts. Therefore, this
+
+report documents the implemented architecture and algorithms without fabricating accuracy, latency, or
+
+clinical performance values.
+Contents
+
+1   Introduction                                                                                             1
+
+    1.1   Background and project overview . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .        1
+
+    1.2   Problem statement . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .      1
+
+    1.3   Objectives . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   1
+
+    1.4   Scope and boundaries . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .       2
+
+
+Literature Survey                                                                                            3
+
+    2.1   Overview . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .     3
+
+    2.2   Transformer-Based Fracture Detection . . . . . . . . . . . . . . . . . . . . . . . . . . .         3
+
+    2.3   Self-Supervised Visual Representation Learning . . . . . . . . . . . . . . . . . . . . . .         4
+
+    2.4   Prompt-Based Medical Image Segmentation . . . . . . . . . . . . . . . . . . . . . . . .            4
+
+    2.5   Adaptation of Foundation Models for Medical Imaging . . . . . . . . . . . . . . . . . .            4
+
+    2.6   Medical Vision-Language Models . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .         5
+
+    2.7   Longitudinal Sequence Modelling . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .        5
+
+    2.8   Multi-Task and Modular Learning . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .        6
+
+    2.9   Research Gap and Project Motivation . . . . . . . . . . . . . . . . . . . . . . . . . . . .        6
+
+    2.10 Literature Survey Summary Table . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .         7
+
+
+4   Requirement Specification                                                                                8
+
+    4.1   Functional requirements . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .      8
+
+    4.2   System Requirements . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .        9
+
+          4.2.1    Hardware and Software Requirements . . . . . . . . . . . . . . . . . . . . . . .          9
+
+    4.3   Non-functional and safety requirements . . . . . . . . . . . . . . . . . . . . . . . . . . .       9
+
+
+
+                                                      iii
+    4.4   Datasets and data formats . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .     10
+
+          4.4.1   FracAtlas: fracture image and annotation dataset . . . . . . . . . . . . . . . . .        10
+
+          4.4.2   GRAZPEDWRI-DX: longitudinal paediatric wrist X-ray dataset . . . . . . . . .              10
+
+
+5   System Design                                                                                           12
+
+    5.1   High-level architecture . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   12
+
+    5.2   Detailed module architecture . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .    12
+
+    5.3   End-to-end workflow . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .     13
+
+    5.4   Data-flow architecture . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .    14
+
+    5.5   API architecture . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .    14
+
+    5.6   Security, validation, and error handling . . . . . . . . . . . . . . . . . . . . . . . . . . .    15
+
+
+6   Proposed Method                                                                                         16
+
+    6.1   Mathematical foundations of multimodal X-ray analysis . . . . . . . . . . . . . . . . . .         16
+
+    6.2   Algorithm . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   17
+
+    6.3   Algorithmic safeguards . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .    20
+
+
+7   Implementation and Algorithms                                                                           21
+
+    7.1   Image preprocessing and quality control . . . . . . . . . . . . . . . . . . . . . . . . . .       21
+
+    7.2   Detection algorithm . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .     21
+
+    7.3   Segmentation algorithm . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .      21
+
+    7.4   DINOv2 feature extraction and classification . . . . . . . . . . . . . . . . . . . . . . . .      21
+
+    7.5   Serial comparison . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .     22
+
+    7.6   Longitudinal Mamba model . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .        22
+
+    7.7   Recovery prediction boundary . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .      22
+
+
+
+                                                      iv
+    7.8   Dataset adapters and preprocessing data flow . . . . . . . . . . . . . . . . . . . . . . . .      22
+
+
+8   Machine Learning Pipeline and Training Design                                                           24
+
+    8.1   Training phases . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   24
+
+    8.2   Phase 1: DINOv2 representation adaptation . . . . . . . . . . . . . . . . . . . . . . . .         24
+
+    8.3   Phase 2: RT-DETRv2 detection training . . . . . . . . . . . . . . . . . . . . . . . . . .         24
+
+    8.4   Phase 3: MedSAM segmentation training and prompting . . . . . . . . . . . . . . . . .             25
+
+    8.5   Phase 4: Multilabel classifier training . . . . . . . . . . . . . . . . . . . . . . . . . . . .   26
+
+    8.6   Phase 5: Serial comparison training design . . . . . . . . . . . . . . . . . . . . . . . . .      26
+
+    8.7   Phase 6: Mamba longitudinal modelling . . . . . . . . . . . . . . . . . . . . . . . . . .         27
+
+    8.8   Training and inference separation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .     27
+
+    8.9   Reproducible training workflow . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .      28
+
+
+9   Detailed Technical Analysis                                                                             29
+
+    9.1   Design rationale and separation of concerns . . . . . . . . . . . . . . . . . . . . . . . .       29
+
+    9.2   Application startup and request lifecycle . . . . . . . . . . . . . . . . . . . . . . . . . .     30
+
+    9.3   Image preprocessing algorithm in detail . . . . . . . . . . . . . . . . . . . . . . . . . . .     31
+
+    9.4   Detection and prompt-based segmentation . . . . . . . . . . . . . . . . . . . . . . . . .         32
+
+    9.5   Representation learning and multilabel classification . . . . . . . . . . . . . . . . . . . .     32
+
+    9.6   Serial comparison and longitudinal modelling . . . . . . . . . . . . . . . . . . . . . . .        33
+
+    9.7   Dataset normalization and split strategy . . . . . . . . . . . . . . . . . . . . . . . . . . .    34
+
+    9.8   Validation, error propagation, and safety boundaries . . . . . . . . . . . . . . . . . . . .      34
+
+    9.9   Deployment and reproducibility considerations . . . . . . . . . . . . . . . . . . . . . . .       35
+
+    9.10 Frontend interaction and visualization behavior . . . . . . . . . . . . . . . . . . . . . . .      35
+
+    9.11 API contract and response normalization . . . . . . . . . . . . . . . . . . . . . . . . . .        36
+
+                                                      v
+   9.12 Evaluation methodology without fabricated results . . . . . . . . . . . . . . . . . . . . .       37
+
+   9.13 Privacy, security, and clinical-use boundaries . . . . . . . . . . . . . . . . . . . . . . . .    37
+
+   9.14 Extension strategy and maintainability . . . . . . . . . . . . . . . . . . . . . . . . . . .      38
+
+   9.15 Configuration and experiment traceability . . . . . . . . . . . . . . . . . . . . . . . . .       39
+
+   9.16 Computational behavior and resource planning . . . . . . . . . . . . . . . . . . . . . . .        39
+
+   9.17 Failure-mode analysis . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .     40
+
+   9.18 Relationship between the research modules . . . . . . . . . . . . . . . . . . . . . . . . .       41
+
+
+10 Feasibility Study                                                                                      42
+
+   10.1 Technical feasibility . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   42
+
+   10.2 Economic and operational feasibility . . . . . . . . . . . . . . . . . . . . . . . . . . . .      42
+
+
+11 Conclusion                                                                                             43
+
+
+
+
+                                                    vi
+List of Figures
+
+  1   Overall FracVision system architecture derived from the frontend, backend, model, and
+
+      database modules. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   12
+
+  2   End-to-end single-image workflow from browser upload to UI result and history persistence. 13
+
+  3   Data-flow diagram for upload, inference, response serialization, and history retrieval. . .     14
+
+  4   Implemented request validation and stage-level error-handling workflow. . . . . . . . .         15
+
+
+
+
+                                                vii
+List of Tables
+
+  4.1   FracVision Functional Requirements Specification. . . . . . . . . . . . . . . . . . . . .      8
+
+  4.2   System Environment and Development Specifications. . . . . . . . . . . . . . . . . . .         9
+
+  9.1   Technical modules and data products in FracVision. . . . . . . . . . . . . . . . . . . . .    29
+
+  9.2   Failure modes and handling rules in the technical workflow. . . . . . . . . . . . . . . . .   41
+
+
+
+
+                                                 viii
+LIST OF SYMBOLS AND ABBREVIATIONS
+
+AI      Artificial Intelligence
+
+API     Application Programming Interface
+
+CLAHE   Contrast Limited Adaptive Histogram Equalization
+
+DICOM   Digital Imaging and Communications in Medicine
+
+IoU     Intersection over Union
+
+QC      Quality Control
+
+SSM     State Space Model
+
+VOC     Pascal Visual Object Classes
+
+YOLO    You Only Look Once annotation format
+
+
+
+
+                                            ix
+1     Introduction
+
+1.1    Background and project overview
+
+Radiographic fracture analysis requires more than a binary image label. A usable analysis workflow may
+
+need to check input quality, localize suspicious regions, create a pixel-level region estimate, classify
+
+image-level attributes, and compare serial studies. FracVision implements these concerns as a modular
+
+research system rather than as one monolithic predictor.
+
+The repository identifies the system as FracVision, version 0.1.0. Its primary application path is a browser-
+
+based Next.js interface communicating with a FastAPI backend. The backend loads an inference pipeline
+
+during the application lifespan and maps model outputs into typed Pydantic responses. A SQLAlchemy
+
+persistence layer stores de-identified prediction history. The model package contains adapters for FracAtlas
+
+and GRAZPEDWRI-DX, preprocessing, pairing, training, inference, and evaluation utilities.
+
+
+1.2    Problem statement
+
+The problem addressed is the engineering of a reproducible, multimodal X-ray analysis workflow that
+
+can expose detection, segmentation, classification, and serial-comparison outputs through one applica-
+
+tion interface while preserving uncertainty and safety information. The implementation does not solve
+
+autonomous clinical diagnosis. It provides a research and integration foundation in which each stage can
+
+fail independently and report its status.
+
+
+1.3    Objectives
+
+1. Standardize JPEG, PNG, and DICOM inputs through configurable quality-control preprocessing.
+
+
+2. Detect fracture-related regions and return pixel-coordinate bounding boxes with confidence scores.
+
+
+3. Use the highest-confidence fracture box as an optional MedSAM prompt for segmentation.
+
+
+4. Extract DINOv2 visual features and produce multilabel probabilities through a classifier head.
+
+
+5. Compare serial images using registration, embedding similarity, pixel differences, and mask overlap.
+
+
+
+
+                                                     1
+6. Provide longitudinal sequence modelling with a Mamba-style model while disabling unsupported
+
+   recovery-time supervision.
+
+
+7. Serve results through typed REST endpoints and present overlays, probabilities, warnings, and history
+
+   in a web UI.
+
+
+1.4    Scope and boundaries
+
+The scope includes the implemented software, model interfaces, data adapters, configuration, API, frontend,
+
+persistence, tests, and Docker deployment files. The supplied repository does not include the configured
+
+datasets, trained checkpoint weights, measured evaluation reports, authentication, or a clinical validation
+
+study. These absences are treated as explicit project boundaries.
+
+
+
+
+                                                    2
+                                            CHAPTER 2
+                                     LITERATURE SURVEY
+
+
+
+2.1    Overview
+
+Research in computer-aided fracture analysis has developed from conventional image-processing and
+
+single-task classifiers toward modular systems that combine detection, segmentation, representation
+
+learning, and longitudinal reasoning. The references used in this project cover transformer-based object
+
+detection, self-supervised visual features, prompt-based medical-image segmentation, foundation-model
+
+adaptation, vision-language models, and sequence modelling.
+
+The literature is relevant to FracVision because the project does not treat an X-ray as only a binary
+
+classification problem. A practical research workflow must identify whether an input is usable, localize
+
+suspicious regions, optionally refine those regions into masks, classify image-level attributes, compare
+
+serial examinations, and communicate the availability or failure of each stage. The reviewed works
+
+provide the conceptual and technical foundation for these components.
+
+
+2.2    Transformer-Based Fracture Detection
+
+Lv et al. (2024) present RT-DETRv2 as an improved real-time detection transformer. Transformer-based
+
+detection is relevant to fracture analysis because it can represent relationships between image regions
+
+while returning localized objects rather than only a whole-image label. In FracVision, the RT-DETRv2
+
+interface is used for fracture-related bounding-box detection and confidence reporting.
+
+Wei et al. (2025) investigate YOLOv11-based multi-task learning for bone-fracture detection and classifica-
+
+tion in X-ray images. This work reflects the value of combining localization and image-level prediction in
+
+a single medical-imaging workflow. FracVision follows the same broad multimodal motivation but keeps
+
+the detector and classifier as independently replaceable stages so that missing checkpoints or unsupported
+
+outputs are reported explicitly.
+
+
+
+
+                                                    3
+2.3    Self-Supervised Visual Representation Learning
+
+Oquab et al. (2023) introduce DINOv2 for learning robust visual features without supervision. Self-
+
+supervised representations are useful when downstream tasks require a common visual embedding but
+
+labelled data are limited or task vocabularies may change. FracVision uses DINOv2 as a feature-extraction
+
+stage and passes the resulting representation to a configurable multilabel classifier.
+
+The separation between the visual encoder and the classifier is important for this project. It allows the
+
+representation stage to be evaluated or adapted independently from the selected fracture, body-part, or
+
+hardware labels. It also allows serial-comparison and longitudinal modules to consume visual features
+
+without requiring every downstream task to use the same prediction head.
+
+
+2.4    Prompt-Based Medical Image Segmentation
+
+Ma et al. (2024) present Segment Anything in Medical Images, commonly referred to as MedSAM, as a
+
+promptable segmentation approach adapted to medical images. Prompt-based segmentation is relevant
+
+because a detector can provide a spatial cue that guides a subsequent mask prediction. In FracVision, the
+
+highest-confidence suitable detection can be used as an optional box prompt for the segmentation stage.
+
+The reviewed segmentation approach supports a staged design: detection identifies a candidate region
+
+and segmentation refines it. This distinction is retained in the implementation. A missing detector box
+
+is not converted into an invented mask, and an unavailable segmentation checkpoint is reported as an
+
+unavailable stage rather than as evidence that no fracture region exists.
+
+
+2.5    Adaptation of Foundation Models for Medical Imaging
+
+Wahd et al. (2025) describe Sam2Rad, a segmentation model for medical images with learnable prompts,
+
+while Wu et al. (2025) study Medical SAM Adapter for adapting the Segment Anything Model to
+
+medical-image segmentation. These works demonstrate that general foundation models often require
+
+domain-specific prompting, adapters, or fine-tuning before they can be used effectively for medical
+
+images.
+
+For FracVision, the implication is architectural rather than a claim of reproduced benchmark performance.
+
+
+
+                                                     4
+The model wrappers isolate detector, segmentor, and feature-extractor interfaces so that approved check-
+
+points or domain adapters can be introduced without rewriting the API and persistence layers. The supplied
+
+repository does not include trained weights, so the report documents the integration pathway rather than
+
+claiming measured accuracy.
+
+
+2.6    Medical Vision-Language Models
+
+Sellergren et al. (2025) present the MedGemma technical report, and Li et al. (2025) describe MedBridge
+
+for connecting foundation vision-language models to medical-image diagnosis in chest X-ray. Jiang et al.
+
+(2025) discuss OmniV-Med for universal visual understanding across medical domains. Together, these
+
+references show the movement toward systems that combine image understanding with richer semantic or
+
+language-oriented interaction.
+
+The current FracVision scope remains narrower. It returns structured research outputs such as quality-
+
+control status, detections, masks, probabilities, comparison measures, and stage errors. A language model
+
+or free-form clinical explanation is not treated as a substitute for those typed outputs, and no autonomous
+
+diagnostic claim is made.
+
+
+2.7    Longitudinal Sequence Modelling
+
+Gu and Dao (2023) introduce Mamba as a selective state-space approach for linear-time sequence modelling.
+
+Longitudinal X-ray analysis differs from single-image analysis because the order and timing of studies carry
+
+information. A sequence model can therefore consume visit-level features from multiple examinations
+
+instead of treating each image as an isolated record.
+
+FracVision implements a Mamba-style longitudinal interface for healing-stage classification when serial
+
+patient studies and suitable labels are available. The data adapters preserve patient and study identifiers
+
+for ordering and patient-level splitting. Recovery-time prediction remains disabled because the supplied
+
+datasets do not provide verified time-to-union or censoring labels.
+
+
+
+
+                                                     5
+2.8      Multi-Task and Modular Learning
+
+The reviewed detection, segmentation, representation-learning, and vision-language studies collectively
+
+motivate a modular multimodal pipeline. Detection supplies spatial evidence, segmentation supplies pixel-
+
+level structure, representation learning supplies reusable features, and longitudinal modelling supplies
+
+sequence context. These outputs are complementary and should not be collapsed into a single unsupported
+
+score.
+
+FracVision consequently separates its stages through explicit contracts. Each component can be loaded,
+
+evaluated, or replaced independently. The API preserves quality-control results, warnings, stage errors,
+
+and model availability so that an unavailable component is distinguishable from a negative finding.
+
+
+2.9      Research Gap and Project Motivation
+
+The references provide strong model-level advances, but they do not by themselves define an end-to-
+
+end, implementation-traceable application for the exact repository scope. A practical system must also
+
+normalize multiple annotation formats, protect patient-level splits, handle missing checkpoints, expose
+
+serial comparison, persist de-identified history, and communicate non-clinical boundaries.
+
+The project addresses this integration gap by connecting the reviewed ideas through a FastAPI service, a
+
+web interface, dataset adapters, model wrappers, serial comparison utilities, and a longitudinal module.
+
+Its contribution is therefore an auditable research prototype and integration architecture, not a claim that
+
+the cited models have been retrained or clinically validated within this project.
+
+
+
+
+                                                     6
+2.10   Literature Survey Summary Table
+                                        Table 2.1 Literature survey summary
+
+
+        Author / Year                        Focus                         Contribution / Relevance
+
+   Oquab et al. (2023)          Self-supervised visual fea- Provides reusable visual representations
+
+                                tures                             for downstream classification and com-
+
+                                                                  parison.
+
+   Gu and Dao (2023)            Longitudinal         sequence     Provides the Mamba-style sequence
+
+                                modelling                         foundation used for ordered visit fea-
+
+                                                                  tures.
+
+   Ma et al. (2024)             Medical image segmenta- Establishes promptable segmentation
+
+                                tion                              relevant to box-guided region refine-
+
+                                                                  ment.
+
+   Lv et al. (2024)             Transformer detection             Supports real-time object detection for
+
+                                                                  localized fracture-related findings.
+
+   Wei et al. (2025)            Multi-task fracture analy- Demonstrates the relevance of combin-
+
+                                sis                               ing detection and classification for X-ray
+
+                                                                  workflows.
+
+   Wahd et al. (2025); Wu       Foundation-model adapta- Shows how prompts and adapters can
+
+   et al. (2025)                tion                              specialize general segmentation models
+
+                                                                  for medical images.
+
+   Sellergren et al. (2025);    Medical vision-language           Provides context for future semantic and
+
+   Li et al. (2025); Jiang et   models                            multimodal extensions beyond the cur-
+
+   al. (2025)                                                     rent typed outputs.
+
+
+
+
+                                                        7
+4     Requirement Specification
+
+4.1     Functional requirements
+
+1. The service shall report readiness, load errors, model versions, and the mandatory clinical disclaimer.
+
+
+2. The service shall accept a single JPEG, PNG, or DICOM upload up to 50 MB at /api/predict.
+
+
+3. The service shall return QC status, warnings, fracture status, confidence, detections, optional segmen-
+
+    tation, optional classification, and stage errors.
+
+
+4. The service shall accept prior and current images at /api/compare and return registration, embedding,
+
+    pixel, and mask-comparison metrics.
+
+
+5. The service shall persist and list recent upload predictions through /api/history.
+
+
+6. The frontend shall provide analyze, compare, history, results, and about views.
+
+
+
+                    Table 4.1: FracVision Functional Requirements Specification.
+ Req. ID          Requirement Name           Operational Description
+ FR-01            Image Upload and Valida- The system shall accept supported JPEG, PNG, and DICOM
+                  tion                       images, reject unsupported extensions, and enforce the con-
+                                             figured upload-size limit.
+ FR-02            Quality-Control Prepro- The system shall decode the image, standardize channels
+                  cessing                    and geometry, apply configured quality checks, and preserve
+                                             warnings and preprocessing metadata.
+ FR-03            Fracture Detection         The system shall load RT-DETRv2 when a verified check-
+                                             point is available and return fracture-related labels, confi-
+                                             dence scores, and pixel-coordinate bounding boxes.
+ FR-04            Prompt-Based Segmenta- The system shall use a suitable fracture detection box as
+                  tion                       an optional MedSAM prompt and return mask, score, and
+                                             pixel-area information when the segmentor is available.
+ FR-05            Multilabel Classification  The system shall extract DINOv2 features and return con-
+                                             figured image-level label probabilities, predicted labels, and
+                                             confidence information.
+ FR-06            Serial Comparison          The system shall compare prior and current studies using
+                                             registration, embedding similarity, pixel differences, and
+                                             available mask-overlap measures.
+ FR-07            Longitudinal Analysis      The system shall construct ordered patient-study sequences
+                                             and expose healing-stage outputs through the Mamba-style
+                                             module when adequate serial data and model assets exist.
+ FR-08            API, History, and User In- The system shall expose typed FastAPI routes, persist de-
+                  terface                    identified prediction history, and present results, warnings,
+                                             overlays, and comparison information through the web in-
+                                             terface.
+
+
+                                                         8
+4.2     System Requirements
+
+The operational environment specifications for developing, testing, and running FracVision are summarized
+
+in Table 4.2. The exact hardware requirement depends on which model checkpoints are enabled; CPU
+
+fallback is available for selected components, while vision-model inference may benefit from a CUDA-
+
+capable GPU.
+
+
+4.2.1   Hardware and Software Requirements
+
+
+                 Table 4.2: System Environment and Development Specifications.
+ Attribute                        Specification Details
+ Processor (CPU)                  64-bit multi-core processor; 4 or more cores recommended for develop-
+                                  ment and API execution.
+ Memory (RAM)                     16 GB recommended for the frontend, backend, preprocessing, and model
+                                  adapters; larger memory may be required when several vision models are
+                                  loaded together.
+ Graphics (GPU)                   Optional CUDA-capable NVIDIA GPU for RT-DETRv2, MedSAM, and
+                                  DINOv2 workloads; CPU fallback is supported for selected components.
+ Host Operating System            Windows 11 64-bit or a current Linux distribution such as Ubuntu 22.04
+                                  LTS.
+ Frontend Framework               Next.js 16.3.3, React 19.2.8, TypeScript, Tailwind CSS 4, and lucide-
+                                  react.
+ Backend Framework                Python 3.11+, FastAPI, Uvicorn, and Pydantic 2.
+ Machine Learning Stack           PyTorch 2.3+, torchvision, timm, transformers, OpenCV, Pillow, NumPy,
+                                  MONAI, and optional mamba-ssm.
+ Medical Imaging                  pydicom and SimpleITK for DICOM handling, image decoding, registra-
+                                  tion, and preprocessing.
+ Persistence                      SQLAlchemy 2 with SQLite as the default local database and configurable
+                                  DATABASE_URL support.
+ Deployment and Testing           Docker/Docker Compose configuration, YAML settings, pytest, and
+                                  pytest-asyncio.
+
+
+4.3     Non-functional and safety requirements
+
+The pipeline must degrade gracefully when a stage or checkpoint is unavailable. Inputs are written to
+
+temporary files and removed after processing. The API rejects unsupported suffixes and oversized files.
+
+Pydantic constrains confidence values to the interval [0,1]. The application explicitly labels outputs as
+
+not clinically validated and sets recovery\_training\_enabled=false. These mechanisms are safety and
+
+validation features, not a substitute for authentication, authorization, or clinical governance.
+
+
+
+
+                                                     9
+4.4      Datasets and data formats
+
+The FracVision data layer uses two dataset adapters. Each adapter converts its native metadata and
+
+annotation files into a common record containing an image identifier, patient or surrogate patient identifier,
+
+study identifier, image path, labels, bounding-box annotations, and metadata. The following descriptions
+
+document the formats expected by the source code; the supplied repository snapshot does not include the
+
+actual dataset files.
+
+
+4.4.1    FracAtlas: fracture image and annotation dataset
+
+
+FracAtlas is used for fracture classification, detection, and segmentation preparation. Its adapter combines
+
+tabular metadata with image folders and multiple annotation formats.
+
+
+ • Data format: JPG images, CSV metadata, COCO JSON, YOLO TXT, and Pascal VOC XML
+
+      annotations.
+
+ • Table attributes: image\_id, body-part indicators (hand, leg, hip, shoulder, mixed), hardware,
+
+      multiscan, fractured, fracture\_count, and view indicators (frontal, lateral, oblique).
+
+
+ • Dataset volume: 4,085 records according to project metadata; the dataset files are not present in the
+
+      supplied snapshot.
+
+ • Annotation structure: COCO polygon masks and bounding boxes, YOLO normalized boxes in
+
+      class cx cy w h form, and Pascal VOC absolute-coordinate boxes.
+
+
+ • Longitudinal role: No separate patient identifier or follow-up sequence is provided; image\_id is
+
+      used as a surrogate identifier and images are treated as independent records.
+
+ • Functional role in FracVision: Supplies fracture labels, localization boxes, and segmentation
+
+      polygons to support preprocessing, detection, classification, and segmentation modules.
+
+
+4.4.2    GRAZPEDWRI-DX: longitudinal paediatric wrist X-ray dataset
+
+
+GRAZPEDWRI-DX is used for fracture detection and serial-study processing. Its adapter preserves
+
+patient and study metadata so that chronological pairs and sequences can be constructed.
+
+
+
+                                                     10
+ • Data format: PNG images, CSV metadata, and Pascal VOC XML bounding-box annotations. Images
+
+   may be extracted from folder\_structure.zip.
+
+ • Table attributes: filestem, patient\_id, study\_number, timehash, gender, age, laterality, projec-
+
+   tion, initial-exam status, AO classification, cast, diagnostic flags, pixel spacing, and device manufac-
+
+   turer.
+
+ • Dataset volume: 20,328 records according to project metadata; the dataset files are not present in the
+
+   supplied snapshot.
+
+ • Annotation labels: fracture, pronator sign, periosteal reaction, text, soft tissue, bone outline, and
+
+   other hardware labels are read from Pascal VOC files.
+
+ • Longitudinal role: Numeric patient identifiers, study numbers, and time hashes support patient-level
+
+   splitting, chronological ordering, serial comparison, and Mamba sequence construction.
+
+ • Functional role in FracVision: Supplies patient-aware detection records and multi-visit metadata for
+
+   serial comparison and longitudinal healing-stage modelling.
+
+
+Neither adapter provides verified time-to-union or censoring-status labels. Consequently, recovery-time
+
+supervision remains disabled in the implementation.
+
+
+
+
+                                                   11
+5      System Design
+
+5.1     High-level architecture
+
+The system is organized into five cooperating layers: browser UI, REST/API orchestration, inference
+
+pipeline, model/data services, and persistence. The FastAPI lifespan creates database tables and attempts
+
+to load the configured pipeline. A global PipelineState records readiness and load errors. Requests are
+
+routed only after this state check. Figure 1 shows the verified relationships.
+
+            Clinician / Radiologist Clinician Actions         Next.js 16 Web Application
+          Web Browser Client Workstation             Interactive Clinical UI · Analyze · Compare · History
+
+                                                             HTTPS / REST API
+
+                   FastAPI Application Gateway                   Readiness Check Pipeline State
+         REST API Routes (/predict, /compare, /history) · Validation           Lifecycle & Readiness
+
+                                                       Validated Request Tensor
+
+                                FracVision Core Inference Pipeline
+      Preprocessing (CLAHE, Normalization) −→ Multi-Model Coordination −→ Diagnostic Assembly
+
+                             Input X-ray                                          Normalized Image
+
+              RT-DETRv2 Detector                                DINOv2 Feature Extractor
+    Real-Time Fracture Detection & Bounding Boxes          ViT Foundation Backbone + Classifier Head
+
+                             Top Box Prompt                                       Feature Embeddings
+
+               MedSAM Segmentor                                 Mamba Longitudinal Model
+       Prompt-Guided Fracture Mask Segmentation           Temporal Sequence & Healing-Stage Prediction
+
+                             Segmentations                                        Stage Metrics
+            SQLAlchemy Persistence Engine
+                                                                      Benchmark Datasets
+                                                     Training Benchmarks
+                 SQLite Default / Production DB
+                                                                      FracAtlas & GRAZPEDWRI-DX
+                 · Patients, Studies & Predictions
+
+
+
+Figure 1: Overall FracVision system architecture derived from the frontend, backend, model, and
+database modules.
+
+
+5.2     Detailed module architecture
+
+The frontend pages call the API with browser fetch. analyze/page.tsx posts a multipart file to
+
+/api/predict; compare/page.tsx posts two files to /api/compare; and history/page.tsx reads
+
+/api/history. ResultsPanel.tsx renders status, probabilities, segmentation state, and stage errors.
+
+
+                                                     12
+XrayOverlay.tsx maps model-square coordinates back to the displayed image and draws bounding boxes
+
+and a transparent mask on a canvas.
+
+The backend route layer translates pipeline dataclasses to Pydantic schemas. The persistence layer
+
+uses four primary relationships: patient to imaging studies, imaging study to predictions, and optional
+
+comparison/model-version records. The model layer is intentionally separable: detector, segmentor,
+
+extractor, classifier, and longitudinal model can be unavailable independently.
+
+
+5.3    End-to-end workflow
+
+Figure 2 maps the actual single-image execution path. Invalid uploads stop before inference; stage failures
+
+after preprocessing are recorded in stage\_errors and do not necessarily discard other stage outputs.
+
+
+  1. Medical Image Upload                                    2. FastAPI Validation
+             DICOM, PNG, or
+                                                          50 MB limit • format & payload check
+           JPEG from browser UI
+          3. Image Preprocessing & Quality Control (QC)
+   DICOM decode • Grayscale • CLAHE • Square pad (1008 × 1008) • Quality check
+
+  4a. RT-DETRv2 Detector                                 5a. DINOv2 ViT Extractor
+                                                                    ViT-S/14 encoder →
+ Fracture bounding boxes (≥ 0.30 score)
+                                                                    feature representation
+                   Fracture            No (skip mask)
+                   Detected?                                        384-D CLS embedding
+                    Yes
+            4b. MedSAM                                     5b. Multilabel Classifier
+            Segmentation
+                                                         Linear / MLP head • Class probabilities
+  Prompted with primary bbox → mask
+
+                   6. Unified Prediction Result Assembly
+      Aggregates QC status, bounding boxes, masks, probabilities, and stage errors
+
+  7a. Database Persistence                                  7b. Interactive Web UI
+ SQLite DB • Patient & prediction JSON                     Next.js UI • Canvas overlay & mask
+
+
+Figure 2: End-to-end single-image workflow from browser upload to UI result and history persis-
+tence.
+
+
+
+
+                                                    13
+5.4    Data-flow architecture
+
+The request contains a binary multipart file. The route writes it to a temporary path so that DICOM
+
+detection and image decoding can use a filename suffix. The pipeline converts it to NumPy arrays and
+
+model outputs. The response contains JSON-safe values and may contain a base64 PNG data URL for the
+
+segmentation mask. The uploaded image itself is not stored by the persistence code; only de-identified
+
+metadata and prediction JSON are stored. Figure 3 shows this flow.
+
+                                                                       Next.js Web Frontend
+                     User / Clinician Upload / Review
+                                                                            Upload Page • Serial
+                       Browser Interface
+                                                                          Compare • History View
+                                                                                     HTTP Requests / Responses
+                                              FastAPI Backend Gateway
+                              Input validation • Pydantic models • Temporary file management
+History Query              Endpoints: POST /api/predict (multipart) • GET /api/history (JSON)
+                    Write / Delete                                                          Execute Tensors
+                      Temporary File Buffer                                Multi-Stage Pipeline
+                          /tmp/upload_*.ext                                   NumPy tensors → RT-
+                           (DICOM decode)                                      DETR → MedSAM
+                     Written for decode, auto-deleted                  QC → Detection → Seg → Classification
+                                                                                            Generate Results
+                          SQLAlchemy                                         Prediction JSON
+                           Database                                            & Overlays
+                                                        Persist JSON         Bounding boxes • Prob-
+                             SQLite default
+                                                                              abilities • Mask URL
+                            / configured DB
+                                                                                Canvas overlay render-
+                      Patients, Studies & Predictions
+                                                                              ing • Clinical disclaimer
+                      Queried for historical reviews
+                                                                           validated = false research flag
+
+
+
+
+ Figure 3: Data-flow diagram for upload, inference, response serialization, and history retrieval.
+
+
+5.5    API architecture
+
+The FastAPI service exposes health, model-information, prediction, history, serial-comparison, and
+
+documentation routes. Requests are exchanged as JSON or multipart form data according to the operation.
+
+The frontend calls these routes through browser-side fetch requests, while the backend validates inputs,
+
+invokes the inference pipeline, and persists de-identified history records.
+
+
+
+
+                                                         14
+5.6    Security, validation, and error handling
+
+The implemented controls are input validation and safe degradation rather than user authentication. CORS
+
+origins are configuration-driven. Upload size and suffix checks occur before temporary-file inference.
+
+Pipeline startup failures set a degraded state. Inference stages use independent exception handling;
+
+preprocessing failures return an early invalid result, while detection, segmentation, and classification
+
+failures are recorded and the remaining result is returned. Figure 4 represents this verified behavior.
+
+
+                  Client Request
+    Upload X-ray Image (DICOM, PNG, or JPEG)
+
+
+                  Is Pipeline Ready?                                HTTP 503 Load Error
+                                                          No           Model checkpoints or
+            Checkpoint & service initialized                           pipeline state missing
+                          Yes
+               Valid Size & Format?                                 HTTP 413 / 415 Error
+                                                          No            File oversized or un-
+            File size ≤ 50 MB, valid suffix                               supported format
+                                Yes
+               Execute Pipeline
+              Stages (try / except)
+      Preprocess → Detect → Segment → Classify
+
+
+              Any Stage-Level Error?                             Degraded Mode Execution
+                                                          Yes        Record stage failure; con-
+              Exception caught during stage                           tinue remaining stages
+                                No
+       HTTP 200 Success Response
+               validated = false •
+              Non-Clinical Disclaimer
+             Prediction JSON + Mask URL
+               + Heatmaps + Status Flags
+
+        Figure 4: Implemented request validation and stage-level error-handling workflow.
+
+
+
+
+                                                    15
+6     Proposed Method
+
+This chapter presents the implementation-oriented method used by FracVision. The method converts an
+
+uploaded X-ray into a validated sequence of research products through quality control, fracture detection,
+
+prompt-based segmentation, visual representation learning, classification, optional serial comparison, and
+
+longitudinal sequence modelling. Each stage has an explicit input, processing contract, and status value
+
+so that unavailable model assets are not confused with negative clinical findings.
+
+
+6.1    Mathematical foundations of multimodal X-ray analysis
+
+Let an input study be represented by an image x, optional metadata m, and an identifier i. The preprocessing
+
+operator P converts the input into a normalized square tensor and records the geometric transformation
+
+needed to map model coordinates back to the original image:
+
+
+                                            (x̃, q, r) = P (x, m),
+
+
+where x̃ is the model input, q is quality-control metadata, and r contains scale and padding information.
+
+The detector produces a set of candidate boxes
+
+
+                                         D(x̃) = {(bj , yj , sj )}nj=1 ,
+
+
+where bj is a box, yj is a class label, and sj is a confidence score. A fracture box is selected as the prompt
+
+for the segmentation operator when a fracture-labelled candidate is available.
+
+The visual encoder produces a global representation h = E(x̃) and, where supported, patch representations
+
+H . A multilabel classifier maps the global representation to logits z = C(h) and independent probabilities
+
+pk = σ(zk ). For serial studies x(1) , . . . , x(T ) , the comparator calculates pairwise image and embedding
+
+measures, while the longitudinal model receives a visit-feature sequence u(1) , . . . , u(T ) and returns per-
+
+visit healing-stage logits. These operations are related but are not interchangeable: pairwise comparison
+
+measures change between two images, whereas longitudinal modelling processes an ordered patient
+
+sequence.
+
+
+
+
+                                                      16
+6.2    Algorithm
+
+Algorithm 1: FracVision Multimodal X-ray Analysis Workflow
+
+The operational logic of FracVision converts a validated image request into a structured, non-clinical
+
+research response. The algorithm preserves partial results and stage errors so that a missing checkpoint or
+
+failed optional stage is visible to the caller.
+
+Step 1: Request Validation and Image Preprocessing
+
+
+  1.1 Read the uploaded image, request type, optional prior/current study information, and configured
+
+       upload limits.
+
+
+  1.2 Verify the file suffix and reject unsupported formats or files larger than the configured maximum
+
+       size.
+
+
+  1.3 Write the binary upload to a temporary path so that DICOM detection and image decoding can use
+
+       the file suffix.
+
+
+  1.4 Decode DICOM input with pydicom when applicable; otherwise decode the image with Pillow and
+
+       convert it to an RGB-compatible representation.
+
+
+  1.5 Reject images below the configured minimum dimension and record the reason in the quality-control
+
+       state.
+
+
+  1.6 Apply optional grayscale enhancement, resize while preserving aspect ratio, pad to the configured
+
+       square target, and apply optional normalization.
+
+
+  1.7 Calculate quality metadata such as dimensions, blur/exposure indicators, warnings, and the boolean
+
+       quality flag q .
+
+
+Step 2: Fracture Detection and Candidate Selection
+
+
+  2.1 Load the configured RT-DETRv2 detector when a checkpoint is available and place it in the selected
+
+       execution mode.
+
+
+                                                    17
+  2.2 Run detection on x̃ and obtain candidate labels, scores, and boxes in model coordinates.
+
+
+  2.3 Filter or retain candidates according to the configured confidence threshold and maximum-detection
+
+      limit.
+
+
+  2.4 Convert the retained boxes into the common FracVision schema and preserve the model-loaded
+
+      status.
+
+
+  2.5 Identify fracture-labelled candidates. If the candidate set is non-empty, select the highest-confidence
+
+      fracture box as b∗ .
+
+
+  2.6 If the detector or checkpoint is unavailable, record a stage warning and do not interpret a placeholder
+
+      detector as trained evidence.
+
+
+Step 3: Prompt-Based Segmentation
+
+
+  3.1 Check whether a fracture prompt b∗ was produced by the detection stage.
+
+
+  3.2 Check whether the MedSAM segmentor has loaded its configured checkpoint.
+
+
+  3.3 When both conditions hold, pass b∗ as a spatial prompt and calculate a mask, mask score, and
+
+      pixel-area summary.
+
+
+  3.4 When either condition fails, return an explicit unavailable or placeholder state rather than an arbitrary
+
+      mask.
+
+
+  3.5 Preserve the segmentation warning, model-loaded flag, and mask metadata in the stage result.
+
+
+Step 4: Visual Feature Extraction and Classification
+
+
+  4.1 Load the configured DINOv2 visual encoder and transform the preprocessed image into CLS and
+
+      patch representations.
+
+
+  4.2 Pass the CLS representation to the configurable multilabel classifier head.
+
+
+  4.3 Apply the sigmoid function independently to each output logit to obtain label probabilities.
+
+
+                                                     18
+ 4.4 Apply the configured decision policy to identify predicted positive labels and calculate the response
+
+      confidence field.
+
+
+ 4.5 Record classifier availability and stage errors separately from the probability values.
+
+
+Step 5: Serial Comparison and Longitudinal Processing
+
+
+ 5.1 For a compare request, preprocess the prior and current images using the same coordinate and
+
+      quality-control policy.
+
+
+ 5.2 Register the pair with SimpleITK when registration is available and calculate embedding similarity,
+
+      pixel differences, and mask overlap where masks exist.
+
+
+ 5.3 For a prepared patient sequence, group studies by patient identifier and order them by study number
+
+      or time hash.
+
+
+ 5.4 Construct a visit feature vector from visual, detection, segmentation, time-delta, and clinical
+
+      features.
+
+
+ 5.5 Pass the ordered feature sequence through the configured Mamba-style model and return per-
+
+      timestep healing-stage logits when the model is available.
+
+
+ 5.6 Keep pairwise comparison and longitudinal model status separate because the two operations have
+
+      different inputs and meanings.
+
+
+Step 6: Response Validation, Persistence, and Cleanup
+
+
+ 6.1 Combine quality metadata, detection records, segmentation state, classification probabilities, com-
+
+      parison data, warnings, and stage errors.
+
+
+ 6.2 Convert tensors, arrays, and image products into JSON-safe values and validate the response
+
+      through the Pydantic schema.
+
+
+ 6.3 Persist only de-identified metadata and prediction JSON required for history and auditing; do not
+
+      store the uploaded image through the prediction-history path.
+
+                                                  19
+  6.4 Delete the temporary upload after inference and response construction.
+
+
+  6.5 Return the structured response with the mandatory non-clinical disclaimer and explicit unavailable-
+
+      stage indicators.
+
+
+6.3    Algorithmic safeguards
+
+The method includes safeguards at each transition. A failed quality check prevents unreliable input from
+
+entering the model stages. A missing fracture box prevents MedSAM from receiving an unrelated prompt.
+
+A missing checkpoint produces a degraded-stage state instead of a fabricated probability. A sequence with
+
+insufficient patient studies is not treated as a valid longitudinal sample. Finally, recovery-time training
+
+remains disabled because the adapters do not expose verified time-to-union or censoring labels. These
+
+safeguards are part of the algorithm, not merely deployment documentation.
+
+
+
+
+                                                    20
+7     Implementation and Algorithms
+
+7.1    Image preprocessing and quality control
+
+preprocess\_image accepts a path, bytes, or NumPy array. It decodes DICOM with pydicom when the
+
+suffix is .dcm, otherwise uses Pillow. Grayscale input is converted to RGB-compatible output; grayscale
+
+processing can apply CLAHE with a configured clip limit and tile grid. Images smaller than the configured
+
+minimum dimension are rejected. The image is resized with aspect preservation and padded to a square
+
+target, configured as 1008 pixels in config.yaml. Optional mean/std normalization returns a float tensor.
+
+Quality metadata records output dimensions, blur/exposure statistics, warnings, and qc\_passed.
+
+
+7.2    Detection algorithm
+
+RTDETRv2Detector loads an RT-DETRv2 model when a checkpoint is available. The configured threshold
+
+is 0.30 and the maximum number of detections is 20. Detection results are converted into labels, scores, and
+
+[xmin,ymin,xmax,ymax] boxes. Class mappings are derived from the configuration and dataset adapters;
+
+no new label vocabulary is introduced by the report. A placeholder detector exists for missing model
+
+assets, so the presence of a class does not prove that trained inference is available in the supplied snapshot.
+
+
+7.3    Segmentation algorithm
+
+For each image, the pipeline selects the highest-confidence detection whose label is fracture. That box
+
+becomes the MedSAM spatial prompt. If a MedSAM checkpoint is loaded, the segmentor returns a mask,
+
+score, and pixel area. If it is absent, the code returns an empty mask with model\_loaded=false and a
+
+warning that the mask is a placeholder. Dice and IoU helpers are implemented for supervised evaluation.
+
+
+7.4    DINOv2 feature extraction and classification
+
+The default DINOv2 variant is dinov2\_vits14, whose configured embedding dimension is 384. The
+
+extractor returns the CLS token and patch tokens. The classifier maps the CLS embedding to configured
+
+multilabel outputs. Its training helper implements focal loss with α = 0.25 and γ = 2.0, and an optional
+
+temperature-scaling calibration module is present. At inference, probabilities are returned as a label-to-
+
+probability dictionary, with predicted positive labels and a confidence value.
+
+                                                     21
+7.5    Serial comparison
+
+SerialXrayComparator can register images with SimpleITK when available, compute DINOv2 embedding
+
+cosine similarity, calculate pixel-level mean absolute difference and related image metrics, and compare
+
+segmentation masks using Dice and IoU where masks are available. The API labels these outputs as not
+
+clinically validated. This comparison path is distinct from the Mamba sequence model: it compares two
+
+uploaded images directly, while the Mamba module consumes a prepared sequence of per-visit features.
+
+
+7.6    Longitudinal Mamba model
+
+The Mamba input at each visit is the concatenation of DINOv2 features, detection features, segmentation
+
+features, one time-delta scalar, and clinical features. An input projection maps this vector to dmodel ,
+
+followed by configurable Mamba blocks and a healing-stage head. The default configuration uses
+
+dmodel = 256, dstate = 16, convolution width 4, expansion 2, and four layers. The implementation tries
+
+the CUDA mamba-ssm package and falls back to a pure-PyTorch selective-state-space block. The output is
+
+per-timestep healing-stage logits plus the last valid sequence representation.
+
+
+7.7    Recovery prediction boundary
+
+The recovery module is explicitly a stub. is\_training\_enabled() always returns false because
+
+neither configured dataset supplies verified time-to-union or censoring-status labels. Its forward
+
+method returns a sentinel value and flags synthetic\_test\_only=true, clinical\_use=false, and
+
+recovery\_training\_enabled=false. This is a deliberate implementation safeguard, not a recovery-time
+
+prediction result.
+
+
+7.8    Dataset adapters and preprocessing data flow
+
+The FracAtlas adapter reads dataset.csv, COCO polygon masks, YOLO text boxes, Pascal VOC boxes,
+
+and fractured/non-fractured image directories. It uses image identity as a surrogate patient identifier
+
+because no separate patient ID is provided. The GRAZPEDWRI-DX adapter reads CSV metadata,
+
+extracts images from folder\_structure.zip when required, parses Pascal VOC boxes, and groups
+
+true patient sequences by numeric patient ID and timehash. Both adapters explicitly mark recovery
+
+
+                                                   22
+labels as unavailable. Split creation is patient-aware where the adapter provides patient identity, and pair
+
+construction creates ordered consecutive studies for longitudinal processing.
+
+During preprocessing, each adapter converts its native records into a common representation containing
+
+the image path, dataset name, image identifier, patient or surrogate-patient identifier, study information,
+
+fracture labels, bounding boxes, and available metadata. This common representation allows the training,
+
+evaluation, and inference utilities to operate without embedding dataset-specific file conventions in
+
+every model stage. Annotation coordinates are retained in the source-image coordinate system and are
+
+transformed only when the image is prepared for the configured square model input.
+
+The adapter boundary also provides a controlled location for data-quality checks. Missing images,
+
+malformed annotation files, unresolved archive paths, absent polygons, and incomplete longitudinal
+
+metadata can be reported at record level. Records that are valid for classification may not be valid for
+
+segmentation or sequence modelling, so the pipeline preserves available fields and lets each downstream
+
+task apply its own requirements. This prevents an incomplete optional annotation from silently being
+
+treated as a negative clinical label and keeps dataset limitations visible in the final report.
+
+
+
+
+                                                     23
+8     Machine Learning Pipeline and Training Design
+
+8.1    Training phases
+
+The configuration describes seven phases: DINOv2 adaptation, detection, segmentation, classification,
+
+serial comparison, Mamba longitudinal modelling, and recovery. The first six have code paths or eval-
+
+uation support. Recovery is disabled. The training scripts contain dry-run options and phase-specific
+
+hyperparameters; this report does not convert configuration values into experimental results.
+
+
+8.2    Phase 1: DINOv2 representation adaptation
+
+The first learning phase concerns the visual representation used by the downstream classifier and longi-
+
+tudinal model. DINOv2 provides a self-supervised image encoder whose CLS token can be used as a
+
+compact global descriptor and whose patch tokens preserve spatial information. An adaptation experiment
+
+can either keep the encoder frozen and train a lightweight head or fine-tune selected encoder parameters.
+
+The choice must be recorded because a frozen-feature experiment and a full-fine-tuning experiment have
+
+different computational requirements and different risks of overfitting.
+
+The input preparation for this phase follows the same preprocessing contract used at inference. Images
+
+are decoded, converted to the expected channel format, resized with aspect preservation, padded to the
+
+configured square size, and normalized according to the selected model convention. The training pipeline
+
+must use the same transformation policy during validation and inference; otherwise a change in intensity
+
+or geometry can be mistaken for a model improvement. Dataset-specific labels are retained separately
+
+from the visual representation so that the encoder is not coupled to one dataset’s class vocabulary.
+
+
+8.3    Phase 2: RT-DETRv2 detection training
+
+The detection phase learns to localize fracture-related regions and other configured object labels. Training
+
+records contain an image and one or more boxes. FracAtlas can provide boxes through YOLO text files,
+
+Pascal VOC XML, and COCO JSON, while GRAZPEDWRI-DX uses Pascal VOC XML. The adapters
+
+convert these formats into a common box representation before the detector receives them. Coordinate
+
+conversion must be checked carefully because YOLO values are normalized centre-width-height values,
+
+
+
+                                                    24
+COCO boxes use an origin and width-height, and Pascal VOC boxes use absolute corner coordinates.
+
+The detector configuration includes a confidence threshold and a maximum number of returned detections
+
+for inference. These values should not be confused with training labels or performance thresholds. During
+
+training, the detector learns from the ground-truth boxes supplied by the dataset. During inference, the
+
+threshold controls which predicted boxes are exposed to later stages. The report therefore documents them
+
+as separate configuration responsibilities: annotation normalization for training and candidate filtering for
+
+serving.
+
+Patient-aware splitting is particularly important when multiple studies are available. GRAZPEDWRI-DX
+
+records belonging to the same patient must not be divided across training and validation partitions. The
+
+split creator groups by patient identifier before assigning partitions. FracAtlas has no independent patient
+
+identifier in the adapter and therefore uses image identity as a surrogate; the report does not infer a
+
+longitudinal relationship for those images.
+
+
+8.4    Phase 3: MedSAM segmentation training and prompting
+
+The segmentation component is designed around a box prompt. During supervised training, a ground-truth
+
+or detector-derived box can be used to condition the mask prediction. FracAtlas supplies polygon masks
+
+through its COCO JSON source, while GRAZPEDWRI-DX is represented by bounding boxes and does
+
+not provide polygon masks in the adapter. This difference affects which dataset can directly supervise
+
+pixel-level segmentation and which dataset is primarily used for localization and serial metadata.
+
+The configured segmentation helper combines Dice and binary-cross-entropy terms. Dice emphasizes
+
+region overlap and is useful when foreground pixels are sparse; binary cross-entropy supplies pixel-wise
+
+supervision. A generic combined objective can be written as
+
+
+                                     Lseg = λLBCE + (1 − λ)LDice ,
+
+
+where λ is the configured weight for the binary-cross-entropy term. The implementation’s configured
+
+weights must be read from the experiment configuration for a particular run. If a checkpoint is absent at
+
+inference, the segmentor reports a placeholder state rather than claiming that the training objective has
+
+been optimized.
+
+
+                                                     25
+8.5    Phase 4: Multilabel classifier training
+
+The classification head receives DINOv2 embeddings and predicts several labels independently. This
+
+is appropriate when an image may contain more than one attribute, such as fracture status, body-part
+
+information, or hardware-related labels. Each label is represented by a binary target, and the classifier
+
+produces one logit per target. The sigmoid operation is applied independently rather than using a softmax
+
+across mutually exclusive classes.
+
+The training helper uses focal loss. For a binary target yk and predicted probability pk , the focal term
+
+down-weights easy examples and emphasizes difficult examples. In implementation terms, the loss is
+
+controlled by an alpha balance factor and a gamma focusing factor. These values are hyperparameters, not
+
+results. A valid training report would record the selected values, optimizer, learning-rate schedule, batch
+
+size, number of epochs, checkpoint-selection rule, and random seed.
+
+The optional temperature-scaling module belongs after model training and before final probability inter-
+
+pretation. It learns a scalar calibration parameter on a held-out validation set. Calibration should never use
+
+the test set, and it should not be described as a substitute for external clinical validation. The application
+
+can expose calibrated probabilities as research metadata, but the non-clinical disclaimer remains necessary.
+
+
+8.6    Phase 5: Serial comparison training design
+
+Serial comparison is not a conventional classifier-training phase in the same sense as detection or multilabel
+
+classification. It is a computational comparison path that receives two studies and calculates registration,
+
+embedding, pixel, and mask metrics. The main design choices concern image ordering, registration failure
+
+handling, missing masks, and the interpretation of similarity values.
+
+The prior and current images are passed through compatible preprocessing. If registration succeeds, the
+
+aligned images can be compared at a common coordinate system. If registration fails, the response records
+
+the failure and can still retain embedding or unregistered pixel measures when those computations are
+
+valid. Mask-based Dice and IoU are calculated only when both masks are available. A missing mask is an
+
+unavailable input, not a zero-overlap clinical conclusion.
+
+
+
+
+                                                     26
+8.7    Phase 6: Mamba longitudinal modelling
+
+The longitudinal phase consumes ordered visit features rather than raw images alone. A feature vector can
+
+combine DINOv2 descriptors, detection summaries, segmentation summaries, time-delta information,
+
+and clinical fields. An input projection maps the concatenated vector to the configured model dimension.
+
+Mamba-style blocks then process the sequence, and a healing-stage head produces per-timestep logits.
+
+The order of visits is part of the learning problem. The pairing utility groups records by patient and sorts
+
+them by time hash or study number. The sequence builder can require a minimum number of studies so
+
+that a single isolated image is not treated as a longitudinal example. Padding and valid-length handling are
+
+required when batches contain sequences of different lengths. The model’s output should be associated
+
+with the valid visits only, and padded positions must not contribute to the loss.
+
+The recovery head is deliberately different from the healing-stage head. Although a sequence may contain
+
+timestamps, the configured datasets do not provide verified time-to-union or censoring labels. The recovery
+
+training function is therefore disabled. Adding a numerical output field to a future response would require
+
+a new approved label definition, a survival-analysis or regression objective, patient-level evaluation, and
+
+explicit clinical validation.
+
+
+8.8    Training and inference separation
+
+Training scripts prepare data, compute losses, update parameters, select checkpoints, and produce experi-
+
+ment artifacts. Inference wrappers load fixed artifacts, apply deterministic preprocessing, execute forward
+
+passes, and serialize results. These responsibilities must remain separate. A training helper being present
+
+in the repository does not prove that a model has been trained, and a checkpoint path in YAML does not
+
+prove that the file exists.
+
+The serving pipeline checks model availability during startup and records load errors in the pipeline state.
+
+At inference time, the model wrappers expose whether a component is loaded and whether a returned
+
+object is a fallback. This status travels with the structured response. Such separation permits the same
+
+source tree to support development without weights, dry-run training, and deployment with approved
+
+checkpoints while preserving an honest description of the current runtime state.
+
+
+
+                                                    27
+8.9    Reproducible training workflow
+
+An implementation-faithful training workflow can be stated as the following sequence:
+
+
+   1. Freeze the source revision and copy the active YAML configuration into the experiment directory.
+
+
+   2. Verify dataset roots, annotation files, image counts, label vocabulary, and patient identifiers.
+
+
+   3. Create deterministic patient-level train, validation, and test split files.
+
+
+   4. Run format-specific adapter checks and preprocessing checks before model training.
+
+
+   5. Train one phase at a time and save the configuration, optimizer state, checkpoint, and logs.
+
+
+   6. Select checkpoints using validation data only and record the selection rule.
+
+
+   7. Run held-out evaluation with the same preprocessing and report per-task metrics.
+
+
+   8. Store model hashes, data-manifest hashes, software versions, device information, and warnings.
+
+
+   9. Enable the corresponding inference component only after its checkpoint and label mapping have
+
+      been verified.
+
+
+This workflow is supported by the repository’s configuration, adapter, split, training, inference, and
+
+evaluation modules, but the supplied snapshot does not contain the external data or trained weights needed
+
+to claim completed experiments.
+
+
+
+
+                                                     28
+9     Detailed Technical Analysis
+
+9.1    Design rationale and separation of concerns
+
+FracVision is organized as a sequence of replaceable processing stages rather than as a single end-to-end
+
+function. This decision is important because the stages have different inputs, different failure modes,
+
+and different levels of model readiness. Image decoding and quality control can be executed without a
+
+neural checkpoint. Detection requires a detector configuration and may use a placeholder when assets are
+
+unavailable. Segmentation depends on a spatial prompt, classification depends on an image representation,
+
+and longitudinal modelling depends on a correctly ordered collection of visits. Treating these stages
+
+independently makes the system easier to inspect and allows the application to return partial, explicitly
+
+qualified information.
+
+The separation is implemented through adapters and data contracts. Dataset adapters translate FracAtlas
+
+and GRAZPEDWRI-DX records into a common internal representation. Model wrappers expose a
+
+consistent interface to the inference pipeline even when the underlying models are different. The API
+
+layer does not need to know whether a result came from RT-DETRv2, MedSAM, DINOv2, or a fallback
+
+implementation; it receives structured stage results and serializes them through the Pydantic schemas.
+
+This arrangement reduces coupling between the web application and the research code.
+
+
+                  Table 9.1: Technical modules and data products in FracVision.
+ Module                     Primary Input              Output or Responsibility
+ Quality control and pre-   JPEG, PNG, or DICOM up-    Decoded image, normalized tensor, geometry
+ processing                 load                       metadata, quality status, and warnings.
+ Fracture detection         Preprocessed image tensor  Candidate labels, confidence scores, and pixel-
+                                                       coordinate bounding boxes.
+ Prompt-based segmen- Image tensor and suitable Optional mask, segmentation score, pixel area,
+ tation                   fracture box                 and model-availability state.
+ Representation and clas- Normalized image and DI- CLS/patch features, multilabel probabilities,
+ sification               NOv2 encoder                 predicted labels, and confidence.
+ Serial comparison        Prior and current studies    Registration status, embedding similarity, pixel
+                                                       differences, and mask-overlap measures.
+ Longitudinal modelling Ordered patient-study feature Per-visit healing-stage logits and sequence-
+                          sequence                     level status when valid data are available.
+ API and persistence      Structured stage results and Typed responses, warnings, stage errors, and
+                          de-identified metadata       prediction history.
+
+
+
+The design also separates configuration from execution. Paths, thresholds, class names, image-size
+
+
+                                                   29
+settings, device preferences, and training options are read from YAML configuration and environment
+
+variables. As a result, changing a checkpoint location or database URL does not require changing the route
+
+implementation. The trade-off is that the runtime must validate configuration carefully: a syntactically
+
+valid path can still refer to an absent dataset or checkpoint. The pipeline therefore records load state and
+
+reports unavailable components rather than silently presenting them as trained clinical models.
+
+
+9.2      Application startup and request lifecycle
+
+The backend starts through the FastAPI application object. During the lifespan phase, configuration is
+
+loaded, the SQLAlchemy metadata is used to create the local persistence schema, and the inference pipeline
+
+attempts to initialize its model components. The resulting state is retained in a shared pipeline-state object.
+
+This state contains readiness information and load errors that can be exposed through the health route.
+
+Requests can therefore distinguish between an application that is reachable and a pipeline that is fully
+
+ready.
+
+For a prediction request, the route first checks the uploaded file’s suffix and size. The binary content
+
+is written to a temporary location because DICOM detection and image decoding use the file path and
+
+suffix. The temporary file is passed to the pipeline and removed after processing. This prevents the upload
+
+directory from becoming an uncontrolled image archive. The route then maps the pipeline result into the
+
+response schema, ensuring that arrays, tensors, and paths are converted into JSON-safe values. Optional
+
+mask data may be serialized as a base64 PNG data URL.
+
+The request sequence can be summarized as follows:
+
+
+  1. Receive a multipart upload and validate its extension and size.
+
+
+  2. Create a temporary file and pass its path to the inference pipeline.
+
+
+  3. Decode and preprocess the image, collecting quality-control metadata.
+
+
+  4. Execute available detection, segmentation, feature, and classification stages.
+
+
+  5. Preserve stage-level warnings and errors without hiding successful stages.
+
+
+  6. Convert the result into the typed response model and persist de-identified metadata.
+
+                                                     30
+  7. Delete the temporary file and return the response to the frontend.
+
+
+This lifecycle is intentionally different from a promise of autonomous diagnosis. It is a software execution
+
+contract: every stage reports what it was able to do, what it could not do, and whether a returned value is
+
+a placeholder or a model-derived value.
+
+
+9.3    Image preprocessing algorithm in detail
+
+The preprocessing module accepts a path, bytes, or a NumPy array. DICOM input is decoded with pydicom
+
+when the suffix identifies a DICOM file; ordinary images are decoded with Pillow. The resulting image
+
+is converted to an RGB-compatible representation so that downstream vision encoders receive a stable
+
+channel layout. Grayscale processing can apply contrast-limited adaptive histogram equalization, while
+
+the configuration controls the clip limit and tile-grid dimensions.
+
+The image is checked against a minimum-size requirement before resizing. Aspect ratio is preserved by
+
+scaling the longer dimension to the configured target and padding the remaining region to obtain a square
+
+tensor. This is preferable to independent horizontal and vertical stretching because bounding-box geometry
+
+and anatomical proportions remain interpretable. Optional mean and standard-deviation normalization
+
+is applied only when enabled by configuration. The module also computes quality metadata such as
+
+dimensions, blur or exposure indicators, warnings, and the final quality-control flag.
+
+The essential preprocessing logic is represented by the following pseudocode:
+function preprocess (input):
+    image = decode_dicom_or_standard_image (input)
+    image = convert_to_rgb_if_required (image)
+    if image dimensions are below minimum :
+        return invalid_result (" image too small ")
+    if grayscale enhancement is enabled :
+        image = apply_clahe (image , clip_limit , tile_grid )
+    image , scale , padding = resize_preserving_aspect (image , target_size )
+    quality = calculate_blur_exposure_and_dimension_checks (image)
+    tensor = normalize_if_configured ( to_tensor (image))
+    return tensor , quality , scale , padding
+
+
+
+The scale and padding values are retained because model-space coordinates must be mapped back to the
+
+original display image. The frontend overlay component uses the same geometric relationship when it
+
+draws detection boxes and segmentation masks. Thus preprocessing is not only a model-input operation;
+
+it also establishes the coordinate transformation required for interpretable visualization.
+
+                                                    31
+9.4    Detection and prompt-based segmentation
+
+The detection stage is implemented by the RT-DETRv2 detector wrapper. When a configured checkpoint
+
+is available, the wrapper loads the detector and applies the configured confidence threshold and maximum-
+
+detection limit. Each detection is converted to a label, a confidence score, and an absolute-coordinate box
+
+in the common result structure. Dataset-specific class mappings are read from configuration and adapter
+
+information instead of being redefined in the report.
+
+Segmentation uses detection as a spatial prompting mechanism. The pipeline searches for the highest-
+
+confidence detection labelled fracture. If such a box exists and a MedSAM checkpoint is loaded, the
+
+box is passed as the spatial prompt and the segmentor returns a mask, score, and area summary. If the
+
+checkpoint is absent, the segmentor returns an empty or placeholder mask with an explicit model-loaded
+
+flag and warning. This distinction is important: a valid JSON response does not imply a valid medical
+
+segmentation.
+
+The coupling between the stages can be expressed as:
+
+
+                                 b∗ = arg max si ,             m = S(x, b∗ ),
+                                      bi : yi =fracture
+
+
+where bi is a detection box, yi is its label, si is its confidence, x is the preprocessed image, S is the
+
+segmentation model, and m is the predicted mask. If the set of fracture-labelled boxes is empty, the prompt
+
+is undefined and the segmentation stage records that no suitable prompt was available. This makes the
+
+dependency explicit and prevents a random detection from being treated as a fracture prompt.
+
+
+9.5    Representation learning and multilabel classification
+
+The feature stage uses the configured DINOv2 variant to obtain a global CLS representation and patch-
+
+level representations. The CLS embedding is passed to the classifier head, while the patch tokens remain
+
+available to components that require spatial features. The configured embedding dimension is 384 for the
+
+default ViT-S/14 variant. Keeping the extractor and classifier separate allows the representation model to
+
+be replaced or adapted without changing API serialization.
+
+The classifier is multilabel rather than mutually exclusive. For a label vector y ∈ {0, 1}K , the head
+
+produces a logit vector z ∈ RK , and each label probability is calculated independently as pk = σ(zk ). The
+
+                                                          32
+training helper uses focal loss with configured α and γ values to reduce the dominance of easy examples.
+
+At inference, the probabilities are returned with predicted positive labels and a confidence value. Since no
+
+trained checkpoint is supplied in the inspected repository snapshot, the report documents the computation
+
+path but does not claim trained performance.
+
+Temperature scaling is available as a calibration component. If a validation set and trained logits are
+
+supplied, a scalar temperature can be learned and applied before the sigmoid operation. Calibration
+
+is especially relevant when probabilities are shown to users, but it must not be confused with clinical
+
+validation. A calibrated score can improve statistical reliability without proving that the underlying model
+
+recognizes fractures correctly in a new hospital or device population.
+
+
+9.6    Serial comparison and longitudinal modelling
+
+The serial comparator and the Mamba sequence model solve related but different problems. The comparator
+
+receives two uploaded studies and calculates direct image-to-image measures. When available, SimpleITK
+
+registration is used to align images; DINOv2 embeddings provide cosine similarity; pixel differences
+
+provide a direct image-change measure; and available masks can be compared with Dice and IoU. These
+
+values describe similarity or change between two inputs and are explicitly marked as research-only outputs.
+
+The longitudinal model instead consumes a sequence of per-visit features. A visit vector may concatenate
+
+DINOv2 features, detection features, segmentation features, a time-delta scalar, and clinical features. A
+
+projection maps this vector into the configured model dimension, after which Mamba-style blocks process
+
+the ordered sequence. The model returns per-timestep healing-stage logits and a representation associated
+
+with the last valid visit. Padding masks or valid-length metadata are necessary because different patients
+
+can have different numbers of studies.
+
+Sequence construction is therefore a data problem as much as a neural-network problem. Records must
+
+first be grouped by numeric patient identifier, sorted by time hash or study number, and filtered according
+
+to the minimum number of studies. Patient-level splitting is performed before training so that studies from
+
+one patient do not appear in both training and validation partitions. This prevents the model from learning
+
+patient-specific imaging characteristics through leakage. The repository provides the pairing and split
+
+utilities, but the supplied snapshot does not provide the data required to execute them.
+
+
+                                                    33
+9.7       Dataset normalization and split strategy
+
+The FracAtlas adapter reads CSV metadata, image folders, COCO polygons, YOLO text files, and Pascal
+
+VOC XML files. It normalizes these sources into a common list of records. Because FracAtlas does
+
+not provide an independent patient identifier, the image identifier is used as a surrogate and longitudinal
+
+grouping is not inferred. The GRAZPEDWRI-DX adapter reads CSV study metadata, extracts PNG
+
+images when necessary, parses Pascal VOC boxes, and retains patient, study, and time fields for serial
+
+processing.
+
+The split creator groups records by patient identifier whenever one is available. It shuffles patient identifiers
+
+with a deterministic random generator and assigns complete patient groups to training, validation, or test
+
+partitions. The output split files contain dataset name, image identifier, patient identifier, study identifier,
+
+image path, fracture status, and split name. Pair construction then consumes the split files and creates
+
+ordered prior/current records for serial comparison. This two-stage design keeps dataset splitting separate
+
+from pair generation and makes leakage checks easier to perform.
+
+The adapter boundary also provides a controlled place to handle missing annotations. A record can contain
+
+an image without a box, a box without a polygon, or metadata without a resolved image path. Rather than
+
+discarding all records globally, the pipeline preserves the available fields and allows each model stage
+
+to decide whether its required inputs exist. This is consistent with the system’s transparent-degradation
+
+design.
+
+
+9.8       Validation, error propagation, and safety boundaries
+
+Validation occurs at multiple levels. The upload route checks file suffix and size. Preprocessing checks
+
+image decodability, dimensions, and quality indicators. Model wrappers validate the shape and type of
+
+tensors. Pydantic schemas constrain response fields such as confidence values and provide a stable API
+
+contract. At the pipeline level, each major stage is wrapped independently so that a segmentation failure
+
+does not automatically erase a successful quality-control or detection result.
+
+Stage errors are accumulated in a structured collection rather than being printed only to a server log. A
+
+response can therefore contain quality-control status, warnings, stage-specific errors, detection informa-
+
+
+
+                                                       34
+tion, and optional model products. Startup failures are recorded in pipeline state and exposed through
+
+health information. These mechanisms improve debugging and user feedback, but they do not replace
+
+authentication, authorization, encryption, audit logging, or clinical governance.
+
+The recovery component has a stricter boundary. The configured datasets provide timestamps and study
+
+ordering, but they do not provide verified time-to-union or censoring-status endpoints. The recovery
+
+training helper consequently reports that training is disabled and marks synthetic-test-only and clinical-use
+
+flags. This prevents a longitudinal sequence model from being presented as a validated recovery-time
+
+predictor merely because a forward method exists in the source tree.
+
+
+9.9    Deployment and reproducibility considerations
+
+The repository contains separate frontend and backend applications, Docker configuration, YAML config-
+
+uration, and test utilities. The backend can run with CPU-compatible fallbacks for selected components,
+
+while GPU execution is configurable for model workloads. A deployment must still provide compatible
+
+Python packages, model checkpoints, dataset access, storage for the database, and a correctly configured
+
+frontend API origin.
+
+Reproducibility depends on recording more than a source commit. A useful experiment record should
+
+include the configuration file, adapter version, dataset manifest, patient-level split files, checkpoint hashes,
+
+preprocessing settings, device type, and software versions. The current codebase provides places for many
+
+of these values but does not supply the external datasets or trained checkpoint artifacts in the inspected
+
+snapshot. The report therefore distinguishes reproducibility mechanisms that are implemented from
+
+experimental evidence that is unavailable.
+
+
+9.10     Frontend interaction and visualization behavior
+
+The Next.js frontend provides separate views for single-image analysis, serial comparison, history, and
+
+project information. The analyze page selects an image and submits it as multipart form data. The compare
+
+page maintains the distinction between a prior and a current study, which is important because change
+
+metrics have a direction even when the underlying image similarity measure is symmetric. The history
+
+page requests stored de-identified records rather than re-uploading the original image.
+
+
+                                                      35
+The results panel is designed to display structured status rather than only a single class label. It can
+
+show quality-control warnings, model-stage status, classification probabilities, segmentation state, and
+
+stage errors. The overlay component maps normalized or model-square coordinates to the displayed
+
+image dimensions. The mask is rendered with transparency so that the underlying radiograph remains
+
+visible. This choice supports inspection of the relationship between an image region, a detector box, and a
+
+segmentation mask.
+
+The interface also carries the non-clinical disclaimer supplied by the backend contract. This is a communi-
+
+cation safeguard: a visually polished result panel must not imply that the application has been clinically
+
+validated. The frontend therefore treats unavailable model stages and warnings as first-class states. A
+
+future interface can add user roles, audit events, and review workflows, but those capabilities are not
+
+inferred from the current component tree.
+
+
+9.11 API contract and response normalization
+
+The route layer acts as a boundary between browser-friendly requests and typed internal objects. Multipart
+
+uploads are appropriate for image data, while health, model metadata, history, and error information are
+
+represented as JSON. Pydantic response schemas make the expected field names explicit and help prevent
+
+non-serializable values from reaching the browser. The normalization step converts tensors and NumPy
+
+values into ordinary lists, numbers, strings, and dictionaries.
+
+A prediction response can contain several logically independent groups: request metadata, quality-control
+
+information, fracture detection records, segmentation information, classification probabilities, longitudinal
+
+or comparison details, warnings, and stage errors. Each group is optional because a stage may be
+
+unavailable. This is preferable to returning a misleading default value such as a confidence of zero when
+
+the detector was never loaded. The schema can instead communicate the difference between negative
+
+evidence and unavailable evidence.
+
+The history route stores de-identified metadata and prediction JSON rather than the original uploaded
+
+image. A record can preserve the image identifier, model version information, predicted fields, quality
+
+state, and error state needed for later inspection. The compare route accepts two images and returns metrics
+
+associated with the pair. The health route reports readiness and load errors, which allows a deployment
+
+
+                                                     36
+monitor to distinguish process availability from inference readiness.
+
+
+9.12     Evaluation methodology without fabricated results
+
+The repository contains evaluation utilities for detection overlap, segmentation overlap, classification
+
+summaries, and serial comparison measures. A suitable evaluation protocol would first create patient-level
+
+splits, then train or load a checkpoint using a recorded configuration, and finally evaluate only on the
+
+held-out partition. Detection should report box IoU and precision/recall summaries; segmentation should
+
+report Dice and IoU; multilabel classification should report per-class precision, recall, F1, and a clearly
+
+defined thresholding policy.
+
+For longitudinal experiments, the split must occur before sequence construction. Otherwise, a prior study
+
+for a patient could appear in training while a later study for that same patient appears in testing. Serial
+
+comparison should also define which image pair is considered prior and current, how failed registration is
+
+handled, and whether missing masks are excluded or treated as unavailable. These protocol choices affect
+
+interpretation and must be documented with the experiment configuration.
+
+The supplied project snapshot contains no dataset files or trained checkpoint artifacts, so numerical
+
+evaluation is intentionally outside the claims of this report. The appropriate next step is not to insert
+
+placeholder accuracy values, but to execute the existing inspection, split, training, and evaluation utilities
+
+after the approved datasets and checkpoints are supplied. The resulting reports should include dataset
+
+manifests, code version, random seeds, hardware, preprocessing settings, and confidence intervals where
+
+applicable.
+
+
+9.13     Privacy, security, and clinical-use boundaries
+
+The system performs input validation and temporary-file cleanup, but it is not a complete clinical security
+
+system. CORS configuration, upload size limits, supported suffix checks, and stage-level exception
+
+handling reduce common integration failures. They do not provide identity management, authorization,
+
+encryption at rest, audit trails, consent management, or formal DICOM de-identification governance.
+
+The preprocessing module documents that patient-identifying fields should not be retained in the internal
+
+prediction record. In a production deployment, this policy would need to be enforced through a data-flow
+
+
+                                                     37
+review and tested against DICOM tags, filenames, logs, cache files, database records, and frontend browser
+
+storage. Access to datasets and checkpoints should be controlled separately from access to the inference
+
+service. Model version, configuration, and data provenance should be recorded so that a reviewer can
+
+reconstruct which software produced a given research record.
+
+The application is therefore best classified as a research and integration prototype. Any use with patient
+
+data would require institutional approval, secure infrastructure, qualified clinical review, calibration and
+
+external validation, and a clearly defined human-in-the-loop procedure. The non-clinical disclaimer in
+
+the response is consistent with the implementation boundary and should remain visible in downstream
+
+interfaces.
+
+
+9.14     Extension strategy and maintainability
+
+New detection or segmentation models can be integrated by implementing the existing wrapper contract
+
+and mapping their outputs to the common result representation. A new dataset can be supported by adding
+
+an adapter that loads native records, normalizes identifiers, exposes annotations, and declares whether
+
+patient-level and longitudinal metadata are available. This keeps dataset-specific assumptions out of the
+
+core pipeline.
+
+The model configuration can be extended with a new checkpoint path, threshold, class mapping, or device
+
+preference without rewriting the API routes. The frontend can then expose additional fields if they are
+
+added to the typed response schema. Changes should be accompanied by unit tests for tensor shapes and
+
+schema serialization, adapter tests for representative metadata rows, preprocessing tests for image formats,
+
+and integration tests for invalid uploads and degraded startup.
+
+Maintainability also depends on making unsupported states explicit. A model wrapper should expose
+
+whether it loaded a checkpoint, an adapter should report missing files, and a pipeline stage should return
+
+a structured error rather than silently substituting a plausible value. These conventions make future
+
+extensions safer because new components inherit the same observability and validation expectations as
+
+the existing components.
+
+
+
+
+                                                    38
+9.15     Configuration and experiment traceability
+
+The YAML configuration is the operational description of the pipeline. It identifies dataset roots, image
+
+directories, class mappings, checkpoint paths, preprocessing dimensions, confidence thresholds, sequence
+
+settings, and training phases. Environment variables can override deployment-sensitive values such as the
+
+database URL and dataset roots. Keeping these values outside the Python modules reduces accidental
+
+divergence between an experiment and the code that executes it.
+
+For a reproducible experiment, the configuration should be copied into the experiment directory and
+
+associated with a source revision. The record should also state whether each model was loaded, which
+
+device was selected, and whether a fallback implementation was used. A configuration can request a
+
+MedSAM checkpoint, for example, while the file is absent at runtime; the experiment record must preserve
+
+that fact instead of treating the request as evidence that the model was active.
+
+The same principle applies to data. A dataset name alone is not a sufficient provenance record because
+
+annotations, preprocessing conventions, and split files can change. A complete manifest should include
+
+file counts, annotation counts, patient counts, image formats, label vocabulary, and a checksum or release
+
+identifier. The current repository contains inspection and split utilities that can generate much of this
+
+information once the external data is mounted.
+
+
+9.16     Computational behavior and resource planning
+
+The pipeline combines several computationally different operations. Image decoding and quality checks
+
+are comparatively lightweight. Transformer-based detection and DINOv2 feature extraction require
+
+substantially more memory, especially when images are padded to a large square target. MedSAM adds
+
+another model invocation and may require a GPU checkpoint. Longitudinal modelling adds sequence
+
+memory proportional to the number of visits and the feature dimension.
+
+Resource planning should therefore consider peak memory rather than the average cost of one stage.
+
+A deployment can reduce peak usage by loading only the required components, using inference mode,
+
+limiting the number of detections, and processing one request at a time when hardware is constrained. The
+
+configuration supports CPU fallback for the Mamba-style block, but a CPU fallback does not guarantee
+
+
+
+                                                    39
+practical throughput for every vision model. Latency measurements should be collected only after the
+
+exact dataset, checkpoints, device, and concurrency policy are fixed.
+
+The system’s modularity makes staged profiling possible. Decode and preprocessing time can be measured
+
+separately from detector time, segmentation time, feature extraction time, database persistence time, and
+
+response serialization time. This makes optimization more informative than reporting one end-to-end
+
+number because a bottleneck can be assigned to the responsible stage. No such benchmark is claimed for
+
+the supplied snapshot.
+
+
+9.17       Failure-mode analysis
+
+The principal failure modes are missing or unreadable uploads, unsupported image formats, images that
+
+fail quality checks, absent model checkpoints, incompatible tensor shapes, failed registration, missing
+
+longitudinal metadata, and persistence or serialization errors. Each mode has a different response policy.
+
+An invalid upload should stop before inference. A missing detector checkpoint should produce a degraded
+
+detector state. A missing segmentation prompt should skip segmentation rather than invent a box. A
+
+persistence failure should be logged and returned as an application error without changing the image-
+
+analysis interpretation.
+
+Failure analysis is also useful for testing. Test cases should cover empty files, oversized files, unsupported
+
+suffixes, grayscale images, DICOM images, images below the minimum dimension, missing annotation
+
+files, missing checkpoint paths, malformed metadata rows, and sequences with fewer than the configured
+
+minimum number of studies. Tests should assert not only that an exception is avoided, but also that the
+
+returned status identifies the failed stage and does not label unavailable information as a negative clinical
+
+finding.
+
+This approach gives the report a precise definition of graceful degradation. Graceful degradation does not
+
+mean that every request receives a complete prediction. It means that the application remains interpretable
+
+when only part of the requested workflow can be executed, and that the difference between a negative
+
+result, an unavailable result, and a placeholder result is preserved in the response.
+
+
+
+
+                                                     40
+                Table 9.2: Failure modes and handling rules in the technical workflow.
+ Failure or boundary            Handling rule                            Interpretation
+ Invalid or unsupported up-     Reject before inference after suffix,    The request is invalid; no clinical
+ load                           size, and decoding checks.               conclusion is produced.
+ Missing model checkpoint       Mark the affected stage unavailable      Unavailable model assets must not
+                                and retain other valid stage results.    be interpreted as a negative finding.
+ Missing      segmentation      Skip prompt-based segmentation           No mask is returned because the re-
+ prompt                         when no suitable fracture box exists.    quired spatial input is absent.
+ Registration failure           Record registration failure and retain   Pairwise comparison is partial and
+                                valid embedding or unregistered pixel    must be interpreted with its status.
+                                measures when possible.
+ Insufficient    longitudinal   Do not construct an invalid sequence     Healing-stage or recovery outputs
+ data                           or enable unsupported recovery train-    are not claimed without valid serial
+                                ing.                                     labels.
+ Persistence or serialization   Return an application error and pre-     Storage failure does not change the
+ error                          serve the image-analysis interpreta-     underlying model-stage result.
+                                tion separately.
+
+
+
+9.18     Relationship between the research modules
+
+The modules form a progression from observable image evidence to increasingly abstract representations.
+
+Quality control describes whether the input is usable. Detection identifies candidate spatial regions.
+
+Segmentation refines one selected region into pixels. DINOv2 transforms the image into a representation
+
+suitable for multilabel classification. Serial comparison measures change between two observations, while
+
+the longitudinal model learns from an ordered set of observations. Each step therefore adds a different
+
+type of information and should be interpreted at its own level.
+
+This progression also explains why the system does not merge every model into one prediction head. A
+
+detector box can be useful even when a segmentation checkpoint is unavailable. A visual embedding can be
+
+extracted even when a classification head has not been trained for a new label set. A serial similarity score
+
+can be calculated without claiming that a healing stage has been diagnosed. The architecture preserves
+
+these distinctions in both code and documentation, which is essential for a research prototype that may be
+
+extended with new datasets and models over time.
+
+
+
+
+                                                     41
+10     Feasibility Study
+
+10.1    Technical feasibility
+
+The modular Python architecture supports CPU fallback for the Mamba block and configurable CUDA
+
+execution for available models. Docker Compose separates CPU and GPU profiles. The API and frontend
+
+boundaries are conventional and testable. The major technical risk is the compute and storage cost of
+
+foundation models and medical-image datasets.
+
+
+10.2    Economic and operational feasibility
+
+The software stack is based primarily on open-source frameworks, but practical operation may require
+
+GPU infrastructure and licensed/approved clinical data access. Operational deployment requires clinician
+
+review, secure data handling, access control, monitoring, and validation beyond the current research
+
+prototype.
+
+
+
+
+                                                  42
+11 Conclusion
+
+FracVision implements a coherent multimodal X-ray analysis platform in which preprocessing, detec-
+
+tion, segmentation, feature extraction, classification, comparison, longitudinal modelling, API serving,
+
+web visualization, and persistence are connected through explicit interfaces. Its strongest engineering
+
+characteristic is transparent degradation: unavailable stages produce warnings and flags rather than being
+
+presented as clinically reliable results. The repository also correctly prevents unsupported recovery-time
+
+training.
+
+Future work should supply versioned datasets and checkpoints, run the existing training/evaluation scripts,
+
+publish reproducible metrics, integrate real model monitoring, implement authentication and audit controls,
+
+harden DICOM privacy handling, and perform independent clinical validation. Recovery-time prediction
+
+should remain disabled until verified time-to-union and censoring labels are collected under an approved
+
+clinical protocol.
+
+
+
+
+                                                   43
+                                        REFERENCES
+
+
+
+ 1. Lv et al., RT-DETRv2: Improved Baseline with Bag-of-Freebies for Real-Time Detection, arXiv
+
+    preprint, 2024.
+
+
+ 2. Oquab et al., DINOv2: Learning Robust Visual Features without Supervision, arXiv preprint, 2023.
+
+
+ 3. Ma et al., Segment Anything in Medical Images, Nature Communications, 2024.
+
+
+ 4. Gu and Dao, Mamba: Linear-Time Sequence Modeling with Selective State Spaces, arXiv preprint,
+
+    2023.
+
+
+ 5. W. Wei et al., YOLOv11-based Multi-task Learning for Enhanced Bone Fracture Detection and
+
+    Classification in X-ray Images, Journal of Radiation Research and Applied Sciences, 2025.
+
+
+ 6. A. S. Wahd et al., Sam2Rad: A Segmentation Model for Medical Images with Learnable Prompts,
+
+    Computers in Biology and Medicine, 2025.
+
+
+ 7. J. Wu et al., Medical SAM Adapter: Adapting Segment Anything Model for Medical Image Segmen-
+
+    tation, Medical Image Analysis, 2025.
+
+
+ 8. A. Sellergren et al., MedGemma Technical Report, arXiv preprint, 2025.
+
+
+ 9. Y. Li, M. Ghahremani, and C. Wachinger, MedBridge: Bridging Foundation Vision-Language
+
+    Models to Medical Image Diagnosis in Chest X-ray, arXiv preprint, 2025.
+
+
+10. S. Jiang et al., OmniV-Med: Scaling Medical Vision-Language Model for Universal Visual Under-
+
+    standing, arXiv preprint, 2025.
+

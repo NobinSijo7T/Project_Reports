@@ -1,0 +1,21 @@
+VALIA KOONAMBAIKULATHAMMA COLLEGE OF
+ENGINEERING & TECHNOLOGY
+DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING
+CERTIFICATE
+This is to certify that the seminar report entitled “Design of Multi-Agent Autonomous
+Workflow Systems using Agentic AI Frameworks” submitted by SOHAN ANTONY
+[VKE23CS045], of the 2023–2027 batch, in partial fulfilment of the requirements for the
+award of the Degree of Bachelor of Technology in Computer Science and Engineering, APJ
+Abdul Kalam Technological University, Kerala, is a bonafide record of the seminar work
+carried out under the guidance.
+The report has been prepared according to the prescribed academic format and has been
+reviewed for seminar evaluation.
+Seminar Guide
+Seminar Coordinator
+Head of the Department
+Ms. Rintu Johnson                    Ms. Reeba B                                      Dr. Shine Raj G
+Assistant Professor
+Assistant Professor
+Professor
+Department of CSE                  Department of CSE                            Department of CSE
+VKCET                                    VKCET                                              VKCET

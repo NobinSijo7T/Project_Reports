@@ -1,0 +1,35 @@
+7
+coordinate them effectively so that the overall system remains useful as the environment
+changes.
+2.11 Literature Survey Summary Table
+Table 2.1 Literature survey summary
+Author / Year
+Focus
+Contribution /
+Relevance
+Calegari et al. (2021)
+Multi-Agent Systems
+Systematic review of logic-
+based technologies for
+MAS; provides conceptual
+foundation.
+Cardoso & Ferrando (2021)
+Agent-Based Systems
+Reviews agent-based
+programming and
+autonomous agent
+interaction.
+Grosset et al. (2024)
+Dynamic Task Allocation
+Addresses dynamic task
+allocation in autonomous
+industrial vehicle fleets.
+Mu et al. (2024)
+Agent Cooperation
+Surveys cooperation among
+agents , humans and agents.
+Acharya et al. (2025)
+Agentic AI
+Provides recent context for
+autonomous intelligence for
+complex goals.

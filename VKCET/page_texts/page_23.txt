@@ -1,0 +1,12 @@
+14
+implemented system.
+The architecture can nevertheless be mapped to software components: a workflow input
+module, task decomposition module, agent registry, allocation module, communication
+service, execution modules, monitoring module and result coordinator.
+4.4 Security and Human Oversight Considerations
+Autonomous systems should be designed with appropriate control because agents may make
+decisions that affect resources or workflows. The reference material explicitly notes that
+human supervision may still be required in some situations.
+A practical system should therefore support monitoring, logging, controlled permissions and
+the ability to intervene when a workflow reaches a sensitive or uncertain state. These are
+implementation considerations rather than new claims from the reference experiments.

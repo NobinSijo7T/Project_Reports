@@ -1,0 +1,24 @@
+5
+and decision-making capabilities, rather than treating the entire workflow as one monolithic
+program.
+2.4 Dynamic Task Allocation
+Grosset et al. (2024) is associated in the reference material with dynamic task allocation in
+autonomous industrial vehicle fleets and V2X cooperation. Dynamic allocation is directly
+relevant to MAWS because task assignments may need to change according to workload, agent
+availability and changing requirements. A flexible allocation mechanism prevents a workflow
+from remaining tied to an unsuitable assignment after the environment changes.
+2.5 Agent Cooperation
+Mu et al. (2024) surveys cooperation among agents, humans and agents in social dilemmas.
+Cooperation is important to MAWS because multiple agents may need to exchange
+information and coordinate their actions to achieve a shared goal.
+The reference paper also discusses collaboration as a mechanism for sharing knowledge,
+resources and planning information.
+2.6 Agentic AI
+Acharya et al. (2025) provides a recent survey context for Agentic AI and autonomous
+intelligence for complex goals. The reference paper uses Agentic AI frameworks as a basis for
+making agents more autonomous, adaptive and capable of decision-making.
+The combination of Agentic AI with multi-agent systems is the central theme of this seminar
+2.7 Learning Approaches
+The reference paper discusses supervised learning, unsupervised learning and reinforcement
+learning. Supervised learning uses labeled data to learn patterns and predictions. Unsupervised
+learning identifies patterns without explicit labels. Reinforcement learning allows an agent to

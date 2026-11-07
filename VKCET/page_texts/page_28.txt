@@ -1,0 +1,22 @@
+19
+3. Communication and cooperation between agents.
+4. Dynamic adaptation when conditions change.
+5. Support for multiple tasks in parallel or coordinated stages.
+6. Potential improvement in workflow efficiency.
+7. Ability to continue operating through some failures using recovery mechanisms.
+6.4 Healthcare Applications
+In healthcare, multiple agents can support patient and resource management. Agents may
+coordinate information, resources and task priorities. The reference paper reports healthcare as
+one of the scenarios used in its evaluation.
+6.5 Manufacturing Applications
+In manufacturing, agents can support production task management and coordination.
+Manufacturing workflows may contain several dependent tasks, making task decomposition
+and resource-aware allocation useful.
+6.6 Logistics Applications
+Logistics workflows can involve delivery tasks, routes, schedules and changing resource
+availability. Agents can cooperate to manage these activities and adapt when conditions such
+as route changes affect the workflow.
+6.7 Autonomous Vehicles
+The reference paper identifies autonomous driving and changing situations as an application
+area. Multiple agents can support decision-making and coordination in environments where
+conditions change in real time.

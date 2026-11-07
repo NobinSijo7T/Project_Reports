@@ -1,0 +1,19 @@
+3
+1.5 Objectives
+The main objectives identified in the reference material are:
+• Build agentic AI architectures and frameworks that can change and grow.
+• Allow agents to operate independently while cooperating toward common goals.
+• Study how reinforcement learning and collaborative multi-agent learning can improve
+decision-making.
+• Improve scalability, flexibility and smooth operation as the number of agents increases.
+• Improve real-time task delegation using agent capability, availability, resources and system
+goals.
+• Examine practical use in healthcare, manufacturing and logistics.
+• Study the effect of Agentic AI frameworks on accuracy, productivity and operational cost.
+1.6 Organization of the Report
+Chapter 1 introduces the topic, motivation, scope and objectives. Chapter 2 reviews relevant
+research and identifies the research gap. Chapter3 explains the system architecture and
+methodology. Chapter4 describes the workflow and implementation-oriented operation.
+Chapter5 presents the performance measures an reported evaluation. Chapter 6 discusses
+results, advantages, applications and limitations. Chapter 7 describes future scope, followed by
+the conclusion, references and appendices.

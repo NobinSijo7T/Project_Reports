@@ -1,0 +1,381 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+\usepackage{microtype}
+\usepackage[a4paper,left=25mm,right=20mm,top=20mm,bottom=18mm,footskip=10mm]{geometry}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,shapes.geometric,fit,calc}
+\usepackage{pdflscape}
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{float}
+
+\definecolor{codegray}{gray}{0.94}
+\definecolor{darkgreen}{RGB}{15,62,23}
+\hypersetup{colorlinks=true,linkcolor=darkgreen,urlcolor=blue,citecolor=darkgreen}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\setlength{\emergencystretch}{3em}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\newcommand{\code}[1]{\texttt{\footnotesize\detokenize{#1}}}
+\newcommand{\chaptertitle}[1]{\begin{center}{\Large\bfseries #1\par}\end{center}\vspace{8pt}}
+\newcommand{\figcaption}[1]{\caption{#1}\label{fig:#1}}
+\lstset{basicstyle=\ttfamily\footnotesize,backgroundcolor=\color{codegray},frame=single,breaklines=true}
+\input{diagrams/fracvision_diagrams.tex}
+
+\begin{document}
+
+\begin{titlepage}
+\thispagestyle{empty}
+\begin{center}
+{\Large\bfseries VALIA KOONAMBAIKULATHAMMA COLLEGE OF ENGINEERING \& TECHNOLOGY\par}
+\vspace{8pt}
+{\large\bfseries DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING\par}
+\vspace{25pt}
+{\Large\bfseries FRACVISION\par}
+\vspace{7pt}
+{\large\bfseries Multimodal X-ray Fracture Analysis and Longitudinal\par}
+{\large\bfseries Healing-Stage Research Prototype\par}
+\vspace{20pt}
+{\large PROJECT REPORT\par}
+\vspace{12pt}
+Submitted by
+\vspace{8pt}
+\begin{tabular}{c}
+\textbf{Adwaith S} \quad VKE23CS006\\
+\textbf{Aswathy P} \quad VKE23CS019\\
+\textbf{Sohan Antony} \quad VKE23CS045\\
+\textbf{Sreenandha M} \quad VKE23CS046
+\end{tabular}
+\vfill
+\textbf{Project Guide:} Reeba B\\
+\textbf{Project Coordinator:} Dr Shine Raj G\\
+\textbf{Head of the Department:} Dr. Shine Raj G
+\vspace{18pt}
+
+SEPTEMBER 2026
+\end{center}
+\end{titlepage}
+
+\pagenumbering{roman}
+\section*{DECLARATION}
+We, \textbf{Adwaith S, Aswathy P, Sohan Antony, and Sreenandha M}, declare that this project report entitled \textbf{“FracVision: Multimodal X-ray Fracture Analysis and Longitudinal Healing-Stage Research Prototype”} is our original work carried out under the guidance of Reeba B. The report describes the implementation present in the supplied FracVision repository. It does not claim clinical validation, autonomous diagnosis, or trained performance results that are not supported by the repository artifacts.
+
+\vspace{18pt}
+\hfill Adwaith S\\
+\hfill Aswathy P\\
+\hfill Sohan Antony\\
+\hfill Sreenandha M
+
+\newpage
+\section*{CERTIFICATE}
+This is to certify that the project report entitled \textbf{“FracVision: Multimodal X-ray Fracture Analysis and Longitudinal Healing-Stage Research Prototype”} submitted by \textbf{Adwaith S [VKE23CS006], Aswathy P [VKE23CS019], Sohan Antony [VKE23CS045], and Sreenandha M [VKE23CS046]} is a bonafide record of the project work carried out under the guidance of Reeba B.
+
+\vspace{25pt}
+\begin{tabularx}{\textwidth}{XXX}
+\textbf{Project Guide} & \textbf{Project Coordinator} & \textbf{Head of the Department}\\[8pt]
+Reeba B & Dr Shine Raj G & Dr. Shine Raj G\\
+Assistant Professor & Assistant Professor & Professor\\
+Department of CSE & Department of CSE & Department of CSE\\
+VKCET & VKCET & VKCET
+\end{tabularx}
+
+\newpage
+\section*{ACKNOWLEDGEMENT}
+We express our sincere gratitude to our project guide, \textbf{Reeba B}, for her guidance and technical supervision. We thank \textbf{Dr Shine Raj G}, Project Coordinator, for his coordination and support, and \textbf{Dr. Shine Raj G}, Head of the Department of Computer Science and Engineering, for providing the academic environment and facilities required for the project. We also thank the faculty members and staff of VKCET for their assistance throughout the project.
+
+\vspace{18pt}
+\hfill \textbf{Adwaith S, Aswathy P, Sohan Antony, Sreenandha M}
+
+\newpage
+\section*{ABSTRACT}
+FracVision is a modular research prototype for multimodal analysis of bone X-ray images. The implementation combines image quality control and preprocessing with four model-oriented components: RT-DETRv2 for fracture-related object detection, MedSAM for box-prompted segmentation, DINOv2 for visual feature extraction, and a configurable multilabel classifier operating on DINOv2 embeddings. A Mamba-style longitudinal model is also implemented for sequence-level healing-stage classification when serial patient studies and appropriate labels are available. The application is exposed through a FastAPI service and a Next.js web interface that supports single-image analysis, serial comparison, and prediction history.
+
+The verified codebase is intentionally conservative about medical claims. Every prediction carries a non-clinical disclaimer, outputs include quality-control status and stage-level errors, and supervised recovery-time training is disabled because the configured datasets do not provide verified time-to-union or censoring labels. The repository contains model interfaces, adapters, training scripts, evaluation utilities, tests, and deployment configuration, but the supplied snapshot contains no dataset files or trained checkpoint artifacts. Accordingly, this report documents the implemented architecture and algorithms without fabricating accuracy, latency, or clinical performance values.
+
+\newpage
+\tableofcontents
+\newpage
+\listoffigures
+\newpage
+\listoftables
+\newpage
+\section*{LIST OF SYMBOLS AND ABBREVIATIONS}
+\begin{tabularx}{\textwidth}{>{\bfseries}lX}
+AI & Artificial Intelligence\\
+API & Application Programming Interface\\
+CLAHE & Contrast Limited Adaptive Histogram Equalization\\
+DICOM & Digital Imaging and Communications in Medicine\\
+IoU & Intersection over Union\\
+QC & Quality Control\\
+SSM & State Space Model\\
+VOC & Pascal Visual Object Classes\\
+YOLO & You Only Look Once annotation format
+\end{tabularx}
+
+\clearpage
+\pagenumbering{arabic}
+\section{Introduction}
+\subsection{Background and project overview}
+Radiographic fracture analysis requires more than a binary image label. A usable analysis workflow may need to check input quality, localize suspicious regions, create a pixel-level region estimate, classify image-level attributes, and compare serial studies. FracVision implements these concerns as a modular research system rather than as one monolithic predictor.
+
+The repository identifies the system as \textbf{FracVision}, version 0.1.0. Its primary application path is a browser-based Next.js interface communicating with a FastAPI backend. The backend loads an inference pipeline during the application lifespan and maps model outputs into typed Pydantic responses. A SQLAlchemy persistence layer stores de-identified prediction history. The model package contains adapters for FracAtlas and GRAZPEDWRI-DX, preprocessing, pairing, training, inference, and evaluation utilities.
+
+\subsection{Problem statement}
+The problem addressed is the engineering of a reproducible, multimodal X-ray analysis workflow that can expose detection, segmentation, classification, and serial-comparison outputs through one application interface while preserving uncertainty and safety information. The implementation does not solve autonomous clinical diagnosis. It provides a research and integration foundation in which each stage can fail independently and report its status.
+
+\subsection{Objectives}
+\begin{enumerate}[leftmargin=*]
+\item Standardize JPEG, PNG, and DICOM inputs through configurable quality-control preprocessing.
+\item Detect fracture-related regions and return pixel-coordinate bounding boxes with confidence scores.
+\item Use the highest-confidence fracture box as an optional MedSAM prompt for segmentation.
+\item Extract DINOv2 visual features and produce multilabel probabilities through a classifier head.
+\item Compare serial images using registration, embedding similarity, pixel differences, and mask overlap.
+\item Provide longitudinal sequence modelling with a Mamba-style model while disabling unsupported recovery-time supervision.
+\item Serve results through typed REST endpoints and present overlays, probabilities, warnings, and history in a web UI.
+\end{enumerate}
+
+\subsection{Scope and boundaries}
+The scope includes the implemented software, model interfaces, data adapters, configuration, API, frontend, persistence, tests, and Docker deployment files. The supplied repository does not include the configured datasets, trained checkpoint weights, measured evaluation reports, authentication, or a clinical validation study. These absences are treated as explicit project boundaries.
+
+\section{Literature and Technology Review}
+\subsection{Relevant technologies}
+The implementation uses DINOv2 self-supervised visual representations, RT-DETRv2 transformer-based object detection, MedSAM promptable medical-image segmentation, and Mamba-style selective state-space sequence modelling. These are integrated as software components with clear interfaces; the report does not claim that the repository reproduces the original papers' benchmark results.
+
+\subsection{Technology stack}
+\begin{table}[H]
+\centering\small
+\caption{Verified technology stack}
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+Layer & Implementation evidence\\\midrule
+Frontend & Next.js 16.3.3, React 19.2.8, TypeScript, Tailwind CSS 4, lucide-react\\
+Backend & Python 3.11+, FastAPI, Uvicorn, Pydantic 2\\
+ML/CV & PyTorch 2.3+, torchvision, timm, transformers, OpenCV, Pillow, NumPy, MONAI\\
+Medical imaging & pydicom and SimpleITK\\
+Persistence & SQLAlchemy 2 with SQLite default and configurable DATABASE\_URL\\
+Experiment support & YAML configuration, MLflow dependency, pytest and pytest-asyncio\\
+Deployment & Dockerfiles and Docker Compose CPU/GPU profiles\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Requirements Specification}
+\subsection{Functional requirements}
+\begin{enumerate}[leftmargin=*]
+\item The service shall report readiness, load errors, model versions, and the mandatory clinical disclaimer.
+\item The service shall accept a single JPEG, PNG, or DICOM upload up to 50 MB at \code{/api/predict}.
+\item The service shall return QC status, warnings, fracture status, confidence, detections, optional segmentation, optional classification, and stage errors.
+\item The service shall accept prior and current images at \code{/api/compare} and return registration, embedding, pixel, and mask-comparison metrics.
+\item The service shall persist and list recent upload predictions through \code{/api/history}.
+\item The frontend shall provide analyze, compare, history, results, and about views.
+\end{enumerate}
+
+\subsection{Non-functional and safety requirements}
+The pipeline must degrade gracefully when a stage or checkpoint is unavailable. Inputs are written to temporary files and removed after processing. The API rejects unsupported suffixes and oversized files. Pydantic constrains confidence values to the interval [0,1]. The application explicitly labels outputs as not clinically validated and sets \code{recovery\_training\_enabled=false}. These mechanisms are safety and validation features, not a substitute for authentication, authorization, or clinical governance.
+
+\subsection{Dataset and checkpoint requirements}
+The configuration points to \code{model/datasets/FracAtlas}, \code{model/datasets/GRAZPEDWRI-DX}, and several checkpoint paths. In the supplied snapshot these directories contain only \code{.gitkeep}; therefore no dataset size, trained weight, or measured model result can be verified locally. The README and frontend describe FracAtlas as 4,085 records and GRAZPEDWRI-DX as 20,328 records; those figures are documented as project metadata, not as locally re-counted evidence.
+
+\section{System Design}
+\subsection{High-level architecture}
+The system is organized into five cooperating layers: browser UI, REST/API orchestration, inference pipeline, model/data services, and persistence. The FastAPI lifespan creates database tables and attempts to load the configured pipeline. A global \code{PipelineState} records readiness and load errors. Requests are routed only after this state check. Figure~\ref{fig:Overall System Architecture} shows the verified relationships.
+
+\begin{figure}[H]
+\centering
+\resizebox{\linewidth}{!}{\FVOverallArchitecture}
+\caption{Overall FracVision system architecture derived from the frontend, backend, model, and database modules.}
+\label{fig:Overall System Architecture}
+\end{figure}
+
+\subsection{Detailed module architecture}
+The frontend pages call the API with browser \code{fetch}. \code{analyze/page.tsx} posts a multipart file to \code{/api/predict}; \code{compare/page.tsx} posts two files to \code{/api/compare}; and \code{history/page.tsx} reads \code{/api/history}. \code{ResultsPanel.tsx} renders status, probabilities, segmentation state, and stage errors. \code{XrayOverlay.tsx} maps model-square coordinates back to the displayed image and draws bounding boxes and a transparent mask on a canvas.
+
+The backend route layer translates pipeline dataclasses to Pydantic schemas. The persistence layer uses four primary relationships: patient to imaging studies, imaging study to predictions, and optional comparison/model-version records. The model layer is intentionally separable: detector, segmentor, extractor, classifier, and longitudinal model can be unavailable independently.
+
+\subsection{End-to-end workflow}
+Figure~\ref{fig:End-to-End System Workflow} maps the actual single-image execution path. Invalid uploads stop before inference; stage failures after preprocessing are recorded in \code{stage\_errors} and do not necessarily discard other stage outputs.
+
+\begin{figure}[H]
+\centering
+\resizebox{\linewidth}{!}{\FVWorkflowDiagram}
+\caption{End-to-end single-image workflow from browser upload to UI result and history persistence.}
+\label{fig:End-to-End System Workflow}
+\end{figure}
+
+\subsection{Data-flow architecture}
+The request contains a binary multipart file. The route writes it to a temporary path so that DICOM detection and image decoding can use a filename suffix. The pipeline converts it to NumPy arrays and model outputs. The response contains JSON-safe values and may contain a base64 PNG data URL for the segmentation mask. The uploaded image itself is not stored by the persistence code; only de-identified metadata and prediction JSON are stored. Figure~\ref{fig:Data Flow Architecture} shows this flow.
+
+\begin{figure}[H]
+\centering
+\resizebox{\linewidth}{!}{\FVDataFlowDiagram}
+\caption{Data-flow diagram for upload, inference, response serialization, and history retrieval.}
+\label{fig:Data Flow Architecture}
+\end{figure}
+
+\subsection{Database and storage design}
+The default database is a local SQLite file named \code{fracvision\_dev.db}; deployment can supply \code{DATABASE\_URL}. The tables are created at startup using SQLAlchemy metadata. JSON columns preserve variable-length detections, classification outputs, segmentation summaries, and stage errors. Figure~\ref{fig:Database and Storage Architecture} summarizes the schema implemented in \code{backend/database/models.py}.
+
+\begin{figure}[H]
+\centering
+\resizebox{\linewidth}{!}{\FVDatabaseDiagram}
+\caption{Database and storage architecture represented by the SQLAlchemy ORM models.}
+\label{fig:Database and Storage Architecture}
+\end{figure}
+
+\subsection{API architecture}
+\begin{table}[H]
+\centering\small
+\caption{Implemented API endpoints}
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+Method & Endpoint & Verified behavior\\\midrule
+GET & \code{/api/health} & Readiness, load error, model versions, disclaimer\\
+GET & \code{/api/models} & Loaded model metadata, dimensions, classes, device\\
+POST & \code{/api/predict} & Single-image detection, segmentation, classification, QC, persistence\\
+GET & \code{/api/history} & Newest 100 persisted upload predictions\\
+POST & \code{/api/compare} & Prior/current serial comparison metrics\\
+GET & \code{/api/docs} & FastAPI Swagger UI\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Security, validation, and error handling}
+The implemented controls are input validation and safe degradation rather than user authentication. CORS origins are configuration-driven. Upload size and suffix checks occur before temporary-file inference. Pipeline startup failures set a degraded state. Inference stages use independent exception handling; preprocessing failures return an early invalid result, while detection, segmentation, and classification failures are recorded and the remaining result is returned. Figure~\ref{fig:Security and Validation Workflow} represents this verified behavior.
+
+\begin{figure}[H]
+\centering
+\resizebox{\linewidth}{!}{\FVValidationDiagram}
+\caption{Implemented request validation and stage-level error-handling workflow.}
+\label{fig:Security and Validation Workflow}
+\end{figure}
+
+\section{Implementation and Algorithms}
+\subsection{Image preprocessing and quality control}
+\code{preprocess\_image} accepts a path, bytes, or NumPy array. It decodes DICOM with pydicom when the suffix is \code{.dcm}, otherwise uses Pillow. Grayscale input is converted to RGB-compatible output; grayscale processing can apply CLAHE with a configured clip limit and tile grid. Images smaller than the configured minimum dimension are rejected. The image is resized with aspect preservation and padded to a square target, configured as 1008 pixels in \code{config.yaml}. Optional mean/std normalization returns a float tensor. Quality metadata records output dimensions, blur/exposure statistics, warnings, and \code{qc\_passed}.
+
+\subsection{Detection algorithm}
+\code{RTDETRv2Detector} loads an RT-DETRv2 model when a checkpoint is available. The configured threshold is 0.30 and the maximum number of detections is 20. Detection results are converted into labels, scores, and \code{[xmin,ymin,xmax,ymax]} boxes. Class mappings are derived from the configuration and dataset adapters; no new label vocabulary is introduced by the report. A placeholder detector exists for missing model assets, so the presence of a class does not prove that trained inference is available in the supplied snapshot.
+
+\subsection{Segmentation algorithm}
+For each image, the pipeline selects the highest-confidence detection whose label is \code{fracture}. That box becomes the MedSAM spatial prompt. If a MedSAM checkpoint is loaded, the segmentor returns a mask, score, and pixel area. If it is absent, the code returns an empty mask with \code{model\_loaded=false} and a warning that the mask is a placeholder. Dice and IoU helpers are implemented for supervised evaluation.
+
+\subsection{DINOv2 feature extraction and classification}
+The default DINOv2 variant is \code{dinov2\_vits14}, whose configured embedding dimension is 384. The extractor returns the CLS token and patch tokens. The classifier maps the CLS embedding to configured multilabel outputs. Its training helper implements focal loss with \(\alpha=0.25\) and \(\gamma=2.0\), and an optional temperature-scaling calibration module is present. At inference, probabilities are returned as a label-to-probability dictionary, with predicted positive labels and a confidence value.
+
+\begin{figure}[H]
+\centering
+\resizebox{\linewidth}{!}{\FVModelPipeline}
+\caption{Implemented multimodal model pipeline and the data products passed between stages.}
+\label{fig:Machine Learning Pipeline}
+\end{figure}
+
+\subsection{Serial comparison}
+\code{SerialXrayComparator} can register images with SimpleITK when available, compute DINOv2 embedding cosine similarity, calculate pixel-level mean absolute difference and related image metrics, and compare segmentation masks using Dice and IoU where masks are available. The API labels these outputs as not clinically validated. This comparison path is distinct from the Mamba sequence model: it compares two uploaded images directly, while the Mamba module consumes a prepared sequence of per-visit features.
+
+\subsection{Longitudinal Mamba model}
+The Mamba input at each visit is the concatenation of DINOv2 features, detection features, segmentation features, one time-delta scalar, and clinical features. An input projection maps this vector to \(d_{model}\), followed by configurable Mamba blocks and a healing-stage head. The default configuration uses \(d_{model}=256\), \(d_{state}=16\), convolution width 4, expansion 2, and four layers. The implementation tries the CUDA \code{mamba-ssm} package and falls back to a pure-PyTorch selective-state-space block. The output is per-timestep healing-stage logits plus the last valid sequence representation.
+
+\subsection{Recovery prediction boundary}
+The recovery module is explicitly a stub. \code{is\_training\_enabled()} always returns false because neither configured dataset supplies verified time-to-union or censoring-status labels. Its forward method returns a sentinel value and flags \code{synthetic\_test\_only=true}, \code{clinical\_use=false}, and \code{recovery\_training\_enabled=false}. This is a deliberate implementation safeguard, not a recovery-time prediction result.
+
+\subsection{Dataset adapters and preprocessing data flow}
+The FracAtlas adapter reads \code{dataset.csv}, COCO polygon masks, YOLO text boxes, Pascal VOC boxes, and fractured/non-fractured image directories. It uses image identity as a surrogate patient identifier because no separate patient ID is provided. The GRAZPEDWRI-DX adapter reads CSV metadata, extracts images from \code{folder\_structure.zip} when required, parses Pascal VOC boxes, and groups true patient sequences by numeric patient ID and \code{timehash}. Both adapters explicitly mark recovery labels as unavailable. Split creation is patient-aware where the adapter provides patient identity, and pair construction creates ordered consecutive studies for longitudinal processing.
+
+\section{Machine Learning Pipeline and Training Design}
+\subsection{Training phases}
+The configuration describes seven phases: DINOv2 adaptation, detection, segmentation, classification, serial comparison, Mamba longitudinal modelling, and recovery. The first six have code paths or evaluation support. Recovery is disabled. The training scripts contain dry-run options and phase-specific hyperparameters; this report does not convert configuration values into experimental results.
+
+\begin{table}[H]
+\centering\small
+\caption{Configured learning components and evidence status}
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+Component & Configuration & Evidence in supplied snapshot\\\midrule
+DINOv2 + classifier & ViT-S/14, 384-D, focal loss & Implementation and training script; no checkpoint artifact supplied\\
+RT-DETRv2 & R50VD, threshold 0.30 & Detector and training script; no checkpoint artifact supplied\\
+MedSAM & Dice/BCE weights 0.5/0.5 & Segmentor and training helper; checkpoint path configured but absent\\
+Serial comparison & minimum two studies & Comparator implementation; no benchmark output supplied\\
+Mamba longitudinal & 256 model dimension, 4 layers & Model and training script; no trained checkpoint supplied\\
+Recovery-time head & disabled & Stub only; no valid clinical labels\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Evaluation utilities}
+The evaluation module implements detection box IoU and precision/recall-style summaries, segmentation Dice and IoU, classification metrics including per-class measures and a binary fracture confusion matrix, and report serialization. Tests validate tensor shapes, loss decrease on a small synthetic overfit case, preprocessing behavior, adapter schemas, and recovery safeguards. No generated evaluation report or numeric benchmark is present in the supplied project snapshot.
+
+\section{Results and Discussion}
+\subsection{Implementation results}
+The verified result is an integrated application skeleton with a complete request-to-result path, typed API contracts, persistence, model wrappers, dataset adapters, training/evaluation entry points, frontend views, Docker files, and automated tests. The project demonstrates architectural integration rather than a completed clinical model validation campaign.
+
+\subsection{Testing evidence}
+The repository contains unit tests for adapters, preprocessing, model output shapes, loss behavior, mask metrics, and recovery flags, plus integration tests for health, invalid file types, and upload size limits. Dataset-dependent tests skip when local datasets are absent. Model initialization tests can also skip when weights or network access are unavailable. This behavior is appropriate for a repository that does not commit large data or checkpoint assets.
+
+\subsection{Limitations and observations}
+The principal limitations are the absence of local datasets/checkpoints, disabled recovery-time supervision, research-only disclaimers, and lack of an authentication/authorization layer in the inspected code. The frontend includes illustrative content and interface copy, but only backend route and model code was treated as evidence for technical capability. A future release should add reproducible dataset manifests, checkpoint hashes, experiment outputs, model calibration reports, privacy controls, and clinical validation governance.
+
+\section{Feasibility Study}
+\subsection{Technical feasibility}
+The modular Python architecture supports CPU fallback for the Mamba block and configurable CUDA execution for available models. Docker Compose separates CPU and GPU profiles. The API and frontend boundaries are conventional and testable. The major technical risk is the compute and storage cost of foundation models and medical-image datasets.
+
+\subsection{Economic and operational feasibility}
+The software stack is based primarily on open-source frameworks, but practical operation may require GPU infrastructure and licensed/approved clinical data access. Operational deployment requires clinician review, secure data handling, access control, monitoring, and validation beyond the current research prototype.
+
+\section{Conclusion and Future Scope}
+FracVision implements a coherent multimodal X-ray analysis platform in which preprocessing, detection, segmentation, feature extraction, classification, comparison, longitudinal modelling, API serving, web visualization, and persistence are connected through explicit interfaces. Its strongest engineering characteristic is transparent degradation: unavailable stages produce warnings and flags rather than being presented as clinically reliable results. The repository also correctly prevents unsupported recovery-time training.
+
+Future work should supply versioned datasets and checkpoints, run the existing training/evaluation scripts, publish reproducible metrics, integrate real model monitoring, implement authentication and audit controls, harden DICOM privacy handling, and perform independent clinical validation. Recovery-time prediction should remain disabled until verified time-to-union and censoring labels are collected under an approved clinical protocol.
+
+\section{References}
+\begin{enumerate}[leftmargin=*]
+\item Meta AI, “DINOv2: Learning Robust Visual Features without Supervision,” 2023. \url{https://arxiv.org/abs/2304.07193}
+\item Carnegie Mellon University and Princeton University, “Mamba: Linear-Time Sequence Modeling with Selective State Spaces,” 2023. \url{https://arxiv.org/abs/2312.00752}
+\item Baidu, “RT-DETRv2: Improved Real-Time Detection Transformer,” 2024. \url{https://arxiv.org/abs/2407.17140}
+\item Ma et al., “Segment Anything in Medical Images,” Nature Communications, 2024. \url{https://www.nature.com/articles/s41467-024-44824-z}
+\item FracVision repository source files supplied with this report, including \code{model/inference/pipeline.py}, \code{backend/api/routes.py}, \code{model/configs/config.yaml}, and associated frontend, training, evaluation, and test modules.
+\end{enumerate}
+
+\appendix
+\section{Implementation-to-report verification summary}
+\begin{longtable}{p{0.28\textwidth}p{0.31\textwidth}p{0.31\textwidth}}
+\caption{Traceability from report claims to implementation evidence}\label{tab:traceability}\\
+\toprule Claim & Source evidence & Verification status\\\midrule
+Frontend pages and overlays & \code{frontend/app/*}, \code{components/ResultsPanel.tsx}, \code{components/XrayOverlay.tsx} & Implemented\\
+REST endpoints & \code{backend/api/routes.py}, \code{backend/schemas/schemas.py} & Implemented\\
+Startup lifecycle & \code{backend/main.py}, \code{backend/core/pipeline_state.py} & Implemented\\
+Persistence schema & \code{backend/database/models.py} & Implemented\\
+Preprocessing & \code{model/data/preprocessing/preprocess.py} & Implemented\\
+Dataset adapters & \code{model/data/adapters/fracatlas.py}, \code{grazpedwri.py} & Implemented; data absent\\
+DINOv2/classifier & \code{model/models/dinov2/*}, \code{training/train_classifier.py} & Implemented; weights absent\\
+Detection & \code{model/models/rtdetrv2/detector.py}, \code{training/train_detector.py} & Implemented; weights absent\\
+Segmentation & \code{model/models/medsam/segmentor.py} & Implemented with checkpoint fallback\\
+Longitudinal model & \code{model/models/mamba/longitudinal.py}, \code{training/train_mamba.py} & Implemented; checkpoint absent\\
+Recovery prediction & \code{model/models/mamba/recovery.py} & Stub; training disabled\\
+Evaluation and tests & \code{model/evaluation/evaluate.py}, \code{tests/*} & Implemented; no benchmark report supplied\\
+\bottomrule
+\end{longtable}
+
+\section{Appendix: reproducibility commands}
+From the \code{codebase/fracvision} directory, the repository README specifies the following operational commands:
+\begin{lstlisting}
+uvicorn backend.main:app --reload --host 0.0.0.0 --port 8000
+cd frontend && npm run dev
+docker compose --profile cpu up
+docker compose --profile gpu up
+pytest
+\end{lstlisting}
+The first two commands start the backend and frontend separately; the Docker profiles provide a full-stack alternative. Successful model inference still depends on the configured external datasets, checkpoints, and runtime dependencies.
+
+\end{document}

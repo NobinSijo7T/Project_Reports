@@ -1,0 +1,17 @@
+11
+autonomy. The reference paper recognizes that human oversight may still be necessary in
+complex or sensitive situations.
+3.12 Testing and Validation
+The methodology proposes testing the system first in a simulated environment. Different
+conditions can be created, such as increased task difficulty or reduced resource availability.
+Performance can then be evaluated using measures such as task completion time, resource
+utilization and system efficiency.
+The reference paper also describes real-world pilot evaluation and feedback-based
+improvement. For this seminar, these are discussed as part of the reference paper's methodology
+rather than as newly conducted experiments.
+3.13 Continuous Improvement
+After evaluation, the system can be improved using performance feedback. Agents can learn
+from the results of their actions, and the workflow can be updated for new tasks, environmental
+conditions or user needs.
+Continuous monitoring is also important for scalability because increasing the number of agents
+can introduce additional communication and coordination requirements.

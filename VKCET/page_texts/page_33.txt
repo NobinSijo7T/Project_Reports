@@ -1,0 +1,22 @@
+REFERENCES
+1. R.Calegari, G.Ciatto, V.Mascardi, A.Omicini, “Logic-based technologies for multi-
+agent systems: a systematic literature review,” Autonomous Agents and Multi-Agent
+Systems, 35(1), 2021.
+2. R.C.Cardoso, A.Ferrando, “A review of agent-based programming for multi-agent
+systems,”Computers,10(2), 2021.
+3. J. Grosset, A.-J. Fougères, M. Djoko-Kouam, J.-M. Bonnin, “Multi-agent simulation
+of autonomous industrial vehicle fleets: Towards dynamic task allocation in V2X cooperation
+mode,”Integrated Computer-Aided Engineering, 31(3), pp. 249–266, 2024.
+4. C.Mu,H.Guo,Y.Chen,C.Shen,D.Hu,S.Hu,Z.Wang,“Multi-agent,human–agent
+and
+beyond: a survey on cooperation in social dilemmas,” Neuro computing, 610, Article
+128514, 2024.
+5. A.Saadi,R.Maamri,Z.Sahnoun, “Behavioral flexibility in belief-desire-intention(BDI)
+architectures,” Multi agent and Grid Systems, 16(4), pp. 343–377, 2020.
+6. D.B.Acharya, K.Kuppan, B.Divya, “Agentic AI: Autonomous intelligence for complex
+goals–a comprehensive survey,” IEEE Access, 2025.
+7. L.Hughes, Y.K.Dwivedi, T.Malik, M.Shawosh, M.A.Albashrawi, I.Jeon, V.Dutot,
+M.Appanderanda, T.Crick, R.De’,etal.,“AI agents and agentic systems: A multi-expert
+analysis,” Journal of Computer Information Systems, pp. 1–29, 2025.
+8. M.Gridach, J.Nanavati, K.Z.E.Abidine, L.Mendes, C.Mack, “Agentic AI for scientific
+discovery: A survey of progress, challenges, and future directions,” 2025.

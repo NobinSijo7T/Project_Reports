@@ -1,0 +1,61 @@
+Chapter 5. PERFORMANCE EVALUATION
+15
+5.1 Evaluation Objectives
+15
+5.2 Agent-Count Evaluation
+15
+5.3 Completion Time
+15
+5.4 System Efficiency
+16
+5.5 Scenario-Based Evaluation
+16
+5.6 Collaboration and Adaptability
+16
+5.7 Reliability and Recovery
+17
+5.8 Evaluation Limitations
+17
+Chapter 6. RESULTS, DISCUSSION, ADVANTAGES AND
+APPLICATIONS
+18
+6.1 Results Summary
+18
+6.2 Discussion
+18
+6.3 Advantages
+18
+6.4 Healthcare Applications
+19
+6.5 Manufacturing Applications
+19
+6.6 Logistics Applications
+19
+6.7 Autonomous Vehicles
+19
+6.8 Smart Environments
+20
+6.9 Limitations
+20
+Chapter 7. FUTURE SCOPE
+21
+7.1 Improved Agent Communication
+21
+7.2 Intelligent Decision-Making
+21
+7.3 Larger-Scale Agent Coordination
+21
+7.4 Improved Learning
+21
+7.5 Smart Cities
+21
+7.6 Autonomous Vehicles
+22
+7.7 Wider Industrial Use
+22
+7.8 Human-AI Collaboration
+22
+CONCLUSION
+23
+REFERENCE
+24

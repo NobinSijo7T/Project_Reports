@@ -1,0 +1,22 @@
+21
+CHAPTER 7
+FUTURE SCOPE
+7.1 Improved Agent Communication
+Future systems can improve the reliability, speed and efficiency of communication among
+agents. Better protocols can reduce unnecessary messages and help agents exchange only the
+information needed for a decision.
+7.2 Intelligent Decision-Making
+More advanced decision-making mechanisms can help agents select better actions when
+several alternatives are available. The reference paper identifies learning-based approaches,
+including deep reinforcement learning, as an area for further development.
+7.3 Larger-Scale Agent Coordination
+Future MAWS can support larger numbers of agents and more complicated workflows. This
+will require better coordination algorithms, resource management and scalable communication
+mechanisms.
+7.4 Improved Learning
+Agents can be improved through learning from previous actions and feedback. Collaborative
+learning can also allow agents to use information gained through interaction with other agents.
+7.5 Smart Cities
+Smart-city environments contain many services such as transport, resource management and
+coordinated public services. Multi-agent workflows could allow these services to operate as
+cooperating intelligent components.

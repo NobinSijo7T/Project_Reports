@@ -1,0 +1,24 @@
+10
+3.8 Learning Mechanisms
+The reference paper identifies supervised learning, unsupervised learning and reinforcement
+learning as useful learning mechanisms. Reinforcement learning is particularly important for
+autonomous decision-making because agents can learn from feedback received after actions.
+Deep learning can support complex data processing, while collaborative multi-agent learning
+can allow agents to learn or improve through interaction with other agents.
+3.9 Adaptability
+Adaptability means the ability to change actions when the environment changes. In MAWS,
+changing workload, new tasks, resource availability or changing task requirements can trigger a
+different allocation.
+The reference paper gives examples such as rerouting delivery activities during unexpected
+traffic conditions and real locating healthcare  resources  when patient demand changes.
+3.10 Cooperation
+Agents can work independently but still cooperate toward a common goal. Cooperation can
+involve sharing information, sharing resources, coordinating plans and helping complete tasks
+that are difficult for a single agent.
+A successful multi-agent workflow therefore requires both local decision-making and system-
+level coordination.
+3.11 Degree of Autonomy
+The level of agent independence can be adjusted according to the task. Some tasks may permit
+agents to make decisions without continuous human involvement. Other tasks may require
+greater supervision or approval.
+This flexibility is important because not every application should operate with the same level of
